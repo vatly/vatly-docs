@@ -183,7 +183,7 @@ function CodeGroupHeader({
   }
 
   return (
-    <div className="flex min-h-[calc(theme(spacing.12)+1px)] flex-wrap items-start gap-x-4 border-b border-zinc-700 bg-zinc-800 px-4">
+    <div className="flex min-h-[calc(theme(spacing.12)+1px)] flex-wrap items-start gap-x-4 border-b border-zinc-800 bg-zinc-800 px-4">
       {title && (
         <h3 className="mr-auto pt-3 text-xs font-semibold text-white">
           {title}
