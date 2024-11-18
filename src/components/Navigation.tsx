@@ -243,7 +243,7 @@ export const navigation: Array<NavGroup> = [
     ],
   },
   {
-    title: 'Resources',
+    title: 'API Reference',
     links: [
       { title: 'Contacts', href: '/contacts' },
       { title: 'Conversations', href: '/conversations' },
