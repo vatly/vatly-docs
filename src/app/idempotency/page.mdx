@@ -1,0 +1,127 @@
+export const metadata = {
+  title: 'Idempotency',
+  description:
+    'Learn how to use idempotency keys to safely retry API requests without creating duplicate resources.',
+}
+
+# Idempotency
+
+This guide explains how to use idempotency keys to safely retry API requests without creating duplicate resources. {{ className: 'lead' }}
+
+## What is idempotency?
+
+Idempotency is a property of an API endpoint that ensures multiple identical requests will have the same effect as a single request. This is particularly important when dealing with network issues, timeouts, or when you need to retry failed requests.
+
+For example, if you're creating a new message and the request fails due to a network error, you can safely retry the request without worrying about creating duplicate messages.
+
+## Using idempotency keys
+
+To make an idempotent request, include a unique `Idempotency-Key` header with your request:
+
+<CodeGroup>
+
+```bash {{ title: 'cURL' }}
+curl -X POST https://api.vatly.com/v1/messages \
+  -H "Authorization: Bearer {token}" \
+  -H "Idempotency-Key: 123e4567-e89b-12d3-a456-426614174000" \
+  -d message="Hello, World!"
+```
+
+```php
+$vatly = new \Vatly\Client('your-token');
+
+$vatly->messages->create([
+    'message' => 'Hello, World!',
+], [
+    'idempotency_key' => '123e4567-e89b-12d3-a456-426614174000',
+]);
+```
+
+</CodeGroup>
+
+<Note>
+  The idempotency key must be a unique string up to 64 characters. We recommend using a UUID v4 to ensure uniqueness.
+</Note>
+
+## How it works
+
+1. When you make a request with an idempotency key, our API stores the key along with the response.
+2. If you retry the request with the same key:
+   - If the original request succeeded, we'll return the stored response
+   - If the original request failed or is still processing, we'll process the request normally
+3. After 24 hours, idempotency keys expire and are removed from our system.
+
+## Best practices
+
+Here are some tips for using idempotency effectively:
+
+1. **Generate unique keys**: Use UUIDs or another method to generate unique keys for each request.
+2. **Store keys**: Keep track of idempotency keys alongside your request data.
+3. **Set retry policies**: Configure your HTTP client to automatically retry failed requests with the same idempotency key.
+4. **Handle errors**: Check error responses to determine if you should retry with the same key.
+
+## Example retry implementation
+
+Here's an example of how to implement automatic retries with idempotency:
+
+<CodeGroup>
+
+```php
+$vatly = new \Vatly\Client('your-token');
+
+function createMessage($vatly, $message) {
+    $idempotencyKey = generateUuid(); // Generate a UUID v4
+    $maxRetries = 3;
+    $attempt = 0;
+
+    while ($attempt < $maxRetries) {
+        try {
+            return $vatly->messages->create([
+                'message' => $message,
+            ], [
+                'idempotency_key' => $idempotencyKey,
+            ]);
+        } catch (\Vatly\Exception\ApiException $e) {
+            $attempt++;
+            
+            // Only retry on network errors or server errors (5xx)
+            if (!shouldRetry($e) || $attempt >= $maxRetries) {
+                throw $e;
+            }
+            
+            // Wait before retrying (with exponential backoff)
+            sleep(pow(2, $attempt));
+        }
+    }
+}
+
+function shouldRetry($error) {
+    return $error->getCode() >= 500 || $error->getCode() === 0;
+}
+```
+
+</CodeGroup>
+
+## Supported endpoints
+
+The following endpoints support idempotency:
+
+- All `POST` requests
+- All `PUT` requests
+- All `PATCH` requests
+
+<Note>
+  `GET` and `DELETE` requests are naturally idempotent and don't require an idempotency key.
+</Note>
+
+## Error handling
+
+If you receive an error response, check the status code to determine if you should retry the request:
+
+- `409 Conflict`: The request conflicts with another request using the same idempotency key. This usually means the key was already used for a different request.
+- `4xx` errors: Client errors (like validation errors) should not be retried with the same data.
+- `5xx` errors: Server errors can be safely retried with the same idempotency key.
+
+## Rate limits
+
+Idempotency keys count towards your rate limits only when they result in a new request being processed. Retries that return a stored response don't count towards your limits.

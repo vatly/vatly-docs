@@ -240,6 +240,7 @@ export const navigation: Array<NavGroup> = [
       { title: 'Pagination', href: '/pagination' },
       { title: 'Errors', href: '/errors' },
       { title: 'Webhooks', href: '/webhooks' },
+      { title: 'Idempotency', href: '/idempotency' },
     ],
   },
   {
