@@ -6,7 +6,7 @@ import typographyStyles from './typography'
 
 export default {
   content: ['./src/**/*.{js,mjs,jsx,ts,tsx,mdx}'],
-  darkMode: 'selector',
+  darkMode: 'class',
   theme: {
     fontFamily: {
       sans: ['Poppins', 'sans-serif'],

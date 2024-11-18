@@ -79,28 +79,25 @@ const FeedbackThanks = forwardRef<
 })
 
 export function Feedback() {
-  let [submitted, setSubmitted] = useState(false)
+  return null
+  // let [submitted, setSubmitted] = useState(false)
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  // function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  //   event.preventDefault()
+  //   setSubmitted(true)
+  // }
 
-    // event.nativeEvent.submitter.dataset.response
-    // => "yes" or "no"
-
-    setSubmitted(true)
-  }
-
-  return (
-    <div className="relative h-8">
-      <Transition show={!submitted}>
-        <FeedbackForm
-          className="duration-300 data-[leave]:pointer-events-none data-[closed]:opacity-0"
-          onSubmit={onSubmit}
-        />
-      </Transition>
-      <Transition show={submitted}>
-        <FeedbackThanks className="delay-150 duration-300 data-[closed]:opacity-0" />
-      </Transition>
-    </div>
-  )
+  // return (
+  //   <div className="relative h-8">
+  //     <Transition show={!submitted}>
+  //       <FeedbackForm
+  //         className="duration-300 data-[leave]:pointer-events-none data-[closed]:opacity-0"
+  //         onSubmit={onSubmit}
+  //       />
+  //     </Transition>
+  //     <Transition show={submitted}>
+  //       <FeedbackThanks className="duration-300 data-[leave]:pointer-events-none data-[closed]:opacity-0" />
+  //     </Transition>
+  //   </div>
+  // )
 }

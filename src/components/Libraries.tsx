@@ -7,6 +7,7 @@ import logoNode from '@/images/logos/node.svg'
 import logoPhp from '@/images/logos/php.svg'
 import logoPython from '@/images/logos/python.svg'
 import logoRuby from '@/images/logos/ruby.svg'
+import logoLaravel from '@/images/logos/laravel.svg'
 
 const libraries = [
   {
@@ -18,32 +19,39 @@ const libraries = [
   },
   {
     href: '#',
-    name: 'Ruby',
+    name: 'Vatly Laravel',
     description:
-      'A dynamic, open source programming language with a focus on simplicity and productivity.',
-    logo: logoRuby,
+      'The Vatly SDK for Laravel makes it easy to use the Vatly API within your Laravel application and acts as a replacement for Laravel Cashier.',
+    logo: logoLaravel,
   },
-  {
-    href: '#',
-    name: 'Node.js',
-    description:
-      'Node.js® is an open-source, cross-platform JavaScript runtime environment.',
-    logo: logoNode,
-  },
-  {
-    href: '#',
-    name: 'Python',
-    description:
-      'Python is a programming language that lets you work quickly and integrate systems more effectively.',
-    logo: logoPython,
-  },
-  {
-    href: '#',
-    name: 'Go',
-    description:
-      'An open-source programming language supported by Google with built-in concurrency.',
-    logo: logoGo,
-  },
+  // {
+  //   href: '#',
+  //   name: 'Ruby',
+  //   description:
+  //     'A dynamic, open source programming language with a focus on simplicity and productivity.',
+  //   logo: logoRuby,
+  // },
+  // {
+  //   href: '#',
+  //   name: 'Node.js',
+  //   description:
+  //     'Node.js® is an open-source, cross-platform JavaScript runtime environment.',
+  //   logo: logoNode,
+  // },
+  // {
+  //   href: '#',
+  //   name: 'Python',
+  //   description:
+  //     'Python is a programming language that lets you work quickly and integrate systems more effectively.',
+  //   logo: logoPython,
+  // },
+  // {
+  //   href: '#',
+  //   name: 'Go',
+  //   description:
+  //     'An open-source programming language supported by Google with built-in concurrency.',
+  //   logo: logoGo,
+  // },
 ]
 
 export function Libraries() {

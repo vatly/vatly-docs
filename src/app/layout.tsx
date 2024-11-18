@@ -37,7 +37,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`h-full ${poppins.variable}`} suppressHydrationWarning>
-      <body className="flex min-h-full bg-white antialiased dark:bg-zinc-900">
+      <body className="flex min-h-full bg-white dark:bg-black antialiased">
         <Providers>
           <div className="w-full">
             <Layout allSections={allSections}>{children}</Layout>
