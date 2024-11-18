@@ -1,22 +1,22 @@
 export const metadata = {
   title: 'Webhooks',
   description:
-    'In this guide, we will look at how to register and consume webhooks to integrate your app with Protocol.',
+    'In this guide, we will look at how to register and consume webhooks to integrate your app with Vatly.',
 }
 
 # Webhooks
 
-In this guide, we will look at how to register and consume webhooks to integrate your app with Protocol. With webhooks, your app can know when something happens in Protocol, such as someone sending a message or adding a contact. {{ className: 'lead' }}
+In this guide, we will look at how to register and consume webhooks to integrate your app with Vatly. With webhooks, your app can know when something happens in Vatly, such as someone sending a message or adding a contact. {{ className: 'lead' }}
 
 ## Registering webhooks
 
-To register a new webhook, you need to have a URL in your app that Protocol can call. You can configure a new webhook from the Protocol dashboard under [API settings](#). Give your webhook a name, pick the [events](#event-types) you want to listen for, and add your URL.
+To register a new webhook, you need to have a URL in your app that Vatly can call. You can configure a new webhook from the Vatly dashboard under [API settings](#). Give your webhook a name, pick the [events](#event-types) you want to listen for, and add your URL.
 
-Now, whenever something of interest happens in your app, a webhook is fired off by Protocol. In the next section, we'll look at how to consume webhooks.
+Now, whenever something of interest happens in your app, a webhook is fired off by Vatly. In the next section, we'll look at how to consume webhooks.
 
 ## Consuming webhooks
 
-When your app receives a webhook request from Protocol, check the `type` attribute to see what event caused it. The first part of the event type will tell you the payload type, e.g., a conversation, message, etc.
+When your app receives a webhook request from Vatly, check the `type` attribute to see what event caused it. The first part of the event type will tell you the payload type, e.g., a conversation, message, etc.
 
 ```json {{ title: 'Example webhook payload' }}
 {
@@ -127,7 +127,7 @@ In the example above, a conversation was `updated`, and the payload type is a `c
 
 ## Security
 
-To know for sure that a webhook was, in fact, sent by Protocol instead of a malicious actor, you can verify the request signature. Each webhook request contains a header named `x-protocol-signature`, and you can verify this signature by using your secret webhook key. The signature is an HMAC hash of the request payload hashed using your secret key. Here is an example of how to verify the signature in your app:
+To know for sure that a webhook was, in fact, sent by Vatly instead of a malicious actor, you can verify the request signature. Each webhook request contains a header named `x-protocol-signature`, and you can verify this signature by using your secret webhook key. The signature is an HMAC hash of the request payload hashed using your secret key. Here is an example of how to verify the signature in your app:
 
 <CodeGroup title="Verifying a request">
 
@@ -169,4 +169,4 @@ if (hash_equals($hash, $signature)) {
 
 </CodeGroup>
 
-If your generated signature matches the `x-protocol-signature` header, you can be sure that the request was truly coming from Protocol. It's essential to keep your secret webhook key safe — otherwise, you can no longer be sure that a given webhook was sent by Protocol. Don't commit your secret webhook key to GitHub!
+If your generated signature matches the `x-protocol-signature` header, you can be sure that the request was truly coming from Vatly. It's essential to keep your secret webhook key safe — otherwise, you can no longer be sure that a given webhook was sent by Vatly. Don't commit your secret webhook key to GitHub!

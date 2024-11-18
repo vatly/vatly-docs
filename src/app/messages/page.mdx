@@ -6,7 +6,7 @@ export const metadata = {
 
 # Messages
 
-Messages are what conversations are made of in Protocol — they are the basic building blocks of your conversations with your Protocol contacts. On this page, we'll dive into the different message endpoints you can use to manage messages programmatically. We'll look at how to query, send, update, and delete messages. {{ className: 'lead' }}
+Messages are what conversations are made of in Vatly — they are the basic building blocks of your conversations with your Vatly contacts. On this page, we'll dive into the different message endpoints you can use to manage messages programmatically. We'll look at how to query, send, update, and delete messages. {{ className: 'lead' }}
 
 ## The message model
 
@@ -93,7 +93,7 @@ The message model contains all the information about the messages and attachment
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->messages->list();
     ```
@@ -196,7 +196,7 @@ The message model contains all the information about the messages and attachment
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->messages->send([
       'conversation_id' => 'xgQQXg3hrtjh7AvZ',
@@ -266,7 +266,7 @@ The message model contains all the information about the messages and attachment
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->messages->get('SIuAFUNKdSYHZF2w');
     ```
@@ -353,7 +353,7 @@ The message model contains all the information about the messages and attachment
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->messages->update('SIuAFUNKdSYHZF2w', [
       'reactions' => [
@@ -430,7 +430,7 @@ The message model contains all the information about the messages and attachment
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->messages->delete('SIuAFUNKdSYHZF2w');
     ```

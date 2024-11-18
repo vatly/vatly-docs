@@ -6,7 +6,7 @@ export const metadata = {
 
 # Groups
 
-Groups are where communities live in Protocol — they are a collection of contacts you're talking to all at once. On this page, we'll dive into the different group endpoints you can use to manage groups programmatically. We'll look at how to query, create, update, and delete groups. {{ className: 'lead' }}
+Groups are where communities live in Vatly — they are a collection of contacts you're talking to all at once. On this page, we'll dive into the different group endpoints you can use to manage groups programmatically. We'll look at how to query, create, update, and delete groups. {{ className: 'lead' }}
 
 ## The group model
 
@@ -89,7 +89,7 @@ The group model contains all the information about your groups, including what c
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->groups->list();
     ```
@@ -145,7 +145,7 @@ The group model contains all the information about your groups, including what c
 <Row>
   <Col>
 
-    This endpoint allows you to create a new group conversation between you and a group of your Protocol contacts.
+    This endpoint allows you to create a new group conversation between you and a group of your Vatly contacts.
 
     ### Required attributes
 
@@ -199,7 +199,7 @@ The group model contains all the information about your groups, including what c
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->groups->create([
       'name' => 'Plaza Hotel',
@@ -260,7 +260,7 @@ The group model contains all the information about your groups, including what c
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->groups->get('L7cGNIBKZiNJ6wqF');
     ```
@@ -359,7 +359,7 @@ The group model contains all the information about your groups, including what c
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->groups->update('L7cGNIBKZiNJ6wqF', [
       'description' => 'The finest in New York.',
@@ -437,7 +437,7 @@ The group model contains all the information about your groups, including what c
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->groups->delete('L7cGNIBKZiNJ6wqF');
     ```

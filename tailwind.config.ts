@@ -8,6 +8,18 @@ export default {
   content: ['./src/**/*.{js,mjs,jsx,ts,tsx,mdx}'],
   darkMode: 'selector',
   theme: {
+    fontFamily: {
+      sans: ['Poppins', 'sans-serif'],
+    },
+    colors: {
+      white: '#ffffff',
+      blue: '#326bff',
+      black: '#161616',
+      'light-blue': '#ECEFFF',
+      'sky-blue': '#8DB3FE',
+      'light-gray': '#f7F7F7',
+      gray: '#ECEFFF',
+    },
     fontSize: {
       '2xs': ['0.75rem', { lineHeight: '1.25rem' }],
       xs: ['0.8125rem', { lineHeight: '1.5rem' }],

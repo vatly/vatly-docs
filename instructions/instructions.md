@@ -6,12 +6,12 @@ Your goal is to build a next.js app that allows users to get started with (Vatly
 
 You will be using Next.js to build the app, with Tailwind CSS for styling and MDX for writing the documentation.
 
-We take the Protocol template from TailwindUI as a starting point and build on it.
+We take the Vatly template from TailwindUI as a starting point and build on it.
 
 
 ## Core functionalities
 
-- Uses Vatly branding
+### Use Vatly branding
     - The full brand guide is located at `./instructions/Vatly_brandguide6.pdf`
     - Uses Vatly blue logo in light mode, light logo in dark mode. SVG.
     - Uses Vatly colors, can also be configured on tailwind.config.js:
@@ -25,7 +25,9 @@ We take the Protocol template from TailwindUI as a starting point and build on i
             - Light Gray: #f7F7F7
             - Gray: #ECEFFF
     - Uses Vatly font: Poppins
-    - Replace all references to "Protocol" with "Vatly"
+    - Replace all references to "Vatly" with "Vatly"
+
+    
 - SEO optimized
 - Use environment file to capture absolute urls like support.vatly.com and my.vatly.com.
 - Update existing pages and navigation:

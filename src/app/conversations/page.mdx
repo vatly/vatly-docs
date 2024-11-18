@@ -6,7 +6,7 @@ export const metadata = {
 
 # Conversations
 
-Conversations are an essential part of Protocol — they are the containers for the messages between you, your contacts, and groups. On this page, we’ll dive into the different conversation endpoints you can use to manage conversations programmatically. We'll look at how to query, create, update, and delete conversations. {{ className: 'lead' }}
+Conversations are an essential part of Vatly — they are the containers for the messages between you, your contacts, and groups. On this page, we’ll dive into the different conversation endpoints you can use to manage conversations programmatically. We'll look at how to query, create, update, and delete conversations. {{ className: 'lead' }}
 
 ## The conversation model
 
@@ -105,7 +105,7 @@ The conversation model contains all the information about the conversations betw
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->conversations->list();
     ```
@@ -189,7 +189,7 @@ The conversation model contains all the information about the conversations betw
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->conversations->create([
       'contact_id' => 'WAz8eIbvDR60rouK',
@@ -252,7 +252,7 @@ The conversation model contains all the information about the conversations betw
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->conversations->get('xgQQXg3hrtjh7AvZ');
     ```
@@ -333,7 +333,7 @@ The conversation model contains all the information about the conversations betw
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->conversations->update('xgQQXg3hrtjh7AvZ', [
       'is_muted' => true,
@@ -367,7 +367,7 @@ The conversation model contains all the information about the conversations betw
 <Row>
   <Col>
 
-    This endpoint allows you to delete your conversations in Protocol. Note: This will permanently delete the conversation and all its messages — archive it instead if you want to be able to restore it later.
+    This endpoint allows you to delete your conversations in Vatly. Note: This will permanently delete the conversation and all its messages — archive it instead if you want to be able to restore it later.
 
   </Col>
   <Col sticky>
@@ -396,7 +396,7 @@ The conversation model contains all the information about the conversations betw
     ```
 
     ```php
-    $client = new \Protocol\ApiClient($token);
+    $client = new \Vatly\ApiClient($token);
 
     $client->conversations->delete('xgQQXg3hrtjh7AvZ');
     ```
