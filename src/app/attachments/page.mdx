@@ -64,7 +64,7 @@ The attachment model contains all the information about the files you send to yo
     <CodeGroup title="Request" tag="GET" label="/v1/attachments">
 
     ```bash {{ title: 'cURL' }}
-    curl -G https://api.protocol.chat/v1/attachments \
+    curl -G https://api.vatly.com/v1/attachments \
       -H "Authorization: Bearer {token}" \
       -d conversation_id="xgQQXg3hrtjh7AvZ" \
       -d limit=10
@@ -141,7 +141,7 @@ The attachment model contains all the information about the files you send to yo
     <CodeGroup title="Request" tag="POST" label="/v1/attachments">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/attachments \
+    curl https://api.vatly.com/v1/attachments \
       -H "Authorization: Bearer {token}" \
       -F file="../Invoice_room_service__Plaza_Hotel.pdf"
     ```
@@ -202,7 +202,7 @@ The attachment model contains all the information about the files you send to yo
     <CodeGroup title="Request" tag="GET" label="/v1/attachments/Nc6yKKMpcxiiFxp6">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/attachments/Nc6yKKMpcxiiFxp6 \
+    curl https://api.vatly.com/v1/attachments/Nc6yKKMpcxiiFxp6 \
       -H "Authorization: Bearer {token}"
     ```
 
@@ -268,7 +268,7 @@ The attachment model contains all the information about the files you send to yo
     <CodeGroup title="Request" tag="PUT" label="/v1/attachments/Nc6yKKMpcxiiFxp6">
 
     ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.protocol.chat/v1/attachments/Nc6yKKMpcxiiFxp6 \
+    curl -X PUT https://api.vatly.com/v1/attachments/Nc6yKKMpcxiiFxp6 \
       -H "Authorization: Bearer {token}" \
       -d filename="Invoice_room_service__Plaza_Hotel_updated.pdf"
     ```
@@ -331,7 +331,7 @@ The attachment model contains all the information about the files you send to yo
     <CodeGroup title="Request" tag="DELETE" label="/v1/attachments/Nc6yKKMpcxiiFxp6">
 
     ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.protocol.chat/v1/attachments/Nc6yKKMpcxiiFxp6 \
+    curl -X DELETE https://api.vatly.com/v1/attachments/Nc6yKKMpcxiiFxp6 \
       -H "Authorization: Bearer {token}"
     ```
 

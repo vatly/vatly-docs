@@ -169,23 +169,37 @@ export default function typographyStyles({ theme }: PluginUtils) {
         },
 
         // Headings
+        'h2, h3, h4, h5, h6': {
+          color: 'var(--tw-prose-headings)',
+          fontWeight: theme('fontWeight.semibold'),
+          'a': {
+            color: 'inherit',
+            fontWeight: 'inherit',
+            textDecoration: 'none',
+            '&:hover': {
+              color: theme('colors.blue'),
+            },
+          },
+        },
         h1: {
           color: 'var(--tw-prose-headings)',
           fontWeight: '700',
           fontSize: theme('fontSize.2xl')[0],
           ...theme('fontSize.2xl')[1],
           marginBottom: theme('spacing.2'),
+          'a': {
+            color: 'inherit',
+            fontWeight: 'inherit',
+            textDecoration: 'none',
+          },
         },
         h2: {
-          color: 'var(--tw-prose-headings)',
-          fontWeight: '600',
           fontSize: theme('fontSize.lg')[0],
           ...theme('fontSize.lg')[1],
           marginTop: theme('spacing.16'),
           marginBottom: theme('spacing.2'),
         },
         h3: {
-          color: 'var(--tw-prose-headings)',
           fontSize: theme('fontSize.base')[0],
           ...theme('fontSize.base')[1],
           fontWeight: '600',

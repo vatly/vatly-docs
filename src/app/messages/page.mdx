@@ -70,7 +70,7 @@ The message model contains all the information about the messages and attachment
     <CodeGroup title="Request" tag="GET" label="/v1/messages">
 
     ```bash {{ title: 'cURL' }}
-    curl -G https://api.protocol.chat/v1/messages \
+    curl -G https://api.vatly.com/v1/messages \
       -H "Authorization: Bearer {token}" \
       -d conversation_id=xgQQXg3hrtjh7AvZ \
       -d limit=10
@@ -167,7 +167,7 @@ The message model contains all the information about the messages and attachment
     <CodeGroup title="Request" tag="POST" label="/v1/messages">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/messages \
+    curl https://api.vatly.com/v1/messages \
       -H "Authorization: Bearer {token}" \
       -d conversation_id="xgQQXg3hrtjh7AvZ" \
       -d message="You’re what the French call ‘les incompetents.’"
@@ -245,7 +245,7 @@ The message model contains all the information about the messages and attachment
     <CodeGroup title="Request" tag="GET" label="/v1/messages/SIuAFUNKdSYHZF2w">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/messages/SIuAFUNKdSYHZF2w \
+    curl https://api.vatly.com/v1/messages/SIuAFUNKdSYHZF2w \
       -H "Authorization: Bearer {token}"
     ```
 
@@ -326,7 +326,7 @@ The message model contains all the information about the messages and attachment
     <CodeGroup title="Request" tag="PUT" label="/v1/messages/SIuAFUNKdSYHZF2w">
 
     ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.protocol.chat/v1/messages/SIuAFUNKdSYHZF2w \
+    curl -X PUT https://api.vatly.com/v1/messages/SIuAFUNKdSYHZF2w \
       -H "Authorization: Bearer {token}" \
       -d reactions[red_angry_face][]="KateMcCallister"
     ```
@@ -409,7 +409,7 @@ The message model contains all the information about the messages and attachment
     <CodeGroup title="Request" tag="DELETE" label="/v1/messages/SIuAFUNKdSYHZF2w">
 
     ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.protocol.chat/v1/messages/SIuAFUNKdSYHZF2w \
+    curl -X DELETE https://api.vatly.com/v1/messages/SIuAFUNKdSYHZF2w \
       -H "Authorization: Bearer {token}"
     ```
 

@@ -1,71 +1,71 @@
 export const metadata = {
-  title: 'Contacts',
+  title: 'Customers',
   description:
-    'On this page, we’ll dive into the different contact endpoints you can use to manage contacts programmatically.',
+    'On this page, we’ll dive into the different customer endpoints you can use to manage customers programmatically.',
 }
 
-# Contacts
+# Customers
 
-As the name suggests, contacts are a core part of Vatly — the very reason Vatly exists is so you can have secure conversations with your contacts. On this page, we'll dive into the different contact endpoints you can use to manage contacts programmatically. We'll look at how to query, create, update, and delete contacts. {{ className: 'lead' }}
+As the name suggests, customers are a core part of Vatly — the very reason Vatly exists is so you can have secure conversations with your customers. On this page, we'll dive into the different customer endpoints you can use to manage customers programmatically. We'll look at how to query, create, update, and delete customers. {{ className: 'lead' }}
 
-## The contact model
+## The customer model
 
-The contact model contains all the information about your contacts, such as their username, avatar, and phone number. It also contains a reference to the conversation between you and the contact and information about when they were last active on Vatly.
+The customer model contains all the information about your customers, such as their username, avatar, and phone number. It also contains a reference to the conversation between you and the customer and information about when they were last active on Vatly.
 
 ### Properties
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the contact.
+    Unique identifier for the customer.
   </Property>
   <Property name="username" type="string">
-    The username for the contact.
+    The username for the customer.
   </Property>
   <Property name="phone_number" type="string">
-    The phone number for the contact.
+    The phone number for the customer.
   </Property>
   <Property name="avatar_url" type="string">
-    The avatar image URL for the contact.
+    The avatar image URL for the customer.
   </Property>
   <Property name="display_name" type="string">
-    The contact display name in the contact list. By default, this is just the
+    The customer display name in the customer list. By default, this is just the
     username.
   </Property>
   <Property name="conversation_id" type="string">
-    Unique identifier for the conversation associated with the contact.
+    Unique identifier for the conversation associated with the customer.
   </Property>
   <Property name="last_active_at" type="timestamp">
-    Timestamp of when the contact was last active on the platform.
+    Timestamp of when the customer was last active on the platform.
   </Property>
   <Property name="created_at" type="timestamp">
-    Timestamp of when the contact was created.
+    Timestamp of when the customer was created.
   </Property>
 </Properties>
 
 ---
 
-## List all contacts {{ tag: 'GET', label: '/v1/contacts' }}
+## List all customers {{ tag: 'GET', label: '/v1/customers' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to retrieve a paginated list of all your contacts. By default, a maximum of ten contacts are shown per page.
+    This endpoint allows you to retrieve a paginated list of all your customers. By default, a maximum of ten customers are shown per page.
 
     ### Optional attributes
 
     <Properties>
       <Property name="limit" type="integer">
-        Limit the number of contacts returned.
+        Limit the number of customers returned.
       </Property>
     </Properties>
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/contacts">
+    <CodeGroup title="Request" tag="GET" label="/v1/customers">
 
     ```bash {{ title: 'cURL' }}
-    curl -G https://api.protocol.chat/v1/contacts \
+    curl -G https://api.vatly.com/v1/customers \
       -H "Authorization: Bearer {token}" \
       -d active=true \
       -d limit=10
@@ -76,7 +76,7 @@ The contact model contains all the information about your contacts, such as thei
 
     const client = new ApiClient(token)
 
-    await client.contacts.list()
+    await client.customers.list()
     ```
 
     ```python
@@ -84,13 +84,13 @@ The contact model contains all the information about your contacts, such as thei
 
     client = ApiClient(token)
 
-    client.contacts.list()
+    client.customers.list()
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->contacts->list();
+    $client->customers->list();
     ```
 
     </CodeGroup>
@@ -122,21 +122,21 @@ The contact model contains all the information about your contacts, such as thei
 
 ---
 
-## Create a contact {{ tag: 'POST', label: '/v1/contacts' }}
+## Create a customer {{ tag: 'POST', label: '/v1/customers' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to add a new contact to your contact list in Vatly. To add a contact, you must provide their Vatly username and phone number.
+    This endpoint allows you to add a new customer to your customer list in Vatly. To add a customer, you must provide their Vatly username and phone number.
 
     ### Required attributes
 
     <Properties>
       <Property name="username" type="string">
-        The username for the contact.
+        The username for the customer.
       </Property>
       <Property name="phone_number" type="string">
-        The phone number for the contact.
+        The phone number for the customer.
       </Property>
     </Properties>
 
@@ -144,20 +144,20 @@ The contact model contains all the information about your contacts, such as thei
 
     <Properties>
       <Property name="avatar_url" type="string">
-        The avatar image URL for the contact.
+        The avatar image URL for the customer.
       </Property>
       <Property name="display_name" type="string">
-        The contact display name in the contact list. By default, this is just the username.
+        The customer display name in the customer list. By default, this is just the username.
       </Property>
     </Properties>
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="POST" label="/v1/contacts">
+    <CodeGroup title="Request" tag="POST" label="/v1/customers">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/contacts \
+    curl https://api.vatly.com/v1/customers \
       -H "Authorization: Bearer {token}" \
       -d username="FrankMcCallister" \
       -d phone_number="1-800-759-3000" \
@@ -169,7 +169,7 @@ The contact model contains all the information about your contacts, such as thei
 
     const client = new ApiClient(token)
 
-    await client.contacts.create({
+    await client.customers.create({
       username: 'FrankMcCallister',
       phone_number: '1-800-759-3000',
       avatar_url: 'https://assets.protocol.chat/avatars/frank.jpg',
@@ -181,7 +181,7 @@ The contact model contains all the information about your contacts, such as thei
 
     client = ApiClient(token)
 
-    client.contacts.create(
+    client.customers.create(
       username="FrankMcCallister",
       phone_number="1-800-759-3000",
       avatar_url="https://assets.protocol.chat/avatars/frank.jpg",
@@ -191,7 +191,7 @@ The contact model contains all the information about your contacts, such as thei
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->contacts->create([
+    $client->customers->create([
       'username' => 'FrankMcCallister',
       'phone_number' => '1-800-759-3000',
       'avatar_url' => 'https://assets.protocol.chat/avatars/frank.jpg',
@@ -218,20 +218,20 @@ The contact model contains all the information about your contacts, such as thei
 
 ---
 
-## Retrieve a contact {{ tag: 'GET', label: '/v1/contacts/:id' }}
+## Retrieve a customer {{ tag: 'GET', label: '/v1/customers/:id' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to retrieve a contact by providing their Vatly id. Refer to [the list](#the-contact-model) at the top of this page to see which properties are included with contact objects.
+    This endpoint allows you to retrieve a customer by providing their Vatly id. Refer to [the list](#the-customer-model) at the top of this page to see which properties are included with customer objects.
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/contacts/WAz8eIbvDR60rouK">
+    <CodeGroup title="Request" tag="GET" label="/v1/customers/WAz8eIbvDR60rouK">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/contacts/WAz8eIbvDR60rouK \
+    curl https://api.vatly.com/v1/customers/WAz8eIbvDR60rouK \
       -H "Authorization: Bearer {token}"
     ```
 
@@ -240,7 +240,7 @@ The contact model contains all the information about your contacts, such as thei
 
     const client = new ApiClient(token)
 
-    await client.contacts.get('WAz8eIbvDR60rouK')
+    await client.customers.get('WAz8eIbvDR60rouK')
     ```
 
     ```python
@@ -248,13 +248,13 @@ The contact model contains all the information about your contacts, such as thei
 
     client = ApiClient(token)
 
-    client.contacts.get("WAz8eIbvDR60rouK")
+    client.customers.get("WAz8eIbvDR60rouK")
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->contacts->get('WAz8eIbvDR60rouK');
+    $client->customers->get('WAz8eIbvDR60rouK');
     ```
 
     </CodeGroup>
@@ -277,28 +277,28 @@ The contact model contains all the information about your contacts, such as thei
 
 ---
 
-## Update a contact {{ tag: 'PUT', label: '/v1/contacts/:id' }}
+## Update a customer {{ tag: 'PUT', label: '/v1/customers/:id' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to perform an update on a contact. Currently, the only attribute that can be updated on contacts is the `display_name` attribute which controls how a contact appears in your contact list in Vatly.
+    This endpoint allows you to perform an update on a customer. Currently, the only attribute that can be updated on customers is the `display_name` attribute which controls how a customer appears in your customer list in Vatly.
 
     ### Optional attributes
 
     <Properties>
       <Property name="display_name" type="string">
-        The contact display name in the contact list. By default, this is just the username.
+        The customer display name in the customer list. By default, this is just the username.
       </Property>
     </Properties>
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="PUT" label="/v1/contacts/WAz8eIbvDR60rouK">
+    <CodeGroup title="Request" tag="PUT" label="/v1/customers/WAz8eIbvDR60rouK">
 
     ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.protocol.chat/v1/contacts/WAz8eIbvDR60rouK \
+    curl -X PUT https://api.vatly.com/v1/customers/WAz8eIbvDR60rouK \
       -H "Authorization: Bearer {token}" \
       -d display_name="UncleFrank"
     ```
@@ -308,7 +308,7 @@ The contact model contains all the information about your contacts, such as thei
 
     const client = new ApiClient(token)
 
-    await client.contacts.update('WAz8eIbvDR60rouK', {
+    await client.customers.update('WAz8eIbvDR60rouK', {
         display_name: 'UncleFrank',
     })
     ```
@@ -318,13 +318,13 @@ The contact model contains all the information about your contacts, such as thei
 
     client = ApiClient(token)
 
-    client.contacts.update("WAz8eIbvDR60rouK", display_name="UncleFrank")
+    client.customers.update("WAz8eIbvDR60rouK", display_name="UncleFrank")
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->contacts->update('WAz8eIbvDR60rouK', [
+    $client->customers->update('WAz8eIbvDR60rouK', [
       'display_name' => 'UncleFrank',
     ]);
     ```
@@ -349,20 +349,20 @@ The contact model contains all the information about your contacts, such as thei
 
 ---
 
-## Delete a contact {{ tag: 'DELETE', label: '/v1/contacts/:id' }}
+## Delete a customer {{ tag: 'DELETE', label: '/v1/customers/:id' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to delete contacts from your contact list in Vatly. Note: This will also delete your conversation with the given contact.
+    This endpoint allows you to delete customers from your customer list in Vatly. Note: This will also delete your conversation with the given customer.
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="DELETE" label="/v1/contacts/WAz8eIbvDR60rouK">
+    <CodeGroup title="Request" tag="DELETE" label="/v1/customers/WAz8eIbvDR60rouK">
 
     ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.protocol.chat/v1/contacts/WAz8eIbvDR60rouK \
+    curl -X DELETE https://api.vatly.com/v1/customers/WAz8eIbvDR60rouK \
       -H "Authorization: Bearer {token}"
     ```
 
@@ -371,7 +371,7 @@ The contact model contains all the information about your contacts, such as thei
 
     const client = new ApiClient(token)
 
-    await client.contacts.delete('WAz8eIbvDR60rouK')
+    await client.customers.delete('WAz8eIbvDR60rouK')
     ```
 
     ```python
@@ -379,13 +379,13 @@ The contact model contains all the information about your contacts, such as thei
 
     client = ApiClient(token)
 
-    client.contacts.delete("WAz8eIbvDR60rouK")
+    client.customers.delete("WAz8eIbvDR60rouK")
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->contacts->delete('WAz8eIbvDR60rouK');
+    $client->customers->delete('WAz8eIbvDR60rouK');
     ```
 
     </CodeGroup>
