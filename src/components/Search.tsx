@@ -152,7 +152,7 @@ function LoadingIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 function HighlightQuery({ text, query }: { text: string; query: string }) {
   return (
     <Highlighter
-      highlightClassName="underline bg-transparent text-emerald-500"
+      highlightClassName="underline bg-transparent text-blue"
       searchWords={[query]}
       autoEscape={true}
       textToHighlight={text}
@@ -197,7 +197,7 @@ function SearchResult({
       <div
         id={`${id}-title`}
         aria-hidden="true"
-        className="text-sm font-medium text-zinc-900 group-aria-selected:text-emerald-500 dark:text-white"
+        className="text-sm font-medium text-zinc-900 group-aria-selected:text-blue dark:text-white"
       >
         <HighlightQuery text={result.title} query={query} />
       </div>

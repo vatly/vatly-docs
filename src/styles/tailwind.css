@@ -3,28 +3,28 @@
     --shiki-foreground: theme('colors.white');
     --shiki-background: transparent;
     --shiki-comment: theme('colors.zinc.400');
-    --shiki-string: theme('colors.emerald.300');
+    --shiki-string: theme('colors.blue');
     --shiki-literal: theme('colors.sky.300');
     --shiki-number: theme('colors.sky.300');
     --shiki-keyword: theme('colors.sky.300');
     --shiki-function: theme('colors.violet.300');
-    --shiki-string-expression: theme('colors.emerald.300');
+    --shiki-string-expression: theme('colors.blue');
     --shiki-punctuation: theme('colors.zinc.400');
-    --shiki-link: theme('colors.blue.300');
+    --shiki-link: theme('colors.blue');
   }
 
   .dark {
     --shiki-foreground: theme('colors.zinc.200');
     --shiki-background: transparent;
     --shiki-comment: theme('colors.zinc.500');
-    --shiki-string: theme('colors.emerald.300');
+    --shiki-string: theme('colors.blue');
     --shiki-literal: theme('colors.sky.300');
     --shiki-number: theme('colors.sky.300');
     --shiki-keyword: theme('colors.sky.300');
     --shiki-function: theme('colors.violet.300');
-    --shiki-string-expression: theme('colors.emerald.300');
+    --shiki-string-expression: theme('colors.blue');
     --shiki-punctuation: theme('colors.zinc.400');
-    --shiki-link: theme('colors.blue.300');
+    --shiki-link: theme('colors.blue');
   }
 
   [inert] ::-webkit-scrollbar {
