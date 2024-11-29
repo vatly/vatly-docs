@@ -1,89 +1,88 @@
 export const metadata = {
-  title: 'Conversations',
+  title: 'Checkouts',
   description:
-    'On this page, we’ll dive into the different conversation endpoints you can use to manage conversations programmatically.',
+    'On this page, we’ll dive into the different checkout endpoints you can use to manage your checkouts programmatically.',
 }
 
-# Conversations
+# The Checkouts API
 
-Conversations are an essential part of Vatly — they are the containers for the messages between you, your contacts, and groups. On this page, we’ll dive into the different conversation endpoints you can use to manage conversations programmatically. We'll look at how to query, create, update, and delete conversations. {{ className: 'lead' }}
+The hosted Vatly Checkouts allow your customers to pay for your digital products and services. When the checkout is succesfully completed, an Order gets created and any webhooks configured through the dashboard get fired. {{ className: 'lead' }}
 
-## The conversation model
+## The Checkout API Resource
 
-The conversation model contains all the information about the conversations between you and your contacts. In addition, conversations can also be group-based with more than one contact, they can have a pinned message, and they can be muted.
+Below you'll find all properties for the Vatly Checkout API resource.
 
 ### Properties
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the conversation.
+    Unique identifier for the checkout.
   </Property>
-  <Property name="contact_id" type="string">
-    Unique identifier for the other contact in the conversation.
+  <Property name="merchantId" type="string">
+    Unique identifier for the merchant this checkout belongs to.
   </Property>
-  <Property name="group_id" type="string">
-    Unique identifier for the group that the conversation belongs to.
+  <Property name="orderId" type="string">
+    Unique identifier for the order this checkout belongs to. Only available when the checkout has been completed succesfully.
   </Property>
-  <Property name="pinned_message_id" type="string">
-    Unique identifier for the pinned message.
+  <Property name="testmode" type="boolean">
+    Whether this checkout is in test mode.
   </Property>
-  <Property name="is_pinned" type="boolean">
-    Whether or not the conversation has been pinned.
+  <Property name="redirectUrlSuccess" type="string">
+    The URL to which the checkout should redirect the user after the checkout has been completed succesfully.
   </Property>
-  <Property name="is_muted" type="boolean">
-    Whether or not the conversation has been muted.
+  <Property name="redirectUrlCanceled" type="string">
+    The URL to which theuser should get redirected when the user cancels the checkout.
   </Property>
-  <Property name="last_active_at" type="timestamp">
-    Timestamp of when the conversation was last active.
+  <Property name="metadata" type="string">
+    Any metadata associated with the checkout. Provide any data you like to be stored with the checkout.
   </Property>
-  <Property name="last_opened_at" type="timestamp">
-    Timestamp of when the conversation was last opened by the authenticated
-    user.
+  <Property name="status" type="string">
+    The status of the checkout. Can be `created`, `pending`, `paid`, `failed`, `expired`, or `canceled`.
   </Property>
-  <Property name="created_at" type="timestamp">
-    Timestamp of when the conversation was created.
+  <Property name="createdAt" type="string">
+    The moment the checkout was created, in ISO 8601 format.
   </Property>
-  <Property name="archived_at" type="timestamp">
-    Timestamp of when the conversation was archived.
+  <Property name="_links_" type="string">
+    An object with API urls and other hyperlinks relevant to the checkout. Specifically, the `checkoutUrl` property contains the URL to which the user should be redirected to complete the checkout.
   </Property>
 </Properties>
 
 ---
 
-## List all conversations {{ tag: 'GET', label: '/v1/conversations' }}
+{/* ## List all checkouts {{ tag: 'GET', label: '/v1/checkouts' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to retrieve a paginated list of all your conversations. By default, a maximum of ten conversations are shown per page.
+    This endpoint allows you to retrieve a paginated list of all your checkouts. By default, a maximum of ten checkouts are shown per page.
 
     ### Optional attributes
 
     <Properties>
       <Property name="limit" type="integer">
-        Limit the number of conversations returned.
+        Limit the number of checkouts returned.
       </Property>
       <Property name="muted" type="boolean">
-        Only show conversations that are muted when set to `true`.
+        Only show checkouts that are muted when set to `true`.
       </Property>
       <Property name="archived" type="boolean">
-        Only show conversations that are archived when set to `true`.
+        Only show checkouts that are archived when set to `true`.
       </Property>
       <Property name="pinned" type="boolean">
-        Only show conversations that are pinned when set to `true`.
+        Only show checkouts that are pinned when set to `true`.
       </Property>
       <Property name="group_id" type="string">
-        Only show conversations for the specified group.
+        Only show checkouts for the specified group.
       </Property>
     </Properties>
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/conversations">
+    <CodeGroup title="Request" tag="GET" label="/v1/checkouts">
 
     ```bash {{ title: 'cURL' }}
-    curl -G https://api.vatly.com/v1/conversations \
+    curl -G https://api.vatly.com/v1/checkouts \
       -H "Authorization: Bearer {token}" \
       -d limit=10
     ```
@@ -93,7 +92,7 @@ The conversation model contains all the information about the conversations betw
 
     const client = new ApiClient(token)
 
-    await client.conversations.list()
+    await client.checkouts.list()
     ```
 
     ```python
@@ -101,13 +100,13 @@ The conversation model contains all the information about the conversations betw
 
     client = ApiClient(token)
 
-    client.conversations.list()
+    client.checkouts.list()
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->conversations->list();
+    $client->checkouts->list();
     ```
 
     </CodeGroup>
@@ -139,43 +138,58 @@ The conversation model contains all the information about the conversations betw
   </Col>
 </Row>
 
----
+--- */}
 
-## Create a conversation {{ tag: 'POST', label: '/v1/conversations' }}
+## Create a checkout {{ tag: 'POST', label: '/v1/checkouts' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to add a new conversation between you and a contact or group. A contact or group id is required to create a conversation.
+    This endpoint allows you to start a new hosted Vatly Checkout. Make sure you have at least one subscription plan or one-off product configured in your Vatly account.
 
     ### Required attributes
 
     <Properties>
-      <Property name="contact_id" type="string">
-        Unique identifier for the other contact in the conversation.
+      <Property name="products" type="array">
+        An array of IDs for the products you want to checkout. Both subscription plan IDs and one-off product IDs can be used in this array.
       </Property>
-      <Property name="group_id" type="string">
-        Unique identifier for the group that the conversation belongs to.
+      <Property name="redirectUrlSuccess" type="string">
+        The URL to which the checkout should redirect the user after the checkout has been completed succesfully.
+      </Property>
+      <Property name="redirectUrlCanceled" type="string">
+        The URL to which the user should get redirected when the user cancels the checkout.
+      </Property>
+    </Properties>
+
+    ### Optional attributes
+
+    <Properties>
+      <Property name="metadata" type="string">
+        Any metadata associated with the checkout. Provide any data you like to be stored with the checkout.
+      </Property>
+      <Property name="customerId" type="string">
+        The ID for the customer this checkout belongs to. If no customer ID is provided, a new customer will be created once the checkout is completed succesfully.
       </Property>
     </Properties>
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="POST" label="/v1/conversations">
+    <CodeGroup title="Request" tag="POST" label="/v1/checkouts">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/conversations \
+    curl https://api.vatly.com/v1/checkouts \
       -H "Authorization: Bearer {token}" \
-      -d 'contact_id'="WAz8eIbvDR60rouK"
+      -d 'products[]'="subscription_d6ZPGVg4PEewUukwYd5zH"
+      -d 'products[]'="one_off_Hd5zYukwUEPegV6ZPGd"
     ```
 
-    ```js
+    {/* ```js
     import ApiClient from '@example/protocol-api'
 
     const client = new ApiClient(token)
 
-    await client.conversations.create({
+    await client.checkouts.create({
       contact_id: 'WAz8eIbvDR60rouK',
     })
     ```
@@ -185,40 +199,46 @@ The conversation model contains all the information about the conversations betw
 
     client = ApiClient(token)
 
-    client.conversations.create(contact_id="WAz8eIbvDR60rouK")
-    ```
+    client.checkouts.create(contact_id="WAz8eIbvDR60rouK")
+    ``` */}
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->conversations->create([
-      'contact_id' => 'WAz8eIbvDR60rouK',
+    $checkout = $client->checkouts->create([
+      'products' => [],
+      'redirectUrlSuccess' => 'https://example.com/success',
+      'redirectUrlCanceled' => 'https://example.com/canceled',
     ]);
+
+    // Redirect the user to the checkout URL
+    header('Location: ' . $checkout->getCheckoutUrl(), true, 303);
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "xgQQXg3hrtjh7AvZ",
-      "contact_id": "WAz8eIbvDR60rouK",
-      "group_id": null,
-      "pinned_message_id": null,
-      "is_pinned": false,
-      "is_muted": false,
-      "last_active_at": null,
-      "last_opened_at": null,
-      "created_at": 692233200,
-      "archived_at": null
+      "id": "checkout_xgQQXg3hrtjh7AvZ",
+      "merchantId": "merchant_WAz8eIbvDR60rouK",
+      "orderId": null,
+      "testmode": false,
+      "redirectUrlSuccess": "https://example.com/success",
+      "redirectUrlCanceled": "https://example.com/canceled",
+      "metadata": null,
+      "status": "created",
+      "createdAt": "2024-12-14T13:32:24.000Z",
+      "_links": {
+        "checkoutUrl": "https://pay.vatly.com/checkout_xgQQXg3hrtjh7AvZ"
     }
     ```
 
   </Col>
 </Row>
 
----
+{/* ---
 
-## Retrieve a conversation {{ tag: 'GET', label: '/v1/conversations/:id' }}
+## Retrieve a conversation {{ tag: 'GET', label: '/v1/checkouts/:id' }}
 
 <Row>
   <Col>
@@ -228,10 +248,10 @@ The conversation model contains all the information about the conversations betw
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/conversations/xgQQXg3hrtjh7AvZ">
+    <CodeGroup title="Request" tag="GET" label="/v1/checkouts/xgQQXg3hrtjh7AvZ">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/conversations/xgQQXg3hrtjh7AvZ \
+    curl https://api.vatly.com/v1/checkouts/xgQQXg3hrtjh7AvZ \
       -H "Authorization: Bearer {token}"
     ```
 
@@ -240,7 +260,7 @@ The conversation model contains all the information about the conversations betw
 
     const client = new ApiClient(token)
 
-    await client.conversations.get('xgQQXg3hrtjh7AvZ')
+    await client.checkouts.get('xgQQXg3hrtjh7AvZ')
     ```
 
     ```python
@@ -248,13 +268,13 @@ The conversation model contains all the information about the conversations betw
 
     client = ApiClient(token)
 
-    client.conversations.get("xgQQXg3hrtjh7AvZ")
+    client.checkouts.get("xgQQXg3hrtjh7AvZ")
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->conversations->get('xgQQXg3hrtjh7AvZ');
+    $client->checkouts->get('xgQQXg3hrtjh7AvZ');
     ```
 
     </CodeGroup>
@@ -279,7 +299,7 @@ The conversation model contains all the information about the conversations betw
 
 ---
 
-## Update a conversation {{ tag: 'PUT', label: '/v1/conversations/:id' }}
+## Update a conversation {{ tag: 'PUT', label: '/v1/checkouts/:id' }}
 
 <Row>
   <Col>
@@ -306,10 +326,10 @@ The conversation model contains all the information about the conversations betw
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="PUT" label="/v1/conversations/xgQQXg3hrtjh7AvZ">
+    <CodeGroup title="Request" tag="PUT" label="/v1/checkouts/xgQQXg3hrtjh7AvZ">
 
     ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.vatly.com/v1/conversations/xgQQXg3hrtjh7AvZ \
+    curl -X PUT https://api.vatly.com/v1/checkouts/xgQQXg3hrtjh7AvZ \
       -H "Authorization: Bearer {token}" \
       -d 'is_muted'=true
     ```
@@ -319,7 +339,7 @@ The conversation model contains all the information about the conversations betw
 
     const client = new ApiClient(token)
 
-    await client.conversations.update('xgQQXg3hrtjh7AvZ', {
+    await client.checkouts.update('xgQQXg3hrtjh7AvZ', {
         is_muted: true,
     })
     ```
@@ -329,13 +349,13 @@ The conversation model contains all the information about the conversations betw
 
     client = ApiClient(token)
 
-    client.conversations.update("xgQQXg3hrtjh7AvZ", is_muted=True)
+    client.checkouts.update("xgQQXg3hrtjh7AvZ", is_muted=True)
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->conversations->update('xgQQXg3hrtjh7AvZ', [
+    $client->checkouts->update('xgQQXg3hrtjh7AvZ', [
       'is_muted' => true,
     ]);
     ```
@@ -362,20 +382,20 @@ The conversation model contains all the information about the conversations betw
 
 ---
 
-## Delete a conversation {{ tag: 'DELETE', label: '/v1/conversations/:id' }}
+## Delete a conversation {{ tag: 'DELETE', label: '/v1/checkouts/:id' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to delete your conversations in Vatly. Note: This will permanently delete the conversation and all its messages — archive it instead if you want to be able to restore it later.
+    This endpoint allows you to delete your checkouts in Vatly. Note: This will permanently delete the conversation and all its messages — archive it instead if you want to be able to restore it later.
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="DELETE" label="/v1/conversations/xgQQXg3hrtjh7AvZ">
+    <CodeGroup title="Request" tag="DELETE" label="/v1/checkouts/xgQQXg3hrtjh7AvZ">
 
     ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.vatly.com/v1/conversations/xgQQXg3hrtjh7AvZ \
+    curl -X DELETE https://api.vatly.com/v1/checkouts/xgQQXg3hrtjh7AvZ \
       -H "Authorization: Bearer {token}"
     ```
 
@@ -384,7 +404,7 @@ The conversation model contains all the information about the conversations betw
 
     const client = new ApiClient(token)
 
-    await client.conversations.delete('xgQQXg3hrtjh7AvZ')
+    await client.checkouts.delete('xgQQXg3hrtjh7AvZ')
     ```
 
     ```python
@@ -392,16 +412,16 @@ The conversation model contains all the information about the conversations betw
 
     client = ApiClient(token)
 
-    client.conversations.delete("xgQQXg3hrtjh7AvZ")
+    client.checkouts.delete("xgQQXg3hrtjh7AvZ")
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->conversations->delete('xgQQXg3hrtjh7AvZ');
+    $client->checkouts->delete('xgQQXg3hrtjh7AvZ');
     ```
 
     </CodeGroup>
 
   </Col>
-</Row>
+</Row> */}
