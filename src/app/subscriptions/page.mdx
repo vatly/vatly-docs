@@ -1,0 +1,243 @@
+export const metadata = {
+  title: 'Subscriptions',
+  description:
+    'On this page, we\’ll dive into the different subscription endpoints you can use to manage subscriptions programmatically.',
+}
+
+# The Subscriptions API
+
+Subscriptions enable you to charge your customers periodically for your digital products and services. You can start a new subscriptions by creating a checkout through the [Checkouts API](/checkouts).
+
+## The Subscription API Resource
+
+The subscription model contains all the information about the subscriptions and attachments you send to your contacts and groups, including how your contacts have reacted to them.
+
+### Properties
+
+<Properties>
+  <Property name="id" type="string">
+    Unique identifier for the subscription. I.e. `subscription_SIuAFUNKdSYHZF2w`.
+  </Property>
+  <Property name="resource" type="string">
+    The resource type for this subscription. Always `subscription`.
+  </Property>
+  <Property name="testmode" type="boolean">
+    Whether this resource is in test mode.
+  </Property>
+  <Property name="name" type="string">
+    The name for the subscription.
+  </Property>
+  <Property name="description" type="string">
+    The description for the subscription.
+  </Property>
+  <Property name="billingAddress" type="object">
+    The customer billing address for the subscription.
+  </Property>
+  <Property name="basePrice" type="string">
+    The base price for the subscription, before taxes and discounts.
+  </Property>
+  <Property name="quantity" type="integer">
+    The quantity for the subscription.
+  </Property>
+  <Property name="interval" type="string">
+    The interval for the subscription. Can be `year` or `month`.
+  </Property>
+  <Property name="intervalCount" type="int">
+    The interval count for the subscription, i.e. "3" for charging every 3 months.
+  </Property>
+  <Property name="status" type="string">
+    The status for the subscription. Can be `active` or `canceled`.
+  </Property>
+  <Property name="startedAt" type="string">
+    The timestamp when the subscription started, in ISO 8601 format.
+  </Property>
+  <Property name="endedAt" type="string">
+    The timestamp when the subscription ended, in ISO 8601 format. Null if the subscription is still active.
+  </Property>
+  <Property name="cancelledAt" type="string">
+    The timestamp when the subscription was cancelled, in ISO 8601 format. Null if the subscription hasn't been cancelled.
+  </Property>
+  <Property name="renewedAt" type="string">
+    The timestamp when the subscription was last renewed, in ISO 8601 format.
+  </Property>
+  <Property name="renewedUntil" type="string">
+    The timestamp until which the subscription is renewed, in ISO 8601 format.
+  </Property>
+  <Property name="nextRenewalAt" type="string">
+    The timestamp of the next scheduled renewal, in ISO 8601 format.
+  </Property>
+  <Property name="trialUntil" type="string">
+    The timestamp until which the trial period lasts, in ISO 8601 format. Null if there's no trial.
+  </Property>
+  <Property name="links" type="object">
+    An object containing relevant URLs for the subscription.
+  </Property>
+
+</Properties>
+
+---
+
+## Update a subscription {{ tag: 'PUT', label: '/v1/subscriptions/:id' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to update a subscription.
+
+    ### Required attributes
+
+    <Properties>
+      <Property name="subscriptionPlanId" type="string">
+        The ID of the subscription plan to update to.
+      </Property>
+      <Property name="quantity" type="integer">
+        The new quantity for the subscription. Must be at least 1. Only required if the subscriptionPlanId is omitted.
+      </Property>
+    </Properties>
+
+
+    ### Optional attributes
+
+    <Properties>
+      <Property name="prorate" type="boolean">
+        Whether to prorate the subscription change.
+      </Property>
+      <Property name="applyImmediately" type="boolean">
+        Whether to apply the changes immediately.
+      </Property>
+      <Property name="invoiceImmediately" type="boolean">
+        Whether to generate an invoice immediately for the changes.
+      </Property>
+      <Property name="anchor" type="date">
+        The new billing anchor date for the subscription.
+      </Property>
+      {/* NOT IMPLEMENTED YET<Property name="resetAnchor" type="boolean">
+        Whether to reset the billing anchor date.
+      </Property> */}
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="PUT" label="/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w">
+
+    ```bash {{ title: 'cURL' }}
+    curl -X PUT https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w \
+      -H "Authorization: Bearer {token}" \
+      -d reactions[red_angry_face][]="KateMcCallister"
+    ```
+
+    {/* ```js
+    import ApiClient from '@example/vatly-api'
+
+    const client = new ApiClient(token)
+
+    await client.subscriptions.update('subscription_SIuAFUNKdSYHZF2w', {
+        reactions: {
+            red_angry_face: ['KateMcCallister']
+        }
+    })
+    ```
+
+    ```python
+    from vatly_api import ApiClient
+
+    client = ApiClient(token)
+
+    client.subscriptions.update("subscription_SIuAFUNKdSYHZF2w",
+        reactions={"red_angry_face": ["KateMcCallister"]})
+    ``` */}
+
+    ```php
+    $client = new \Vatly\ApiClient($token);
+
+    $client->subscriptions->update('subscription_SIuAFUNKdSYHZF2w', [
+        'subscriptionPlanId' => 'plan_abc123',
+        'quantity' => 3,
+    ]);
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "subscription_SIuAFUNKdSYHZF2w",
+      "resource": "subscription",
+      "testmode": false,
+      "name": "Premium Plan",
+      "description": "Access to all premium features",
+      "billingAddress": {
+        "country": "US",
+        "streetAndNumber": "123 Main St",
+        "streetAdditional": "Suite 123",
+        "city": "Anytown",
+        "region": "CA",
+        "postalCode": "12345"
+      },
+      "basePrice": "99.99",
+      "quantity": 3,
+      "interval": "month",
+      "intervalCount": 1,
+      "status": "active",
+      "startedAt": "2023-01-01T00:00:00Z",
+      "endedAt": null,
+      "cancelledAt": null,
+      "renewedAt": "2023-06-01T00:00:00Z",
+      "renewedUntil": "2023-07-01T00:00:00Z",
+      "nextRenewalAt": "2023-07-01T00:00:00Z",
+      "trialUntil": null,
+      "links": {
+        "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
+        "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+      }
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## Cancel a subscription {{ tag: 'DELETE', label: '/v1/subscriptions/:id' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to cancel a subscription.
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="DELETE" label="/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w">
+
+    ```bash {{ title: 'cURL' }}
+    curl -X DELETE https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w \
+      -H "Authorization: Bearer {token}"
+    ```
+
+    {/* ```js
+    import ApiClient from '@example/vatly-api'
+
+    const client = new ApiClient(token)
+
+    await client.subscriptions.delete('subscription_SIuAFUNKdSYHZF2w')
+    ```
+
+    ```python
+    from vatly_api import ApiClient
+
+    client = ApiClient(token)
+
+    client.subscriptions.delete("subscription_SIuAFUNKdSYHZF2w")
+    ``` */}
+
+    ```php
+    $client = new \Vatly\ApiClient($token);
+
+    $client->subscriptions->cancel('subscription_SIuAFUNKdSYHZF2w');
+    ```
+
+    </CodeGroup>
+
+  </Col>
+</Row>

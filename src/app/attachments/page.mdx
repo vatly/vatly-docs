@@ -18,8 +18,8 @@ The attachment model contains all the information about the files you send to yo
   <Property name="id" type="string">
     Unique identifier for the attachment.
   </Property>
-  <Property name="message_id" type="string">
-    Unique identifier for the message associated with the attachment.
+  <Property name="subscription_id" type="string">
+    Unique identifier for the subscription associated with the attachment.
   </Property>
   <Property name="filename" type="string">
     The filename for the attachment.
@@ -45,13 +45,13 @@ The attachment model contains all the information about the files you send to yo
 <Row>
   <Col>
 
-    This endpoint allows you to retrieve a paginated list of all your attachments (in a conversation if a conversation id is provided). By default, a maximum of ten attachments are shown per page.
+    This endpoint allows you to retrieve a paginated list of all your attachments (in a checkout if a checkout id is provided). By default, a maximum of ten attachments are shown per page.
 
     ### Optional attributes
 
     <Properties>
-      <Property name="conversation_id" type="string">
-        Limit to attachments from a given conversation.
+      <Property name="checkout_id" type="string">
+        Limit to attachments from a given checkout.
       </Property>
       <Property name="limit" type="integer">
         Limit the number of attachments returned.
@@ -66,7 +66,7 @@ The attachment model contains all the information about the files you send to yo
     ```bash {{ title: 'cURL' }}
     curl -G https://api.vatly.com/v1/attachments \
       -H "Authorization: Bearer {token}" \
-      -d conversation_id="xgQQXg3hrtjh7AvZ" \
+      -d checkout_id="xgQQXg3hrtjh7AvZ" \
       -d limit=10
     ```
 
@@ -100,7 +100,7 @@ The attachment model contains all the information about the files you send to yo
       "data": [
         {
           "id": "Nc6yKKMpcxiiFxp6",
-          "message_id": "LoPsJaMcPBuFNjg1",
+          "subscription_id": "LoPsJaMcPBuFNjg1",
           "filename": "Invoice_room_service__Plaza_Hotel.pdf",
           "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel.pdf",
           "file_type": "application/pdf",
@@ -125,7 +125,7 @@ The attachment model contains all the information about the files you send to yo
 <Row>
   <Col>
 
-    This endpoint allows you to upload a new attachment to a conversation. See the code examples for how to send the file to the Vatly API.
+    This endpoint allows you to upload a new attachment to a checkout. See the code examples for how to send the file to the Vatly API.
 
     ### Required attributes
 
@@ -175,7 +175,7 @@ The attachment model contains all the information about the files you send to yo
     ```json {{ title: 'Response' }}
     {
       "id": "Nc6yKKMpcxiiFxp6",
-      "message_id": "LoPsJaMcPBuFNjg1",
+      "subscription_id": "LoPsJaMcPBuFNjg1",
       "filename": "Invoice_room_service__Plaza_Hotel.pdf",
       "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel.pdf",
       "file_type": "application/pdf",
@@ -233,7 +233,7 @@ The attachment model contains all the information about the files you send to yo
     ```json {{ title: 'Response' }}
     {
       "id": "Nc6yKKMpcxiiFxp6",
-      "message_id": "LoPsJaMcPBuFNjg1",
+      "subscription_id": "LoPsJaMcPBuFNjg1",
       "filename": "Invoice_room_service__Plaza_Hotel.pdf",
       "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel.pdf",
       "file_type": "application/pdf",
@@ -304,7 +304,7 @@ The attachment model contains all the information about the files you send to yo
     ```json {{ title: 'Response' }}
     {
       "id": "Nc6yKKMpcxiiFxp6",
-      "message_id": "LoPsJaMcPBuFNjg1",
+      "subscription_id": "LoPsJaMcPBuFNjg1",
       "filename": "Invoice_room_service__Plaza_Hotel.pdf",
       "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel_updated.pdf",
       "file_type": "application/pdf",

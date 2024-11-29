@@ -247,8 +247,8 @@ export const navigation: Array<NavGroup> = [
     title: 'API Reference',
     links: [
       { title: 'Customers', href: '/customers' },
-      { title: 'Conversations', href: '/conversations' },
-      { title: 'Messages', href: '/messages' },
+      { title: 'Checkouts', href: '/checkouts' },
+      { title: 'Subscriptions', href: '/subscriptions' },
       { title: 'Groups', href: '/groups' },
       { title: 'Attachments', href: '/attachments' },
     ],

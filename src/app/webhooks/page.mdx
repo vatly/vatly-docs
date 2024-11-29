@@ -6,7 +6,7 @@ export const metadata = {
 
 # Webhooks
 
-In this guide, we will look at how to register and consume webhooks to integrate your app with Vatly. With webhooks, your app can know when something happens in Vatly, such as someone sending a message or adding a contact. {{ className: 'lead' }}
+In this guide, we will look at how to register and consume webhooks to integrate your app with Vatly. With webhooks, your app can know when something happens in Vatly, such as someone sending a subscription or adding a contact. {{ className: 'lead' }}
 
 ## Registering webhooks
 
@@ -16,12 +16,12 @@ Now, whenever something of interest happens in your app, a webhook is fired off 
 
 ## Consuming webhooks
 
-When your app receives a webhook request from Vatly, check the `type` attribute to see what event caused it. The first part of the event type will tell you the payload type, e.g., a conversation, message, etc.
+When your app receives a webhook request from Vatly, check the `type` attribute to see what event caused it. The first part of the event type will tell you the payload type, e.g., a checkout, subscription, etc.
 
 ```json {{ title: 'Example webhook payload' }}
 {
-  "id": "a056V7R7NmNRjl70",
-  "type": "conversation.updated",
+  "id": "a056V9ZCh6X9XZlr",
+  "type": "subscription.updated",
   "payload": {
     "id": "WAz8eIbvDR60rouK"
     // ...
@@ -29,7 +29,7 @@ When your app receives a webhook request from Vatly, check the `type` attribute 
 }
 ```
 
-In the example above, a conversation was `updated`, and the payload type is a `conversation`.
+In the example above, a subscription was `updated`, and the payload type is a `subscription`.
 
 <div className="not-prose">
   <Button href="#event-types" variant="text" arrow="right">
@@ -54,23 +54,23 @@ In the example above, a conversation was `updated`, and the payload type is a `c
       <Property name="contact.deleted">
         A contact was successfully deleted.
       </Property>
-      <Property name="conversation.created">
-        A new conversation was created.
+      <Property name="checkout.created">
+        A new checkout was created.
       </Property>
-      <Property name="conversation.updated">
-        An existing conversation was updated.
+      <Property name="checkout.updated">
+        An existing checkout was updated.
       </Property>
-      <Property name="conversation.deleted">
-        A conversation was successfully deleted.
+      <Property name="checkout.deleted">
+        A checkout was successfully deleted.
       </Property>
-      <Property name="message.created">
-        A new message was created.
+      <Property name="subscription.created">
+        A new subscription was created.
       </Property>
-      <Property name="message.updated">
-        An existing message was updated.
+      <Property name="subscription.updated">
+        An existing subscription was updated.
       </Property>
-      <Property name="message.deleted">
-        A message was successfully deleted.
+      <Property name="subscription.deleted">
+        A subscription was successfully deleted.
       </Property>
       <Property name="group.created">
         A new group was created.
@@ -98,10 +98,10 @@ In the example above, a conversation was `updated`, and the payload type is a `c
     ```json {{ 'title': 'Example payload' }}
     {
       "id": "a056V7R7NmNRjl70",
-      "type": "message.updated",
+      "type": "subscription.updated",
       "payload": {
         "id": "SIuAFUNKdSYHZF2w",
-        "conversation_id": "xgQQXg3hrtjh7AvZ",
+        "checkout_id": "xgQQXg3hrtjh7AvZ",
         "contact": {
           "id": "WAz8eIbvDR60rouK",
           "username": "KevinMcCallister",
@@ -110,7 +110,7 @@ In the example above, a conversation was `updated`, and the payload type is a `c
           "last_active_at": 705103200,
           "created_at": 692233200
         },
-        "message": "I’m traveling with my dad. He’s at a meeting. I hate meetings.",
+        "subscription": "I'm traveling with my dad. He's at a meeting. I hate meetings.",
         "reactions": [],
         "attachments": [],
         "read_at": 705103200,
@@ -151,9 +151,9 @@ signature = request.headers.get("x-protocol-signature")
 hash = hmac.new(bytes(secret, "ascii"), bytes(payload, "ascii"), hashlib.sha256)
 
 if hash.hexdigest() == signature:
-    # Request is verified
+    // Request is verified
 else:
-    # Request could not be verified
+    // Request could not be verified
 ```
 
 ```php

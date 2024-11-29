@@ -31,7 +31,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
     The URL to which the checkout should redirect the user after the checkout has been completed succesfully.
   </Property>
   <Property name="redirectUrlCanceled" type="string">
-    The URL to which theuser should get redirected when the user cancels the checkout.
+    The URL to which the user should get redirected when the user cancels the checkout.
   </Property>
   <Property name="metadata" type="string">
     Any metadata associated with the checkout. Provide any data you like to be stored with the checkout.
@@ -119,7 +119,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
           "id": "xgQQXg3hrtjh7AvZ",
           "contact_id": "WAz8eIbvDR60rouK",
           "group_id": null,
-          "pinned_message_id": null,
+          "pinned_subscription_plan_id": null,
           "is_pinned": false,
           "is_muted": false,
           "last_active_at": 705103200,
@@ -146,6 +146,8 @@ Below you'll find all properties for the Vatly Checkout API resource.
   <Col>
 
     This endpoint allows you to start a new hosted Vatly Checkout. Make sure you have at least one subscription plan or one-off product configured in your Vatly account.
+
+    Once paid, any subscription plan product assigned to the checkout will kick off a new subscription for that plan.
 
     ### Required attributes
 
@@ -180,7 +182,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
     ```bash {{ title: 'cURL' }}
     curl https://api.vatly.com/v1/checkouts \
       -H "Authorization: Bearer {token}" \
-      -d 'products[]'="subscription_d6ZPGVg4PEewUukwYd5zH"
+      -d 'products[]'="subscription_plan_d6ZPGVg4PEewUukwYd5zH"
       -d 'products[]'="one_off_Hd5zYukwUEPegV6ZPGd"
     ```
 
@@ -236,14 +238,14 @@ Below you'll find all properties for the Vatly Checkout API resource.
   </Col>
 </Row>
 
-{/* ---
+---
 
-## Retrieve a conversation {{ tag: 'GET', label: '/v1/checkouts/:id' }}
+{/* ## Retrieve a checkout {{ tag: 'GET', label: '/v1/checkouts/:id' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to retrieve a conversation by providing the conversation id. Refer to [the list](#the-conversation-model) at the top of this page to see which properties are included with conversation objects.
+    This endpoint allows you to retrieve a checkout by providing the checkout id. Refer to [the list](#the-checkout-model) at the top of this page to see which properties are included with checkout objects.
 
   </Col>
   <Col sticky>
@@ -284,7 +286,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
       "id": "xgQQXg3hrtjh7AvZ",
       "contact_id": "WAz8eIbvDR60rouK",
       "group_id": null,
-      "pinned_message_id": null,
+      "pinned_subscription_plan_id": null,
       "is_pinned": false,
       "is_muted": false,
       "last_active_at": 705103200,
@@ -299,27 +301,24 @@ Below you'll find all properties for the Vatly Checkout API resource.
 
 ---
 
-## Update a conversation {{ tag: 'PUT', label: '/v1/checkouts/:id' }}
+## Update a checkout {{ tag: 'PUT', label: '/v1/checkouts/:id' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to perform an update on a conversation. Examples of updates are pinning a message, muting or archiving the conversation, or pinning the conversation itself.
+    This endpoint allows you to perform an update on a checkout. Examples of updates are pinning a subscription, muting or archiving the checkout, or pinning the checkout itself.
 
     ### Optional attributes
 
     <Properties>
-      <Property name="pinned_message_id" type="string">
-        Unique identifier for the pinned message.
+      <Property name="pinned" type="boolean">
+        Whether or not the checkout has been pinned.
       </Property>
-      <Property name="is_pinned" type="boolean">
-        Whether or not the conversation has been pinned.
-      </Property>
-      <Property name="is_muted" type="boolean">
-        Whether or not the conversation has been muted.
+      <Property name="muted" type="boolean">
+        Whether or not the checkout has been muted.
       </Property>
       <Property name="archived_at" type="timestamp">
-        Timestamp of when the conversation was archived.
+        Timestamp of when the checkout was archived.
       </Property>
     </Properties>
 
@@ -331,7 +330,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
     ```bash {{ title: 'cURL' }}
     curl -X PUT https://api.vatly.com/v1/checkouts/xgQQXg3hrtjh7AvZ \
       -H "Authorization: Bearer {token}" \
-      -d 'is_muted'=true
+      -d 'muted'=true
     ```
 
     ```js
@@ -340,7 +339,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
     const client = new ApiClient(token)
 
     await client.checkouts.update('xgQQXg3hrtjh7AvZ', {
-        is_muted: true,
+        muted: true,
     })
     ```
 
@@ -349,14 +348,14 @@ Below you'll find all properties for the Vatly Checkout API resource.
 
     client = ApiClient(token)
 
-    client.checkouts.update("xgQQXg3hrtjh7AvZ", is_muted=True)
+    client.checkouts.update("xgQQXg3hrtjh7AvZ", muted=True)
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
     $client->checkouts->update('xgQQXg3hrtjh7AvZ', [
-      'is_muted' => true,
+      'muted' => true,
     ]);
     ```
 
@@ -367,7 +366,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
       "id": "xgQQXg3hrtjh7AvZ",
       "contact_id": "WAz8eIbvDR60rouK",
       "group_id": null,
-      "pinned_message_id": null,
+      "pinned_subscription_plan_id": null,
       "is_pinned": false,
       "is_muted": true,
       "last_active_at": 705103200,
@@ -382,12 +381,12 @@ Below you'll find all properties for the Vatly Checkout API resource.
 
 ---
 
-## Delete a conversation {{ tag: 'DELETE', label: '/v1/checkouts/:id' }}
+## Delete a checkout {{ tag: 'DELETE', label: '/v1/checkouts/:id' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to delete your checkouts in Vatly. Note: This will permanently delete the conversation and all its messages — archive it instead if you want to be able to restore it later.
+    This endpoint allows you to delete your checkouts in Vatly. Note: This will permanently delete the checkout and all its subscriptions — archive it instead if you want to be able to restore it later.
 
   </Col>
   <Col sticky>

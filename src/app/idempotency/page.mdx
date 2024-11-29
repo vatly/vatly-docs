@@ -12,7 +12,7 @@ This guide explains how to use idempotency keys to safely retry API requests wit
 
 Idempotency is a property of an API endpoint that ensures multiple identical requests will have the same effect as a single request. This is particularly important when dealing with network issues, timeouts, or when you need to retry failed requests.
 
-For example, if you're creating a new message and the request fails due to a network error, you can safely retry the request without worrying about creating duplicate messages.
+For example, if you're creating a new subscription and the request fails due to a network error, you can safely retry the request without worrying about creating duplicate subscriptions.
 
 ## Using idempotency keys
 
@@ -21,17 +21,17 @@ To make an idempotent request, include a unique `Idempotency-Key` header with yo
 <CodeGroup>
 
 ```bash {{ title: 'cURL' }}
-curl -X POST https://api.vatly.com/v1/messages \
+curl -X POST https://api.vatly.com/v1/subscriptions \
   -H "Authorization: Bearer {token}" \
   -H "Idempotency-Key: 123e4567-e89b-12d3-a456-426614174000" \
-  -d message="Hello, World!"
+  -d subscription="Hello, World!"
 ```
 
 ```php
 $vatly = new \Vatly\Client('your-token');
 
-$vatly->messages->create([
-    'message' => 'Hello, World!',
+$vatly->subscriptions->create([
+    'subscription' => 'Hello, World!',
 ], [
     'idempotency_key' => '123e4567-e89b-12d3-a456-426614174000',
 ]);
@@ -69,15 +69,15 @@ Here's an example of how to implement automatic retries with idempotency:
 ```php
 $vatly = new \Vatly\Client('your-token');
 
-function createMessage($vatly, $message) {
+function createSubscription($vatly, $subscription) {
     $idempotencyKey = generateUuid(); // Generate a UUID v4
     $maxRetries = 3;
     $attempt = 0;
 
     while ($attempt < $maxRetries) {
         try {
-            return $vatly->messages->create([
-                'message' => $message,
+            return $vatly->subscriptions->create([
+                'subscription' => $subscription,
             ], [
                 'idempotency_key' => $idempotencyKey,
             ]);

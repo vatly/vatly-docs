@@ -121,15 +121,15 @@ function SmallPrint() {
         &copy; Copyright {new Date().getFullYear()}. All rights reserved.
       </p>
       <div className="flex gap-4">
-        <SocialLink href="#" icon={XIcon}>
-          Follow us on X
+        <SocialLink href="https://x.com/VatlyOfficial" icon={XIcon}>
+          Follow Vatly on X
         </SocialLink>
-        <SocialLink href="#" icon={GitHubIcon}>
-          Follow us on GitHub
+        <SocialLink href="https://github.com/GetVatly" icon={GitHubIcon}>
+          Follow Vatly on GitHub
         </SocialLink>
-        <SocialLink href="#" icon={DiscordIcon}>
+        {/* <SocialLink href="https://discord.gg/Vw3FtsaetW" icon={DiscordIcon}>
           Join our Discord server
-        </SocialLink>
+        </SocialLink> */}
       </div>
     </div>
   )

@@ -49,12 +49,12 @@ composer require protocol/sdk
 
 ## Making your first API request
 
-After picking your preferred client, you are ready to make your first call to the Vatly API. Below, you can see how to send a GET request to the Conversations endpoint to get a list of all your conversations. In the cURL example, results are limited to ten conversations, the default page length for each client.
+After picking your preferred client, you are ready to make your first call to the Vatly API. Below, you can see how to send a GET request to the Checkouts endpoint to get a list of all your checkouts. In the cURL example, results are limited to ten checkouts, the default page length for each client.
 
-<CodeGroup tag="GET" label="/v1/conversations">
+<CodeGroup tag="GET" label="/v1/checkouts">
 
 ```bash {{ title: 'cURL' }}
-curl -G https://api.vatly.com/v1/conversations \
+curl -G https://api.vatly.com/v1/checkouts \
   -H "Authorization: Bearer {token}" \
   -d limit=10
 ```
@@ -64,7 +64,7 @@ import ApiClient from '@example/protocol-api'
 
 const client = new ApiClient(token)
 
-await client.conversations.list()
+await client.checkouts.list()
 ```
 
 ```python
@@ -72,20 +72,20 @@ from protocol_api import ApiClient
 
 client = ApiClient(token)
 
-client.conversations.list()
+client.checkouts.list()
 ```
 
 ```php
 $client = new \Vatly\ApiClient($token);
 
-$client->conversations->list();
+$client->checkouts->list();
 ```
 
 </CodeGroup>
 
 <div className="not-prose">
-  <Button href="/conversations" variant="text" arrow="right">
-    <>Read the docs for the Conversations endpoint</>
+  <Button href="/checkouts" variant="text" arrow="right">
+    <>Read the docs for the Checkouts endpoint</>
   </Button>
 </div>
 
@@ -94,5 +94,5 @@ $client->conversations->list();
 Great, you're now set up with an API client and have made your first request to the API. Here are a few links that might be handy as you venture further into the Vatly API:
 
 - [Grab your API key from the Vatly dashboard](#)
-- [Check out the Conversations endpoint](/conversations)
+- [Check out the Checkouts endpoint](/checkouts)
 - [Learn about the different error messages in Vatly](/errors)

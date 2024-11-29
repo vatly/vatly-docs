@@ -42,10 +42,10 @@ const resources: Array<Resource> = [
     },
   },
   {
-    href: '/conversations',
-    name: 'Conversations',
+    href: '/checkouts',
+    name: 'Checkouts',
     description:
-      'Learn about the conversation model and how to create, retrieve, update, delete, and list conversations.',
+      'Learn about the checkout model and how to create, retrieve, update, delete, and list checkouts.',
     icon: ChatBubbleIcon,
     pattern: {
       y: -6,
@@ -56,10 +56,10 @@ const resources: Array<Resource> = [
     },
   },
   {
-    href: '/messages',
-    name: 'Messages',
+    href: '/subscriptions',
+    name: 'Subscriptions',
     description:
-      'Learn about the message model and how to create, retrieve, update, delete, and list messages.',
+      'Learn about the subscription model and how to create, retrieve, update, delete, and list subscriptions.',
     icon: EnvelopeIcon,
     pattern: {
       y: 32,

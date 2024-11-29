@@ -27,8 +27,8 @@ The group model contains all the information about your groups, including what c
   <Property name="avatar_url" type="string">
     The avatar image URL for the group.
   </Property>
-  <Property name="conversation_id" type="string">
-    Unique identifier for the conversation that belongs to the group.
+  <Property name="checkout_id" type="string">
+    Unique identifier for the checkout that belongs to the group.
   </Property>
   <Property name="contacts" type="array">
     An array of contact objects that are members of the group.
@@ -105,7 +105,7 @@ The group model contains all the information about your groups, including what c
           "name": "Plaza Hotel",
           "description": "World-renowned.",
           "avatar_url": "https://assets.protocol.chat/avatars/plazahotel.jpg",
-          "conversation_id": "ZYjVAbCE9g5XRlra",
+          "checkout_id": "ZYjVAbCE9g5XRlra",
           "contacts": [
             {
               "username": "Hector"
@@ -145,7 +145,7 @@ The group model contains all the information about your groups, including what c
 <Row>
   <Col>
 
-    This endpoint allows you to create a new group conversation between you and a group of your Vatly contacts.
+    This endpoint allows you to create a new group checkout between you and a group of your Vatly contacts.
 
     ### Required attributes
 
@@ -214,7 +214,7 @@ The group model contains all the information about your groups, including what c
       "name": "Plaza Hotel",
       "description": null,
       "avatar_url": null,
-      "conversation_id": "ZYjVAbCE9g5XRlra",
+      "checkout_id": "ZYjVAbCE9g5XRlra",
       "contacts": [],
       "created_at": 692233200,
       "archived_at": null
@@ -273,7 +273,7 @@ The group model contains all the information about your groups, including what c
       "name": "Plaza Hotel",
       "description": "World-renowned.",
       "avatar_url": "https://assets.protocol.chat/avatars/plazahotel.jpg",
-      "conversation_id": "ZYjVAbCE9g5XRlra",
+      "checkout_id": "ZYjVAbCE9g5XRlra",
       "contacts": [
         {
           "username": "Hector"
@@ -374,7 +374,7 @@ The group model contains all the information about your groups, including what c
       "name": "Plaza Hotel",
       "description": "The finest in New York.",
       "avatar_url": "https://assets.protocol.chat/avatars/plazahotel.jpg",
-      "conversation_id": "ZYjVAbCE9g5XRlra",
+      "checkout_id": "ZYjVAbCE9g5XRlra",
       "contacts": [
         {
           "username": "Hector"
@@ -408,7 +408,7 @@ The group model contains all the information about your groups, including what c
 <Row>
   <Col>
 
-    This endpoint allows you to delete groups. Note: This will permanently delete the group, including the messages — archive it instead if you want to be able to restore it later.
+    This endpoint allows you to delete groups. Note: This will permanently delete the group, including the subscriptions — archive it instead if you want to be able to restore it later.
 
   </Col>
   <Col sticky>
