@@ -1,50 +1,46 @@
 export const metadata = {
   title: 'Customers',
   description:
-    'On this page, we’ll dive into the different customer endpoints you can use to manage customers programmatically.',
+    'On this page, we’ll dive into the different customer endpoints you can use to manage your Vatly customers programmatically.',
 }
 
-# Customers
+# The Customers API
 
-As the name suggests, customers are a core part of Vatly — the very reason Vatly exists is so you can have secure conversations with your customers. On this page, we'll dive into the different customer endpoints you can use to manage customers programmatically. We'll look at how to query, create, update, and delete customers. {{ className: 'lead' }}
+Vatly enables you to sell your digital goods and services to your customers all around the world. To manage your customers and their conversations, you can use the following endpoints in the Vatly API. {{ className: 'lead' }}
 
-## The customer model
+## The Customer API Resource
 
-The customer model contains all the information about your customers, such as their username, avatar, and phone number. It also contains a reference to the conversation between you and the customer and information about when they were last active on Vatly.
+Below you can find all properties for the Vatly Customer API resource.
 
 ### Properties
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the customer.
+    Unique identifier for the customer. It always starts with `customer_`. For example, `customer_SUKjQ4SHxPrBNBb4ea5zH`.
   </Property>
-  <Property name="username" type="string">
-    The username for the customer.
+  <Property name="resouce" type="string">
+    The resource type for this customer. Always `customer`.
   </Property>
-  <Property name="phone_number" type="string">
-    The phone number for the customer.
+  <Property name="testmode" type="boolean">
+    Whether this resource is in test mode.
   </Property>
-  <Property name="avatar_url" type="string">
-    The avatar image URL for the customer.
+  <Property name="email" type="string">
+    The email address for the customer.
   </Property>
-  <Property name="display_name" type="string">
-    The customer display name in the customer list. By default, this is just the
-    username.
+  <Property name="createdAt" type="string">
+    The moment the customer was created, in ISO 8601 format.
   </Property>
-  <Property name="conversation_id" type="string">
-    Unique identifier for the conversation associated with the customer.
+  <Property name="metadata" type="string">
+    Any metadata associated with the customer. Provide any data you like to be stored with the customer.
   </Property>
-  <Property name="last_active_at" type="timestamp">
-    Timestamp of when the customer was last active on the platform.
-  </Property>
-  <Property name="created_at" type="timestamp">
-    Timestamp of when the customer was created.
+  <Property name="_links_" type="string">
+    An object with API urls and other hyperlinks relevant to the customer.
   </Property>
 </Properties>
 
 ---
 
-## List all customers {{ tag: 'GET', label: '/v1/customers' }}
+{/* ## List all customers {{ tag: 'GET', label: '/v1/customers' }}
 
 <Row>
   <Col>
@@ -88,9 +84,9 @@ The customer model contains all the information about your customers, such as th
     ```
 
     ```php
-    $client = new \Vatly\ApiClient($token);
+    $vatly = new \Vatly\ApiClient($token);
 
-    $client->customers->list();
+    $vatly->customers->list();
     ```
 
     </CodeGroup>
@@ -107,7 +103,7 @@ The customer model contains all the information about your customers, such as th
           "display_name": null,
           "conversation_id": "xgQQXg3hrtjh7AvZ",
           "last_active_at": 705103200,
-          "created_at": 692233200
+          "createdAt": 692233200
         },
         {
           "id": "hSIhXBhNe8X1d8Et"
@@ -120,34 +116,28 @@ The customer model contains all the information about your customers, such as th
   </Col>
 </Row>
 
----
+--- */}
 
 ## Create a customer {{ tag: 'POST', label: '/v1/customers' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to add a new customer to your customer list in Vatly. To add a customer, you must provide their Vatly username and phone number.
+    This endpoint allows you to add a new customer to Vatly. To add a customer, you must provide their Vatly email.
 
     ### Required attributes
 
     <Properties>
-      <Property name="username" type="string">
-        The username for the customer.
-      </Property>
-      <Property name="phone_number" type="string">
-        The phone number for the customer.
+      <Property name="email" type="string">
+        The email address for the customer.
       </Property>
     </Properties>
 
     ### Optional attributes
 
     <Properties>
-      <Property name="avatar_url" type="string">
-        The avatar image URL for the customer.
-      </Property>
-      <Property name="display_name" type="string">
-        The customer display name in the customer list. By default, this is just the username.
+      <Property name="metadata" type="string">
+        Any metadata associated with the customer. Provide any data you like to be stored with the customer.
       </Property>
     </Properties>
 
@@ -159,12 +149,10 @@ The customer model contains all the information about your customers, such as th
     ```bash {{ title: 'cURL' }}
     curl https://api.vatly.com/v1/customers \
       -H "Authorization: Bearer {token}" \
-      -d username="FrankMcCallister" \
-      -d phone_number="1-800-759-3000" \
-      -d avatar_url="https://assets.protocol.chat/avatars/frank.jpg"
+      -d email="john@example.com"
     ```
 
-    ```js
+    {/* ```js
     import ApiClient from '@example/protocol-api'
 
     const client = new ApiClient(token)
@@ -174,9 +162,9 @@ The customer model contains all the information about your customers, such as th
       phone_number: '1-800-759-3000',
       avatar_url: 'https://assets.protocol.chat/avatars/frank.jpg',
     })
-    ```
+    ``` */}
 
-    ```python
+    {/* ```python
     from protocol_api import ApiClient
 
     client = ApiClient(token)
@@ -186,15 +174,13 @@ The customer model contains all the information about your customers, such as th
       phone_number="1-800-759-3000",
       avatar_url="https://assets.protocol.chat/avatars/frank.jpg",
     )
-    ```
+    ``` */}
 
     ```php
-    $client = new \Vatly\ApiClient($token);
+    $vatly = new \Vatly\ApiClient($token);
 
-    $client->customers->create([
-      'username' => 'FrankMcCallister',
-      'phone_number' => '1-800-759-3000',
-      'avatar_url' => 'https://assets.protocol.chat/avatars/frank.jpg',
+    $vatly->customers->create([
+      'email' => 'john@example.com',
     ]);
     ```
 
@@ -202,14 +188,14 @@ The customer model contains all the information about your customers, such as th
 
     ```json {{ title: 'Response' }}
     {
-      "id": "WAz8eIbvDR60rouK",
-      "username": "FrankMcCallister",
-      "phone_number": "1-800-759-3000",
-      "avatar_url": "https://assets.protocol.chat/avatars/frank.jpg",
-      "display_name": null,
-      "conversation_id": "xgQQXg3hrtjh7AvZ",
-      "last_active_at": null,
-      "created_at": 692233200
+      "id": "customer_SUKjQ4SHxPrBNBb4ea5zH",
+      "resource": "customer",
+      "testmode": false,
+      "email": "john@example.com",
+      "createdAt": "2020-01-01T00:00:00+00:00",
+      "metadata": {},
+      "_links": {
+        "self": "https://api.vatly.com/v1/customers/customer_SUKjQ4SHxPrBNBb4ea5zH"
     }
     ```
 
@@ -228,14 +214,14 @@ The customer model contains all the information about your customers, such as th
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/customers/WAz8eIbvDR60rouK">
+    <CodeGroup title="Request" tag="GET" label="/v1/customers/customer_SUKjQ4SHxPrBNBb4ea5zH">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/customers/WAz8eIbvDR60rouK \
+    curl https://api.vatly.com/v1/customers/customer_SUKjQ4SHxPrBNBb4ea5zH \
       -H "Authorization: Bearer {token}"
     ```
 
-    ```js
+    {/* ```js
     import ApiClient from '@example/protocol-api'
 
     const client = new ApiClient(token)
@@ -249,33 +235,34 @@ The customer model contains all the information about your customers, such as th
     client = ApiClient(token)
 
     client.customers.get("WAz8eIbvDR60rouK")
-    ```
+    ``` */}
 
     ```php
-    $client = new \Vatly\ApiClient($token);
+    $vatly = new \Vatly\ApiClient($token);
 
-    $client->customers->get('WAz8eIbvDR60rouK');
+    $vatly->customers->get('customer_SUKjQ4SHxPrBNBb4ea5zH');
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "WAz8eIbvDR60rouK",
-      "username": "FrankMcCallister",
-      "phone_number": "1-800-759-3000",
-      "avatar_url": "https://assets.protocol.chat/avatars/frank.jpg",
-      "display_name": null,
-      "conversation_id": "xgQQXg3hrtjh7AvZ",
-      "last_active_at": 705103200,
-      "created_at": 692233200
+      "id": "customer_SUKjQ4SHxPrBNBb4ea5zH",
+      "resource": "customer",
+      "testmode": false,
+      "email": "john@example.com",
+      "createdAt": "2020-01-01T00:00:00+00:00",
+      "metadata": {},
+      "_links": {
+        "self": "https://api.vatly.com/v1/customers/customer_SUKjQ4SHxPrBNBb4ea5zH"
+      }
     }
     ```
 
   </Col>
 </Row>
 
----
+{/* ---
 
 ## Update a customer {{ tag: 'PUT', label: '/v1/customers/:id' }}
 
@@ -322,9 +309,9 @@ The customer model contains all the information about your customers, such as th
     ```
 
     ```php
-    $client = new \Vatly\ApiClient($token);
+    $vatly = new \Vatly\ApiClient($token);
 
-    $client->customers->update('WAz8eIbvDR60rouK', [
+    $vatly->customers->update('WAz8eIbvDR60rouK', [
       'display_name' => 'UncleFrank',
     ]);
     ```
@@ -340,7 +327,7 @@ The customer model contains all the information about your customers, such as th
       "display_name": "UncleFrank",
       "conversation_id": "xgQQXg3hrtjh7AvZ",
       "last_active_at": 705103200,
-      "created_at": 692233200
+      "createdAt": 692233200
     }
     ```
 
@@ -383,12 +370,12 @@ The customer model contains all the information about your customers, such as th
     ```
 
     ```php
-    $client = new \Vatly\ApiClient($token);
+    $vatly = new \Vatly\ApiClient($token);
 
-    $client->customers->delete('WAz8eIbvDR60rouK');
+    $vatly->customers->delete('WAz8eIbvDR60rouK');
     ```
 
     </CodeGroup>
 
   </Col>
-</Row>
+</Row> */}
