@@ -1,0 +1,128 @@
+export const metadata = {
+  title: 'Orders',
+  description:
+    'On this page, we\'ll dive into the different order endpoints you can use to manage orders programmatically.',
+}
+
+# Orders
+
+Orders represent transactions in Vatly. On this page, we'll dive into the different order endpoints you can use to manage orders programmatically. We'll look at how to query orders and request address updates. For refund-related endpoints, see the [Order Refunds](/orders/refunds) documentation. {{ className: 'lead' }}
+
+## The order model
+
+The order model contains all the information about your orders, including the order details, customer information, and refund status.
+
+### Properties
+
+<Properties>
+  <Property name="id" type="string">
+    Unique identifier for the order.
+  </Property>
+  <Property name="status" type="string">
+    The current status of the order.
+  </Property>
+  <Property name="customer_id" type="string">
+    The ID of the customer who placed the order.
+  </Property>
+  <Property name="total_amount" type="integer">
+    The total amount of the order in cents.
+  </Property>
+  <Property name="currency" type="string">
+    The currency of the order (e.g., EUR, USD).
+  </Property>
+  <Property name="created_at" type="timestamp">
+    Timestamp of when the order was created.
+  </Property>
+  <Property name="updated_at" type="timestamp">
+    Timestamp of when the order was last updated.
+  </Property>
+</Properties>
+
+---
+
+## List all orders {{ tag: 'GET', label: '/v1/orders' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to retrieve a paginated list of all your orders. By default, a maximum of ten orders are shown per page.
+
+    ### Required permissions
+    - `orders:read`
+
+    ### Parameters
+    <Properties>
+      <Property name="page" type="integer">
+        The page number for pagination.
+      </Property>
+      <Property name="per_page" type="integer">
+        The number of orders to return per page (max: 100).
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="GET" label="/v1/orders">
+    ```bash {{ title: 'cURL' }}
+    curl -G https://api.vatly.com/v1/orders \
+      -H "Authorization: Bearer {token}" \
+      -d page=1 \
+      -d per_page=10
+    ```
+    </CodeGroup>
+  </Col>
+</Row>
+
+---
+
+## Get an order {{ tag: 'GET', label: '/v1/orders/:orderId' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to retrieve a specific order by its ID.
+
+    ### Required permissions
+    - `orders:read`
+
+    ### Parameters
+    <Properties>
+      <Property name="orderId" type="string">
+        The unique identifier of the order.
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId">
+    ```bash {{ title: 'cURL' }}
+    curl https://api.vatly.com/v1/orders/ord_1234 \
+      -H "Authorization: Bearer {token}"
+    ```
+    </CodeGroup>
+  </Col>
+</Row>
+
+---
+
+## Request address update link {{ tag: 'POST', label: '/v1/orders/:orderId/request-address-update-link' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to request a link that customers can use to update their order address.
+
+    ### Required permissions
+    - `orders:write`
+
+    ### Parameters
+    <Properties>
+      <Property name="orderId" type="string">
+        The unique identifier of the order.
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="POST" label="/v1/orders/:orderId/request-address-update-link">
+    ```bash {{ title: 'cURL' }}
+    curl -X POST https://api.vatly.com/v1/orders/ord_1234/request-address-update-link \
+      -H "Authorization: Bearer {token}"
+    ```
+    </CodeGroup>
+  </Col>
+</Row>
