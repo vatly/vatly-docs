@@ -1,71 +1,49 @@
 export const metadata = {
-  title: 'Refunds',
+  title: 'Order Refunds',
   description:
-    'On this page, we\'ll dive into the different refund endpoints you can use to manage refunds across your account.',
+    'On this page, we\'ll dive into the different order-specific refund endpoints you can use to manage refunds for individual orders.',
 }
 
-# Refunds
+# Order Refunds
 
-Refunds allow you to return money to your customers. This page covers the global refund endpoints that allow you to manage refunds across your entire account. For order-specific refund operations, see the [Order Refunds](/orders/refunds) documentation. {{ className: 'lead' }}
+These endpoints allow you to manage your Vatly refunds.
 
 ## The refund model
 
-The refund model contains all the information about refunds, including the amount refunded and the reason for the refund.
-
-### Properties
-
-<Properties>
-  <Property name="id" type="string">
-    Unique identifier for the refund.
-  </Property>
-  <Property name="order_id" type="string">
-    The ID of the order this refund belongs to.
-  </Property>
-  <Property name="amount" type="integer">
-    The amount refunded in cents.
-  </Property>
-  <Property name="currency" type="string">
-    The currency of the refund (e.g., EUR, USD).
-  </Property>
-  <Property name="reason" type="string">
-    The reason provided for the refund.
-  </Property>
-  <Property name="status" type="string">
-    The current status of the refund.
-  </Property>
-  <Property name="created_at" type="timestamp">
-    Timestamp of when the refund was created.
-  </Property>
-</Properties>
+The refund model contains all the information about order refunds, including the amount refunded and the reason for the refund. For a complete overview of the refund model, see the [Refunds](/refunds) documentation.
 
 ---
 
-## List all refunds {{ tag: 'GET', label: '/v1/refunds' }}
+## Create a refund {{ tag: 'POST', label: '/v1/orders/:orderId/refunds' }}
 
 <Row>
   <Col>
-    This endpoint allows you to retrieve a paginated list of all refunds across your account.
+    This endpoint allows you to create a partial refund for a specific order.
 
     ### Required permissions
-    - `refunds:read`
+    - `orders:write`
+    - `refunds:write`
 
     ### Parameters
     <Properties>
-      <Property name="page" type="integer">
-        The page number for pagination.
+      <Property name="orderId" type="string">
+        The unique identifier of the order.
       </Property>
-      <Property name="per_page" type="integer">
-        The number of refunds to return per page (max: 100).
+      <Property name="amount" type="integer" required>
+        The amount to refund in cents.
+      </Property>
+      <Property name="reason" type="string">
+        The reason for the refund.
       </Property>
     </Properties>
   </Col>
   <Col sticky>
-    <CodeGroup title="Request" tag="GET" label="/v1/refunds">
+    <CodeGroup title="Request" tag="POST" label="/v1/orders/:orderId/refunds">
     ```bash {{ title: 'cURL' }}
-    curl -G https://api.vatly.com/v1/refunds \
+    curl -X POST https://api.vatly.com/v1/orders/ord_1234/refunds \
       -H "Authorization: Bearer {token}" \
-      -d page=1 \
-      -d per_page=10
+      -d amount=1000 \
+      -d reason="Customer request"
     ```
     </CodeGroup>
   </Col>
@@ -73,26 +51,124 @@ The refund model contains all the information about refunds, including the amoun
 
 ---
 
-## Get a refund {{ tag: 'GET', label: '/v1/refunds/:refundId' }}
+## Create a full refund {{ tag: 'POST', label: '/v1/orders/:orderId/refunds/full' }}
 
 <Row>
   <Col>
-    This endpoint allows you to retrieve details of a specific refund.
+    This endpoint allows you to create a full refund for a specific order. This will refund the entire remaining amount of the order.
 
     ### Required permissions
+    - `orders:write`
+    - `refunds:write`
+
+    ### Parameters
+    <Properties>
+      <Property name="orderId" type="string">
+        The unique identifier of the order.
+      </Property>
+      <Property name="reason" type="string">
+        The reason for the refund.
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="POST" label="/v1/orders/:orderId/refunds/full">
+    ```bash {{ title: 'cURL' }}
+    curl -X POST https://api.vatly.com/v1/orders/ord_1234/refunds/full \
+      -H "Authorization: Bearer {token}" \
+      -d reason="Customer request"
+    ```
+    </CodeGroup>
+  </Col>
+</Row>
+
+---
+
+## List order refunds {{ tag: 'GET', label: '/v1/orders/:orderId/refunds' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to retrieve a list of all refunds for a specific order.
+
+    ### Required permissions
+    - `orders:read`
     - `refunds:read`
 
     ### Parameters
     <Properties>
+      <Property name="orderId" type="string">
+        The unique identifier of the order.
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/refunds">
+    ```bash {{ title: 'cURL' }}
+    curl https://api.vatly.com/v1/orders/ord_1234/refunds \
+      -H "Authorization: Bearer {token}"
+    ```
+    </CodeGroup>
+  </Col>
+</Row>
+
+---
+
+## Get an order refund {{ tag: 'GET', label: '/v1/orders/:orderId/refunds/:refundId' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to retrieve details of a specific refund for a specific order.
+
+    ### Required permissions
+    - `orders:read`
+    - `refunds:read`
+
+    ### Parameters
+    <Properties>
+      <Property name="orderId" type="string">
+        The unique identifier of the order.
+      </Property>
       <Property name="refundId" type="string">
         The unique identifier of the refund.
       </Property>
     </Properties>
   </Col>
   <Col sticky>
-    <CodeGroup title="Request" tag="GET" label="/v1/refunds/:refundId">
+    <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/refunds/:refundId">
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/refunds/ref_5678 \
+    curl https://api.vatly.com/v1/orders/ord_1234/refunds/ref_5678 \
+      -H "Authorization: Bearer {token}"
+    ```
+    </CodeGroup>
+  </Col>
+</Row>
+
+---
+
+## Cancel an order refund {{ tag: 'DELETE', label: '/v1/orders/:orderId/refunds/:refundId' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to cancel a pending refund for a specific order. Only pending refunds can be cancelled.
+
+    ### Required permissions
+    - `orders:write`
+    - `refunds:write`
+
+    ### Parameters
+    <Properties>
+      <Property name="orderId" type="string">
+        The unique identifier of the order.
+      </Property>
+      <Property name="refundId" type="string">
+        The unique identifier of the refund to cancel.
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="DELETE" label="/v1/orders/:orderId/refunds/:refundId">
+    ```bash {{ title: 'cURL' }}
+    curl -X DELETE https://api.vatly.com/v1/orders/ord_1234/refunds/ref_5678 \
       -H "Authorization: Bearer {token}"
     ```
     </CodeGroup>
