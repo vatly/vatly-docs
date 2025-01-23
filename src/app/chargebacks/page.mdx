@@ -1,0 +1,169 @@
+export const metadata = {
+  title: 'Chargebacks',
+  description:
+    'On this page, we\'ll dive into the different chargeback endpoints you can use to manage chargebacks programmatically.',
+}
+
+# Chargebacks
+
+Chargebacks represent payment disputes initiated by customers. On this page, we'll dive into the different chargeback endpoints you can use to manage chargebacks programmatically. {{ className: 'lead' }}
+
+## The chargeback model
+
+The chargeback model contains all the information about payment disputes, including the dispute reason, status, and related order information.
+
+### Properties
+
+<Properties>
+  <Property name="id" type="string">
+    Unique identifier for the chargeback.
+  </Property>
+  <Property name="order_id" type="string">
+    The ID of the order associated with this chargeback.
+  </Property>
+  <Property name="status" type="string">
+    The current status of the chargeback.
+  </Property>
+  <Property name="amount" type="integer">
+    The disputed amount in cents.
+  </Property>
+  <Property name="currency" type="string">
+    The currency of the disputed amount (e.g., EUR, USD).
+  </Property>
+  <Property name="created_at" type="timestamp">
+    Timestamp of when the chargeback was created.
+  </Property>
+  <Property name="updated_at" type="timestamp">
+    Timestamp of when the chargeback was last updated.
+  </Property>
+</Properties>
+
+---
+
+## List all chargebacks {{ tag: 'GET', label: '/v1/chargebacks' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to retrieve a paginated list of all chargebacks across all orders.
+
+    ### Required permissions
+    - `chargebacks:read`
+
+    ### Parameters
+    <Properties>
+      <Property name="page" type="integer">
+        The page number for pagination.
+      </Property>
+      <Property name="per_page" type="integer">
+        The number of chargebacks to return per page (max: 100).
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="GET" label="/v1/chargebacks">
+    ```bash {{ title: 'cURL' }}
+    curl -G https://api.vatly.com/v1/chargebacks \
+      -H "Authorization: Bearer {token}" \
+      -d page=1 \
+      -d per_page=10
+    ```
+    </CodeGroup>
+  </Col>
+</Row>
+
+---
+
+## Get a chargeback {{ tag: 'GET', label: '/v1/chargebacks/:chargebackId' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to retrieve a specific chargeback by its ID.
+
+    ### Required permissions
+    - `chargebacks:read`
+
+    ### Parameters
+    <Properties>
+      <Property name="chargebackId" type="string">
+        The unique identifier of the chargeback.
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="GET" label="/v1/chargebacks/:chargebackId">
+    ```bash {{ title: 'cURL' }}
+    curl https://api.vatly.com/v1/chargebacks/chb_1234 \
+      -H "Authorization: Bearer {token}"
+    ```
+    </CodeGroup>
+  </Col>
+</Row>
+
+---
+
+## List order chargebacks {{ tag: 'GET', label: '/v1/orders/:orderId/chargebacks' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to retrieve a paginated list of chargebacks for a specific order.
+
+    ### Required permissions
+    - `chargebacks:read`
+    - `orders:read`
+
+    ### Parameters
+    <Properties>
+      <Property name="orderId" type="string">
+        The unique identifier of the order.
+      </Property>
+      <Property name="page" type="integer">
+        The page number for pagination.
+      </Property>
+      <Property name="per_page" type="integer">
+        The number of chargebacks to return per page (max: 100).
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/chargebacks">
+    ```bash {{ title: 'cURL' }}
+    curl -G https://api.vatly.com/v1/orders/ord_1234/chargebacks \
+      -H "Authorization: Bearer {token}" \
+      -d page=1 \
+      -d per_page=10
+    ```
+    </CodeGroup>
+  </Col>
+</Row>
+
+---
+
+## Get an order chargeback {{ tag: 'GET', label: '/v1/orders/:orderId/chargebacks/:chargebackId' }}
+
+<Row>
+  <Col>
+    This endpoint allows you to retrieve a specific chargeback within an order context.
+
+    ### Required permissions
+    - `chargebacks:read`
+    - `orders:read`
+
+    ### Parameters
+    <Properties>
+      <Property name="orderId" type="string">
+        The unique identifier of the order.
+      </Property>
+      <Property name="chargebackId" type="string">
+        The unique identifier of the chargeback.
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+    <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/chargebacks/:chargebackId">
+    ```bash {{ title: 'cURL' }}
+    curl https://api.vatly.com/v1/orders/ord_1234/chargebacks/chb_1234 \
+      -H "Authorization: Bearer {token}"
+    ```
+    </CodeGroup>
+  </Col>
+</Row>

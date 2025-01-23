@@ -250,6 +250,7 @@ export const navigation: Array<NavGroup> = [
       { title: 'Checkouts', href: '/checkouts' },
       { title: 'Orders', href: '/orders' },
       { title: 'Refunds', href: '/refunds' },
+      { title: 'Chargebacks', href: '/chargebacks' },
       { title: 'Subscriptions', href: '/subscriptions' },
       { title: 'Subscription plans', href: '/subscription-plans' },
       { title: 'One-off products', href: '/one-off-products' },
