@@ -14,6 +14,10 @@ To register a new webhook, you need to have a URL in your app that Vatly can cal
 
 Now, whenever something of interest happens in your app, a webhook is fired off by Vatly. In the next section, we'll look at how to consume webhooks.
 
+<Note>
+  For security reasons, your webhook URL needs to be HTTPS with a valid certificate and reachable from Vatly.
+</Note>
+
 ## Consuming webhooks
 
 When your app receives a webhook request from Vatly, check the `type` attribute to see what event caused it. The first part of the event type will tell you the payload type, e.g., a checkout, subscription, etc.
@@ -36,6 +40,10 @@ In the example above, a subscription was `updated`, and the payload type is a `s
     <>See all event types</>
   </Button>
 </div>
+
+## Inspecting webhooks
+
+To make integrating Vatly as smooth as possible, you can inspect a detailed webhook history in your Vatly dashboard.
 
 ---
 

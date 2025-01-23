@@ -249,8 +249,10 @@ export const navigation: Array<NavGroup> = [
       { title: 'Customers', href: '/customers' },
       { title: 'Checkouts', href: '/checkouts' },
       { title: 'Subscriptions', href: '/subscriptions' },
-      { title: 'Groups', href: '/groups' },
-      { title: 'Attachments', href: '/attachments' },
+      { title: 'Subscription plans', href: '/subscription-plans' },
+      { title: 'One-off products', href: '/one-off-products' },
+      
+      // { title: 'Attachments', href: '/attachments' },
     ],
   },
 ]

@@ -1,0 +1,145 @@
+export const metadata = {
+  title: 'Subscription plans',
+  description:
+    'On this page, we’ll dive into the different subscription plan endpoints you can use to manage your subscription plans programmatically.',
+}
+
+# Subscription plans
+
+Subscription plans are recurring products that enable you to create different subscription plans for your customers to choose from. On this page, we'll dive into the different subscription plan endpoints you can use to manage your subscription plans programmatically. We'll look at how to query, create, update, and delete subscription plans. {{ className: 'lead' }}
+
+## The subscription plan model
+
+The subscription plan model contains all the information about the subscription plans you create, including the name, description, and price.
+
+### Properties
+
+<Properties>
+  <Property name="id" type="string">
+    Unique identifier for the subscription plan.
+  </Property>
+  <Property name="name" type="string">
+    The name of the subscription plan.
+  </Property>
+  <Property name="description" type="string">
+    A detailed description of the subscription plan.
+  </Property>
+  <Property name="price" type="number">
+    The price of the subscription plan.
+  </Property>
+  <Property name="interval" type="string">
+    The billing interval (e.g., 'month', 'year').
+  </Property>
+  <Property name="status" type="string">
+    The current status of the subscription plan (e.g., 'active', 'inactive').
+  </Property>
+</Properties>
+
+---
+
+## List all subscription plans {{ tag: 'GET', label: '/v1/subscription-plans' }}
+
+<Row>
+  <Col>
+
+    This endpoint retrieves a list of all subscription plans.
+
+    ### Optional query parameters
+
+    <Properties>
+      <Property name="limit" type="integer">
+        Limit the number of subscription plans returned.
+      </Property>
+      <Property name="offset" type="integer">
+        Number of subscription plans to skip.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/v1/subscription-plans">
+
+    ```bash {{ title: 'cURL' }}
+    curl -X GET https://api.vatly.com/v1/subscription-plans \
+      -H "Authorization: Bearer {token}"
+    ```
+
+    ```php
+    $vatly = new Vatly\Api\VatlyApiClient;
+    $vatly->setApiKey($key);
+
+    $subscriptionPlans = $vatly->subscriptionPlans->list();
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "data": [
+        {
+          "id": "plan_abc123",
+          "name": "Basic Plan",
+          "description": "Our starter plan with essential features",
+          "price": 9.99,
+          "interval": "month",
+          "status": "active"
+        },
+        // More subscription plans...
+      ],
+      "has_more": false
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## Retrieve a subscription plan {{ tag: 'GET', label: '/v1/subscription-plans/:id' }}
+
+<Row>
+  <Col>
+
+    This endpoint retrieves a specific subscription plan by its ID.
+
+    ### URL parameters
+
+    <Properties>
+      <Property name="id" type="string">
+        The ID of the subscription plan to retrieve.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/v1/subscription-plans/plan_abc123">
+
+    ```bash {{ title: 'cURL' }}
+    curl -X GET https://api.vatly.com/v1/subscription-plans/plan_abc123 \
+      -H "Authorization: Bearer {token}"
+    ```
+
+    ```php
+    $vatly = new Vatly\Api\VatlyApiClient;
+    $vatly->setApiKey($key);
+
+    $subscriptionPlan = $vatly->subscriptionPlans->get('plan_abc123');
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "plan_abc123",
+      "name": "Basic Plan",
+      "description": "Our starter plan with essential features",
+      "price": 9.99,
+      "interval": "month",
+      "status": "active"
+    }
+    ```
+
+  </Col>
+</Row>

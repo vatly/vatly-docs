@@ -28,11 +28,11 @@ interface Resource {
 
 const resources: Array<Resource> = [
   {
-    href: '/contacts',
-    name: 'Contacts',
+    href: '/customers',
+    name: 'Customers',
     description:
-      'Learn about the contact model and how to create, retrieve, update, delete, and list contacts.',
-    icon: UserIcon,
+      'Learn about the customer model and how to create, retrieve, update, delete, and list customers.',
+    icon: UsersIcon,
     pattern: {
       y: 16,
       squares: [
@@ -69,17 +69,17 @@ const resources: Array<Resource> = [
       ],
     },
   },
-  {
-    href: '/groups',
-    name: 'Groups',
-    description:
-      'Learn about the group model and how to create, retrieve, update, delete, and list groups.',
-    icon: UsersIcon,
-    pattern: {
-      y: 22,
-      squares: [[0, 1]],
-    },
-  },
+  // {
+  //   href: '/groups',
+  //   name: 'Groups',
+  //   description:
+  //     'Learn about the group model and how to create, retrieve, update, delete, and list groups.',
+  //   icon: UsersIcon,
+  //   pattern: {
+  //     y: 22,
+  //     squares: [[0, 1]],
+  //   },
+  // },
 ]
 
 function ResourceIcon({ icon: Icon }: { icon: Resource['icon'] }) {

@@ -24,7 +24,7 @@ Before making your first API request, you need to pick which API client you will
 curl --version
 ```
 
-```bash {{ language: 'js' }}
+{/* ```bash {{ language: 'js' }}
 # Install the Vatly JavaScript SDK
 npm install @example/protocol-api --save
 ```
@@ -32,11 +32,11 @@ npm install @example/protocol-api --save
 ```bash {{ language: 'python' }}
 # Install the Vatly Python SDK
 pip install protocol_api
-```
+``` */}
 
 ```bash {{ language: 'php' }}
 # Install the Vatly PHP SDK
-composer require protocol/sdk
+composer require vatly/vatly-api-php
 ```
 
 </CodeGroup>
@@ -59,7 +59,7 @@ curl -G https://api.vatly.com/v1/checkouts \
   -d limit=10
 ```
 
-```js
+{/* ```js
 import ApiClient from '@example/protocol-api'
 
 const client = new ApiClient(token)
@@ -73,12 +73,13 @@ from protocol_api import ApiClient
 client = ApiClient(token)
 
 client.checkouts.list()
-```
+``` */}
 
 ```php
-$client = new \Vatly\ApiClient($token);
+$vatly = new Vatly\Api\VatlyApiClient;
+$vatly->setApiKey($key);
 
-$client->checkouts->list();
+$vatly->checkouts->page();
 ```
 
 </CodeGroup>
