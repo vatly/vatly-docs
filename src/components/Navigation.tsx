@@ -246,14 +246,14 @@ export const navigation: Array<NavGroup> = [
   {
     title: 'API Reference',
     links: [
-      { title: 'Customers', href: '/customers' },
       { title: 'Checkouts', href: '/checkouts' },
-      { title: 'Orders', href: '/orders' },
-      { title: 'Refunds', href: '/refunds' },
-      { title: 'Chargebacks', href: '/chargebacks' },
+      { title: 'Customers', href: '/customers' },
       { title: 'Subscriptions', href: '/subscriptions' },
       { title: 'Subscription plans', href: '/subscription-plans' },
       { title: 'One-off products', href: '/one-off-products' },
+      { title: 'Orders', href: '/orders' },
+      { title: 'Refunds', href: '/refunds' },
+      { title: 'Chargebacks', href: '/chargebacks' },
     ],
   },
 ]
