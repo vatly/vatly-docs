@@ -77,7 +77,326 @@ The subscription model contains all the information about the subscriptions and 
 
 ---
 
-## Update a subscription {{ tag: 'PUT', label: '/v1/subscriptions/:id' }}
+## List all subscriptions {{ tag: 'GET', label: '/v1/subscriptions' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a paginated list of all subscriptions across your account.
+
+    ### Optional attributes
+
+    <Properties>
+      <Property name="limit" type="integer">
+        The number of subscriptions to return (default: 10, max: 100).
+      </Property>
+      <Property name="startingAfter" type="string">
+        A cursor for use in pagination. Returns results after this subscription ID.
+      </Property>
+      <Property name="endingBefore" type="string">
+        A cursor for use in pagination. Returns results before this subscription ID.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/v1/subscriptions">
+
+    ```bash {{ title: 'cURL' }}
+    curl -G https://api.vatly.com/v1/subscriptions \
+      -H "Authorization: Bearer {token}" \
+      -d limit=10
+    ```
+
+    ```php
+    $client = new \Vatly\ApiClient($token);
+
+    $subscriptions = $client->subscriptions->list();
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "data": [
+        {
+          "id": "subscription_SIuAFUNKdSYHZF2w",
+          "resource": "subscription",
+          "testmode": false,
+          "name": "Premium Plan",
+          "description": "Access to all premium features",
+          "billingAddress": {
+            "country": "US",
+            "streetAndNumber": "123 Main St",
+            "streetAdditional": "Suite 123",
+            "city": "Anytown",
+            "region": "CA",
+            "postalCode": "12345"
+          },
+          "basePrice": "99.99",
+          "quantity": 1,
+          "interval": "month",
+          "intervalCount": 1,
+          "status": "active",
+          "startedAt": "2023-01-01T00:00:00Z",
+          "endedAt": null,
+          "cancelledAt": null,
+          "renewedAt": "2023-06-01T00:00:00Z",
+          "renewedUntil": "2023-07-01T00:00:00Z",
+          "nextRenewalAt": "2023-07-01T00:00:00Z",
+          "trialUntil": null,
+          "links": {
+            "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
+            "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+          }
+        }
+      ],
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/subscriptions?limit=10",
+          "type": "application/json"
+        },
+        "next": {
+          "href": "https://api.vatly.com/v1/subscriptions?startingAfter=subscription_SIuAFUNKdSYHZF2w&limit=10",
+          "type": "application/json"
+        },
+        "prev": null
+      },
+      "count": 1
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## Get a subscription {{ tag: 'GET', label: '/v1/subscriptions/:id' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a specific subscription by its ID.
+
+    ### Parameters
+
+    <Properties>
+      <Property name="subscriptionId" type="string">
+        The unique identifier of the subscription.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w">
+
+    ```bash {{ title: 'cURL' }}
+    curl https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w \
+      -H "Authorization: Bearer {token}"
+    ```
+
+    ```php
+    $client = new \Vatly\ApiClient($token);
+
+    $subscription = $client->subscriptions->get('subscription_SIuAFUNKdSYHZF2w');
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "subscription_SIuAFUNKdSYHZF2w",
+      "resource": "subscription",
+      "testmode": false,
+      "name": "Premium Plan",
+      "description": "Access to all premium features",
+      "billingAddress": {
+        "country": "US",
+        "streetAndNumber": "123 Main St",
+        "streetAdditional": "Suite 123",
+        "city": "Anytown",
+        "region": "CA",
+        "postalCode": "12345"
+      },
+      "basePrice": "99.99",
+      "quantity": 1,
+      "interval": "month",
+      "intervalCount": 1,
+      "status": "active",
+      "startedAt": "2023-01-01T00:00:00Z",
+      "endedAt": null,
+      "cancelledAt": null,
+      "renewedAt": "2023-06-01T00:00:00Z",
+      "renewedUntil": "2023-07-01T00:00:00Z",
+      "nextRenewalAt": "2023-07-01T00:00:00Z",
+      "trialUntil": null,
+      "links": {
+        "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
+        "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+      }
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## List customer subscriptions {{ tag: 'GET', label: '/v1/customers/:customerId/subscriptions' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a paginated list of all subscriptions for a specific customer.
+
+    ### Parameters
+
+    <Properties>
+      <Property name="customerId" type="string">
+        The unique identifier of the customer.
+      </Property>
+      <Property name="limit" type="integer">
+        The number of subscriptions to return (default: 10, max: 100).
+      </Property>
+      <Property name="startingAfter" type="string">
+        A cursor for use in pagination. Returns results after this subscription ID.
+      </Property>
+      <Property name="endingBefore" type="string">
+        A cursor for use in pagination. Returns results before this subscription ID.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions">
+
+    ```bash {{ title: 'cURL' }}
+    curl -G https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions \
+      -H "Authorization: Bearer {token}" \
+      -d limit=10
+    ```
+
+    ```php
+    $client = new \Vatly\ApiClient($token);
+
+    $subscriptions = $client->customers->subscriptions('customer_w2FZHYSdKNUFAuIS')->list();
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "data": [
+        {
+          "id": "subscription_SIuAFUNKdSYHZF2w",
+          "resource": "subscription",
+          "testmode": false,
+          "name": "Premium Plan",
+          "description": "Access to all premium features",
+          "status": "active",
+          "startedAt": "2023-01-01T00:00:00Z",
+          "nextRenewalAt": "2023-07-01T00:00:00Z"
+        }
+      ],
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions?limit=10",
+          "type": "application/json"
+        },
+        "next": {
+          "href": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions?startingAfter=subscription_SIuAFUNKdSYHZF2w&limit=10",
+          "type": "application/json"
+        },
+        "prev": null
+      },
+      "count": 1
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## Get a customer subscription {{ tag: 'GET', label: '/v1/customers/:customerId/subscriptions/:subscriptionId' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a specific subscription for a specific customer.
+
+    ### Parameters
+
+    <Properties>
+      <Property name="customerId" type="string">
+        The unique identifier of the customer.
+      </Property>
+      <Property name="subscriptionId" type="string">
+        The unique identifier of the subscription.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions/subscription_SIuAFUNKdSYHZF2w">
+
+    ```bash {{ title: 'cURL' }}
+    curl https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions/subscription_SIuAFUNKdSYHZF2w \
+      -H "Authorization: Bearer {token}"
+    ```
+
+    ```php
+    $client = new \Vatly\ApiClient($token);
+
+    $subscription = $client->customers->subscriptions('customer_w2FZHYSdKNUFAuIS')->get('subscription_SIuAFUNKdSYHZF2w');
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "subscription_SIuAFUNKdSYHZF2w",
+      "resource": "subscription",
+      "testmode": false,
+      "name": "Premium Plan",
+      "description": "Access to all premium features",
+      "billingAddress": {
+        "country": "US",
+        "streetAndNumber": "123 Main St",
+        "streetAdditional": "Suite 123",
+        "city": "Anytown",
+        "region": "CA",
+        "postalCode": "12345"
+      },
+      "basePrice": "99.99",
+      "quantity": 1,
+      "interval": "month",
+      "intervalCount": 1,
+      "status": "active",
+      "startedAt": "2023-01-01T00:00:00Z",
+      "endedAt": null,
+      "cancelledAt": null,
+      "renewedAt": "2023-06-01T00:00:00Z",
+      "renewedUntil": "2023-07-01T00:00:00Z",
+      "nextRenewalAt": "2023-07-01T00:00:00Z",
+      "trialUntil": null,
+      "links": {
+        "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
+        "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+      }
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## Update a subscription {{ tag: 'PATCH', label: '/v1/subscriptions/:id' }}
 
 <Row>
   <Col>
@@ -176,6 +495,121 @@ The subscription model contains all the information about the subscriptions and 
       },
       "basePrice": "99.99",
       "quantity": 3,
+      "interval": "month",
+      "intervalCount": 1,
+      "status": "active",
+      "startedAt": "2023-01-01T00:00:00Z",
+      "endedAt": null,
+      "cancelledAt": null,
+      "renewedAt": "2023-06-01T00:00:00Z",
+      "renewedUntil": "2023-07-01T00:00:00Z",
+      "nextRenewalAt": "2023-07-01T00:00:00Z",
+      "trialUntil": null,
+      "links": {
+        "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
+        "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+      }
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## Update subscription billing details {{ tag: 'PATCH', label: '/v1/subscriptions/:id/update-billing' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to update the billing details for a subscription.
+
+    ### Required attributes
+
+    <Properties>
+      <Property name="billingAddress" type="object">
+        The new billing address for the subscription.
+      </Property>
+    </Properties>
+
+    ### Billing Address Properties
+
+    <Properties>
+      <Property name="country" type="string">
+        The country code (e.g., "US", "NL").
+      </Property>
+      <Property name="streetAndNumber" type="string">
+        The street address and number.
+      </Property>
+      <Property name="streetAdditional" type="string">
+        Additional street address information (optional).
+      </Property>
+      <Property name="city" type="string">
+        The city.
+      </Property>
+      <Property name="region" type="string">
+        The region or state.
+      </Property>
+      <Property name="postalCode" type="string">
+        The postal or ZIP code.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="PATCH" label="/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w/update-billing">
+
+    ```bash {{ title: 'cURL' }}
+    curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w/update-billing \
+      -H "Authorization: Bearer {token}" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "billingAddress": {
+          "country": "NL",
+          "streetAndNumber": "456 New St",
+          "streetAdditional": "Apt 789",
+          "city": "Amsterdam",
+          "region": "NH",
+          "postalCode": "1012AB"
+        }
+      }'
+    ```
+
+    ```php
+    $client = new \Vatly\ApiClient($token);
+
+    $subscription = $client->subscriptions->updateBilling('subscription_SIuAFUNKdSYHZF2w', [
+        'billingAddress' => [
+            'country' => 'NL',
+            'streetAndNumber' => '456 New St',
+            'streetAdditional' => 'Apt 789',
+            'city' => 'Amsterdam',
+            'region' => 'NH',
+            'postalCode' => '1012AB',
+        ],
+    ]);
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "subscription_SIuAFUNKdSYHZF2w",
+      "resource": "subscription",
+      "testmode": false,
+      "name": "Premium Plan",
+      "description": "Access to all premium features",
+      "billingAddress": {
+        "country": "NL",
+        "streetAndNumber": "456 New St",
+        "streetAdditional": "Apt 789",
+        "city": "Amsterdam",
+        "region": "NH",
+        "postalCode": "1012AB"
+      },
+      "basePrice": "99.99",
+      "quantity": 1,
       "interval": "month",
       "intervalCount": 1,
       "status": "active",

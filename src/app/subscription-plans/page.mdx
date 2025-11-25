@@ -48,10 +48,13 @@ The subscription plan model contains all the information about the subscription 
 
     <Properties>
       <Property name="limit" type="integer">
-        Limit the number of subscription plans returned.
+        The number of subscription plans to return (default: 10, max: 100).
       </Property>
-      <Property name="offset" type="integer">
-        Number of subscription plans to skip.
+      <Property name="startingAfter" type="string">
+        A cursor for use in pagination. Returns results after this plan ID.
+      </Property>
+      <Property name="endingBefore" type="string">
+        A cursor for use in pagination. Returns results before this plan ID.
       </Property>
     </Properties>
 

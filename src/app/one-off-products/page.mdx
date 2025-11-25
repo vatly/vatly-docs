@@ -49,14 +49,17 @@ Below you'll find all properties for the Vatly One-off Product API resource.
 
     This endpoint retrieves a list of all one-off products.
 
-    ### Parameters
+    ### Optional parameters
 
     <Properties>
       <Property name="limit" type="integer">
-        Limit the number of one-off products returned.
+        The number of one-off products to return (default: 10, max: 100).
       </Property>
-      <Property name="offset" type="integer">
-        Number of one-off products to skip for pagination.
+      <Property name="startingAfter" type="string">
+        A cursor for use in pagination. Returns results after this product ID.
+      </Property>
+      <Property name="endingBefore" type="string">
+        A cursor for use in pagination. Returns results before this product ID.
       </Property>
     </Properties>
 

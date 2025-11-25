@@ -40,7 +40,7 @@ Below you'll find all properties for the Vatly Customer API resource.
 
 ---
 
-{/* ## List all customers {{ tag: 'GET', label: '/v1/customers' }}
+## List all customers {{ tag: 'GET', label: '/v1/customers' }}
 
 <Row>
   <Col>
@@ -51,7 +51,13 @@ Below you'll find all properties for the Vatly Customer API resource.
 
     <Properties>
       <Property name="limit" type="integer">
-        Limit the number of customers returned.
+        The number of customers to return (default: 10, max: 100).
+      </Property>
+      <Property name="startingAfter" type="string">
+        A cursor for use in pagination. Returns results after this customer ID.
+      </Property>
+      <Property name="endingBefore" type="string">
+        A cursor for use in pagination. Returns results before this customer ID.
       </Property>
     </Properties>
 
@@ -63,60 +69,51 @@ Below you'll find all properties for the Vatly Customer API resource.
     ```bash {{ title: 'cURL' }}
     curl -G https://api.vatly.com/v1/customers \
       -H "Authorization: Bearer {token}" \
-      -d active=true \
       -d limit=10
-    ```
-
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.customers.list()
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.customers.list()
     ```
 
     ```php
     $vatly = new \Vatly\ApiClient($token);
 
-    $vatly->customers->list();
+    $customers = $vatly->customers->list();
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "has_more": false,
       "data": [
         {
-          "id": "WAz8eIbvDR60rouK",
-          "username": "FrankMcCallister",
-          "phone_number": "1-800-759-3000",
-          "avatar_url": "https://assets.protocol.chat/avatars/frank.jpg",
-          "display_name": null,
-          "checkout_id": "xgQQXg3hrtjh7AvZ",
-          "last_active_at": 705103200,
-          "createdAt": 692233200
-        },
-        {
-          "id": "hSIhXBhNe8X1d8Et"
-          // ...
+          "id": "customer_SUKjQ4SHxPrBNBb4ea5zH",
+          "resource": "customer",
+          "testmode": false,
+          "email": "john@example.com",
+          "createdAt": "2020-01-01T00:00:00+00:00",
+          "metadata": {},
+          "_links": {
+            "self": "https://api.vatly.com/v1/customers/customer_SUKjQ4SHxPrBNBb4ea5zH"
+          }
         }
-      ]
+      ],
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/customers?limit=10",
+          "type": "application/json"
+        },
+        "next": {
+          "href": "https://api.vatly.com/v1/customers?startingAfter=customer_SUKjQ4SHxPrBNBb4ea5zH&limit=10",
+          "type": "application/json"
+        },
+        "prev": null
+      },
+      "count": 1
     }
     ```
 
   </Col>
 </Row>
 
---- */}
+---
 
 ## Create a customer {{ tag: 'POST', label: '/v1/customers' }}
 

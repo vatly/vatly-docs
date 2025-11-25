@@ -20,10 +20,6 @@ The refund model contains all the information about order refunds, including the
   <Col>
     This endpoint allows you to create a partial refund for a specific order.
 
-    ### Required permissions
-    - `orders:write`
-    - `refunds:write`
-
     ### Parameters
     <Properties>
       <Property name="orderId" type="string">
@@ -57,10 +53,6 @@ The refund model contains all the information about order refunds, including the
   <Col>
     This endpoint allows you to create a full refund for a specific order. This will refund the entire remaining amount of the order.
 
-    ### Required permissions
-    - `orders:write`
-    - `refunds:write`
-
     ### Parameters
     <Properties>
       <Property name="orderId" type="string">
@@ -90,14 +82,19 @@ The refund model contains all the information about order refunds, including the
   <Col>
     This endpoint allows you to retrieve a list of all refunds for a specific order.
 
-    ### Required permissions
-    - `orders:read`
-    - `refunds:read`
-
     ### Parameters
     <Properties>
       <Property name="orderId" type="string">
         The unique identifier of the order.
+      </Property>
+      <Property name="limit" type="integer">
+        The number of refunds to return (default: 10, max: 100).
+      </Property>
+      <Property name="startingAfter" type="string">
+        A cursor for use in pagination. Returns results after this refund ID.
+      </Property>
+      <Property name="endingBefore" type="string">
+        A cursor for use in pagination. Returns results before this refund ID.
       </Property>
     </Properties>
   </Col>
@@ -118,10 +115,6 @@ The refund model contains all the information about order refunds, including the
 <Row>
   <Col>
     This endpoint allows you to retrieve details of a specific refund for a specific order.
-
-    ### Required permissions
-    - `orders:read`
-    - `refunds:read`
 
     ### Parameters
     <Properties>
@@ -150,10 +143,6 @@ The refund model contains all the information about order refunds, including the
 <Row>
   <Col>
     This endpoint allows you to cancel a pending refund for a specific order. Only pending refunds can be cancelled.
-
-    ### Required permissions
-    - `orders:write`
-    - `refunds:write`
 
     ### Parameters
     <Properties>

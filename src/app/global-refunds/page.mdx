@@ -46,16 +46,16 @@ The refund model contains all the information about refunds, including the amoun
   <Col>
     This endpoint allows you to retrieve a paginated list of all refunds across your account.
 
-    ### Required permissions
-    - `refunds:read`
-
-    ### Parameters
+    ### Optional parameters
     <Properties>
-      <Property name="page" type="integer">
-        The page number for pagination.
+      <Property name="limit" type="integer">
+        The number of refunds to return (default: 10, max: 100).
       </Property>
-      <Property name="per_page" type="integer">
-        The number of refunds to return per page (max: 100).
+      <Property name="startingAfter" type="string">
+        A cursor for use in pagination. Returns results after this refund ID.
+      </Property>
+      <Property name="endingBefore" type="string">
+        A cursor for use in pagination. Returns results before this refund ID.
       </Property>
     </Properties>
   </Col>
@@ -64,8 +64,7 @@ The refund model contains all the information about refunds, including the amoun
     ```bash {{ title: 'cURL' }}
     curl -G https://api.vatly.com/v1/refunds \
       -H "Authorization: Bearer {token}" \
-      -d page=1 \
-      -d per_page=10
+      -d limit=10
     ```
     </CodeGroup>
   </Col>
@@ -78,9 +77,6 @@ The refund model contains all the information about refunds, including the amoun
 <Row>
   <Col>
     This endpoint allows you to retrieve details of a specific refund.
-
-    ### Required permissions
-    - `refunds:read`
 
     ### Parameters
     <Properties>

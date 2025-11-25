@@ -46,16 +46,16 @@ The order model contains all the information about your orders, including the or
   <Col>
     This endpoint allows you to retrieve a paginated list of all your orders. By default, a maximum of ten orders are shown per page.
 
-    ### Required permissions
-    - `orders:read`
-
-    ### Parameters
+    ### Optional parameters
     <Properties>
-      <Property name="page" type="integer">
-        The page number for pagination.
+      <Property name="limit" type="integer">
+        The number of orders to return (default: 10, max: 100).
       </Property>
-      <Property name="per_page" type="integer">
-        The number of orders to return per page (max: 100).
+      <Property name="startingAfter" type="string">
+        A cursor for use in pagination. Returns results after this order ID.
+      </Property>
+      <Property name="endingBefore" type="string">
+        A cursor for use in pagination. Returns results before this order ID.
       </Property>
     </Properties>
   </Col>
@@ -64,8 +64,7 @@ The order model contains all the information about your orders, including the or
     ```bash {{ title: 'cURL' }}
     curl -G https://api.vatly.com/v1/orders \
       -H "Authorization: Bearer {token}" \
-      -d page=1 \
-      -d per_page=10
+      -d limit=10
     ```
     </CodeGroup>
   </Col>

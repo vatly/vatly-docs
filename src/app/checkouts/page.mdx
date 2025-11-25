@@ -49,7 +49,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
 
 ---
 
-{/* ## List all checkouts {{ tag: 'GET', label: '/v1/checkouts' }}
+## List all checkouts {{ tag: 'GET', label: '/v1/checkouts' }}
 
 <Row>
   <Col>
@@ -60,19 +60,13 @@ Below you'll find all properties for the Vatly Checkout API resource.
 
     <Properties>
       <Property name="limit" type="integer">
-        Limit the number of checkouts returned.
+        The number of checkouts to return (default: 10, max: 100).
       </Property>
-      <Property name="muted" type="boolean">
-        Only show checkouts that are muted when set to `true`.
+      <Property name="startingAfter" type="string">
+        A cursor for use in pagination. Returns results after this checkout ID.
       </Property>
-      <Property name="archived" type="boolean">
-        Only show checkouts that are archived when set to `true`.
-      </Property>
-      <Property name="pinned" type="boolean">
-        Only show checkouts that are pinned when set to `true`.
-      </Property>
-      <Property name="group_id" type="string">
-        Only show checkouts for the specified group.
+      <Property name="endingBefore" type="string">
+        A cursor for use in pagination. Returns results before this checkout ID.
       </Property>
     </Properties>
 
@@ -87,58 +81,51 @@ Below you'll find all properties for the Vatly Checkout API resource.
       -d limit=10
     ```
 
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.checkouts.list()
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.checkouts.list()
-    ```
-
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->checkouts->list();
+    $checkouts = $client->checkouts->list();
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "has_more": false,
       "data": [
         {
-          "id": "xgQQXg3hrtjh7AvZ",
-          "contact_id": "WAz8eIbvDR60rouK",
-          "group_id": null,
-          "pinned_subscription_plan_id": null,
-          "is_pinned": false,
-          "is_muted": false,
-          "last_active_at": 705103200,
-          "last_opened_at": 705103200,
-          "created_at": 692233200,
-          "archived_at": null
-        },
-        {
-          "id": "hSIhXBhNe8X1d8Et"
-          // ...
+          "id": "checkout_xgQQXg3hrtjh7AvZ",
+          "merchantId": "merchant_WAz8eIbvDR60rouK",
+          "orderId": "order_abc123",
+          "testmode": false,
+          "redirectUrlSuccess": "https://example.com/success",
+          "redirectUrlCanceled": "https://example.com/canceled",
+          "metadata": null,
+          "status": "paid",
+          "createdAt": "2024-12-14T13:32:24.000Z",
+          "_links": {
+            "checkoutUrl": "https://pay.vatly.com/checkout_xgQQXg3hrtjh7AvZ"
+          }
         }
-      ]
+      ],
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/checkouts?limit=10",
+          "type": "application/json"
+        },
+        "next": {
+          "href": "https://api.vatly.com/v1/checkouts?startingAfter=checkout_xgQQXg3hrtjh7AvZ&limit=10",
+          "type": "application/json"
+        },
+        "prev": null
+      },
+      "count": 1
     }
     ```
 
   </Col>
 </Row>
 
---- */}
+---
 
 ## Create a checkout {{ tag: 'POST', label: '/v1/checkouts' }}
 
@@ -240,187 +227,47 @@ Below you'll find all properties for the Vatly Checkout API resource.
 
 ---
 
-{/* ## Retrieve a checkout {{ tag: 'GET', label: '/v1/checkouts/:id' }}
+## Retrieve a checkout {{ tag: 'GET', label: '/v1/checkouts/:id' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to retrieve a checkout by providing the checkout id. Refer to [the list](#the-checkout-model) at the top of this page to see which properties are included with checkout objects.
+    This endpoint allows you to retrieve a checkout by providing the checkout id. Refer to [the list](#the-checkout-api-resource) at the top of this page to see which properties are included with checkout objects.
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/checkouts/xgQQXg3hrtjh7AvZ">
+    <CodeGroup title="Request" tag="GET" label="/v1/checkouts/checkout_xgQQXg3hrtjh7AvZ">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/checkouts/xgQQXg3hrtjh7AvZ \
+    curl https://api.vatly.com/v1/checkouts/checkout_xgQQXg3hrtjh7AvZ \
       -H "Authorization: Bearer {token}"
-    ```
-
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.checkouts.get('xgQQXg3hrtjh7AvZ')
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.checkouts.get("xgQQXg3hrtjh7AvZ")
     ```
 
     ```php
     $client = new \Vatly\ApiClient($token);
 
-    $client->checkouts->get('xgQQXg3hrtjh7AvZ');
+    $checkout = $client->checkouts->get('checkout_xgQQXg3hrtjh7AvZ');
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "xgQQXg3hrtjh7AvZ",
-      "contact_id": "WAz8eIbvDR60rouK",
-      "group_id": null,
-      "pinned_subscription_plan_id": null,
-      "is_pinned": false,
-      "is_muted": false,
-      "last_active_at": 705103200,
-      "last_opened_at": 705103200,
-      "created_at": 692233200,
-      "archived_at": null
+      "id": "checkout_xgQQXg3hrtjh7AvZ",
+      "merchantId": "merchant_WAz8eIbvDR60rouK",
+      "orderId": "order_abc123",
+      "testmode": false,
+      "redirectUrlSuccess": "https://example.com/success",
+      "redirectUrlCanceled": "https://example.com/canceled",
+      "metadata": null,
+      "status": "paid",
+      "createdAt": "2024-12-14T13:32:24.000Z",
+      "_links": {
+        "checkoutUrl": "https://pay.vatly.com/checkout_xgQQXg3hrtjh7AvZ"
+      }
     }
     ```
 
   </Col>
 </Row>
-
----
-
-## Update a checkout {{ tag: 'PUT', label: '/v1/checkouts/:id' }}
-
-<Row>
-  <Col>
-
-    This endpoint allows you to perform an update on a checkout. Examples of updates are pinning a subscription, muting or archiving the checkout, or pinning the checkout itself.
-
-    ### Optional attributes
-
-    <Properties>
-      <Property name="pinned" type="boolean">
-        Whether or not the checkout has been pinned.
-      </Property>
-      <Property name="muted" type="boolean">
-        Whether or not the checkout has been muted.
-      </Property>
-      <Property name="archived_at" type="timestamp">
-        Timestamp of when the checkout was archived.
-      </Property>
-    </Properties>
-
-  </Col>
-  <Col sticky>
-
-    <CodeGroup title="Request" tag="PUT" label="/v1/checkouts/xgQQXg3hrtjh7AvZ">
-
-    ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.vatly.com/v1/checkouts/xgQQXg3hrtjh7AvZ \
-      -H "Authorization: Bearer {token}" \
-      -d 'muted'=true
-    ```
-
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.checkouts.update('xgQQXg3hrtjh7AvZ', {
-        muted: true,
-    })
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.checkouts.update("xgQQXg3hrtjh7AvZ", muted=True)
-    ```
-
-    ```php
-    $client = new \Vatly\ApiClient($token);
-
-    $client->checkouts->update('xgQQXg3hrtjh7AvZ', [
-      'muted' => true,
-    ]);
-    ```
-
-    </CodeGroup>
-
-    ```json {{ title: 'Response' }}
-    {
-      "id": "xgQQXg3hrtjh7AvZ",
-      "contact_id": "WAz8eIbvDR60rouK",
-      "group_id": null,
-      "pinned_subscription_plan_id": null,
-      "is_pinned": false,
-      "is_muted": true,
-      "last_active_at": 705103200,
-      "last_opened_at": 705103200,
-      "created_at": 692233200,
-      "archived_at": null
-    }
-    ```
-
-  </Col>
-</Row>
-
----
-
-## Delete a checkout {{ tag: 'DELETE', label: '/v1/checkouts/:id' }}
-
-<Row>
-  <Col>
-
-    This endpoint allows you to delete your checkouts in Vatly. Note: This will permanently delete the checkout and all its subscriptions — archive it instead if you want to be able to restore it later.
-
-  </Col>
-  <Col sticky>
-
-    <CodeGroup title="Request" tag="DELETE" label="/v1/checkouts/xgQQXg3hrtjh7AvZ">
-
-    ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.vatly.com/v1/checkouts/xgQQXg3hrtjh7AvZ \
-      -H "Authorization: Bearer {token}"
-    ```
-
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.checkouts.delete('xgQQXg3hrtjh7AvZ')
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.checkouts.delete("xgQQXg3hrtjh7AvZ")
-    ```
-
-    ```php
-    $client = new \Vatly\ApiClient($token);
-
-    $client->checkouts->delete('xgQQXg3hrtjh7AvZ');
-    ```
-
-    </CodeGroup>
-
-  </Col>
-</Row> */}
