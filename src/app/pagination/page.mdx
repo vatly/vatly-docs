@@ -34,7 +34,7 @@ When an API response returns a list of objects, no matter the amount, pagination
 
     ```bash {{ title: 'Manual pagination using cURL' }}
     curl -G https://api.vatly.com/v1/checkouts \
-      -H "Authorization: Bearer {token}" \
+      -H "Authorization: Bearer live_your_api_key_here" \
       -d starting_after="s4WycXedwhQrEFuM" \
       -d limit=10
     ```

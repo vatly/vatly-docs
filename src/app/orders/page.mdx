@@ -63,7 +63,7 @@ The order model contains all the information about your orders, including the or
     <CodeGroup title="Request" tag="GET" label="/v1/orders">
     ```bash {{ title: 'cURL' }}
     curl -G https://api.vatly.com/v1/orders \
-      -H "Authorization: Bearer {token}" \
+      -H "Authorization: Bearer live_your_api_key_here" \
       -d limit=10
     ```
     </CodeGroup>
@@ -92,7 +92,7 @@ The order model contains all the information about your orders, including the or
     <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId">
     ```bash {{ title: 'cURL' }}
     curl https://api.vatly.com/v1/orders/ord_1234 \
-      -H "Authorization: Bearer {token}"
+      -H "Authorization: Bearer live_your_api_key_here"
     ```
     </CodeGroup>
   </Col>
@@ -120,7 +120,7 @@ The order model contains all the information about your orders, including the or
     <CodeGroup title="Request" tag="POST" label="/v1/orders/:orderId/request-address-update-link">
     ```bash {{ title: 'cURL' }}
     curl -X POST https://api.vatly.com/v1/orders/ord_1234/request-address-update-link \
-      -H "Authorization: Bearer {token}"
+      -H "Authorization: Bearer live_your_api_key_here"
     ```
     </CodeGroup>
   </Col>

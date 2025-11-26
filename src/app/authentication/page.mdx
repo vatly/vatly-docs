@@ -1,38 +1,43 @@
 export const metadata = {
   title: 'Authentication',
   description:
-    'In this guide, we’ll look at how authentication works. Vatly offers two ways to authenticate your API requests: Basic authentication and OAuth2 with a token.',
+    'In this guide, we'll look at how authentication works. Vatly uses API keys to authenticate your API requests.',
 }
 
 # Authentication
 
-You'll need to authenticate your requests to access any of the endpoints in the Vatly API. In this guide, we'll look at how authentication works. Vatly offers two ways to authenticate your API requests: Basic authentication and OAuth2 with a token — OAuth2 is the recommended way. {{ className: 'lead' }}
+You'll need to authenticate your requests to access any of the endpoints in the Vatly API. In this guide, we'll look at how authentication works. Vatly uses API keys to authenticate your API requests. {{ className: 'lead' }}
 
-## Basic authentication
+## API keys
 
-With basic authentication, you use your username and password to authenticate your HTTP requests. Unless you have a very good reason, you probably shouldn't use basic auth. Here's how to authenticate using cURL:
+To authenticate with the Vatly API, you need to include your API key in the `Authorization` header of each request. You can obtain your API key from the [Vatly dashboard](https://my.vatly.com) under **Settings » API**.
 
-```bash {{ title: 'Example request with basic auth' }}
+Vatly provides separate API keys for live and test environments:
+
+- **Live keys** are prefixed with `live_` and are used for production requests.
+- **Test keys** are prefixed with `test_` and are used for testing and development.
+
+<Note>
+  Use your test API key during development to avoid affecting live data. Switch to your live API key when you're ready to go to production.
+</Note>
+
+Here's how to authenticate your requests using cURL:
+
+```bash {{ title: 'Example request with API key' }}
 curl https://api.vatly.com/v1/checkouts \
-  -u username:password
+  -H "Authorization: Bearer live_your_api_key_here"
 ```
 
-Please don't commit your Vatly password to GitHub!
-
-## OAuth2 with bearer token
-
-The recommended way to authenticate with the Vatly API is by using OAuth2. When establishing a connection using OAuth2, you will need your access token — you will find it in the [Vatly dashboard](#) under API settings. Here's how to add the token to the request header using cURL:
-
-```bash {{ title: 'Example request with bearer token' }}
-curl https://api.vatly.com/v1/checkouts \
-  -H "Authorization: Bearer {token}"
-```
-
-Always keep your token safe and reset it if you suspect it has been compromised.
+Always keep your API key safe and never expose it in client-side code or commit it to version control. If you suspect your API key has been compromised, you can regenerate it from the Vatly dashboard.
 
 ## Using an SDK
 
-If you use one of our official SDKs, you won't have to worry about any of the above — fetch your access token from the [Vatly dashboard](#) under API settings, and the client library will take care of the rest. All the client libraries use OAuth2 behind the scenes.
+If you use one of our official SDKs, authentication is straightforward — simply provide your API key when initializing the client, and the SDK will handle the rest.
+
+```php {{ title: 'PHP SDK example' }}
+$vatly = new Vatly\Api\VatlyApiClient;
+$vatly->setApiKey('live_your_api_key_here');
+```
 
 <div className="not-prose">
   <Button href="/sdks" variant="text" arrow="right">

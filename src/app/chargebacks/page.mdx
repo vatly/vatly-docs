@@ -63,7 +63,7 @@ The chargeback model contains all the information about payment disputes, includ
     <CodeGroup title="Request" tag="GET" label="/v1/chargebacks">
     ```bash {{ title: 'cURL' }}
     curl -G https://api.vatly.com/v1/chargebacks \
-      -H "Authorization: Bearer {token}" \
+      -H "Authorization: Bearer live_your_api_key_here" \
       -d limit=10
     ```
     </CodeGroup>
@@ -89,7 +89,7 @@ The chargeback model contains all the information about payment disputes, includ
     <CodeGroup title="Request" tag="GET" label="/v1/chargebacks/:chargebackId">
     ```bash {{ title: 'cURL' }}
     curl https://api.vatly.com/v1/chargebacks/chb_1234 \
-      -H "Authorization: Bearer {token}"
+      -H "Authorization: Bearer live_your_api_key_here"
     ```
     </CodeGroup>
   </Col>
@@ -123,7 +123,7 @@ The chargeback model contains all the information about payment disputes, includ
     <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/chargebacks">
     ```bash {{ title: 'cURL' }}
     curl -G https://api.vatly.com/v1/orders/ord_1234/chargebacks \
-      -H "Authorization: Bearer {token}" \
+      -H "Authorization: Bearer live_your_api_key_here" \
       -d limit=10
     ```
     </CodeGroup>
@@ -152,7 +152,7 @@ The chargeback model contains all the information about payment disputes, includ
     <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/chargebacks/:chargebackId">
     ```bash {{ title: 'cURL' }}
     curl https://api.vatly.com/v1/orders/ord_1234/chargebacks/chb_1234 \
-      -H "Authorization: Bearer {token}"
+      -H "Authorization: Bearer live_your_api_key_here"
     ```
     </CodeGroup>
   </Col>

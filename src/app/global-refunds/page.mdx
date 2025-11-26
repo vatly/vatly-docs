@@ -63,7 +63,7 @@ The refund model contains all the information about refunds, including the amoun
     <CodeGroup title="Request" tag="GET" label="/v1/refunds">
     ```bash {{ title: 'cURL' }}
     curl -G https://api.vatly.com/v1/refunds \
-      -H "Authorization: Bearer {token}" \
+      -H "Authorization: Bearer live_your_api_key_here" \
       -d limit=10
     ```
     </CodeGroup>
@@ -89,7 +89,7 @@ The refund model contains all the information about refunds, including the amoun
     <CodeGroup title="Request" tag="GET" label="/v1/refunds/:refundId">
     ```bash {{ title: 'cURL' }}
     curl https://api.vatly.com/v1/refunds/ref_5678 \
-      -H "Authorization: Bearer {token}"
+      -H "Authorization: Bearer live_your_api_key_here"
     ```
     </CodeGroup>
   </Col>
