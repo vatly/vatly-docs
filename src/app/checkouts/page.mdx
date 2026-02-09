@@ -6,7 +6,7 @@ export const metadata = {
 
 # The Checkouts API
 
-The hosted Vatly Checkouts allow your customers to pay for your digital products and services. When the checkout is succesfully completed, an Order gets created and any webhooks configured through the dashboard get fired. {{ className: 'lead' }}
+The hosted Vatly Checkouts allow your customers to pay for your digital products and services. When the checkout is succesfully paid, an Order gets created and any webhooks configured through the dashboard get fired. {{ className: 'lead' }}
 
 ## The Checkout API Resource
 
@@ -22,13 +22,13 @@ Below you'll find all properties for the Vatly Checkout API resource.
     Unique identifier for the merchant this checkout belongs to.
   </Property>
   <Property name="orderId" type="string">
-    Unique identifier for the order this checkout belongs to. Only available when the checkout has been completed succesfully.
+    Unique identifier for the order this checkout belongs to. Only available when the checkout has been paid successfully.
   </Property>
   <Property name="testmode" type="boolean">
     Whether this checkout is in test mode.
   </Property>
   <Property name="redirectUrlSuccess" type="string">
-    The URL to which the checkout should redirect the user after the checkout has been completed succesfully.
+    The URL to which the checkout should redirect the user after the checkout has been paid successfully.
   </Property>
   <Property name="redirectUrlCanceled" type="string">
     The URL to which the user should get redirected when the user cancels the checkout.
@@ -37,7 +37,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
     Any metadata associated with the checkout. Provide any data you like to be stored with the checkout.
   </Property>
   <Property name="status" type="string">
-    The status of the checkout. Can be `created`, `paid`, `failed`, `expired`, or `canceled`.
+    The status of the checkout. Can be `created`, `paid`, `canceled`, `failed`, or `expired`.
   </Property>
   <Property name="createdAt" type="string">
     The moment the checkout was created, in ISO 8601 format.
@@ -143,7 +143,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
         An array of IDs for the products you want to checkout. Both subscription plan IDs and one-off product IDs can be used in this array.
       </Property>
       <Property name="redirectUrlSuccess" type="string">
-        The URL to which the checkout should redirect the user after the checkout has been completed succesfully.
+        The URL to which the checkout should redirect the user after the checkout has been paid successfully.
       </Property>
       <Property name="redirectUrlCanceled" type="string">
         The URL to which the user should get redirected when the user cancels the checkout.
@@ -157,7 +157,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
         Any metadata associated with the checkout. Provide any data you like to be stored with the checkout.
       </Property>
       <Property name="customerId" type="string">
-        The ID for the customer this checkout belongs to. If no customer ID is provided, a new customer will be created once the checkout is completed succesfully.
+        The ID for the customer this checkout belongs to. If no customer ID is provided, a new customer will be created once the checkout is paid successfully.
       </Property>
     </Properties>
 
