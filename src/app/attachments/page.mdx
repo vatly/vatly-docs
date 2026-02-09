@@ -86,10 +86,11 @@ The attachment model contains all the information about the files you send to yo
     client.attachments.list()
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->attachments->list();
+    $vatly->attachments->page();
     ```
 
     </CodeGroup>
@@ -162,10 +163,11 @@ The attachment model contains all the information about the files you send to yo
     client.attachments.create(file=file)
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->attachments->create([
+    $vatly->attachments->create([
       'file' => $file,
     ]);
     ```
@@ -222,10 +224,11 @@ The attachment model contains all the information about the files you send to yo
     client.attachments.get("Nc6yKKMpcxiiFxp6")
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->attachments->get('Nc6yKKMpcxiiFxp6');
+    $vatly->attachments->get('Nc6yKKMpcxiiFxp6');
     ```
 
     </CodeGroup>
@@ -291,10 +294,11 @@ The attachment model contains all the information about the files you send to yo
     client.attachments.update("Nc6yKKMpcxiiFxp6", filename="Invoice_room_service__Plaza_Hotel_updated.pdf")
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->attachments->update('Nc6yKKMpcxiiFxp6', [
+    $vatly->attachments->update('Nc6yKKMpcxiiFxp6', [
       'filename' => 'Invoice_room_service__Plaza_Hotel_updated.pdf',
     ]);
     ```
@@ -351,10 +355,11 @@ The attachment model contains all the information about the files you send to yo
     client.attachments.delete("Nc6yKKMpcxiiFxp6")
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->attachments->delete('Nc6yKKMpcxiiFxp6');
+    $vatly->attachments->delete('Nc6yKKMpcxiiFxp6');
     ```
 
     </CodeGroup>

@@ -109,10 +109,11 @@ The subscription model contains all the information about the subscriptions and 
       -d limit=10
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $subscriptions = $client->subscriptions->list();
+    $subscriptions = $vatly->subscriptions->page();
     ```
 
     </CodeGroup>
@@ -197,10 +198,11 @@ The subscription model contains all the information about the subscriptions and 
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $subscription = $client->subscriptions->get('subscription_SIuAFUNKdSYHZF2w');
+    $subscription = $vatly->subscriptions->get('subscription_SIuAFUNKdSYHZF2w');
     ```
 
     </CodeGroup>
@@ -279,10 +281,11 @@ The subscription model contains all the information about the subscriptions and 
       -d limit=10
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $subscriptions = $client->customers->subscriptions('customer_w2FZHYSdKNUFAuIS')->list();
+    $subscriptions = $vatly->customers->subscriptions('customer_w2FZHYSdKNUFAuIS')->page();
     ```
 
     </CodeGroup>
@@ -349,10 +352,11 @@ The subscription model contains all the information about the subscriptions and 
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $subscription = $client->customers->subscriptions('customer_w2FZHYSdKNUFAuIS')->get('subscription_SIuAFUNKdSYHZF2w');
+    $subscription = $vatly->customers->subscriptions('customer_w2FZHYSdKNUFAuIS')->get('subscription_SIuAFUNKdSYHZF2w');
     ```
 
     </CodeGroup>
@@ -467,10 +471,11 @@ The subscription model contains all the information about the subscriptions and 
         reactions={"red_angry_face": ["KateMcCallister"]})
     ``` */}
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->subscriptions->update('subscription_SIuAFUNKdSYHZF2w', [
+    $vatly->subscriptions->update('subscription_SIuAFUNKdSYHZF2w', [
         'subscriptionPlanId' => 'plan_abc123',
         'quantity' => 3,
     ]);
@@ -576,10 +581,11 @@ The subscription model contains all the information about the subscriptions and 
       }'
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $subscription = $client->subscriptions->updateBilling('subscription_SIuAFUNKdSYHZF2w', [
+    $subscription = $vatly->subscriptions->updateBilling('subscription_SIuAFUNKdSYHZF2w', [
         'billingAddress' => [
             'country' => 'NL',
             'streetAndNumber' => '456 New St',
@@ -665,10 +671,11 @@ The subscription model contains all the information about the subscriptions and 
     client.subscriptions.delete("subscription_SIuAFUNKdSYHZF2w")
     ``` */}
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->subscriptions->cancel('subscription_SIuAFUNKdSYHZF2w');
+    $vatly->subscriptions->cancel('subscription_SIuAFUNKdSYHZF2w');
     ```
 
     </CodeGroup>

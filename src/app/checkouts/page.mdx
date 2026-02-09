@@ -81,10 +81,11 @@ Below you'll find all properties for the Vatly Checkout API resource.
       -d limit=10
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $checkouts = $client->checkouts->list();
+    $checkouts = $vatly->checkouts->page();
     ```
 
     </CodeGroup>
@@ -191,17 +192,18 @@ Below you'll find all properties for the Vatly Checkout API resource.
     client.checkouts.create(contact_id="WAz8eIbvDR60rouK")
     ``` */}
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $checkout = $client->checkouts->create([
-      'products' => [],
+    $checkout = $vatly->checkouts->create([
+      'products' => ['subscription_plan_abc123'],
       'redirectUrlSuccess' => 'https://example.com/success',
       'redirectUrlCanceled' => 'https://example.com/canceled',
     ]);
 
     // Redirect the user to the checkout URL
-    header('Location: ' . $checkout->getCheckoutUrl(), true, 303);
+    header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
     ```
 
     </CodeGroup>
@@ -244,10 +246,11 @@ Below you'll find all properties for the Vatly Checkout API resource.
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $checkout = $client->checkouts->get('checkout_xgQQXg3hrtjh7AvZ');
+    $checkout = $vatly->checkouts->get('checkout_xgQQXg3hrtjh7AvZ');
     ```
 
     </CodeGroup>

@@ -72,10 +72,11 @@ Below you'll find all properties for the Vatly Customer API resource.
       -d limit=10
     ```
 
-    ```php
-    $vatly = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $customers = $vatly->customers->list();
+    $customers = $vatly->customers->page();
     ```
 
     </CodeGroup>
@@ -173,8 +174,9 @@ Below you'll find all properties for the Vatly Customer API resource.
     )
     ``` */}
 
-    ```php
-    $vatly = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
     $vatly->customers->create([
       'email' => 'john@example.com',
@@ -234,8 +236,9 @@ Below you'll find all properties for the Vatly Customer API resource.
     client.customers.get("WAz8eIbvDR60rouK")
     ``` */}
 
-    ```php
-    $vatly = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
     $vatly->customers->get('customer_SUKjQ4SHxPrBNBb4ea5zH');
     ```
@@ -305,8 +308,9 @@ Below you'll find all properties for the Vatly Customer API resource.
     client.customers.update("WAz8eIbvDR60rouK", display_name="UncleFrank")
     ```
 
-    ```php
-    $vatly = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
     $vatly->customers->update('WAz8eIbvDR60rouK', [
       'display_name' => 'UncleFrank',
@@ -366,8 +370,9 @@ Below you'll find all properties for the Vatly Customer API resource.
     client.customers.delete("WAz8eIbvDR60rouK")
     ```
 
-    ```php
-    $vatly = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
     $vatly->customers->delete('WAz8eIbvDR60rouK');
     ```

@@ -88,10 +88,11 @@ The group model contains all the information about your groups, including what c
     client.groups.list()
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->groups->list();
+    $vatly->groups->page();
     ```
 
     </CodeGroup>
@@ -198,10 +199,11 @@ The group model contains all the information about your groups, including what c
     client.groups.create(name="Plaza Hotel")
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->groups->create([
+    $vatly->groups->create([
       'name' => 'Plaza Hotel',
     ]);
     ```
@@ -259,10 +261,11 @@ The group model contains all the information about your groups, including what c
     client.groups.get("L7cGNIBKZiNJ6wqF")
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->groups->get('L7cGNIBKZiNJ6wqF');
+    $vatly->groups->get('L7cGNIBKZiNJ6wqF');
     ```
 
     </CodeGroup>
@@ -358,10 +361,11 @@ The group model contains all the information about your groups, including what c
     client.groups.update("L7cGNIBKZiNJ6wqF", description="The finest in New York.")
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->groups->update('L7cGNIBKZiNJ6wqF', [
+    $vatly->groups->update('L7cGNIBKZiNJ6wqF', [
       'description' => 'The finest in New York.',
     ]);
     ```
@@ -436,10 +440,11 @@ The group model contains all the information about your groups, including what c
     client.groups.delete("L7cGNIBKZiNJ6wqF")
     ```
 
-    ```php
-    $client = new \Vatly\ApiClient($token);
+    ```php {{ title: 'PHP' }}
+    $client = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $client->groups->delete('L7cGNIBKZiNJ6wqF');
+    $vatly->groups->delete('L7cGNIBKZiNJ6wqF');
     ```
 
     </CodeGroup>
