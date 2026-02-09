@@ -22,7 +22,7 @@ To make an idempotent request, include a unique `Idempotency-Key` header with yo
 
 ```bash {{ title: 'cURL' }}
 curl -X POST https://api.vatly.com/v1/subscriptions \
-  -H "Authorization: Bearer {token}" \
+  -H "Authorization: Bearer live_your_api_key_here" \
   -H "Idempotency-Key: 123e4567-e89b-12d3-a456-426614174000" \
   -d subscription="Hello, World!"
 ```

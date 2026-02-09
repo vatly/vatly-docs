@@ -37,7 +37,7 @@ The refund model contains all the information about order refunds, including the
     <CodeGroup title="Request" tag="POST" label="/v1/orders/:orderId/refunds">
     ```bash {{ title: 'cURL' }}
     curl -X POST https://api.vatly.com/v1/orders/ord_1234/refunds \
-      -H "Authorization: Bearer {token}" \
+      -H "Authorization: Bearer live_your_api_key_here" \
       -d amount=1000 \
       -d reason="Customer request"
     ```
@@ -67,7 +67,7 @@ The refund model contains all the information about order refunds, including the
     <CodeGroup title="Request" tag="POST" label="/v1/orders/:orderId/refunds/full">
     ```bash {{ title: 'cURL' }}
     curl -X POST https://api.vatly.com/v1/orders/ord_1234/refunds/full \
-      -H "Authorization: Bearer {token}" \
+      -H "Authorization: Bearer live_your_api_key_here" \
       -d reason="Customer request"
     ```
     </CodeGroup>
@@ -102,7 +102,7 @@ The refund model contains all the information about order refunds, including the
     <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/refunds">
     ```bash {{ title: 'cURL' }}
     curl https://api.vatly.com/v1/orders/ord_1234/refunds \
-      -H "Authorization: Bearer {token}"
+      -H "Authorization: Bearer live_your_api_key_here"
     ```
     </CodeGroup>
   </Col>
@@ -130,7 +130,7 @@ The refund model contains all the information about order refunds, including the
     <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/refunds/:refundId">
     ```bash {{ title: 'cURL' }}
     curl https://api.vatly.com/v1/orders/ord_1234/refunds/ref_5678 \
-      -H "Authorization: Bearer {token}"
+      -H "Authorization: Bearer live_your_api_key_here"
     ```
     </CodeGroup>
   </Col>
@@ -158,7 +158,7 @@ The refund model contains all the information about order refunds, including the
     <CodeGroup title="Request" tag="DELETE" label="/v1/orders/:orderId/refunds/:refundId">
     ```bash {{ title: 'cURL' }}
     curl -X DELETE https://api.vatly.com/v1/orders/ord_1234/refunds/ref_5678 \
-      -H "Authorization: Bearer {token}"
+      -H "Authorization: Bearer live_your_api_key_here"
     ```
     </CodeGroup>
   </Col>
