@@ -66,7 +66,7 @@ The attachment model contains all the information about the files you send to yo
     ```bash {{ title: 'cURL' }}
     curl -G https://api.vatly.com/v1/attachments \
       -H "Authorization: Bearer live_your_api_key_here" \
-      -d checkout_id="xgQQXg3hrtjh7AvZ" \
+      -d checkout_id="chk_xgQQXg3hrtjh7AvZ" \
       -d limit=10
     ```
 
@@ -176,8 +176,8 @@ The attachment model contains all the information about the files you send to yo
 
     ```json {{ title: 'Response' }}
     {
-      "id": "Nc6yKKMpcxiiFxp6",
-      "subscription_id": "LoPsJaMcPBuFNjg1",
+      "id": "att_Nc6yKKMpcxiiFxp6",
+      "subscription_id": "sub_LoPsJaMcPBuFNjg1",
       "filename": "Invoice_room_service__Plaza_Hotel.pdf",
       "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel.pdf",
       "file_type": "application/pdf",
@@ -201,10 +201,10 @@ The attachment model contains all the information about the files you send to yo
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/attachments/Nc6yKKMpcxiiFxp6">
+    <CodeGroup title="Request" tag="GET" label="/v1/attachments/att_Nc6yKKMpcxiiFxp6">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/attachments/Nc6yKKMpcxiiFxp6 \
+    curl https://api.vatly.com/v1/attachments/att_Nc6yKKMpcxiiFxp6 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
@@ -213,7 +213,7 @@ The attachment model contains all the information about the files you send to yo
 
     const client = new ApiClient(token)
 
-    await client.attachments.get('Nc6yKKMpcxiiFxp6')
+    await client.attachments.get('att_Nc6yKKMpcxiiFxp6')
     ```
 
     ```python
@@ -221,22 +221,22 @@ The attachment model contains all the information about the files you send to yo
 
     client = ApiClient(token)
 
-    client.attachments.get("Nc6yKKMpcxiiFxp6")
+    client.attachments.get("att_Nc6yKKMpcxiiFxp6")
     ```
 
     ```php {{ title: 'PHP' }}
     $client = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $vatly->attachments->get('Nc6yKKMpcxiiFxp6');
+    $vatly->attachments->get('att_Nc6yKKMpcxiiFxp6');
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "Nc6yKKMpcxiiFxp6",
-      "subscription_id": "LoPsJaMcPBuFNjg1",
+      "id": "att_Nc6yKKMpcxiiFxp6",
+      "subscription_id": "sub_LoPsJaMcPBuFNjg1",
       "filename": "Invoice_room_service__Plaza_Hotel.pdf",
       "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel.pdf",
       "file_type": "application/pdf",
@@ -268,10 +268,10 @@ The attachment model contains all the information about the files you send to yo
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="PUT" label="/v1/attachments/Nc6yKKMpcxiiFxp6">
+    <CodeGroup title="Request" tag="PUT" label="/v1/attachments/att_Nc6yKKMpcxiiFxp6">
 
     ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.vatly.com/v1/attachments/Nc6yKKMpcxiiFxp6 \
+    curl -X PUT https://api.vatly.com/v1/attachments/att_Nc6yKKMpcxiiFxp6 \
       -H "Authorization: Bearer live_your_api_key_here" \
       -d filename="Invoice_room_service__Plaza_Hotel_updated.pdf"
     ```
@@ -281,7 +281,7 @@ The attachment model contains all the information about the files you send to yo
 
     const client = new ApiClient(token)
 
-    await client.attachments.update('Nc6yKKMpcxiiFxp6', {
+    await client.attachments.update('att_Nc6yKKMpcxiiFxp6', {
       filename: 'Invoice_room_service__Plaza_Hotel_updated.pdf',
     })
     ```
@@ -291,14 +291,14 @@ The attachment model contains all the information about the files you send to yo
 
     client = ApiClient(token)
 
-    client.attachments.update("Nc6yKKMpcxiiFxp6", filename="Invoice_room_service__Plaza_Hotel_updated.pdf")
+    client.attachments.update("att_Nc6yKKMpcxiiFxp6", filename="Invoice_room_service__Plaza_Hotel_updated.pdf")
     ```
 
     ```php {{ title: 'PHP' }}
     $client = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $vatly->attachments->update('Nc6yKKMpcxiiFxp6', [
+    $vatly->attachments->update('att_Nc6yKKMpcxiiFxp6', [
       'filename' => 'Invoice_room_service__Plaza_Hotel_updated.pdf',
     ]);
     ```
@@ -307,8 +307,8 @@ The attachment model contains all the information about the files you send to yo
 
     ```json {{ title: 'Response' }}
     {
-      "id": "Nc6yKKMpcxiiFxp6",
-      "subscription_id": "LoPsJaMcPBuFNjg1",
+      "id": "att_Nc6yKKMpcxiiFxp6",
+      "subscription_id": "sub_LoPsJaMcPBuFNjg1",
       "filename": "Invoice_room_service__Plaza_Hotel.pdf",
       "file_url": "https://assets.protocol.chat/attachments/Invoice_room_service__Plaza_Hotel_updated.pdf",
       "file_type": "application/pdf",
@@ -332,10 +332,10 @@ The attachment model contains all the information about the files you send to yo
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="DELETE" label="/v1/attachments/Nc6yKKMpcxiiFxp6">
+    <CodeGroup title="Request" tag="DELETE" label="/v1/attachments/att_Nc6yKKMpcxiiFxp6">
 
     ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.vatly.com/v1/attachments/Nc6yKKMpcxiiFxp6 \
+    curl -X DELETE https://api.vatly.com/v1/attachments/att_Nc6yKKMpcxiiFxp6 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
@@ -344,7 +344,7 @@ The attachment model contains all the information about the files you send to yo
 
     const client = new ApiClient(token)
 
-    await client.attachments.delete('Nc6yKKMpcxiiFxp6')
+    await client.attachments.delete('att_Nc6yKKMpcxiiFxp6')
     ```
 
     ```python
@@ -352,14 +352,14 @@ The attachment model contains all the information about the files you send to yo
 
     client = ApiClient(token)
 
-    client.attachments.delete("Nc6yKKMpcxiiFxp6")
+    client.attachments.delete("att_Nc6yKKMpcxiiFxp6")
     ```
 
     ```php {{ title: 'PHP' }}
     $client = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $vatly->attachments->delete('Nc6yKKMpcxiiFxp6');
+    $vatly->attachments->delete('att_Nc6yKKMpcxiiFxp6');
     ```
 
     </CodeGroup>

@@ -24,10 +24,10 @@ When your app receives a webhook request from Vatly, check the `type` attribute 
 
 ```json {{ title: 'Example webhook payload' }}
 {
-  "id": "a056V9ZCh6X9XZlr",
+  "id": "whk_a056V9ZCh6X9XZlr",
   "type": "subscription.updated",
   "payload": {
-    "id": "WAz8eIbvDR60rouK"
+    "id": "sub_WAz8eIbvDR60rouK"
     // ...
   }
 }
@@ -105,13 +105,13 @@ To make integrating Vatly as smooth as possible, you can inspect a detailed webh
 
     ```json {{ 'title': 'Example payload' }}
     {
-      "id": "a056V7R7NmNRjl70",
+      "id": "whk_a056V7R7NmNRjl70",
       "type": "subscription.updated",
       "payload": {
-        "id": "SIuAFUNKdSYHZF2w",
-        "checkout_id": "xgQQXg3hrtjh7AvZ",
+        "id": "sub_SIuAFUNKdSYHZF2w",
+        "checkout_id": "chk_xgQQXg3hrtjh7AvZ",
         "contact": {
-          "id": "WAz8eIbvDR60rouK",
+          "id": "cus_WAz8eIbvDR60rouK",
           "username": "KevinMcCallister",
           "phone_number": "1-800-759-3000",
           "avatar_url": "https://assets.protocol.chat/avatars/kevin.jpg",

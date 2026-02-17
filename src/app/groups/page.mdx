@@ -99,14 +99,13 @@ The group model contains all the information about your groups, including what c
 
     ```json {{ title: 'Response' }}
     {
-      "has_more": false,
       "data": [
         {
-          "id": "l7cGNIBKZiNJ6wqF",
+          "id": "grp_l7cGNIBKZiNJ6wqF",
           "name": "Plaza Hotel",
           "description": "World-renowned.",
           "avatar_url": "https://assets.protocol.chat/avatars/plazahotel.jpg",
-          "checkout_id": "ZYjVAbCE9g5XRlra",
+          "checkout_id": "chk_ZYjVAbCE9g5XRlra",
           "contacts": [
             {
               "username": "Hector"
@@ -129,10 +128,16 @@ The group model contains all the information about your groups, including what c
           "archived_at": null
         },
         {
-          "id": "hSIhXBhNe8X1d8Et"
+          "id": "grp_hSIhXBhNe8X1d8Et"
           // ...
         }
-      ]
+      ],
+      "count": 2,
+      "links": {
+        "self": { "href": "https://api.vatly.com/v1/groups?limit=10", "type": "application/json" },
+        "next": null,
+        "prev": null
+      }
     }
     ```
 
@@ -212,11 +217,11 @@ The group model contains all the information about your groups, including what c
 
     ```json {{ title: 'Response' }}
     {
-      "id": "l7cGNIBKZiNJ6wqF",
+      "id": "grp_l7cGNIBKZiNJ6wqF",
       "name": "Plaza Hotel",
       "description": null,
       "avatar_url": null,
-      "checkout_id": "ZYjVAbCE9g5XRlra",
+      "checkout_id": "chk_ZYjVAbCE9g5XRlra",
       "contacts": [],
       "created_at": 692233200,
       "archived_at": null
@@ -238,10 +243,10 @@ The group model contains all the information about your groups, including what c
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/groups/L7cGNIBKZiNJ6wqF">
+    <CodeGroup title="Request" tag="GET" label="/v1/groups/grp_l7cGNIBKZiNJ6wqF">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/groups/L7cGNIBKZiNJ6wqF \
+    curl https://api.vatly.com/v1/groups/grp_l7cGNIBKZiNJ6wqF \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
@@ -250,7 +255,7 @@ The group model contains all the information about your groups, including what c
 
     const client = new ApiClient(token)
 
-    await client.groups.get('L7cGNIBKZiNJ6wqF')
+    await client.groups.get('grp_l7cGNIBKZiNJ6wqF')
     ```
 
     ```python
@@ -258,25 +263,25 @@ The group model contains all the information about your groups, including what c
 
     client = ApiClient(token)
 
-    client.groups.get("L7cGNIBKZiNJ6wqF")
+    client.groups.get("grp_l7cGNIBKZiNJ6wqF")
     ```
 
     ```php {{ title: 'PHP' }}
     $client = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $vatly->groups->get('L7cGNIBKZiNJ6wqF');
+    $vatly->groups->get('grp_l7cGNIBKZiNJ6wqF');
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "l7cGNIBKZiNJ6wqF",
+      "id": "grp_l7cGNIBKZiNJ6wqF",
       "name": "Plaza Hotel",
       "description": "World-renowned.",
       "avatar_url": "https://assets.protocol.chat/avatars/plazahotel.jpg",
-      "checkout_id": "ZYjVAbCE9g5XRlra",
+      "checkout_id": "chk_ZYjVAbCE9g5XRlra",
       "contacts": [
         {
           "username": "Hector"
@@ -335,10 +340,10 @@ The group model contains all the information about your groups, including what c
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="PUT" label="/v1/groups/L7cGNIBKZiNJ6wqF">
+    <CodeGroup title="Request" tag="PUT" label="/v1/groups/grp_l7cGNIBKZiNJ6wqF">
 
     ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.vatly.com/v1/groups/L7cGNIBKZiNJ6wqF \
+    curl -X PUT https://api.vatly.com/v1/groups/grp_l7cGNIBKZiNJ6wqF \
       -H "Authorization: Bearer live_your_api_key_here" \
       -d description="The finest in New York."
     ```
@@ -348,7 +353,7 @@ The group model contains all the information about your groups, including what c
 
     const client = new ApiClient(token)
 
-    await client.groups.update('L7cGNIBKZiNJ6wqF', {
+    await client.groups.update('grp_l7cGNIBKZiNJ6wqF', {
         description: 'The finest in New York.',
     })
     ```
@@ -358,14 +363,14 @@ The group model contains all the information about your groups, including what c
 
     client = ApiClient(token)
 
-    client.groups.update("L7cGNIBKZiNJ6wqF", description="The finest in New York.")
+    client.groups.update("grp_l7cGNIBKZiNJ6wqF", description="The finest in New York.")
     ```
 
     ```php {{ title: 'PHP' }}
     $client = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $vatly->groups->update('L7cGNIBKZiNJ6wqF', [
+    $vatly->groups->update('grp_l7cGNIBKZiNJ6wqF', [
       'description' => 'The finest in New York.',
     ]);
     ```
@@ -374,11 +379,11 @@ The group model contains all the information about your groups, including what c
 
     ```json {{ title: 'Response' }}
     {
-      "id": "l7cGNIBKZiNJ6wqF",
+      "id": "grp_l7cGNIBKZiNJ6wqF",
       "name": "Plaza Hotel",
       "description": "The finest in New York.",
       "avatar_url": "https://assets.protocol.chat/avatars/plazahotel.jpg",
-      "checkout_id": "ZYjVAbCE9g5XRlra",
+      "checkout_id": "chk_ZYjVAbCE9g5XRlra",
       "contacts": [
         {
           "username": "Hector"
@@ -417,10 +422,10 @@ The group model contains all the information about your groups, including what c
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="DELETE" label="/v1/groups/L7cGNIBKZiNJ6wqF">
+    <CodeGroup title="Request" tag="DELETE" label="/v1/groups/grp_l7cGNIBKZiNJ6wqF">
 
     ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.vatly.com/v1/groups/L7cGNIBKZiNJ6wqF \
+    curl -X DELETE https://api.vatly.com/v1/groups/grp_l7cGNIBKZiNJ6wqF \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
@@ -429,7 +434,7 @@ The group model contains all the information about your groups, including what c
 
     const client = new ApiClient(token)
 
-    await client.groups.delete('L7cGNIBKZiNJ6wqF')
+    await client.groups.delete('grp_l7cGNIBKZiNJ6wqF')
     ```
 
     ```python
@@ -437,14 +442,14 @@ The group model contains all the information about your groups, including what c
 
     client = ApiClient(token)
 
-    client.groups.delete("L7cGNIBKZiNJ6wqF")
+    client.groups.delete("grp_l7cGNIBKZiNJ6wqF")
     ```
 
     ```php {{ title: 'PHP' }}
     $client = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $vatly->groups->delete('L7cGNIBKZiNJ6wqF');
+    $vatly->groups->delete('grp_l7cGNIBKZiNJ6wqF');
     ```
 
     </CodeGroup>
