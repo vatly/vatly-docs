@@ -1,14 +1,14 @@
 export const metadata = {
   title: 'Errors',
   description:
-    'In this guide, we will talk about what happens when something goes wrong while you work with the API.',
+    'This guide covers API error handling, including status codes and error types.',
 }
 
 # Errors
 
-In this guide, we will talk about what happens when something goes wrong while you work with the API. Mistakes happen, and mostly they will be yours, not ours. Let's look at some status codes and error types you might encounter. {{ className: 'lead' }}
+This guide covers API error handling. We'll look at the status codes and error types you might encounter. {{ className: 'lead' }}
 
-You can tell if your request was successful by checking the status code when receiving an API response. If a response comes back unsuccessful, you can use the error type and error message to figure out what has gone wrong and do some rudimentary debugging (before contacting support).
+You can tell if your request was successful by checking the status code in the API response. If a response is unsuccessful, use the error type and message to understand what went wrong.
 
 {/* <Note>
   Before reaching out to support with an error, please be aware that 99% of all
@@ -27,8 +27,7 @@ Here is a list of the different categories of status codes returned by the Vatly
     A 2xx status code indicates a successful response.
   </Property>
   <Property name="4xx">
-    A 4xx status code indicates a client error — this means it's a _you_
-    problem.
+    A 4xx status code indicates a client error — this means there's an issue with the request.
   </Property>
   <Property name="5xx">
     A 5xx status code indicates a server error — this means the issue is on Vatly's end and we are automatically notified of the problem.
