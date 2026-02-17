@@ -1,16 +1,16 @@
 export const metadata = {
-  title: 'One-off products',
+  title: 'One-off Products',
   description:
-    'On this page, we’ll dive into the different one-off product endpoints you can use to interact with your one-off products programmatically.',
+    'On this page, we\'ll dive into the different one-off product endpoints you can use to interact with your one-off products programmatically.',
 }
 
-# One-off products
+# One-off Products
 
-One-off products are digital products you can sell to your contacts and groups. When a contact buys a one-off product, an Order gets created and any webhooks configured through the dashboard get fired. {{ className: 'lead' }}
+One-off products are digital products you can sell to your customers. When a customer buys a one-off product, an Order gets created and any webhooks configured through the dashboard get fired. {{ className: 'lead' }}
 
-A one-off product is a digital product that can be bought once. {{ className: 'lead' }}
+A one-off product is a digital product that can be bought once. Products are configured in the Vatly dashboard and can be added to checkouts. {{ className: 'lead' }}
 
-Looking for subscriptions plans? See the [Subscription plans API](/subscription-plans) instead. {{ className: 'lead' }}
+Looking for subscription plans? See the [Subscription Plans API](/subscription-plans) instead. {{ className: 'lead' }}
 
 ## The one-off product model
 
@@ -20,40 +20,48 @@ Below you'll find all properties for the Vatly One-off Product API resource.
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the one-off product.
+    Unique identifier for the product (starts with `prod_`).
+  </Property>
+  <Property name="resource" type="string">
+    The resource type. Always `one_off_product`.
+  </Property>
+  <Property name="testmode" type="boolean">
+    Whether this product is in test mode.
   </Property>
   <Property name="name" type="string">
-    The name of the one-off product.
+    Display name of the product.
   </Property>
   <Property name="description" type="string">
-    A description of the one-off product.
+    Detailed description of the product.
   </Property>
-  <Property name="price" type="number">
-    The price of the one-off product.
+  <Property name="basePrice" type="Money">
+    Default price of the product. A Money object with `value` (decimal string) and `currency` (ISO 4217 code). Can be overridden in checkout.
   </Property>
-  <Property name="currency" type="string">
-    The currency of the one-off product price.
+  <Property name="status" type="string">
+    Current status of the product. Can be `approved` (active and can be purchased), `draft` (not yet available), or `archived` (has been archived).
   </Property>
   <Property name="createdAt" type="string">
-    The timestamp when the one-off product was created, in ISO 8601 format.
+    When this product was created (ISO 8601 format).
   </Property>
-  <Property name="updatedAt" type="string">
-    The timestamp when the one-off product was last updated, in ISO 8601 format.
+  <Property name="links" type="object">
+    HATEOAS links to related resources. Contains `self` link.
   </Property>
 </Properties>
 
-## List all one-off products
+---
+
+## List all one-off products {{ tag: 'GET', label: '/v1/one-off-products' }}
 
 <Row>
   <Col>
 
-    This endpoint retrieves a list of all one-off products.
+    This endpoint retrieves a paginated list of all one-off products.
 
     ### Optional parameters
 
     <Properties>
       <Property name="limit" type="integer">
-        The number of one-off products to return (default: 10, max: 100).
+        The number of products to return (default: 10, max: 100).
       </Property>
       <Property name="startingAfter" type="string">
         A cursor for use in pagination. Returns results after this product ID.
@@ -68,9 +76,17 @@ Below you'll find all properties for the Vatly One-off Product API resource.
 
     <CodeGroup title="Request" tag="GET" label="/v1/one-off-products">
 
-    ```bash
-    curl -X GET https://api.vatly.com/v1/one-off-products \
-      -H "Authorization: Bearer {your_api_key}"
+    ```bash {{ title: 'cURL' }}
+    curl -G https://api.vatly.com/v1/one-off-products \
+      -H "Authorization: Bearer live_your_api_key_here" \
+      -d limit=10
+    ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $products = $vatly->oneOffProducts->page();
     ```
 
     </CodeGroup>
@@ -79,28 +95,43 @@ Below you'll find all properties for the Vatly One-off Product API resource.
     {
       "data": [
         {
-          "id": "prod_1234567890",
-          "name": "Example Product",
-          "description": "This is an example one-off product",
-          "price": 19.99,
-          "currency": "EUR",
-          "createdAt": "2023-01-01T00:00:00Z",
-          "updatedAt": "2023-01-01T00:00:00Z"
-        },
-        // ... more products
+          "id": "prod_abc123def456",
+          "resource": "one_off_product",
+          "testmode": false,
+          "name": "Premium License",
+          "description": "Lifetime access to all premium features",
+          "basePrice": {
+            "value": "99.99",
+            "currency": "EUR"
+          },
+          "status": "approved",
+          "createdAt": "2024-01-15T10:30:00Z",
+          "links": {
+            "self": {
+              "href": "https://api.vatly.com/v1/one-off-products/prod_abc123def456",
+              "type": "application/json"
+            }
+          }
+        }
       ],
-      "meta": {
-        "total": 50,
-        "limit": 10,
-        "offset": 0
-      }
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/one-off-products?limit=10",
+          "type": "application/json"
+        },
+        "next": null,
+        "prev": null
+      },
+      "count": 1
     }
     ```
 
   </Col>
 </Row>
 
-## Get a specific one-off product
+---
+
+## Get a specific one-off product {{ tag: 'GET', label: '/v1/one-off-products/:id' }}
 
 <Row>
   <Col>
@@ -110,7 +141,7 @@ Below you'll find all properties for the Vatly One-off Product API resource.
     ### Parameters
 
     <Properties>
-      <Property name="oneOffProductId" type="string">
+      <Property name="id" type="string">
         The ID of the one-off product to retrieve.
       </Property>
     </Properties>
@@ -118,24 +149,41 @@ Below you'll find all properties for the Vatly One-off Product API resource.
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/one-off-products/{oneOffProductId}">
+    <CodeGroup title="Request" tag="GET" label="/v1/one-off-products/prod_abc123def456">
 
-    ```bash
-    curl -X GET https://api.vatly.com/v1/one-off-products/{oneOffProductId} \
-      -H "Authorization: Bearer {your_api_key}"
+    ```bash {{ title: 'cURL' }}
+    curl https://api.vatly.com/v1/one-off-products/prod_abc123def456 \
+      -H "Authorization: Bearer live_your_api_key_here"
+    ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $product = $vatly->oneOffProducts->get('prod_abc123def456');
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "prod_1234567890",
-      "name": "Example Product",
-      "description": "This is an example one-off product",
-      "price": 19.99,
-      "currency": "EUR",
-      "createdAt": "2023-01-01T00:00:00Z",
-      "updatedAt": "2023-01-01T00:00:00Z"
+      "id": "prod_abc123def456",
+      "resource": "one_off_product",
+      "testmode": false,
+      "name": "Premium License",
+      "description": "Lifetime access to all premium features",
+      "basePrice": {
+        "value": "99.99",
+        "currency": "EUR"
+      },
+      "status": "approved",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/one-off-products/prod_abc123def456",
+          "type": "application/json"
+        }
+      }
     }
     ```
 
