@@ -6,7 +6,7 @@ export const metadata = {
 
 # The Checkouts API
 
-The hosted Vatly Checkouts allow your customers to pay for your digital products and services. When the checkout is succesfully paid, an Order gets created and any webhooks configured through the dashboard get fired. {{ className: 'lead' }}
+The hosted Vatly Checkouts allow your customers to pay for your digital products and services. When the checkout is successfully paid, an Order gets created and any webhooks configured through the dashboard get fired. {{ className: 'lead' }}
 
 ## The Checkout API Resource
 
@@ -16,13 +16,16 @@ Below you'll find all properties for the Vatly Checkout API resource.
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the checkout.
+    Unique identifier for the checkout (starts with `chk_`).
+  </Property>
+  <Property name="resource" type="string">
+    The resource type. Always `checkout`.
   </Property>
   <Property name="merchantId" type="string">
     Unique identifier for the merchant this checkout belongs to.
   </Property>
-  <Property name="orderId" type="string">
-    Unique identifier for the order this checkout belongs to. Only available when the checkout has been paid successfully.
+  <Property name="orderId" type="string | null">
+    Unique identifier for the order created from this checkout. Only available when the checkout has been paid successfully.
   </Property>
   <Property name="testmode" type="boolean">
     Whether this checkout is in test mode.
@@ -33,17 +36,20 @@ Below you'll find all properties for the Vatly Checkout API resource.
   <Property name="redirectUrlCanceled" type="string">
     The URL to which the user should get redirected when the user cancels the checkout.
   </Property>
-  <Property name="metadata" type="string">
-    Any metadata associated with the checkout. Provide any data you like to be stored with the checkout.
+  <Property name="metadata" type="object | null">
+    Arbitrary key-value metadata for your application. Up to 50 keys, with key names up to 40 characters and values up to 500 characters.
   </Property>
   <Property name="status" type="string">
     The status of the checkout. Can be `created`, `paid`, `canceled`, `failed`, or `expired`.
   </Property>
+  <Property name="expiresAt" type="string | null">
+    When this checkout will expire (ISO 8601 format).
+  </Property>
   <Property name="createdAt" type="string">
     The moment the checkout was created, in ISO 8601 format.
   </Property>
-  <Property name="_links_" type="string">
-    An object with API urls and other hyperlinks relevant to the checkout. Specifically, the `checkoutUrl` property contains the URL to which the user should be redirected to complete the checkout.
+  <Property name="links" type="object">
+    HATEOAS links to related resources. Contains `checkoutUrl` (the hosted checkout page URL), `self`, and optionally `order` (after completion).
   </Property>
 </Properties>
 
@@ -94,17 +100,30 @@ Below you'll find all properties for the Vatly Checkout API resource.
     {
       "data": [
         {
-          "id": "checkout_xgQQXg3hrtjh7AvZ",
-          "merchantId": "merchant_WAz8eIbvDR60rouK",
-          "orderId": "order_abc123",
+          "id": "chk_abc123def456",
+          "resource": "checkout",
+          "merchantId": "mer_abc123",
+          "orderId": "ord_xyz789",
           "testmode": false,
           "redirectUrlSuccess": "https://example.com/success",
           "redirectUrlCanceled": "https://example.com/canceled",
           "metadata": null,
           "status": "paid",
-          "createdAt": "2024-12-14T13:32:24.000Z",
-          "_links": {
-            "checkoutUrl": "https://pay.vatly.com/checkout_xgQQXg3hrtjh7AvZ"
+          "expiresAt": "2024-01-15T14:30:00Z",
+          "createdAt": "2024-01-15T10:30:00Z",
+          "links": {
+            "checkoutUrl": {
+              "href": "https://pay.vatly.com/chk_abc123def456",
+              "type": "text/html"
+            },
+            "self": {
+              "href": "https://api.vatly.com/v1/checkouts/chk_abc123def456",
+              "type": "application/json"
+            },
+            "order": {
+              "href": "https://api.vatly.com/v1/orders/ord_xyz789",
+              "type": "application/json"
+            }
           }
         }
       ],
@@ -114,7 +133,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
           "type": "application/json"
         },
         "next": {
-          "href": "https://api.vatly.com/v1/checkouts?startingAfter=checkout_xgQQXg3hrtjh7AvZ&limit=10",
+          "href": "https://api.vatly.com/v1/checkouts?startingAfter=chk_abc123def456&limit=10",
           "type": "application/json"
         },
         "prev": null
@@ -141,7 +160,12 @@ Below you'll find all properties for the Vatly Checkout API resource.
 
     <Properties>
       <Property name="products" type="array">
-        An array of IDs for the products you want to checkout. Both subscription plan IDs and one-off product IDs can be used in this array.
+        An array of product objects to include in this checkout. Each product can have:
+        - `id` (required): Product ID (starts with `prod_` for one-off products or `plan_` for subscription plans)
+        - `quantity` (optional): Number of units to purchase (default: 1)
+        - `price` (optional): Custom price override as a Money object `{value: "X.XX", currency: "EUR"}`
+        - `trialDays` (optional): Trial period in days (only for subscription plans)
+        - `metadata` (optional): Additional metadata for this product
       </Property>
       <Property name="redirectUrlSuccess" type="string">
         The URL to which the checkout should redirect the user after the checkout has been paid successfully.
@@ -154,11 +178,11 @@ Below you'll find all properties for the Vatly Checkout API resource.
     ### Optional attributes
 
     <Properties>
-      <Property name="metadata" type="string">
-        Any metadata associated with the checkout. Provide any data you like to be stored with the checkout.
+      <Property name="metadata" type="object">
+        Arbitrary key-value metadata for your application.
       </Property>
       <Property name="customerId" type="string">
-        The ID for the customer this checkout belongs to. If no customer ID is provided, a new customer will be created once the checkout is paid successfully.
+        The ID for an existing customer to associate with this checkout. If provided, the customer's email will be pre-filled. Must match the testmode of the API token.
       </Property>
     </Properties>
 
@@ -170,34 +194,26 @@ Below you'll find all properties for the Vatly Checkout API resource.
     ```bash {{ title: 'cURL' }}
     curl https://api.vatly.com/v1/checkouts \
       -H "Authorization: Bearer live_your_api_key_here" \
-      -d 'products[]'="subscription_plan_d6ZPGVg4PEewUukwYd5zH"
-      -d 'products[]'="one_off_Hd5zYukwUEPegV6ZPGd"
+      -H "Content-Type: application/json" \
+      -d '{
+        "products": [
+          {"id": "prod_abc123", "quantity": 1},
+          {"id": "plan_xyz789", "trialDays": 14}
+        ],
+        "redirectUrlSuccess": "https://example.com/success",
+        "redirectUrlCanceled": "https://example.com/canceled"
+      }'
     ```
-
-    {/* ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.checkouts.create({
-      contact_id: 'WAz8eIbvDR60rouK',
-    })
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.checkouts.create(contact_id="WAz8eIbvDR60rouK")
-    ``` */}
 
     ```php {{ title: 'PHP' }}
     $vatly = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
     $checkout = $vatly->checkouts->create([
-      'products' => ['subscription_plan_abc123'],
+      'products' => [
+        ['id' => 'prod_abc123', 'quantity' => 1],
+        ['id' => 'plan_xyz789', 'trialDays' => 14],
+      ],
       'redirectUrlSuccess' => 'https://example.com/success',
       'redirectUrlCanceled' => 'https://example.com/canceled',
     ]);
@@ -210,17 +226,28 @@ Below you'll find all properties for the Vatly Checkout API resource.
 
     ```json {{ title: 'Response' }}
     {
-      "id": "checkout_xgQQXg3hrtjh7AvZ",
-      "merchantId": "merchant_WAz8eIbvDR60rouK",
+      "id": "chk_abc123def456",
+      "resource": "checkout",
+      "merchantId": "mer_abc123",
       "orderId": null,
       "testmode": false,
       "redirectUrlSuccess": "https://example.com/success",
       "redirectUrlCanceled": "https://example.com/canceled",
       "metadata": null,
       "status": "created",
-      "createdAt": "2024-12-14T13:32:24.000Z",
-      "_links": {
-        "checkoutUrl": "https://pay.vatly.com/checkout_xgQQXg3hrtjh7AvZ"
+      "expiresAt": "2024-01-15T14:30:00Z",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "links": {
+        "checkoutUrl": {
+          "href": "https://pay.vatly.com/chk_abc123def456",
+          "type": "text/html"
+        },
+        "self": {
+          "href": "https://api.vatly.com/v1/checkouts/chk_abc123def456",
+          "type": "application/json"
+        },
+        "order": null
+      }
     }
     ```
 
@@ -239,10 +266,10 @@ Below you'll find all properties for the Vatly Checkout API resource.
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/checkouts/checkout_xgQQXg3hrtjh7AvZ">
+    <CodeGroup title="Request" tag="GET" label="/v1/checkouts/chk_abc123def456">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/checkouts/checkout_xgQQXg3hrtjh7AvZ \
+    curl https://api.vatly.com/v1/checkouts/chk_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
@@ -250,24 +277,37 @@ Below you'll find all properties for the Vatly Checkout API resource.
     $vatly = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $checkout = $vatly->checkouts->get('checkout_xgQQXg3hrtjh7AvZ');
+    $checkout = $vatly->checkouts->get('chk_abc123def456');
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "checkout_xgQQXg3hrtjh7AvZ",
-      "merchantId": "merchant_WAz8eIbvDR60rouK",
-      "orderId": "order_abc123",
+      "id": "chk_abc123def456",
+      "resource": "checkout",
+      "merchantId": "mer_abc123",
+      "orderId": "ord_xyz789",
       "testmode": false,
       "redirectUrlSuccess": "https://example.com/success",
       "redirectUrlCanceled": "https://example.com/canceled",
       "metadata": null,
       "status": "paid",
-      "createdAt": "2024-12-14T13:32:24.000Z",
-      "_links": {
-        "checkoutUrl": "https://pay.vatly.com/checkout_xgQQXg3hrtjh7AvZ"
+      "expiresAt": "2024-01-15T14:30:00Z",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "links": {
+        "checkoutUrl": {
+          "href": "https://pay.vatly.com/chk_abc123def456",
+          "type": "text/html"
+        },
+        "self": {
+          "href": "https://api.vatly.com/v1/checkouts/chk_abc123def456",
+          "type": "application/json"
+        },
+        "order": {
+          "href": "https://api.vatly.com/v1/orders/ord_xyz789",
+          "type": "application/json"
+        }
       }
     }
     ```

@@ -1,37 +1,52 @@
 export const metadata = {
-  title: 'Subscription plans',
+  title: 'Subscription Plans',
   description:
-    'On this page, we’ll dive into the different subscription plan endpoints you can use to manage your subscription plans programmatically.',
+    'On this page, we\'ll dive into the different subscription plan endpoints you can use to manage your subscription plans programmatically.',
 }
 
-# Subscription plans
+# Subscription Plans
 
-Subscription plans are recurring products that enable you to create different subscription plans for your customers to choose from. On this page, we'll dive into the different subscription plan endpoints you can use to manage your subscription plans programmatically. We'll look at how to query, create, update, and delete subscription plans. {{ className: 'lead' }}
+Subscription plans define recurring billing terms for your customers. Plans are configured in the Vatly dashboard and can be added to checkouts to start new subscriptions. On this page, we'll dive into the different subscription plan endpoints you can use to query your plans programmatically. {{ className: 'lead' }}
 
 ## The subscription plan model
 
-The subscription plan model contains all the information about the subscription plans you create, including the name, description, and price.
+The subscription plan model contains all the information about the subscription plans you create, including the name, description, price, and billing interval.
 
 ### Properties
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the subscription plan.
+    Unique identifier for the subscription plan (starts with `plan_`).
+  </Property>
+  <Property name="resource" type="string">
+    The resource type. Always `subscription_plan`.
+  </Property>
+  <Property name="testmode" type="boolean">
+    Whether this plan is in test mode.
   </Property>
   <Property name="name" type="string">
-    The name of the subscription plan.
+    Display name of the plan.
   </Property>
   <Property name="description" type="string">
-    A detailed description of the subscription plan.
+    Detailed description of the plan.
   </Property>
-  <Property name="price" type="number">
-    The price of the subscription plan.
+  <Property name="basePrice" type="Money">
+    Price per billing interval. A Money object with `value` (decimal string) and `currency` (ISO 4217 code).
   </Property>
   <Property name="interval" type="string">
-    The billing interval (e.g., 'month', 'year').
+    Billing interval unit. Can be `day`, `week`, `month`, or `year`.
+  </Property>
+  <Property name="intervalCount" type="integer">
+    Number of interval units between billing cycles. For example, `interval: month` with `intervalCount: 3` bills every 3 months.
   </Property>
   <Property name="status" type="string">
-    The current status of the subscription plan (e.g., 'active', 'inactive').
+    Current status of the plan. Can be `approved` (active and can be subscribed to), `draft` (not yet available), or `archived` (has been archived).
+  </Property>
+  <Property name="createdAt" type="string">
+    When this plan was created (ISO 8601 format).
+  </Property>
+  <Property name="links" type="object">
+    HATEOAS links to related resources. Contains `self` link.
   </Property>
 </Properties>
 
@@ -42,7 +57,7 @@ The subscription plan model contains all the information about the subscription 
 <Row>
   <Col>
 
-    This endpoint retrieves a list of all subscription plans.
+    This endpoint retrieves a paginated list of all subscription plans.
 
     ### Optional query parameters
 
@@ -64,15 +79,16 @@ The subscription plan model contains all the information about the subscription 
     <CodeGroup title="Request" tag="GET" label="/v1/subscription-plans">
 
     ```bash {{ title: 'cURL' }}
-    curl -X GET https://api.vatly.com/v1/subscription-plans \
-      -H "Authorization: Bearer live_your_api_key_here"
+    curl -G https://api.vatly.com/v1/subscription-plans \
+      -H "Authorization: Bearer live_your_api_key_here" \
+      -d limit=10
     ```
 
-    ```php
-    $vatly = new Vatly\Api\VatlyApiClient;
-    $vatly->setApiKey($key);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $subscriptionPlans = $vatly->subscriptionPlans->list();
+    $plans = $vatly->subscriptionPlans->page();
     ```
 
     </CodeGroup>
@@ -81,16 +97,57 @@ The subscription plan model contains all the information about the subscription 
     {
       "data": [
         {
-          "id": "plan_abc123",
-          "name": "Basic Plan",
-          "description": "Our starter plan with essential features",
-          "price": 9.99,
+          "id": "plan_abc123def456",
+          "resource": "subscription_plan",
+          "testmode": false,
+          "name": "Pro Monthly",
+          "description": "Full access to all Pro features, billed monthly",
+          "basePrice": {
+            "value": "29.99",
+            "currency": "EUR"
+          },
           "interval": "month",
-          "status": "active"
+          "intervalCount": 1,
+          "status": "approved",
+          "createdAt": "2024-01-15T10:30:00Z",
+          "links": {
+            "self": {
+              "href": "https://api.vatly.com/v1/subscription-plans/plan_abc123def456",
+              "type": "application/json"
+            }
+          }
         },
-        // More subscription plans...
+        {
+          "id": "plan_yearly789xyz",
+          "resource": "subscription_plan",
+          "testmode": false,
+          "name": "Pro Yearly",
+          "description": "Full access to all Pro features, billed yearly",
+          "basePrice": {
+            "value": "299.99",
+            "currency": "EUR"
+          },
+          "interval": "year",
+          "intervalCount": 1,
+          "status": "approved",
+          "createdAt": "2024-01-15T10:30:00Z",
+          "links": {
+            "self": {
+              "href": "https://api.vatly.com/v1/subscription-plans/plan_yearly789xyz",
+              "type": "application/json"
+            }
+          }
+        }
       ],
-      "has_more": false
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/subscription-plans?limit=10",
+          "type": "application/json"
+        },
+        "next": null,
+        "prev": null
+      },
+      "count": 2
     }
     ```
 
@@ -117,30 +174,43 @@ The subscription plan model contains all the information about the subscription 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/subscription-plans/plan_abc123">
+    <CodeGroup title="Request" tag="GET" label="/v1/subscription-plans/plan_abc123def456">
 
     ```bash {{ title: 'cURL' }}
-    curl -X GET https://api.vatly.com/v1/subscription-plans/plan_abc123 \
+    curl https://api.vatly.com/v1/subscription-plans/plan_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
-    ```php
-    $vatly = new Vatly\Api\VatlyApiClient;
-    $vatly->setApiKey($key);
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
 
-    $subscriptionPlan = $vatly->subscriptionPlans->get('plan_abc123');
+    $plan = $vatly->subscriptionPlans->get('plan_abc123def456');
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "plan_abc123",
-      "name": "Basic Plan",
-      "description": "Our starter plan with essential features",
-      "price": 9.99,
+      "id": "plan_abc123def456",
+      "resource": "subscription_plan",
+      "testmode": false,
+      "name": "Pro Monthly",
+      "description": "Full access to all Pro features, billed monthly",
+      "basePrice": {
+        "value": "29.99",
+        "currency": "EUR"
+      },
       "interval": "month",
-      "status": "active"
+      "intervalCount": 1,
+      "status": "approved",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/subscription-plans/plan_abc123def456",
+          "type": "application/json"
+        }
+      }
     }
     ```
 

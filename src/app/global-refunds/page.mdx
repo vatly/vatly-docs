@@ -6,35 +6,56 @@ export const metadata = {
 
 # Refunds
 
-Refunds allow you to return money to your customers. This page covers the global refund endpoints that allow you to manage refunds across your entire account. For order-specific refund operations, see the [Order Refunds](/orders/refunds) documentation. {{ className: 'lead' }}
+Refunds allow you to return money to your customers. This page covers the global refund endpoints that allow you to manage refunds across your entire account. For order-specific refund operations, see the [Order Refunds](/refunds) documentation. {{ className: 'lead' }}
 
 ## The refund model
 
-The refund model contains all the information about refunds, including the amount refunded and the reason for the refund.
+The refund model contains all the information about refunds, including the refund lines, amounts, and tax information.
 
 ### Properties
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the refund.
+    Unique identifier for the refund (starts with `ref_`).
   </Property>
-  <Property name="order_id" type="string">
-    The ID of the order this refund belongs to.
+  <Property name="resource" type="string">
+    The resource type. Always `refund`.
   </Property>
-  <Property name="amount" type="integer">
-    The amount refunded in cents.
+  <Property name="orderId" type="string | null">
+    ID of the credit note order created for this refund. Only present after the refund is processed.
   </Property>
-  <Property name="currency" type="string">
-    The currency of the refund (e.g., EUR, USD).
+  <Property name="merchantId" type="string">
+    ID of the merchant.
   </Property>
-  <Property name="reason" type="string">
-    The reason provided for the refund.
+  <Property name="customerId" type="string">
+    ID of the customer receiving the refund.
+  </Property>
+  <Property name="testmode" type="boolean">
+    Whether this refund is in test mode.
   </Property>
   <Property name="status" type="string">
-    The current status of the refund.
+    The current status of the refund. Can be `pending`, `completed`, `failed`, or `canceled`.
   </Property>
-  <Property name="created_at" type="timestamp">
-    Timestamp of when the refund was created.
+  <Property name="originalOrderId" type="string">
+    ID of the original order being refunded.
+  </Property>
+  <Property name="total" type="Money">
+    Total refund amount including taxes. A Money object with `value` (decimal string) and `currency` (ISO 4217 code).
+  </Property>
+  <Property name="subtotal" type="Money">
+    Refund subtotal before taxes.
+  </Property>
+  <Property name="taxSummary" type="Money">
+    Total tax amount being refunded.
+  </Property>
+  <Property name="lines" type="array">
+    Array of refund line items. Each line includes `id`, `resource`, `description`, `quantity`, `basePrice`, `total`, `subtotal`, and `taxes`.
+  </Property>
+  <Property name="createdAt" type="string">
+    When this refund was created (ISO 8601 format).
+  </Property>
+  <Property name="links" type="object">
+    HATEOAS links to related resources. Contains `self`, `originalOrder`, and optionally `order` (the credit note).
   </Property>
 </Properties>
 
@@ -66,7 +87,91 @@ The refund model contains all the information about refunds, including the amoun
       -H "Authorization: Bearer live_your_api_key_here" \
       -d limit=10
     ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $refunds = $vatly->refunds->page();
+    ```
     </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "data": [
+        {
+          "id": "ref_abc123def456",
+          "resource": "refund",
+          "orderId": "ord_credit123",
+          "merchantId": "mer_abc123",
+          "customerId": "cus_xyz789",
+          "testmode": false,
+          "status": "completed",
+          "originalOrderId": "ord_original123",
+          "total": {
+            "value": "18.15",
+            "currency": "EUR"
+          },
+          "subtotal": {
+            "value": "15.00",
+            "currency": "EUR"
+          },
+          "taxSummary": {
+            "value": "3.15",
+            "currency": "EUR"
+          },
+          "lines": [
+            {
+              "id": "rli_abc123",
+              "resource": "refundline",
+              "description": "Pro Monthly Subscription (Refund)",
+              "quantity": 1,
+              "basePrice": {
+                "value": "15.00",
+                "currency": "EUR"
+              },
+              "total": {
+                "value": "18.15",
+                "currency": "EUR"
+              },
+              "subtotal": {
+                "value": "15.00",
+                "currency": "EUR"
+              },
+              "taxes": {
+                "value": "3.15",
+                "currency": "EUR"
+              }
+            }
+          ],
+          "createdAt": "2024-01-15T10:30:00Z",
+          "links": {
+            "self": {
+              "href": "https://api.vatly.com/v1/refunds/ref_abc123def456",
+              "type": "application/json"
+            },
+            "originalOrder": {
+              "href": "https://api.vatly.com/v1/orders/ord_original123",
+              "type": "application/json"
+            },
+            "order": {
+              "href": "https://api.vatly.com/v1/orders/ord_credit123",
+              "type": "application/json"
+            }
+          }
+        }
+      ],
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/refunds?limit=10",
+          "type": "application/json"
+        },
+        "next": null,
+        "prev": null
+      },
+      "count": 1
+    }
+    ```
   </Col>
 </Row>
 
@@ -88,9 +193,80 @@ The refund model contains all the information about refunds, including the amoun
   <Col sticky>
     <CodeGroup title="Request" tag="GET" label="/v1/refunds/:refundId">
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/refunds/ref_5678 \
+    curl https://api.vatly.com/v1/refunds/ref_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $refund = $vatly->refunds->get('ref_abc123def456');
+    ```
     </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "ref_abc123def456",
+      "resource": "refund",
+      "orderId": "ord_credit123",
+      "merchantId": "mer_abc123",
+      "customerId": "cus_xyz789",
+      "testmode": false,
+      "status": "completed",
+      "originalOrderId": "ord_original123",
+      "total": {
+        "value": "18.15",
+        "currency": "EUR"
+      },
+      "subtotal": {
+        "value": "15.00",
+        "currency": "EUR"
+      },
+      "taxSummary": {
+        "value": "3.15",
+        "currency": "EUR"
+      },
+      "lines": [
+        {
+          "id": "rli_abc123",
+          "resource": "refundline",
+          "description": "Pro Monthly Subscription (Refund)",
+          "quantity": 1,
+          "basePrice": {
+            "value": "15.00",
+            "currency": "EUR"
+          },
+          "total": {
+            "value": "18.15",
+            "currency": "EUR"
+          },
+          "subtotal": {
+            "value": "15.00",
+            "currency": "EUR"
+          },
+          "taxes": {
+            "value": "3.15",
+            "currency": "EUR"
+          }
+        }
+      ],
+      "createdAt": "2024-01-15T10:30:00Z",
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/refunds/ref_abc123def456",
+          "type": "application/json"
+        },
+        "originalOrder": {
+          "href": "https://api.vatly.com/v1/orders/ord_original123",
+          "type": "application/json"
+        },
+        "order": {
+          "href": "https://api.vatly.com/v1/orders/ord_credit123",
+          "type": "application/json"
+        }
+      }
+    }
+    ```
   </Col>
 </Row>

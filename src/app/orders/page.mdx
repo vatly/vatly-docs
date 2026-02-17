@@ -6,35 +6,94 @@ export const metadata = {
 
 # Orders
 
-Orders represent transactions in Vatly. On this page, we'll dive into the different order endpoints you can use to manage orders programmatically. We'll look at how to query orders and request address updates. For refund-related endpoints, see the [Order Refunds](/orders/refunds) documentation. {{ className: 'lead' }}
+Orders represent completed purchases in Vatly. On this page, we'll dive into the different order endpoints you can use to manage orders programmatically. We'll look at how to query orders and request address updates. For refund-related endpoints, see the [Order Refunds](/refunds) documentation. {{ className: 'lead' }}
 
 ## The order model
 
-The order model contains all the information about your orders, including the order details, customer information, and refund status.
+The order model contains all the information about your orders, including the order details, customer information, line items, and tax information.
 
 ### Properties
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the order.
+    Unique identifier for the order (starts with `ord_`).
+  </Property>
+  <Property name="resource" type="string">
+    The resource type. Always `order`.
+  </Property>
+  <Property name="merchantId" type="string">
+    ID of the merchant that owns this order.
+  </Property>
+  <Property name="customerId" type="string">
+    ID of the customer who made this purchase.
+  </Property>
+  <Property name="testmode" type="boolean">
+    Whether this order is in test mode.
+  </Property>
+  <Property name="metadata" type="object | null">
+    Arbitrary key-value metadata for your application.
+  </Property>
+  <Property name="paymentMethod" type="string | null">
+    Payment method used for this order (e.g., `ideal`, `creditcard`, `bancontact`, `paypal`).
   </Property>
   <Property name="status" type="string">
-    The current status of the order.
+    The current status of the order. Can be `pending`, `paid`, or `failed`.
   </Property>
-  <Property name="customer_id" type="string">
-    The ID of the customer who placed the order.
+  <Property name="invoiceNumber" type="string | null">
+    Invoice number for this order (assigned after payment).
   </Property>
-  <Property name="total_amount" type="integer">
-    The total amount of the order in cents.
+  <Property name="total" type="Money">
+    Total amount including taxes. A Money object with `value` (decimal string) and `currency` (ISO 4217 code).
   </Property>
-  <Property name="currency" type="string">
-    The currency of the order (e.g., EUR, USD).
+  <Property name="subtotal" type="Money">
+    Subtotal amount before taxes.
   </Property>
-  <Property name="created_at" type="timestamp">
-    Timestamp of when the order was created.
+  <Property name="taxSummary" type="Money">
+    Total tax amount.
   </Property>
-  <Property name="updated_at" type="timestamp">
-    Timestamp of when the order was last updated.
+  <Property name="lines" type="array">
+    Array of line items in this order. See OrderLine properties below.
+  </Property>
+  <Property name="merchantDetails" type="BillingDetails">
+    Merchant billing details (seller). Includes `fullName`, `companyName`, `vatNumber`, `streetAndNumber`, `streetAdditional`, `city`, `region`, `postalCode`, `country`, and `email`.
+  </Property>
+  <Property name="customerDetails" type="BillingDetails">
+    Customer billing details (buyer). Same structure as merchantDetails.
+  </Property>
+  <Property name="createdAt" type="string">
+    When this order was created (ISO 8601 format).
+  </Property>
+  <Property name="links" type="object">
+    HATEOAS links to related resources. Contains `self` and `customer` links.
+  </Property>
+</Properties>
+
+### OrderLine Properties
+
+<Properties>
+  <Property name="id" type="string">
+    Unique identifier for this line item (starts with `oli_`).
+  </Property>
+  <Property name="resource" type="string">
+    The resource type. Always `orderline`.
+  </Property>
+  <Property name="description" type="string">
+    Description of the item.
+  </Property>
+  <Property name="quantity" type="integer">
+    Number of units.
+  </Property>
+  <Property name="basePrice" type="Money">
+    Price per unit before taxes.
+  </Property>
+  <Property name="total" type="Money">
+    Total price including taxes (basePrice × quantity + taxes).
+  </Property>
+  <Property name="subtotal" type="Money">
+    Subtotal before taxes (basePrice × quantity).
+  </Property>
+  <Property name="taxes" type="Money">
+    Tax amount for this line.
   </Property>
 </Properties>
 
@@ -66,7 +125,115 @@ The order model contains all the information about your orders, including the or
       -H "Authorization: Bearer live_your_api_key_here" \
       -d limit=10
     ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $orders = $vatly->orders->page();
+    ```
     </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "data": [
+        {
+          "id": "ord_abc123def456",
+          "resource": "order",
+          "merchantId": "mer_abc123",
+          "customerId": "cus_xyz789",
+          "testmode": false,
+          "metadata": null,
+          "paymentMethod": "ideal",
+          "status": "paid",
+          "invoiceNumber": "INV-2024-0001",
+          "total": {
+            "value": "120.99",
+            "currency": "EUR"
+          },
+          "subtotal": {
+            "value": "100.00",
+            "currency": "EUR"
+          },
+          "taxSummary": {
+            "value": "20.99",
+            "currency": "EUR"
+          },
+          "lines": [
+            {
+              "id": "oli_abc123",
+              "resource": "orderline",
+              "description": "Pro Monthly Subscription",
+              "quantity": 1,
+              "basePrice": {
+                "value": "100.00",
+                "currency": "EUR"
+              },
+              "total": {
+                "value": "120.99",
+                "currency": "EUR"
+              },
+              "subtotal": {
+                "value": "100.00",
+                "currency": "EUR"
+              },
+              "taxes": {
+                "value": "20.99",
+                "currency": "EUR"
+              }
+            }
+          ],
+          "merchantDetails": {
+            "fullName": null,
+            "companyName": "Acme Corp",
+            "vatNumber": "NL123456789B01",
+            "streetAndNumber": "123 Business Ave",
+            "streetAdditional": null,
+            "city": "Amsterdam",
+            "region": "North Holland",
+            "postalCode": "1012 AB",
+            "country": "NL",
+            "email": "billing@acme.com"
+          },
+          "customerDetails": {
+            "fullName": "John Doe",
+            "companyName": null,
+            "vatNumber": null,
+            "streetAndNumber": "456 Customer St",
+            "streetAdditional": "Apt 789",
+            "city": "Rotterdam",
+            "region": "South Holland",
+            "postalCode": "3012 CD",
+            "country": "NL",
+            "email": "john@example.com"
+          },
+          "createdAt": "2024-01-15T10:30:00Z",
+          "links": {
+            "self": {
+              "href": "https://api.vatly.com/v1/orders/ord_abc123def456",
+              "type": "application/json"
+            },
+            "customer": {
+              "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+              "type": "application/json"
+            }
+          }
+        }
+      ],
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/orders?limit=10",
+          "type": "application/json"
+        },
+        "next": {
+          "href": "https://api.vatly.com/v1/orders?startingAfter=ord_abc123def456&limit=10",
+          "type": "application/json"
+        },
+        "prev": null
+      },
+      "count": 1
+    }
+    ```
   </Col>
 </Row>
 
@@ -78,9 +245,6 @@ The order model contains all the information about your orders, including the or
   <Col>
     This endpoint allows you to retrieve a specific order by its ID.
 
-    ### Required permissions
-    - `orders:read`
-
     ### Parameters
     <Properties>
       <Property name="orderId" type="string">
@@ -91,10 +255,102 @@ The order model contains all the information about your orders, including the or
   <Col sticky>
     <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId">
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/orders/ord_1234 \
+    curl https://api.vatly.com/v1/orders/ord_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $order = $vatly->orders->get('ord_abc123def456');
+    ```
     </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "ord_abc123def456",
+      "resource": "order",
+      "merchantId": "mer_abc123",
+      "customerId": "cus_xyz789",
+      "testmode": false,
+      "metadata": null,
+      "paymentMethod": "ideal",
+      "status": "paid",
+      "invoiceNumber": "INV-2024-0001",
+      "total": {
+        "value": "120.99",
+        "currency": "EUR"
+      },
+      "subtotal": {
+        "value": "100.00",
+        "currency": "EUR"
+      },
+      "taxSummary": {
+        "value": "20.99",
+        "currency": "EUR"
+      },
+      "lines": [
+        {
+          "id": "oli_abc123",
+          "resource": "orderline",
+          "description": "Pro Monthly Subscription",
+          "quantity": 1,
+          "basePrice": {
+            "value": "100.00",
+            "currency": "EUR"
+          },
+          "total": {
+            "value": "120.99",
+            "currency": "EUR"
+          },
+          "subtotal": {
+            "value": "100.00",
+            "currency": "EUR"
+          },
+          "taxes": {
+            "value": "20.99",
+            "currency": "EUR"
+          }
+        }
+      ],
+      "merchantDetails": {
+        "fullName": null,
+        "companyName": "Acme Corp",
+        "vatNumber": "NL123456789B01",
+        "streetAndNumber": "123 Business Ave",
+        "streetAdditional": null,
+        "city": "Amsterdam",
+        "region": "North Holland",
+        "postalCode": "1012 AB",
+        "country": "NL",
+        "email": "billing@acme.com"
+      },
+      "customerDetails": {
+        "fullName": "John Doe",
+        "companyName": null,
+        "vatNumber": null,
+        "streetAndNumber": "456 Customer St",
+        "streetAdditional": "Apt 789",
+        "city": "Rotterdam",
+        "region": "South Holland",
+        "postalCode": "3012 CD",
+        "country": "NL",
+        "email": "john@example.com"
+      },
+      "createdAt": "2024-01-15T10:30:00Z",
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/orders/ord_abc123def456",
+          "type": "application/json"
+        },
+        "customer": {
+          "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+          "type": "application/json"
+        }
+      }
+    }
+    ```
   </Col>
 </Row>
 
@@ -104,10 +360,7 @@ The order model contains all the information about your orders, including the or
 
 <Row>
   <Col>
-    This endpoint allows you to request a link that customers can use to update their order address.
-
-    ### Required permissions
-    - `orders:write`
+    This endpoint allows you to request a signed link that customers can use to update their order billing address. The link is valid for a limited time (typically 24 hours).
 
     ### Parameters
     <Properties>
@@ -119,9 +372,23 @@ The order model contains all the information about your orders, including the or
   <Col sticky>
     <CodeGroup title="Request" tag="POST" label="/v1/orders/:orderId/request-address-update-link">
     ```bash {{ title: 'cURL' }}
-    curl -X POST https://api.vatly.com/v1/orders/ord_1234/request-address-update-link \
+    curl -X POST https://api.vatly.com/v1/orders/ord_abc123def456/request-address-update-link \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $link = $vatly->orders->requestAddressUpdateLink('ord_abc123def456');
+    ```
     </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "href": "https://vatly.com/invoices/ord_abc123def456/edit?signature=abc123...",
+      "type": "text/html"
+    }
+    ```
   </Col>
 </Row>

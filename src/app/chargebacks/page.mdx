@@ -6,35 +6,47 @@ export const metadata = {
 
 # Chargebacks
 
-Chargebacks represent payment disputes initiated by customers. On this page, we'll dive into the different chargeback endpoints you can use to manage chargebacks programmatically. {{ className: 'lead' }}
+Chargebacks represent payment disputes initiated by customers through their bank or card issuer. Chargebacks are created automatically when payment providers notify Vatly of a dispute. On this page, we'll dive into the different chargeback endpoints you can use to query chargebacks programmatically. {{ className: 'lead' }}
 
 ## The chargeback model
 
-The chargeback model contains all the information about payment disputes, including the dispute reason, status, and related order information.
+The chargeback model contains all the information about payment disputes, including the disputed amount, settlement amount, reason, and related order information.
 
 ### Properties
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the chargeback.
+    Unique identifier for the chargeback (starts with `chb_`).
   </Property>
-  <Property name="order_id" type="string">
-    The ID of the order associated with this chargeback.
+  <Property name="resource" type="string">
+    The resource type. Always `chargeback`.
   </Property>
-  <Property name="status" type="string">
-    The current status of the chargeback.
+  <Property name="merchantId" type="string">
+    ID of the merchant.
   </Property>
-  <Property name="amount" type="integer">
-    The disputed amount in cents.
+  <Property name="testmode" type="boolean">
+    Whether this chargeback is in test mode.
   </Property>
-  <Property name="currency" type="string">
-    The currency of the disputed amount (e.g., EUR, USD).
+  <Property name="amount" type="Money">
+    Amount of the chargeback. A Money object with `value` (decimal string) and `currency` (ISO 4217 code).
   </Property>
-  <Property name="created_at" type="timestamp">
-    Timestamp of when the chargeback was created.
+  <Property name="settlementAmount" type="Money">
+    Amount that was deducted from the merchant's settlement. May differ from `amount` due to currency conversion or fees.
   </Property>
-  <Property name="updated_at" type="timestamp">
-    Timestamp of when the chargeback was last updated.
+  <Property name="reason" type="string">
+    Reason code or description for the chargeback. Common reasons include `fraud`, `product_not_received`, `product_unacceptable`, `duplicate`, or `subscription_canceled`.
+  </Property>
+  <Property name="originalOrderId" type="string">
+    ID of the original order that was charged back.
+  </Property>
+  <Property name="orderId" type="string | null">
+    ID of the credit note order created for this chargeback. Only present after the chargeback is processed.
+  </Property>
+  <Property name="createdAt" type="string">
+    When this chargeback was created (ISO 8601 format).
+  </Property>
+  <Property name="links" type="object">
+    HATEOAS links to related resources. Contains `self`, `originalOrder`, and optionally `order` (the credit note).
   </Property>
 </Properties>
 
@@ -66,7 +78,62 @@ The chargeback model contains all the information about payment disputes, includ
       -H "Authorization: Bearer live_your_api_key_here" \
       -d limit=10
     ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $chargebacks = $vatly->chargebacks->page();
+    ```
     </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "data": [
+        {
+          "id": "chb_abc123def456",
+          "resource": "chargeback",
+          "merchantId": "mer_abc123",
+          "testmode": false,
+          "amount": {
+            "value": "99.99",
+            "currency": "EUR"
+          },
+          "settlementAmount": {
+            "value": "114.99",
+            "currency": "EUR"
+          },
+          "reason": "fraud",
+          "originalOrderId": "ord_original123",
+          "orderId": "ord_chargeback123",
+          "createdAt": "2024-01-15T10:30:00Z",
+          "links": {
+            "self": {
+              "href": "https://api.vatly.com/v1/chargebacks/chb_abc123def456",
+              "type": "application/json"
+            },
+            "originalOrder": {
+              "href": "https://api.vatly.com/v1/orders/ord_original123",
+              "type": "application/json"
+            },
+            "order": {
+              "href": "https://api.vatly.com/v1/orders/ord_chargeback123",
+              "type": "application/json"
+            }
+          }
+        }
+      ],
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/chargebacks?limit=10",
+          "type": "application/json"
+        },
+        "next": null,
+        "prev": null
+      },
+      "count": 1
+    }
+    ```
   </Col>
 </Row>
 
@@ -88,10 +155,52 @@ The chargeback model contains all the information about payment disputes, includ
   <Col sticky>
     <CodeGroup title="Request" tag="GET" label="/v1/chargebacks/:chargebackId">
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/chargebacks/chb_1234 \
+    curl https://api.vatly.com/v1/chargebacks/chb_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $chargeback = $vatly->chargebacks->get('chb_abc123def456');
+    ```
     </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "chb_abc123def456",
+      "resource": "chargeback",
+      "merchantId": "mer_abc123",
+      "testmode": false,
+      "amount": {
+        "value": "99.99",
+        "currency": "EUR"
+      },
+      "settlementAmount": {
+        "value": "114.99",
+        "currency": "EUR"
+      },
+      "reason": "fraud",
+      "originalOrderId": "ord_original123",
+      "orderId": "ord_chargeback123",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/chargebacks/chb_abc123def456",
+          "type": "application/json"
+        },
+        "originalOrder": {
+          "href": "https://api.vatly.com/v1/orders/ord_original123",
+          "type": "application/json"
+        },
+        "order": {
+          "href": "https://api.vatly.com/v1/orders/ord_chargeback123",
+          "type": "application/json"
+        }
+      }
+    }
+    ```
   </Col>
 </Row>
 
@@ -122,11 +231,66 @@ The chargeback model contains all the information about payment disputes, includ
   <Col sticky>
     <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/chargebacks">
     ```bash {{ title: 'cURL' }}
-    curl -G https://api.vatly.com/v1/orders/ord_1234/chargebacks \
+    curl -G https://api.vatly.com/v1/orders/ord_original123/chargebacks \
       -H "Authorization: Bearer live_your_api_key_here" \
       -d limit=10
     ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $chargebacks = $vatly->orders->chargebacks('ord_original123')->page();
+    ```
     </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "data": [
+        {
+          "id": "chb_abc123def456",
+          "resource": "chargeback",
+          "merchantId": "mer_abc123",
+          "testmode": false,
+          "amount": {
+            "value": "99.99",
+            "currency": "EUR"
+          },
+          "settlementAmount": {
+            "value": "114.99",
+            "currency": "EUR"
+          },
+          "reason": "fraud",
+          "originalOrderId": "ord_original123",
+          "orderId": "ord_chargeback123",
+          "createdAt": "2024-01-15T10:30:00Z",
+          "links": {
+            "self": {
+              "href": "https://api.vatly.com/v1/chargebacks/chb_abc123def456",
+              "type": "application/json"
+            },
+            "originalOrder": {
+              "href": "https://api.vatly.com/v1/orders/ord_original123",
+              "type": "application/json"
+            },
+            "order": {
+              "href": "https://api.vatly.com/v1/orders/ord_chargeback123",
+              "type": "application/json"
+            }
+          }
+        }
+      ],
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/orders/ord_original123/chargebacks?limit=10",
+          "type": "application/json"
+        },
+        "next": null,
+        "prev": null
+      },
+      "count": 1
+    }
+    ```
   </Col>
 </Row>
 
@@ -151,9 +315,51 @@ The chargeback model contains all the information about payment disputes, includ
   <Col sticky>
     <CodeGroup title="Request" tag="GET" label="/v1/orders/:orderId/chargebacks/:chargebackId">
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/orders/ord_1234/chargebacks/chb_1234 \
+    curl https://api.vatly.com/v1/orders/ord_original123/chargebacks/chb_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
+
+    ```php {{ title: 'PHP' }}
+    $vatly = new \Vatly\API\VatlyApiClient();
+    $vatly->setApiKey('live_your_api_key_here');
+
+    $chargeback = $vatly->orders->chargebacks('ord_original123')->get('chb_abc123def456');
+    ```
     </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "chb_abc123def456",
+      "resource": "chargeback",
+      "merchantId": "mer_abc123",
+      "testmode": false,
+      "amount": {
+        "value": "99.99",
+        "currency": "EUR"
+      },
+      "settlementAmount": {
+        "value": "114.99",
+        "currency": "EUR"
+      },
+      "reason": "fraud",
+      "originalOrderId": "ord_original123",
+      "orderId": "ord_chargeback123",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "links": {
+        "self": {
+          "href": "https://api.vatly.com/v1/chargebacks/chb_abc123def456",
+          "type": "application/json"
+        },
+        "originalOrder": {
+          "href": "https://api.vatly.com/v1/orders/ord_original123",
+          "type": "application/json"
+        },
+        "order": {
+          "href": "https://api.vatly.com/v1/orders/ord_chargeback123",
+          "type": "application/json"
+        }
+      }
+    }
+    ```
   </Col>
 </Row>

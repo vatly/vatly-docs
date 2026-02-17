@@ -1,78 +1,80 @@
 export const metadata = {
   title: 'Subscriptions',
   description:
-    'On this page, we\’ll dive into the different subscription endpoints you can use to manage subscriptions programmatically.',
+    'On this page, we\'ll dive into the different subscription endpoints you can use to manage subscriptions programmatically.',
 }
 
 # The Subscriptions API
 
-Subscriptions enable you to charge your customers periodically for your digital products and services. You can start a new subscriptions by creating a checkout through the [Checkouts API](/checkouts).
+Subscriptions enable you to charge your customers periodically for your digital products and services. You can start a new subscription by creating a checkout through the [Checkouts API](/checkouts). {{ className: 'lead' }}
 
 ## The Subscription API Resource
 
-The subscription model contains all the information about the subscriptions and attachments you send to your contacts and groups, including how your contacts have reacted to them.
+The subscription model contains all the information about recurring billing relationships with customers.
 
 ### Properties
 
 <Properties>
   <Property name="id" type="string">
-    Unique identifier for the subscription. I.e. `subscription_SIuAFUNKdSYHZF2w`.
+    Unique identifier for the subscription (starts with `sub_`).
   </Property>
   <Property name="resource" type="string">
-    The resource type for this subscription. Always `subscription`.
+    The resource type. Always `subscription`.
+  </Property>
+  <Property name="customerId" type="string">
+    ID of the customer who owns this subscription.
   </Property>
   <Property name="testmode" type="boolean">
     Whether this resource is in test mode.
   </Property>
   <Property name="name" type="string">
-    The name for the subscription.
+    The name for the subscription (from the plan).
   </Property>
   <Property name="description" type="string">
     The description for the subscription.
   </Property>
   <Property name="billingAddress" type="object">
-    The customer billing address for the subscription.
+    The customer billing address for the subscription. Includes `fullName`, `companyName`, `vatNumber`, `streetAndNumber`, `streetAdditional`, `city`, `region`, `postalCode`, and `country`.
   </Property>
-  <Property name="basePrice" type="string">
-    The base price for the subscription, before taxes and discounts.
+  <Property name="basePrice" type="Money">
+    The base price per billing cycle before taxes. A Money object with `value` (decimal string) and `currency` (ISO 4217 code).
   </Property>
   <Property name="quantity" type="integer">
-    The quantity for the subscription.
+    The quantity for the subscription (e.g., number of seats).
   </Property>
   <Property name="interval" type="string">
-    The interval for the subscription. Can be `year` or `month`.
+    The billing interval. Can be `day`, `week`, `month`, or `year`.
   </Property>
-  <Property name="intervalCount" type="int">
-    The interval count for the subscription, i.e. "3" for charging every 3 months.
+  <Property name="intervalCount" type="integer">
+    The interval count, e.g., "3" for charging every 3 months.
   </Property>
   <Property name="status" type="string">
     The status for the subscription. Can be `created`, `trial`, `active`, `canceled`, `on_grace_period`, or `paused`.
   </Property>
-  <Property name="startedAt" type="string">
-    The timestamp when the subscription started, in ISO 8601 format.
+  <Property name="startedAt" type="string | null">
+    When the subscription started (ISO 8601 format).
   </Property>
-  <Property name="endedAt" type="string">
-    The timestamp when the subscription ended, in ISO 8601 format. Null if the subscription is still active.
+  <Property name="endedAt" type="string | null">
+    When the subscription ended (ISO 8601 format). Null if the subscription is still active.
   </Property>
-  <Property name="cancelledAt" type="string">
-    The timestamp when the subscription was cancelled, in ISO 8601 format. Null if the subscription hasn't been cancelled.
+  <Property name="cancelledAt" type="string | null">
+    When the subscription was cancelled (ISO 8601 format). Null if not cancelled.
   </Property>
-  <Property name="renewedAt" type="string">
-    The timestamp when the subscription was last renewed, in ISO 8601 format.
+  <Property name="renewedAt" type="string | null">
+    When the subscription was last renewed (ISO 8601 format).
   </Property>
-  <Property name="renewedUntil" type="string">
-    The timestamp until which the subscription is renewed, in ISO 8601 format.
+  <Property name="renewedUntil" type="string | null">
+    Current billing period end date (ISO 8601 format).
   </Property>
-  <Property name="nextRenewalAt" type="string">
-    The timestamp of the next scheduled renewal, in ISO 8601 format.
+  <Property name="nextRenewalAt" type="string | null">
+    When the next renewal will be attempted (ISO 8601 format). Null if subscription is canceled or ended.
   </Property>
-  <Property name="trialUntil" type="string">
-    The timestamp until which the trial period lasts, in ISO 8601 format. Null if there's no trial.
+  <Property name="trialUntil" type="string | null">
+    When the trial period ends (ISO 8601 format). Null if not in trial or trial has ended.
   </Property>
   <Property name="links" type="object">
-    An object containing relevant URLs for the subscription.
+    HATEOAS links to related resources. Contains `self` and `customer` links.
   </Property>
-
 </Properties>
 
 ---
@@ -110,7 +112,7 @@ The subscription model contains all the information about the subscriptions and 
     ```
 
     ```php {{ title: 'PHP' }}
-    $client = new \Vatly\API\VatlyApiClient();
+    $vatly = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
     $subscriptions = $vatly->subscriptions->page();
@@ -122,20 +124,27 @@ The subscription model contains all the information about the subscriptions and 
     {
       "data": [
         {
-          "id": "subscription_SIuAFUNKdSYHZF2w",
+          "id": "sub_abc123def456",
           "resource": "subscription",
+          "customerId": "cus_xyz789",
           "testmode": false,
           "name": "Premium Plan",
           "description": "Access to all premium features",
           "billingAddress": {
-            "country": "US",
+            "fullName": "John Doe",
+            "companyName": null,
+            "vatNumber": null,
             "streetAndNumber": "123 Main St",
             "streetAdditional": "Suite 123",
             "city": "Anytown",
             "region": "CA",
-            "postalCode": "12345"
+            "postalCode": "12345",
+            "country": "US"
           },
-          "basePrice": "99.99",
+          "basePrice": {
+            "value": "99.99",
+            "currency": "EUR"
+          },
           "quantity": 1,
           "interval": "month",
           "intervalCount": 1,
@@ -148,8 +157,14 @@ The subscription model contains all the information about the subscriptions and 
           "nextRenewalAt": "2023-07-01T00:00:00Z",
           "trialUntil": null,
           "links": {
-            "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
-            "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+            "self": {
+              "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+              "type": "application/json"
+            },
+            "customer": {
+              "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+              "type": "application/json"
+            }
           }
         }
       ],
@@ -159,7 +174,7 @@ The subscription model contains all the information about the subscriptions and 
           "type": "application/json"
         },
         "next": {
-          "href": "https://api.vatly.com/v1/subscriptions?startingAfter=subscription_SIuAFUNKdSYHZF2w&limit=10",
+          "href": "https://api.vatly.com/v1/subscriptions?startingAfter=sub_abc123def456&limit=10",
           "type": "application/json"
         },
         "prev": null
@@ -191,38 +206,45 @@ The subscription model contains all the information about the subscriptions and 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w">
+    <CodeGroup title="Request" tag="GET" label="/v1/subscriptions/sub_abc123def456">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w \
+    curl https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
     ```php {{ title: 'PHP' }}
-    $client = new \Vatly\API\VatlyApiClient();
+    $vatly = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $subscription = $vatly->subscriptions->get('subscription_SIuAFUNKdSYHZF2w');
+    $subscription = $vatly->subscriptions->get('sub_abc123def456');
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "subscription_SIuAFUNKdSYHZF2w",
+      "id": "sub_abc123def456",
       "resource": "subscription",
+      "customerId": "cus_xyz789",
       "testmode": false,
       "name": "Premium Plan",
       "description": "Access to all premium features",
       "billingAddress": {
-        "country": "US",
+        "fullName": "John Doe",
+        "companyName": null,
+        "vatNumber": null,
         "streetAndNumber": "123 Main St",
         "streetAdditional": "Suite 123",
         "city": "Anytown",
         "region": "CA",
-        "postalCode": "12345"
+        "postalCode": "12345",
+        "country": "US"
       },
-      "basePrice": "99.99",
+      "basePrice": {
+        "value": "99.99",
+        "currency": "EUR"
+      },
       "quantity": 1,
       "interval": "month",
       "intervalCount": 1,
@@ -235,8 +257,14 @@ The subscription model contains all the information about the subscriptions and 
       "nextRenewalAt": "2023-07-01T00:00:00Z",
       "trialUntil": null,
       "links": {
-        "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
-        "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+        "self": {
+          "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+          "type": "application/json"
+        },
+        "customer": {
+          "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+          "type": "application/json"
+        }
       }
     }
     ```
@@ -273,19 +301,19 @@ The subscription model contains all the information about the subscriptions and 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions">
+    <CodeGroup title="Request" tag="GET" label="/v1/customers/cus_xyz789/subscriptions">
 
     ```bash {{ title: 'cURL' }}
-    curl -G https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions \
+    curl -G https://api.vatly.com/v1/customers/cus_xyz789/subscriptions \
       -H "Authorization: Bearer live_your_api_key_here" \
       -d limit=10
     ```
 
     ```php {{ title: 'PHP' }}
-    $client = new \Vatly\API\VatlyApiClient();
+    $vatly = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $subscriptions = $vatly->customers->subscriptions('customer_w2FZHYSdKNUFAuIS')->page();
+    $subscriptions = $vatly->customers->subscriptions('cus_xyz789')->page();
     ```
 
     </CodeGroup>
@@ -294,8 +322,9 @@ The subscription model contains all the information about the subscriptions and 
     {
       "data": [
         {
-          "id": "subscription_SIuAFUNKdSYHZF2w",
+          "id": "sub_abc123def456",
           "resource": "subscription",
+          "customerId": "cus_xyz789",
           "testmode": false,
           "name": "Premium Plan",
           "description": "Access to all premium features",
@@ -306,11 +335,11 @@ The subscription model contains all the information about the subscriptions and 
       ],
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions?limit=10",
+          "href": "https://api.vatly.com/v1/customers/cus_xyz789/subscriptions?limit=10",
           "type": "application/json"
         },
         "next": {
-          "href": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions?startingAfter=subscription_SIuAFUNKdSYHZF2w&limit=10",
+          "href": "https://api.vatly.com/v1/customers/cus_xyz789/subscriptions?startingAfter=sub_abc123def456&limit=10",
           "type": "application/json"
         },
         "prev": null
@@ -345,38 +374,45 @@ The subscription model contains all the information about the subscriptions and 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions/subscription_SIuAFUNKdSYHZF2w">
+    <CodeGroup title="Request" tag="GET" label="/v1/customers/cus_xyz789/subscriptions/sub_abc123def456">
 
     ```bash {{ title: 'cURL' }}
-    curl https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS/subscriptions/subscription_SIuAFUNKdSYHZF2w \
+    curl https://api.vatly.com/v1/customers/cus_xyz789/subscriptions/sub_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
     ```php {{ title: 'PHP' }}
-    $client = new \Vatly\API\VatlyApiClient();
+    $vatly = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $subscription = $vatly->customers->subscriptions('customer_w2FZHYSdKNUFAuIS')->get('subscription_SIuAFUNKdSYHZF2w');
+    $subscription = $vatly->customers->subscriptions('cus_xyz789')->get('sub_abc123def456');
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "subscription_SIuAFUNKdSYHZF2w",
+      "id": "sub_abc123def456",
       "resource": "subscription",
+      "customerId": "cus_xyz789",
       "testmode": false,
       "name": "Premium Plan",
       "description": "Access to all premium features",
       "billingAddress": {
-        "country": "US",
+        "fullName": "John Doe",
+        "companyName": null,
+        "vatNumber": null,
         "streetAndNumber": "123 Main St",
         "streetAdditional": "Suite 123",
         "city": "Anytown",
         "region": "CA",
-        "postalCode": "12345"
+        "postalCode": "12345",
+        "country": "US"
       },
-      "basePrice": "99.99",
+      "basePrice": {
+        "value": "99.99",
+        "currency": "EUR"
+      },
       "quantity": 1,
       "interval": "month",
       "intervalCount": 1,
@@ -389,8 +425,14 @@ The subscription model contains all the information about the subscriptions and 
       "nextRenewalAt": "2023-07-01T00:00:00Z",
       "trialUntil": null,
       "links": {
-        "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
-        "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+        "self": {
+          "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+          "type": "application/json"
+        },
+        "customer": {
+          "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+          "type": "application/json"
+        }
       }
     }
     ```
@@ -405,79 +447,62 @@ The subscription model contains all the information about the subscriptions and 
 <Row>
   <Col>
 
-    This endpoint allows you to update a subscription.
-
-    ### Required attributes
-
-    <Properties>
-      <Property name="subscriptionPlanId" type="string">
-        The ID of the subscription plan to update to.
-      </Property>
-      <Property name="quantity" type="integer">
-        The new quantity for the subscription. Must be at least 1. Only required if the subscriptionPlanId is omitted.
-      </Property>
-    </Properties>
-
+    This endpoint allows you to update a subscription. You can change the plan, quantity, or apply proration settings.
 
     ### Optional attributes
 
+    At least one of `subscriptionPlanId` or `quantity` must be provided.
+
     <Properties>
+      <Property name="subscriptionPlanId" type="string">
+        The ID of the subscription plan to update to (starts with `plan_`). Must match the testmode of the current subscription.
+      </Property>
+      <Property name="quantity" type="integer">
+        The new quantity for the subscription. Must be at least 1.
+      </Property>
       <Property name="prorate" type="boolean">
-        Whether to prorate the subscription change.
+        Whether to prorate charges for the partial billing period. If true, the customer is credited for unused time on the old plan and charged for remaining time on the new plan. Default: `true`.
       </Property>
       <Property name="applyImmediately" type="boolean">
-        Whether to apply the changes immediately.
+        Whether to apply changes immediately or at the end of the current billing period. Default: `false`.
       </Property>
       <Property name="invoiceImmediately" type="boolean">
-        Whether to generate an invoice immediately for the changes.
+        Whether to generate an invoice immediately for proration. Only applies when `applyImmediately` and `prorate` are both true. Default: `false`.
       </Property>
       <Property name="anchor" type="date">
-        The new billing anchor date for the subscription.
+        Reset the billing anchor to this date. Cannot be combined with `trialUntil`.
       </Property>
-      {/* NOT IMPLEMENTED YET<Property name="resetAnchor" type="boolean">
-        Whether to reset the billing anchor date.
-      </Property> */}
+      <Property name="trialUntil" type="string">
+        Extend or set a trial period until this date (ISO 8601 format). Cannot be combined with `anchor`.
+      </Property>
     </Properties>
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="PUT" label="/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w">
+    <CodeGroup title="Request" tag="PATCH" label="/v1/subscriptions/sub_abc123def456">
 
     ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w \
+    curl -X PATCH https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here" \
-      -d reactions[red_angry_face][]="KateMcCallister"
+      -H "Content-Type: application/json" \
+      -d '{
+        "subscriptionPlanId": "plan_yearly123",
+        "quantity": 3,
+        "prorate": true,
+        "applyImmediately": true
+      }'
     ```
-
-    {/* ```js
-    import ApiClient from '@example/vatly-api'
-
-    const client = new ApiClient(token)
-
-    await client.subscriptions.update('subscription_SIuAFUNKdSYHZF2w', {
-        reactions: {
-            red_angry_face: ['KateMcCallister']
-        }
-    })
-    ```
-
-    ```python
-    from vatly_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.subscriptions.update("subscription_SIuAFUNKdSYHZF2w",
-        reactions={"red_angry_face": ["KateMcCallister"]})
-    ``` */}
 
     ```php {{ title: 'PHP' }}
-    $client = new \Vatly\API\VatlyApiClient();
+    $vatly = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $vatly->subscriptions->update('subscription_SIuAFUNKdSYHZF2w', [
-        'subscriptionPlanId' => 'plan_abc123',
+    $subscription = $vatly->subscriptions->update('sub_abc123def456', [
+        'subscriptionPlanId' => 'plan_yearly123',
         'quantity' => 3,
+        'prorate' => true,
+        'applyImmediately' => true,
     ]);
     ```
 
@@ -485,34 +510,47 @@ The subscription model contains all the information about the subscriptions and 
 
     ```json {{ title: 'Response' }}
     {
-      "id": "subscription_SIuAFUNKdSYHZF2w",
+      "id": "sub_abc123def456",
       "resource": "subscription",
+      "customerId": "cus_xyz789",
       "testmode": false,
-      "name": "Premium Plan",
-      "description": "Access to all premium features",
+      "name": "Premium Yearly",
+      "description": "Access to all premium features, billed annually",
       "billingAddress": {
-        "country": "US",
+        "fullName": "John Doe",
+        "companyName": null,
+        "vatNumber": null,
         "streetAndNumber": "123 Main St",
         "streetAdditional": "Suite 123",
         "city": "Anytown",
         "region": "CA",
-        "postalCode": "12345"
+        "postalCode": "12345",
+        "country": "US"
       },
-      "basePrice": "99.99",
+      "basePrice": {
+        "value": "999.00",
+        "currency": "EUR"
+      },
       "quantity": 3,
-      "interval": "month",
+      "interval": "year",
       "intervalCount": 1,
       "status": "active",
       "startedAt": "2023-01-01T00:00:00Z",
       "endedAt": null,
       "cancelledAt": null,
       "renewedAt": "2023-06-01T00:00:00Z",
-      "renewedUntil": "2023-07-01T00:00:00Z",
-      "nextRenewalAt": "2023-07-01T00:00:00Z",
+      "renewedUntil": "2024-06-01T00:00:00Z",
+      "nextRenewalAt": "2024-06-01T00:00:00Z",
       "trialUntil": null,
       "links": {
-        "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
-        "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+        "self": {
+          "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+          "type": "application/json"
+        },
+        "customer": {
+          "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+          "type": "application/json"
+        }
       }
     }
     ```
@@ -522,113 +560,81 @@ The subscription model contains all the information about the subscriptions and 
 
 ---
 
-## Update subscription billing details {{ tag: 'PATCH', label: '/v1/subscriptions/:id/update-billing' }}
+## Update subscription billing details {{ tag: 'POST', label: '/v1/subscriptions/:id/update-billing' }}
 
 <Row>
   <Col>
 
-    This endpoint allows you to update the billing details for a subscription.
+    This endpoint initiates a hosted flow for updating subscription billing details. It returns a URL where the customer can update their billing information and payment method.
 
     ### Required attributes
 
     <Properties>
-      <Property name="billingAddress" type="object">
-        The new billing address for the subscription.
+      <Property name="redirectUrlSuccess" type="string">
+        URL to redirect after successful billing update.
+      </Property>
+      <Property name="redirectUrlCanceled" type="string">
+        URL to redirect if customer cancels the update.
       </Property>
     </Properties>
 
-    ### Billing Address Properties
+    ### Optional attributes
 
     <Properties>
-      <Property name="country" type="string">
-        The country code (e.g., "US", "NL").
-      </Property>
-      <Property name="streetAndNumber" type="string">
-        The street address and number.
-      </Property>
-      <Property name="streetAdditional" type="string">
-        Additional street address information (optional).
-      </Property>
-      <Property name="city" type="string">
-        The city.
-      </Property>
-      <Property name="region" type="string">
-        The region or state.
-      </Property>
-      <Property name="postalCode" type="string">
-        The postal or ZIP code.
+      <Property name="billingAddress" type="object">
+        Pre-fill billing address fields. Customer can modify these values in the hosted form.
       </Property>
     </Properties>
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="PATCH" label="/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w/update-billing">
+    <CodeGroup title="Request" tag="POST" label="/v1/subscriptions/sub_abc123def456/update-billing">
 
     ```bash {{ title: 'cURL' }}
-    curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w/update-billing \
+    curl -X POST https://api.vatly.com/v1/subscriptions/sub_abc123def456/update-billing \
       -H "Authorization: Bearer live_your_api_key_here" \
       -H "Content-Type: application/json" \
       -d '{
+        "redirectUrlSuccess": "https://example.com/billing-updated",
+        "redirectUrlCanceled": "https://example.com/billing-canceled",
         "billingAddress": {
           "country": "NL",
           "streetAndNumber": "456 New St",
-          "streetAdditional": "Apt 789",
           "city": "Amsterdam",
-          "region": "NH",
           "postalCode": "1012AB"
         }
       }'
     ```
 
     ```php {{ title: 'PHP' }}
-    $client = new \Vatly\API\VatlyApiClient();
+    $vatly = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $subscription = $vatly->subscriptions->updateBilling('subscription_SIuAFUNKdSYHZF2w', [
+    $response = $vatly->subscriptions->updateBilling('sub_abc123def456', [
+        'redirectUrlSuccess' => 'https://example.com/billing-updated',
+        'redirectUrlCanceled' => 'https://example.com/billing-canceled',
         'billingAddress' => [
             'country' => 'NL',
             'streetAndNumber' => '456 New St',
-            'streetAdditional' => 'Apt 789',
             'city' => 'Amsterdam',
-            'region' => 'NH',
             'postalCode' => '1012AB',
         ],
     ]);
+
+    // Redirect the customer to the hosted billing update page
+    header('Location: ' . $response->links->billingUpdateUrl->href, true, 303);
     ```
 
     </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
-      "id": "subscription_SIuAFUNKdSYHZF2w",
-      "resource": "subscription",
-      "testmode": false,
-      "name": "Premium Plan",
-      "description": "Access to all premium features",
-      "billingAddress": {
-        "country": "NL",
-        "streetAndNumber": "456 New St",
-        "streetAdditional": "Apt 789",
-        "city": "Amsterdam",
-        "region": "NH",
-        "postalCode": "1012AB"
-      },
-      "basePrice": "99.99",
-      "quantity": 1,
-      "interval": "month",
-      "intervalCount": 1,
-      "status": "active",
-      "startedAt": "2023-01-01T00:00:00Z",
-      "endedAt": null,
-      "cancelledAt": null,
-      "renewedAt": "2023-06-01T00:00:00Z",
-      "renewedUntil": "2023-07-01T00:00:00Z",
-      "nextRenewalAt": "2023-07-01T00:00:00Z",
-      "trialUntil": null,
       "links": {
-        "self": "https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w",
-        "customer": "https://api.vatly.com/v1/customers/customer_w2FZHYSdKNUFAuIS"
+        "billingUpdateUrl": {
+          "href": "https://pay.vatly.com/billing/sub_abc123def456?token=xyz...",
+          "type": "text/html"
+        }
       }
     }
     ```
@@ -643,39 +649,23 @@ The subscription model contains all the information about the subscriptions and 
 <Row>
   <Col>
 
-    This endpoint allows you to cancel a subscription.
+    This endpoint allows you to cancel a subscription. The subscription will remain active until the end of the current billing period (grace period), after which it will be fully canceled.
 
   </Col>
   <Col sticky>
 
-    <CodeGroup title="Request" tag="DELETE" label="/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w">
+    <CodeGroup title="Request" tag="DELETE" label="/v1/subscriptions/sub_abc123def456">
 
     ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.vatly.com/v1/subscriptions/subscription_SIuAFUNKdSYHZF2w \
+    curl -X DELETE https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
       -H "Authorization: Bearer live_your_api_key_here"
     ```
 
-    {/* ```js
-    import ApiClient from '@example/vatly-api'
-
-    const client = new ApiClient(token)
-
-    await client.subscriptions.delete('subscription_SIuAFUNKdSYHZF2w')
-    ```
-
-    ```python
-    from vatly_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.subscriptions.delete("subscription_SIuAFUNKdSYHZF2w")
-    ``` */}
-
     ```php {{ title: 'PHP' }}
-    $client = new \Vatly\API\VatlyApiClient();
+    $vatly = new \Vatly\API\VatlyApiClient();
     $vatly->setApiKey('live_your_api_key_here');
 
-    $vatly->subscriptions->cancel('subscription_SIuAFUNKdSYHZF2w');
+    $vatly->subscriptions->cancel('sub_abc123def456');
     ```
 
     </CodeGroup>
