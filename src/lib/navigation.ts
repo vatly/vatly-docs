@@ -18,8 +18,6 @@ export const siteNavigation = [
       { title: 'Customers', href: '/customers' },
       { title: 'Checkouts', href: '/checkouts' },
       { title: 'Subscriptions', href: '/subscriptions' },
-      { title: 'Groups', href: '/groups' },
-      { title: 'Attachments', href: '/attachments' },
     ],
   },
 ]
