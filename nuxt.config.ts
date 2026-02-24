@@ -7,6 +7,7 @@ export default defineNuxtConfig({
   },
 
   app: {
+    baseURL: process.env.GITHUB_PAGES ? '/vatly-docs/' : '/',
     head: {
       titleTemplate: '%s - Vatly Docs',
       link: [
