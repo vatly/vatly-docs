@@ -1,6 +1,6 @@
 # Vatly Docs
 
-API documentation for [Vatly](https://vatly.com) — the Merchant of Record billing platform for European SaaS companies.
+API documentation for [Vatly](https://vatly.com), the Merchant of Record billing platform for European SaaS companies.
 
 **Live at [docs.vatly.com](https://docs.vatly.com)**
 
