@@ -49,4 +49,10 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  nitro: {
+    preset: 'github-pages',
+  },
+
+  compatibilityDate: '2025-01-01',
 })
