@@ -51,6 +51,16 @@ export default defineNuxtConfig({
     },
   },
 
+  content: {
+    build: {
+      markdown: {
+        highlight: {
+          langs: ['bash', 'diff', 'json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'php', 'python', 'ruby'],
+        },
+      },
+    },
+  },
+
   nitro: {
     preset: 'github-pages',
   },
