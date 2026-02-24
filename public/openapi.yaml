@@ -1,0 +1,254 @@
+openapi: 3.2.0
+info:
+  title: Vatly API
+  version: "1.0"
+  description: |
+    Vatly is a Merchant of Record billing platform for European SaaS companies.
+    This API enables you to manage checkouts, customers, orders, subscriptions, refunds, and more.
+
+    ## Authentication
+
+    The Vatly API uses Bearer token authentication. All API requests must include an `Authorization` header:
+
+    ```
+    Authorization: Bearer {your_api_token}
+    ```
+
+    ### Live vs Test Mode
+
+    API tokens determine the environment mode:
+    - Tokens prefixed with `live_` access **production** data
+    - Tokens prefixed with `test_` access **sandbox** data
+
+    Resources created in one mode cannot be accessed or referenced from the other mode.
+    For example, a checkout created with a test token cannot reference a customer created with a live token.
+
+    ## Pagination
+
+    List endpoints use cursor-based pagination with the following parameters:
+
+    | Parameter | Type | Description |
+    |-----------|------|-------------|
+    | `limit` | integer | Number of results per page (default: 10, max: 100) |
+    | `startingAfter` | string | Cursor ID to fetch results after |
+    | `endingBefore` | string | Cursor ID to fetch results before |
+
+    `startingAfter` and `endingBefore` are mutually exclusive.
+
+    ## Money Format
+
+    All monetary values are represented as objects with `value` (string) and `currency` (ISO 4217 code):
+
+    ```json
+    {
+      "value": "99.99",
+      "currency": "EUR"
+    }
+    ```
+
+    Values are strings to preserve decimal precision.
+
+    ## Errors
+
+    The API returns standard HTTP status codes and JSON error responses:
+
+    | Status | Description |
+    |--------|-------------|
+    | 400 | Bad Request - Invalid request format |
+    | 401 | Unauthorized - Missing or invalid token |
+    | 403 | Forbidden - Token invalid or insufficient permissions |
+    | 404 | Not Found - Resource doesn't exist |
+    | 422 | Unprocessable Entity - Validation failed |
+    | 429 | Too Many Requests - Rate limit exceeded |
+    | 500 | Internal Server Error |
+
+  contact:
+    name: Vatly Support
+    url: https://vatly.com
+    email: support@vatly.com
+  license:
+    name: Proprietary
+    url: https://vatly.com/terms
+
+servers:
+  - url: https://api.vatly.com/v1
+    description: Production API
+  - url: https://api.staging.vatly.com/v1
+    description: Staging API
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Checkouts
+    description: |
+      Create and manage hosted checkout sessions.
+      Checkouts allow customers to purchase one-off products and subscription plans through a hosted payment page.
+  - name: Customers
+    description: |
+      Manage customer records.
+      Customers are identified by email and can have multiple subscriptions and orders.
+  - name: One-Off Products
+    description: |
+      View available one-off products.
+      Products are configured in the Vatly dashboard and can be added to checkouts.
+  - name: Subscription Plans
+    description: |
+      View available subscription plans.
+      Plans define recurring billing intervals and pricing.
+  - name: Orders
+    description: |
+      View orders and request invoice address updates.
+      Orders are created when checkouts complete or subscriptions renew.
+  - name: Refunds
+    description: |
+      Create and manage refunds for paid orders.
+      Supports both partial (per-item) and full refunds.
+  - name: Chargebacks
+    description: |
+      View chargebacks initiated by payment providers.
+      Chargebacks are created automatically when a customer disputes a payment.
+  - name: Subscriptions
+    description: |
+      Manage customer subscriptions.
+      Update plans, quantities, billing details, or cancel subscriptions.
+
+paths:
+  /checkouts:
+    $ref: './paths/checkouts.yaml#/checkouts'
+  /checkouts/{checkoutId}:
+    $ref: './paths/checkouts.yaml#/checkouts~1{checkoutId}'
+
+  /customers:
+    $ref: './paths/customers.yaml#/customers'
+  /customers/{customerId}:
+    $ref: './paths/customers.yaml#/customers~1{customerId}'
+  /customers/{customerId}/subscriptions:
+    $ref: './paths/customers.yaml#/customers~1{customerId}~1subscriptions'
+  /customers/{customerId}/subscriptions/{subscriptionId}:
+    $ref: './paths/customers.yaml#/customers~1{customerId}~1subscriptions~1{subscriptionId}'
+
+  /one-off-products:
+    $ref: './paths/one-off-products.yaml#/one-off-products'
+  /one-off-products/{oneOffProductId}:
+    $ref: './paths/one-off-products.yaml#/one-off-products~1{oneOffProductId}'
+
+  /subscription-plans:
+    $ref: './paths/subscription-plans.yaml#/subscription-plans'
+  /subscription-plans/{subscriptionPlanId}:
+    $ref: './paths/subscription-plans.yaml#/subscription-plans~1{subscriptionPlanId}'
+
+  /orders:
+    $ref: './paths/orders.yaml#/orders'
+  /orders/{orderId}:
+    $ref: './paths/orders.yaml#/orders~1{orderId}'
+  /orders/{orderId}/request-address-update-link:
+    $ref: './paths/orders.yaml#/orders~1{orderId}~1request-address-update-link'
+  /orders/{orderId}/refunds:
+    $ref: './paths/refunds.yaml#/orders~1{orderId}~1refunds'
+  /orders/{orderId}/refunds/full:
+    $ref: './paths/refunds.yaml#/orders~1{orderId}~1refunds~1full'
+  /orders/{orderId}/refunds/{refundId}:
+    $ref: './paths/refunds.yaml#/orders~1{orderId}~1refunds~1{refundId}'
+  /orders/{orderId}/chargebacks:
+    $ref: './paths/chargebacks.yaml#/orders~1{orderId}~1chargebacks'
+  /orders/{orderId}/chargebacks/{chargebackId}:
+    $ref: './paths/chargebacks.yaml#/orders~1{orderId}~1chargebacks~1{chargebackId}'
+
+  /refunds:
+    $ref: './paths/refunds.yaml#/refunds'
+  /refunds/{refundId}:
+    $ref: './paths/refunds.yaml#/refunds~1{refundId}'
+
+  /chargebacks:
+    $ref: './paths/chargebacks.yaml#/chargebacks'
+  /chargebacks/{chargebackId}:
+    $ref: './paths/chargebacks.yaml#/chargebacks~1{chargebackId}'
+
+  /subscriptions:
+    $ref: './paths/subscriptions.yaml#/subscriptions'
+  /subscriptions/{subscriptionId}:
+    $ref: './paths/subscriptions.yaml#/subscriptions~1{subscriptionId}'
+  /subscriptions/{subscriptionId}/update-billing:
+    $ref: './paths/subscriptions.yaml#/subscriptions~1{subscriptionId}~1update-billing'
+
+components:
+  securitySchemes:
+    $ref: './components/securitySchemes.yaml#/securitySchemes'
+
+  parameters:
+    $ref: './components/parameters.yaml#/parameters'
+
+  responses:
+    $ref: './components/responses.yaml#/responses'
+
+  schemas:
+    # Common schemas
+    Money:
+      $ref: './components/schemas/common.yaml#/Money'
+    Link:
+      $ref: './components/schemas/common.yaml#/Link'
+    BillingAddress:
+      $ref: './components/schemas/common.yaml#/BillingAddress'
+    BillingDetails:
+      $ref: './components/schemas/common.yaml#/BillingDetails'
+    Metadata:
+      $ref: './components/schemas/common.yaml#/Metadata'
+
+    # Error schemas
+    Error:
+      $ref: './components/schemas/errors.yaml#/Error'
+    ValidationError:
+      $ref: './components/schemas/errors.yaml#/ValidationError'
+
+    # Checkout schemas
+    Checkout:
+      $ref: './components/schemas/checkout.yaml#/Checkout'
+    CheckoutProduct:
+      $ref: './components/schemas/checkout.yaml#/CheckoutProduct'
+    CreateCheckoutRequest:
+      $ref: './components/schemas/checkout.yaml#/CreateCheckoutRequest'
+
+    # Customer schemas
+    Customer:
+      $ref: './components/schemas/customer.yaml#/Customer'
+    CreateCustomerRequest:
+      $ref: './components/schemas/customer.yaml#/CreateCustomerRequest'
+
+    # One-off product schemas
+    OneOffProduct:
+      $ref: './components/schemas/one-off-product.yaml#/OneOffProduct'
+
+    # Subscription plan schemas
+    SubscriptionPlan:
+      $ref: './components/schemas/subscription-plan.yaml#/SubscriptionPlan'
+
+    # Order schemas
+    Order:
+      $ref: './components/schemas/order.yaml#/Order'
+    OrderLine:
+      $ref: './components/schemas/order.yaml#/OrderLine'
+    AddressUpdateLink:
+      $ref: './components/schemas/order.yaml#/AddressUpdateLink'
+
+    # Refund schemas
+    Refund:
+      $ref: './components/schemas/refund.yaml#/Refund'
+    RefundLine:
+      $ref: './components/schemas/refund.yaml#/RefundLine'
+    CreateRefundRequest:
+      $ref: './components/schemas/refund.yaml#/CreateRefundRequest'
+    CreateFullRefundRequest:
+      $ref: './components/schemas/refund.yaml#/CreateFullRefundRequest'
+
+    # Chargeback schemas
+    Chargeback:
+      $ref: './components/schemas/chargeback.yaml#/Chargeback'
+
+    # Subscription schemas
+    Subscription:
+      $ref: './components/schemas/subscription.yaml#/Subscription'
+    UpdateSubscriptionRequest:
+      $ref: './components/schemas/subscription.yaml#/UpdateSubscriptionRequest'
+    UpdateSubscriptionBillingRequest:
+      $ref: './components/schemas/subscription.yaml#/UpdateSubscriptionBillingRequest'
