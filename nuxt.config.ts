@@ -84,6 +84,14 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/overrides.css'],
 
+  mcp: {
+    enabled: false,
+  },
+
+  llms: {
+    enabled: false,
+  },
+
   content: {
     build: {
       markdown: {
