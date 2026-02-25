@@ -82,6 +82,8 @@ export default defineNuxtConfig({
     },
   },
 
+  css: ['~/assets/css/overrides.css'],
+
   content: {
     build: {
       markdown: {

@@ -1,0 +1,17 @@
+/* Full-width layout like docs.mollie.com */
+.max-w-\(--ui-container\) {
+  max-width: 100% !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+@media (min-width: 1024px) {
+  .max-w-\(--ui-container\) {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+}
+
+.prose {
+  max-width: none !important;
+}
