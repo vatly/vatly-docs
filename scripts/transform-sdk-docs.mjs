@@ -49,19 +49,19 @@ for (const file of files) {
 
   let transformed = content
 
-  // Rewrite internal links to point to correct docs paths
+  // Rewrite internal links to point to SDK pages
   const linkMap = {
-    '/checkouts': '/api-reference/checkouts',
-    '/customers': '/api-reference/customers',
-    '/subscriptions': '/api-reference/subscriptions',
-    '/subscription-plans': '/api-reference/subscription-plans',
-    '/one-off-products': '/api-reference/one-off-products',
-    '/orders': '/api-reference/orders',
-    '/refunds': '/api-reference/refunds',
-    '/chargebacks': '/api-reference/chargebacks',
-    '/webhooks': '/guides/webhooks',
-    '/order-refunds': '/api-reference/order-refunds',
-    '/global-refunds': '/api-reference/global-refunds',
+    '/checkouts': '/php-sdk/checkouts',
+    '/customers': '/php-sdk/customers',
+    '/subscriptions': '/php-sdk/subscriptions',
+    '/subscription-plans': '/php-sdk/subscriptionplans',
+    '/one-off-products': '/php-sdk/oneoffproducts',
+    '/orders': '/php-sdk/orders',
+    '/refunds': '/php-sdk/refunds',
+    '/chargebacks': '/php-sdk/chargebacks',
+    '/webhooks': '/php-sdk/webhooks',
+    '/order-refunds': '/php-sdk/orders',
+    '/global-refunds': '/php-sdk/refunds',
   }
   for (const [from, to] of Object.entries(linkMap)) {
     transformed = transformed.replaceAll(`](${from})`, `](${to})`)
