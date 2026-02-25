@@ -48,11 +48,11 @@ export default defineNuxtConfig({
         },
       ],
       meta: [
-        { property: 'og:image', content: 'https://docs.vatly.com/og-image.png' },
-        { property: 'og:image:width', content: '400' },
-        { property: 'og:image:height', content: '400' },
-        { name: 'twitter:card', content: 'summary' },
-        { name: 'twitter:image', content: 'https://docs.vatly.com/og-image.png' },
+        { property: 'og:image', content: 'https://docs.vatly.com/og-image.jpg' },
+        { property: 'og:image:width', content: '2400' },
+        { property: 'og:image:height', content: '1120' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:image', content: 'https://docs.vatly.com/og-image.jpg' },
       ],
       script: [
         {
