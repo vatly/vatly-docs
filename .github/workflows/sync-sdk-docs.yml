@@ -17,6 +17,7 @@ jobs:
           repository: Vatly/vatly-api-php
           path: tmp/sdk-repo
           sparse-checkout: docs
+          token: ${{ secrets.VATLY_DOCS_DISPATCH_TOKEN }}
 
       - name: Transform and copy
         run: |
