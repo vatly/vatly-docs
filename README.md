@@ -40,4 +40,6 @@ public/
 
 ## License
 
-Proprietary © [Vatly](https://vatly.com)
+MIT © [Vatly B.V.](https://vatly.com)
+
+Vatly, the Vatly logo, and associated brand assets are trademarks of Vatly B.V. and may not be used without permission.
