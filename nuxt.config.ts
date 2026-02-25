@@ -47,6 +47,20 @@ export default defineNuxtConfig({
           href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
         },
       ],
+      meta: [
+        { property: 'og:image', content: 'https://docs.vatly.com/og-image.png' },
+        { property: 'og:image:width', content: '400' },
+        { property: 'og:image:height', content: '400' },
+        { name: 'twitter:card', content: 'summary' },
+        { name: 'twitter:image', content: 'https://docs.vatly.com/og-image.png' },
+      ],
+      script: [
+        {
+          src: 'https://cdn.usefathom.com/script.js',
+          'data-site': 'OBXOIZSZ',
+          defer: true,
+        },
+      ],
       style: [
         {
           children: `
