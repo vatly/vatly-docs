@@ -1,0 +1,51 @@
+name: Sync PHP SDK Docs
+
+on:
+  repository_dispatch:
+    types: [sync-sdk-docs]
+  workflow_dispatch: # manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pull SDK docs
+        uses: actions/checkout@v4
+        with:
+          repository: Vatly/vatly-api-php
+          path: tmp/sdk-repo
+          sparse-checkout: docs
+
+      - name: Transform and copy
+        run: |
+          mkdir -p tmp/sdk-docs
+          cp tmp/sdk-repo/docs/*.md tmp/sdk-docs/ 2>/dev/null || true
+          node scripts/transform-sdk-docs.mjs tmp/sdk-docs content/3.php-sdk
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git add content/3.php-sdk/
+          if git diff --staged --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "Sander van Hooft"
+          git config user.email "sandervanhooft@users.noreply.github.com"
+          git commit -m "docs: sync PHP SDK documentation"
+          git push
+
+      - name: Build and deploy
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          npm install
+          npx nuxi build
+          echo "docs.vatly.com" > .output/public/CNAME
+          npx gh-pages --dotfiles -d .output/public
