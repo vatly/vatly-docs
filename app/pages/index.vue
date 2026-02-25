@@ -109,8 +109,8 @@ const features = [
     description: 'Full subscription lifecycle management. Handle upgrades, downgrades, proration, trials, and cancellations.',
   },
   {
-    title: 'Tax Compliance',
-    icon: 'i-lucide-shield-check',
+    title: 'Orders and Invoices',
+    icon: 'i-lucide-receipt',
     to: '/api-reference/orders',
     description: 'Automatic EU VAT handling as a Merchant of Record. Invoices, tax calculation, and reporting handled for you.',
   },
