@@ -47,8 +47,11 @@ jobs:
 
       - name: Build and deploy
         if: steps.changes.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install
           npx nuxi build
           echo "docs.vatly.com" > .output/public/CNAME
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/Vatly/vatly-docs.git
           npx gh-pages --dotfiles -d .output/public
