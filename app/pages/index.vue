@@ -81,12 +81,19 @@ useSeo({
           <li>Set up your products.</li>
           <li>Integrate Vatly in your SaaS using one of our <NuxtLink to="/guides/sdks" class="text-[#326bff] dark:text-[#5e8dff] hover:underline">SDKs</NuxtLink>.</li>
         </ol>
-        <div class="mt-8">
+        <div class="mt-8 flex items-center gap-6">
           <NuxtLink
             to="/guides/quickstart"
             class="text-[#326bff] dark:text-[#5e8dff] font-medium hover:underline"
           >
             Read the quickstart guide →
+          </NuxtLink>
+          <NuxtLink
+            to="/openapi.yaml"
+            target="_blank"
+            class="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          >
+            OpenAPI spec ↓
           </NuxtLink>
         </div>
       </div>
