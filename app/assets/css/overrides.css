@@ -15,3 +15,26 @@
 .prose {
   max-width: none !important;
 }
+
+/* Better light mode code block readability - dark code blocks in both themes */
+.light pre,
+:root:not(.dark) pre {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+.light .shiki,
+:root:not(.dark) .shiki {
+  background-color: #1e293b !important;
+}
+
+.light .shiki code,
+:root:not(.dark) .shiki code {
+  color: #e2e8f0 !important;
+}
+
+/* Use dark theme colors for shiki in light mode */
+.light .shiki span,
+:root:not(.dark) .shiki span {
+  color: var(--shiki-dark) !important;
+}
