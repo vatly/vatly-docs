@@ -1,8 +1,3 @@
----
-title: "Vatly PHP SDK"
-description: "Vatly PHP SDK - Vatly PHP SDK"
----
-
 # Vatly PHP SDK
 
 Official PHP SDK for the Vatly API. Handle subscriptions, one-off payments, tax compliance, and billing for your SaaS.
@@ -76,15 +71,15 @@ The SDK provides access to all Vatly API resources.
 
 | Resource | Description |
 |----------|-------------|
-| [Checkouts](/api-reference/checkouts) | Create hosted payment pages |
-| [Customers](/api-reference/customers) | Manage customer records |
-| [Subscriptions](/api-reference/subscriptions) | Recurring billing |
-| [Subscription Plans](/api-reference/subscription-plans) | Define subscription products |
-| [One-Off Products](/api-reference/one-off-products) | Single purchase products |
-| [Orders](/api-reference/orders) | Transaction records |
-| [Refunds](/api-reference/refunds) | Process refunds |
-| [Chargebacks](/api-reference/chargebacks) | Handle disputes |
-| [Webhooks](/guides/webhooks) | Real-time event notifications |
+| [Checkouts](/checkouts) | Create hosted payment pages |
+| [Customers](/customers) | Manage customer records |
+| [Subscriptions](/subscriptions) | Recurring billing |
+| [Subscription Plans](/subscription-plans) | Define subscription products |
+| [One-Off Products](/one-off-products) | Single purchase products |
+| [Orders](/orders) | Transaction records |
+| [Refunds](/refunds) | Process refunds |
+| [Chargebacks](/chargebacks) | Handle disputes |
+| [Webhooks](/webhooks) | Real-time event notifications |
 
 
 

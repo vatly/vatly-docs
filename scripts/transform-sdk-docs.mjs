@@ -49,6 +49,24 @@ for (const file of files) {
 
   let transformed = content
 
+  // Rewrite internal links to point to correct docs paths
+  const linkMap = {
+    '/checkouts': '/api-reference/checkouts',
+    '/customers': '/api-reference/customers',
+    '/subscriptions': '/api-reference/subscriptions',
+    '/subscription-plans': '/api-reference/subscription-plans',
+    '/one-off-products': '/api-reference/one-off-products',
+    '/orders': '/api-reference/orders',
+    '/refunds': '/api-reference/refunds',
+    '/chargebacks': '/api-reference/chargebacks',
+    '/webhooks': '/guides/webhooks',
+    '/order-refunds': '/api-reference/order-refunds',
+    '/global-refunds': '/api-reference/global-refunds',
+  }
+  for (const [from, to] of Object.entries(linkMap)) {
+    transformed = transformed.replaceAll(`](${from})`, `](${to})`)
+  }
+
   // Add frontmatter if missing
   if (!hasFrontmatter) {
     transformed = `---\ntitle: "${title}"\ndescription: "Vatly PHP SDK - ${title}"\n---\n\n${transformed}`
