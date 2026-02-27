@@ -1,8 +1,8 @@
-name: Sync PHP SDK Docs
+name: Sync SDK Docs
 
 on:
   repository_dispatch:
-    types: [sync-sdk-docs]
+    types: [sync-sdk-docs, sync-laravel-docs]
   workflow_dispatch: # manual trigger
 
 permissions:
@@ -14,23 +14,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Pull SDK docs
+      - name: Pull PHP SDK docs
         uses: actions/checkout@v4
         with:
           repository: Vatly/vatly-api-php
           path: tmp/sdk-repo
           sparse-checkout: docs
 
-      - name: Transform and copy
+      - name: Pull Laravel package docs
+        uses: actions/checkout@v4
+        with:
+          repository: Vatly/vatly-laravel
+          path: tmp/laravel-repo
+          sparse-checkout: docs
+
+      - name: Transform and copy PHP SDK docs
         run: |
           mkdir -p tmp/sdk-docs
           cp tmp/sdk-repo/docs/*.md tmp/sdk-docs/ 2>/dev/null || true
           node scripts/transform-sdk-docs.mjs tmp/sdk-docs content/3.php-sdk
 
+      - name: Transform and copy Laravel docs
+        run: |
+          mkdir -p tmp/laravel-docs
+          cp tmp/laravel-repo/docs/*.md tmp/laravel-docs/ 2>/dev/null || true
+          node scripts/transform-laravel-docs.mjs tmp/laravel-docs content/3.packages/2.laravel
+
       - name: Check for changes
         id: changes
         run: |
-          git add content/3.php-sdk/
+          git add content/3.php-sdk/ content/3.packages/
           if git diff --staged --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
@@ -42,7 +55,7 @@ jobs:
         run: |
           git config user.name "Sander van Hooft"
           git config user.email "sandervanhooft@users.noreply.github.com"
-          git commit -m "docs: sync PHP SDK documentation"
+          git commit -m "docs: sync SDK documentation"
           git push
 
       - name: Build and deploy

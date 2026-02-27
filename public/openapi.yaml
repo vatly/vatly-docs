@@ -1133,7 +1133,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Chargeback'
               example:
-                - id: chb_abc123
+                - id: chargeback_abc123
                   resource: chargeback
                   merchantId: mer_xyz789
                   testmode: false
@@ -1149,7 +1149,7 @@ paths:
                   orderId: ord_chargeback456
                   links:
                     self:
-                      href: https://api.vatly.com/v1/chargebacks/chb_abc123
+                      href: https://api.vatly.com/v1/chargebacks/chargeback_abc123
                       type: application/json
                     originalOrder:
                       href: https://api.vatly.com/v1/orders/ord_original123
@@ -1581,7 +1581,7 @@ components:
       required: true
       schema:
         type: string
-      example: chb_abc123def456
+      example: chargeback_abc123def456
   responses:
     Unauthorized:
       description: Unauthorized - Authentication credentials were missing or invalid
@@ -2657,7 +2657,7 @@ components:
         id:
           type: string
           description: Unique identifier for the chargeback
-          example: chb_abc123def456
+          example: chargeback_abc123def456
         resource:
           type: string
           description: Resource type identifier
