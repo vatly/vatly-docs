@@ -92,6 +92,10 @@ export default defineNuxtConfig({
     enabled: false,
   },
 
+  ogImage: {
+    enabled: false,
+  },
+
   content: {
     build: {
       markdown: {
