@@ -1,0 +1,308 @@
+# Webhooks
+
+> In this guide, we will look at how to register and consume webhooks to integrate your app with Vatly.
+
+## Registering webhooks
+
+To register a new webhook, you need to have a URL in your app that Vatly can call. You can configure a new webhook from the Vatly dashboard under [API settings](#). Give your webhook a name, pick the [events](#event-types) you want to listen for, and add your URL.
+
+Now, whenever something of interest happens in your app, a webhook is fired off by Vatly. In the next section, we'll look at how to consume webhooks.
+
+<note>
+
+For security reasons, your webhook URL needs to be HTTPS with a valid certificate and reachable from Vatly.
+
+</note>
+
+## Consuming webhooks
+
+When your app receives a webhook request from Vatly, check the `type` attribute to see what event caused it. The first part of the event type will tell you the payload type, e.g., a checkout, subscription, etc.
+
+```json [Example webhook payload]
+{
+  "id": "whk_a056V9ZCh6X9XZlr",
+  "type": "subscription.updated",
+  "payload": {
+    "id": "sub_WAz8eIbvDR60rouK"
+  }
+}
+```
+
+In the example above, a subscription was `updated`, and the payload type is a `subscription`.
+
+[See all event types](#event-types)
+
+## Inspecting webhooks
+
+To make integrating Vatly as smooth as possible, you can inspect a detailed webhook history in your Vatly dashboard.
+
+---
+
+## Event types
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Event
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        checkout.created
+      </code>
+    </td>
+    
+    <td>
+      A new checkout was created.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        checkout.paid
+      </code>
+    </td>
+    
+    <td>
+      A checkout was paid successfully.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        checkout.expired
+      </code>
+    </td>
+    
+    <td>
+      A checkout has expired.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        order.created
+      </code>
+    </td>
+    
+    <td>
+      A new order was created.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        order.paid
+      </code>
+    </td>
+    
+    <td>
+      An order was paid successfully.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription.created
+      </code>
+    </td>
+    
+    <td>
+      A new subscription was created.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription.updated
+      </code>
+    </td>
+    
+    <td>
+      An existing subscription was updated (plan change, quantity change, etc.).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription.canceled
+      </code>
+    </td>
+    
+    <td>
+      A subscription was canceled.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        refund.created
+      </code>
+    </td>
+    
+    <td>
+      A new refund was created.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        refund.completed
+      </code>
+    </td>
+    
+    <td>
+      A refund was completed successfully.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        chargeback.created
+      </code>
+    </td>
+    
+    <td>
+      A chargeback was initiated by the payment provider.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+### Example payloads
+
+#### checkout.paid
+
+```json [checkout.paid]
+{
+  "id": "whk_a056V9ZCh6X9XZlr",
+  "type": "checkout.paid",
+  "payload": {
+    "id": "chk_abc123def456",
+    "resource": "checkout",
+    "merchantId": "mer_abc123",
+    "orderId": "ord_xyz789",
+    "testmode": false,
+    "status": "paid",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "links": {
+      "checkoutUrl": {
+        "href": "https://pay.vatly.com/chk_abc123def456",
+        "type": "text/html"
+      },
+      "self": {
+        "href": "https://api.vatly.com/v1/checkouts/chk_abc123def456",
+        "type": "application/json"
+      },
+      "order": {
+        "href": "https://api.vatly.com/v1/orders/ord_xyz789",
+        "type": "application/json"
+      }
+    }
+  }
+}
+```
+
+#### subscription.updated
+
+```json [subscription.updated]
+{
+  "id": "whk_b167W0AChY7Z0Amr",
+  "type": "subscription.updated",
+  "payload": {
+    "id": "sub_abc123def456",
+    "resource": "subscription",
+    "customerId": "cus_xyz789",
+    "testmode": false,
+    "name": "Premium Plan",
+    "status": "active",
+    "basePrice": {
+      "value": "99.99",
+      "currency": "EUR"
+    },
+    "quantity": 1,
+    "interval": "month",
+    "intervalCount": 1,
+    "startedAt": "2024-01-15T10:30:00Z",
+    "renewedUntil": "2024-02-15T10:30:00Z",
+    "nextRenewalAt": "2024-02-15T10:30:00Z",
+    "links": {
+      "self": {
+        "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+        "type": "application/json"
+      },
+      "customer": {
+        "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+        "type": "application/json"
+      }
+    }
+  }
+}
+```
+
+---
+
+## Security
+
+To know for sure that a webhook was, in fact, sent by Vatly instead of a malicious actor, you can verify the request signature. Each webhook request contains a header named `x-vatly-signature`, and you can verify this signature by using your secret webhook key. The signature is an HMAC hash of the request payload hashed using your secret key. Here is an example of how to verify the signature in your app:
+
+<code-group sync="lang">
+
+```js [JavaScript]
+const signature = req.headers['x-vatly-signature']
+const hash = crypto.createHmac('sha256', secret).update(payload).digest('hex')
+
+if (hash === signature) {
+  // Request is verified
+} else {
+  // Request could not be verified
+}
+```
+
+```python [Python]
+from flask import request
+import hmac
+import hashlib
+
+signature = request.headers.get("x-vatly-signature")
+hash = hmac.new(bytes(secret, "ascii"), bytes(payload, "ascii"), hashlib.sha256)
+
+if hash.hexdigest() == signature:
+    # Request is verified
+else:
+    # Request could not be verified
+```
+
+```php [PHP]
+$signature = $request->header('x-vatly-signature');
+$hash = hash_hmac('sha256', $payload, $secret);
+
+if (hash_equals($hash, $signature)) {
+  // Request is verified
+} else {
+  // Request could not be verified
+}
+```
+
+</code-group>
+
+If your generated signature matches the `x-vatly-signature` header, you can be sure that the request was truly coming from Vatly. It's essential to keep your secret webhook key safe. Otherwise, you can no longer be sure that a given webhook was sent by Vatly. Don't commit your secret webhook key to GitHub!

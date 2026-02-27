@@ -1,0 +1,118 @@
+# Pagination
+
+> In this guide, we will look at how to work with paginated responses when querying the Vatly API
+
+When an API response returns a list of objects, no matter the amount, pagination is supported. In paginated responses, objects are nested in a `data` attribute and have `links` with `next` and `prev` URLs for navigation. When `links.next` is `null`, you have reached the end of the results. You can use the `startingAfter` and `endingBefore` query parameters to browse pages.
+
+## Example using cursors
+
+In this example, we request the page that starts after the checkout with id `chk_s4WycXedwhQrEFuM`. As a result, we get a list of three checkouts and can tell by `links.next` being `null` that we have reached the end of the resultset.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        startingAfter
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      The last ID on the page you're currently on when you want to fetch the next page.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        endingBefore
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      The first ID on the page you're currently on when you want to fetch the previous page.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        limit
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        integer
+      </code>
+    </td>
+    
+    <td>
+      Limit the number of items returned.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+```bash [Manual pagination using cURL]
+curl -G https://api.vatly.com/v1/checkouts \
+  -H "Authorization: Bearer live_your_api_key_here" \
+  -d startingAfter="chk_s4WycXedwhQrEFuM" \
+  -d limit=10
+```
+
+```json [Paginated response]
+{
+  "data": [
+    {
+      "id": "chk_WAz8eIbvDR60rouK"
+    },
+    {
+      "id": "chk_hSIhXBhNe8X1d8Et"
+    },
+    {
+      "id": "chk_fbwYwpi9C2ybt6Yb"
+    }
+  ],
+  "count": 3,
+  "links": {
+    "self": {
+      "href": "https://api.vatly.com/v1/checkouts?startingAfter=chk_s4WycXedwhQrEFuM&limit=10",
+      "type": "application/json"
+    },
+    "next": null,
+    "prev": {
+      "href": "https://api.vatly.com/v1/checkouts?endingBefore=chk_WAz8eIbvDR60rouK&limit=10",
+      "type": "application/json"
+    }
+  }
+}
+```

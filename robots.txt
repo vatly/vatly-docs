@@ -1,0 +1,6 @@
+# START nuxt-robots (indexable)
+User-agent: *
+Allow: /
+
+Sitemap: https://docs.vatly.com/sitemap.xml
+# END nuxt-robots

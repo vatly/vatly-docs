@@ -1,0 +1,41 @@
+# Authentication
+
+> In this guide, we'll look at how authentication works. Vatly uses API keys to authenticate your API requests.
+
+## API keys
+
+To authenticate with the Vatly API, you need to include your API key in the `Authorization` header of each request. You can obtain your API key from the [Vatly dashboard](https://my.vatly.com) under **Settings » API**.
+
+Vatly provides separate API keys for live and test environments:
+
+- **Live keys** are prefixed with `live_` and are used for production requests.
+- **Test keys** are prefixed with `test_` and are used for testing and development.
+
+<note>
+
+Use your test API key during development to avoid affecting live data. Switch to your live API key when you're ready to go to production.
+
+</note>
+
+Here's how to authenticate your requests:
+
+<code-group sync="lang">
+
+```bash [cURL]
+curl https://api.vatly.com/v1/checkouts \
+  -H "Authorization: Bearer live_your_api_key_here"
+```
+
+```php [PHP]
+$vatly = new Vatly\Api\VatlyApiClient;
+$vatly->setApiKey('live_your_api_key_here');
+
+// All subsequent requests are authenticated
+$checkouts = $vatly->checkouts->page();
+```
+
+</code-group>
+
+Always keep your API key safe and never expose it in client-side code or commit it to version control. If you suspect your API key has been compromised, you can regenerate it from the Vatly dashboard.
+
+[Check out our list of first-party packages](/packages)
