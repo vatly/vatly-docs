@@ -44,4 +44,4 @@ Real-time event notifications for checkouts, orders, subscriptions, refunds, and
 - [Authentication](/guides/authentication) -- learn how API keys work
 - [API Reference](/api-reference/customers) -- explore all endpoints
 - [PHP SDK](/packages/php/readme) -- get the official PHP package
-- [Download OpenAPI spec](/openapi.yaml) -- for code generation and tooling
+- [Download OpenAPI spec](https://docs.vatly.com/openapi.yaml) -- for code generation and tooling
