@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 
 import { join, basename, extname } from 'path'
 
 const SDK_SOURCE = process.argv[2] || 'tmp/sdk-docs'
-const SDK_TARGET = process.argv[3] || 'content/3.php-sdk'
+const SDK_TARGET = process.argv[3] || 'content/3.packages/1.php'
 
 const ORDER = {
   'README.md': 0,
@@ -51,17 +51,17 @@ for (const file of files) {
 
   // Rewrite internal links to point to SDK pages
   const linkMap = {
-    '/checkouts': '/php-sdk/checkouts',
-    '/customers': '/php-sdk/customers',
-    '/subscriptions': '/php-sdk/subscriptions',
-    '/subscription-plans': '/php-sdk/subscriptionplans',
-    '/one-off-products': '/php-sdk/oneoffproducts',
-    '/orders': '/php-sdk/orders',
-    '/refunds': '/php-sdk/refunds',
-    '/chargebacks': '/php-sdk/chargebacks',
-    '/webhooks': '/php-sdk/webhooks',
-    '/order-refunds': '/php-sdk/orders',
-    '/global-refunds': '/php-sdk/refunds',
+    '/checkouts': '/packages/php/checkouts',
+    '/customers': '/packages/php/customers',
+    '/subscriptions': '/packages/php/subscriptions',
+    '/subscription-plans': '/packages/php/subscriptionplans',
+    '/one-off-products': '/packages/php/oneoffproducts',
+    '/orders': '/packages/php/orders',
+    '/refunds': '/packages/php/refunds',
+    '/chargebacks': '/packages/php/chargebacks',
+    '/webhooks': '/packages/php/webhooks',
+    '/order-refunds': '/packages/php/orders',
+    '/global-refunds': '/packages/php/refunds',
   }
   for (const [from, to] of Object.entries(linkMap)) {
     transformed = transformed.replaceAll(`](${from})`, `](${to})`)
