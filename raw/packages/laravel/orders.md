@@ -1,7 +1,5 @@
 # Orders
 
-> Vatly Laravel - Orders
-
 Orders represent completed transactions in Vatly. They are created automatically when a checkout completes or a subscription renews.
 
 ## Listing orders

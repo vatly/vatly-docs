@@ -43,7 +43,7 @@ Chargebacks are created automatically when a payment provider initiates a disput
     
     <td>
       Unique identifier for the chargeback (starts with <code>
-        chb_
+        chargeback_
       </code>
       
       ).
@@ -221,11 +221,7 @@ Chargebacks are created automatically when a payment provider initiates a disput
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -368,7 +364,7 @@ This endpoint allows you to retrieve a paginated list of all chargebacks across 
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/chargebacks \
@@ -387,7 +383,7 @@ $chargebacks = $vatly->chargebacks->page();
 {
   "data": [
     {
-      "id": "chb_abc123def456",
+      "id": "chargeback_abc123def456",
       "resource": "chargeback",
       "merchantId": "mer_abc123",
       "testmode": false,
@@ -405,7 +401,7 @@ $chargebacks = $vatly->chargebacks->page();
       "createdAt": "2024-01-15T10:30:00Z",
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/chargebacks/chb_abc123def456",
+          "href": "https://api.vatly.com/v1/chargebacks/chargeback_abc123def456",
           "type": "application/json"
         },
         "originalOrder": {
@@ -481,10 +477,10 @@ This endpoint allows you to retrieve a specific chargeback by its ID.
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/chargebacks/chb_abc123def456 \
+curl https://api.vatly.com/v1/chargebacks/chargeback_abc123def456 \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -492,12 +488,12 @@ curl https://api.vatly.com/v1/chargebacks/chb_abc123def456 \
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$chargeback = $vatly->chargebacks->get('chb_abc123def456');
+$chargeback = $vatly->chargebacks->get('chargeback_abc123def456');
 ```
 
 ```json [Response]
 {
-  "id": "chb_abc123def456",
+  "id": "chargeback_abc123def456",
   "resource": "chargeback",
   "merchantId": "mer_abc123",
   "testmode": false,
@@ -515,7 +511,7 @@ $chargeback = $vatly->chargebacks->get('chb_abc123def456');
   "createdAt": "2024-01-15T10:30:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/chargebacks/chb_abc123def456",
+      "href": "https://api.vatly.com/v1/chargebacks/chargeback_abc123def456",
       "type": "application/json"
     },
     "originalOrder": {
@@ -634,7 +630,7 @@ This endpoint allows you to retrieve a paginated list of chargebacks for a speci
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/orders/ord_original123/chargebacks \
@@ -653,7 +649,7 @@ $chargebacks = $vatly->orders->chargebacks('ord_original123')->page();
 {
   "data": [
     {
-      "id": "chb_abc123def456",
+      "id": "chargeback_abc123def456",
       "resource": "chargeback",
       "merchantId": "mer_abc123",
       "testmode": false,
@@ -671,7 +667,7 @@ $chargebacks = $vatly->orders->chargebacks('ord_original123')->page();
       "createdAt": "2024-01-15T10:30:00Z",
       "links": {
         "self": {
-          "href": "https://api.vatly.com/v1/chargebacks/chb_abc123def456",
+          "href": "https://api.vatly.com/v1/chargebacks/chargeback_abc123def456",
           "type": "application/json"
         },
         "originalOrder": {
@@ -765,10 +761,10 @@ This endpoint allows you to retrieve a specific chargeback within an order conte
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
-curl https://api.vatly.com/v1/orders/ord_original123/chargebacks/chb_abc123def456 \
+curl https://api.vatly.com/v1/orders/ord_original123/chargebacks/chargeback_abc123def456 \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
@@ -776,12 +772,12 @@ curl https://api.vatly.com/v1/orders/ord_original123/chargebacks/chb_abc123def45
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
-$chargeback = $vatly->orders->chargebacks('ord_original123')->get('chb_abc123def456');
+$chargeback = $vatly->orders->chargebacks('ord_original123')->get('chargeback_abc123def456');
 ```
 
 ```json [Response]
 {
-  "id": "chb_abc123def456",
+  "id": "chargeback_abc123def456",
   "resource": "chargeback",
   "merchantId": "mer_abc123",
   "testmode": false,
@@ -799,7 +795,7 @@ $chargeback = $vatly->orders->chargebacks('ord_original123')->get('chb_abc123def
   "createdAt": "2024-01-15T10:30:00Z",
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/chargebacks/chb_abc123def456",
+      "href": "https://api.vatly.com/v1/chargebacks/chargeback_abc123def456",
       "type": "application/json"
     },
     "originalOrder": {

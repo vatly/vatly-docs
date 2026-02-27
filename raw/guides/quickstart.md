@@ -13,14 +13,14 @@ API key from your dashboard. You find it under [Settings » API](#).
 
 Before making your first API request, you need to pick which API client you will use. In addition to good ol' cURL HTTP requests, Vatly offers clients for JavaScript, Python, and PHP. In the following example, you can see how to install each client.
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 # cURL is most likely already installed on your machine
 curl --version
 ```
 
-```bash [PHP]
+```bash [php]
 # Install the Vatly PHP SDK
 composer require vatly/vatly-api-php
 ```
@@ -33,7 +33,7 @@ composer require vatly/vatly-api-php
 
 After picking your preferred client, you are ready to make your first call to the Vatly API. Below, you can see how to send a GET request to the Checkouts endpoint to get a list of all your checkouts. In the cURL example, results are limited to ten checkouts, the default page length for each client.
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/checkouts \

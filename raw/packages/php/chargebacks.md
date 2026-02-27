@@ -1,7 +1,5 @@
 # Chargebacks
 
-> Vatly PHP SDK - Chargebacks
-
 Chargebacks occur when a customer disputes a payment with their bank. Vatly notifies you via webhooks when chargebacks happen.
 
 ## The Chargeback Resource

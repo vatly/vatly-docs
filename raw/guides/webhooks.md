@@ -265,7 +265,7 @@ To make integrating Vatly as smooth as possible, you can inspect a detailed webh
 
 To know for sure that a webhook was, in fact, sent by Vatly instead of a malicious actor, you can verify the request signature. Each webhook request contains a header named `x-vatly-signature`, and you can verify this signature by using your secret webhook key. The signature is an HMAC hash of the request payload hashed using your secret key. Here is an example of how to verify the signature in your app:
 
-<code-group sync="lang">
+<code-group>
 
 ```js [JavaScript]
 const signature = req.headers['x-vatly-signature']

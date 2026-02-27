@@ -1,7 +1,5 @@
 # Getting Started
 
-> Vatly PHP SDK - Getting Started
-
 Official PHP SDK for the Vatly API. Handle subscriptions, one-off payments, tax compliance, and billing for your SaaS.
 
 ## Installation

@@ -1,7 +1,5 @@
 # Subscriptions
 
-> Vatly PHP SDK - Subscriptions
-
 Subscriptions are created automatically when a customer completes a checkout for a subscription plan. You can then manage the subscription lifecycle through the API.
 
 ## The Subscription Resource
@@ -186,17 +184,11 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      When the subscription was canceled (ISO 8601).
+      null`
     </td>
   </tr>
   
@@ -208,17 +200,11 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      When the subscription ended (ISO 8601).
+      null`
     </td>
   </tr>
   
@@ -230,17 +216,11 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      Trial period start (ISO 8601).
+      null`
     </td>
   </tr>
   
@@ -252,17 +232,11 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      Trial period end (ISO 8601).
+      null`
     </td>
   </tr>
   

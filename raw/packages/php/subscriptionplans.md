@@ -1,7 +1,5 @@
 # Subscription Plans
 
-> Vatly PHP SDK - Subscription Plans
-
 Subscription plans define recurring billing products. Create and manage plans in the Vatly dashboard, then use the API to retrieve them.
 
 ## The Subscription Plan Resource
@@ -76,17 +74,11 @@ Below you'll find all properties for the Vatly Subscription Plan resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      Description of the plan.
+      null`
     </td>
   </tr>
   
@@ -186,17 +178,11 @@ Below you'll find all properties for the Vatly Subscription Plan resource.
     </td>
     
     <td>
-      <code>
-        integer
-      </code>
-      
-       <code>
-        null
-      </code>
+      `integer
     </td>
     
     <td>
-      Default trial period in days.
+      null`
     </td>
   </tr>
   

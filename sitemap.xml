@@ -16,10 +16,10 @@
     <loc>/guides/pagination</loc>
   </url>
   <url>
-    <loc>/guides/webhooks</loc>
+    <loc>/guides/errors</loc>
   </url>
   <url>
-    <loc>/guides/errors</loc>
+    <loc>/guides/webhooks</loc>
   </url>
   <url>
     <loc>/guides/idempotency</loc>
@@ -37,9 +37,6 @@
     <loc>/api-reference/subscription-plans</loc>
   </url>
   <url>
-    <loc>/api-reference/one-off-products</loc>
-  </url>
-  <url>
     <loc>/api-reference/orders</loc>
   </url>
   <url>
@@ -52,7 +49,7 @@
     <loc>/api-reference/chargebacks</loc>
   </url>
   <url>
-    <loc>/packages</loc>
+    <loc>/api-reference/one-off-products</loc>
   </url>
   <url>
     <loc>/packages/php/readme</loc>
@@ -103,9 +100,9 @@
     <loc>/packages/laravel/webhooks</loc>
   </url>
   <url>
-    <loc>/integrations</loc>
+    <loc>/packages</loc>
   </url>
   <url>
-    <loc>/</loc>
+    <loc>/integrations</loc>
   </url>
 </urlset>

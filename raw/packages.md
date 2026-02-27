@@ -6,19 +6,49 @@ Vatly provides official packages to integrate billing, subscriptions, and tax co
 
 ## Available packages
 
+```text
+<th>
+  Package
+</th>
+
+<th>
+  Install
+</th>
+```
+
+```text
+<td>
+  <a href="/packages/php/readme">
+    vatly-api-php
+  </a>
+</td>
+
+<td>
+  <code>
+    composer require vatly/vatly-api-php
+  </code>
+</td>
+```
+
+```text
+<td>
+  <a href="/packages/laravel/readme">
+    vatly-laravel
+  </a>
+</td>
+
+<td>
+  <code>
+    composer require vatly/vatly-laravel
+  </code>
+</td>
+```
+
 <table>
 <thead>
   <tr>
     <th>
       Language / Framework
-    </th>
-    
-    <th>
-      Package
-    </th>
-    
-    <th>
-      Install
     </th>
   </tr>
 </thead>
@@ -28,35 +58,11 @@ Vatly provides official packages to integrate billing, subscriptions, and tax co
     <td>
       PHP 8.0+
     </td>
-    
-    <td>
-      <a href="/packages/php/readme">
-        vatly-api-php
-      </a>
-    </td>
-    
-    <td>
-      <code>
-        composer require vatly/vatly-api-php
-      </code>
-    </td>
   </tr>
   
   <tr>
     <td>
       Laravel 11+
-    </td>
-    
-    <td>
-      <a href="/packages/laravel/readme">
-        vatly-laravel
-      </a>
-    </td>
-    
-    <td>
-      <code>
-        composer require vatly/vatly-laravel
-      </code>
     </td>
   </tr>
 </tbody>
@@ -64,19 +70,41 @@ Vatly provides official packages to integrate billing, subscriptions, and tax co
 
 ## Coming soon
 
+```text
+<th>
+  Package
+</th>
+
+<th>
+  Status
+</th>
+```
+
+```text
+<td>
+  vatly-js
+</td>
+
+<td>
+  Planned
+</td>
+```
+
+```text
+<td>
+  vatly-python
+</td>
+
+<td>
+  Planned
+</td>
+```
+
 <table>
 <thead>
   <tr>
     <th>
       Language / Framework
-    </th>
-    
-    <th>
-      Package
-    </th>
-    
-    <th>
-      Status
     </th>
   </tr>
 </thead>
@@ -86,27 +114,11 @@ Vatly provides official packages to integrate billing, subscriptions, and tax co
     <td>
       JavaScript / Node.js
     </td>
-    
-    <td>
-      vatly-js
-    </td>
-    
-    <td>
-      Planned
-    </td>
   </tr>
   
   <tr>
     <td>
       Python
-    </td>
-    
-    <td>
-      vatly-python
-    </td>
-    
-    <td>
-      Planned
     </td>
   </tr>
 </tbody>

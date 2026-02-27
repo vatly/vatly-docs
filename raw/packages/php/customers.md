@@ -1,7 +1,5 @@
 # Customers
 
-> Vatly PHP SDK - Customers
-
 Customers represent your end users who purchase products through Vatly.
 
 ## The Customer Resource
@@ -76,17 +74,11 @@ Below you'll find all properties for the Vatly Customer resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      Customer's name.
+      null`
     </td>
   </tr>
   

@@ -1,7 +1,5 @@
 # One-Off Products
 
-> Vatly PHP SDK - One-Off Products
-
 One-off products are single-purchase items (not recurring subscriptions). Create and manage them in the Vatly dashboard, then use the API to retrieve them.
 
 ## The One-Off Product Resource
@@ -76,17 +74,11 @@ Below you'll find all properties for the Vatly One-Off Product resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      Description of the product.
+      null`
     </td>
   </tr>
   

@@ -17,25 +17,22 @@ Use your test API key during development to avoid affecting live data. Switch to
 
 </note>
 
-Here's how to authenticate your requests:
+Here's how to authenticate your requests using cURL:
 
-<code-group sync="lang">
-
-```bash [cURL]
+```bash [Example request with API key]
 curl https://api.vatly.com/v1/checkouts \
   -H "Authorization: Bearer live_your_api_key_here"
 ```
 
-```php [PHP]
-$vatly = new Vatly\Api\VatlyApiClient;
-$vatly->setApiKey('live_your_api_key_here');
-
-// All subsequent requests are authenticated
-$checkouts = $vatly->checkouts->page();
-```
-
-</code-group>
-
 Always keep your API key safe and never expose it in client-side code or commit it to version control. If you suspect your API key has been compromised, you can regenerate it from the Vatly dashboard.
 
-[Check out our list of first-party packages](/packages)
+## Using an SDK
+
+If you use one of our official SDKs, authentication is straightforward. Simply provide your API key when initializing the client, and the SDK will handle the rest.
+
+```php [PHP SDK example]
+$vatly = new Vatly\Api\VatlyApiClient;
+$vatly->setApiKey('live_your_api_key_here');
+```
+
+[Check out our list of first-party SDKs](/guides/sdks)

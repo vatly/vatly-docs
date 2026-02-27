@@ -1,7 +1,5 @@
 # Getting Started
 
-> Vatly Laravel - Getting Started
-
 Vatly Laravel provides a Cashier-like integration for [Vatly](https://vatly.com) billing in your Laravel application. It handles subscriptions, checkouts, customers, webhooks, and payment method updates.
 
 ## Requirements
@@ -230,7 +228,7 @@ This creates:
 Add the `Billable` trait and implement `BillableInterface` on your User model:
 
 ```php
-use Vatly\Fluent\Contracts\BillableInterface;
+use Vatly\Laravel\Contracts\BillableInterface;
 use Vatly\Laravel\Billable;
 
 class User extends Authenticatable implements BillableInterface

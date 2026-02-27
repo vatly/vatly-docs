@@ -133,11 +133,7 @@ The order model contains all the information about your orders, including the or
     
     <td>
       <code>
-        object
-      </code>
-      
-       <code>
-        null
+        object | null
       </code>
     </td>
     
@@ -155,11 +151,7 @@ The order model contains all the information about your orders, including the or
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -223,11 +215,7 @@ The order model contains all the information about your orders, including the or
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -696,7 +684,7 @@ This endpoint allows you to retrieve a paginated list of all your orders. By def
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/orders \
@@ -862,7 +850,7 @@ This endpoint allows you to retrieve a specific order by its ID.
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/orders/ord_abc123def456 \
@@ -1011,7 +999,7 @@ This endpoint allows you to request a signed link that customers can use to upda
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -X POST https://api.vatly.com/v1/orders/ord_abc123def456/request-address-update-link \

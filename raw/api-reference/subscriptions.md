@@ -343,11 +343,7 @@ The subscription model contains all the information about recurring billing rela
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -365,11 +361,7 @@ The subscription model contains all the information about recurring billing rela
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -387,11 +379,7 @@ The subscription model contains all the information about recurring billing rela
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -409,11 +397,7 @@ The subscription model contains all the information about recurring billing rela
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -431,11 +415,7 @@ The subscription model contains all the information about recurring billing rela
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -453,11 +433,7 @@ The subscription model contains all the information about recurring billing rela
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -475,11 +451,7 @@ The subscription model contains all the information about recurring billing rela
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -600,7 +572,7 @@ This endpoint allows you to retrieve a paginated list of all subscriptions acros
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/subscriptions \
@@ -728,7 +700,7 @@ This endpoint allows you to retrieve a specific subscription by its ID.
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
@@ -893,7 +865,7 @@ This endpoint allows you to retrieve a paginated list of all subscriptions for a
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/customers/cus_xyz789/subscriptions \
@@ -1006,7 +978,7 @@ This endpoint allows you to retrieve a specific subscription for a specific cust
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/customers/cus_xyz789/subscriptions/sub_abc123def456 \
@@ -1075,7 +1047,7 @@ $subscription = $vatly->customers->subscriptions('cus_xyz789')->get('sub_abc123d
 
 `PATCH /v1/subscriptions/:id`
 
-This endpoint allows you to update a subscription. You can change the plan, quantity, or apply proration settings. This is typically used for plan upgrades and downgrades (plan swaps), seat quantity changes, or adjusting billing behavior mid-cycle.
+This endpoint allows you to update a subscription. You can change the plan, quantity, or apply proration settings.
 
 ### Optional attributes
 
@@ -1259,7 +1231,7 @@ At least one of `subscriptionPlanId` or `quantity` must be provided.
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -X PATCH https://api.vatly.com/v1/subscriptions/sub_abc123def456 \
@@ -1440,7 +1412,7 @@ This endpoint initiates a hosted flow for updating subscription billing details.
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -X PATCH https://api.vatly.com/v1/subscriptions/sub_abc123def456/update-billing \
@@ -1538,7 +1510,7 @@ This endpoint allows you to cancel a subscription. By default, the subscription 
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -X DELETE https://api.vatly.com/v1/subscriptions/sub_abc123def456 \

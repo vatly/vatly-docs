@@ -310,7 +310,7 @@ This endpoint retrieves a paginated list of all one-off products.
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/one-off-products \
@@ -410,7 +410,7 @@ This endpoint retrieves a specific one-off product by its ID.
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/one-off-products/prod_abc123def456 \

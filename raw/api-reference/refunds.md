@@ -79,11 +79,7 @@ The refund model contains all the information about order refunds, including the
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -628,7 +624,7 @@ This endpoint allows you to create a partial refund for a specific order. You sp
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -X POST https://api.vatly.com/v1/orders/ord_abc123/refunds \
@@ -817,7 +813,7 @@ This endpoint allows you to create a full refund for a specific order. This will
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -X POST https://api.vatly.com/v1/orders/ord_abc123/refunds/full \
@@ -996,7 +992,7 @@ This endpoint allows you to retrieve a list of all refunds for a specific order.
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/orders/ord_abc123/refunds \
@@ -1155,7 +1151,7 @@ This endpoint allows you to retrieve details of a specific refund for a specific
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/orders/ord_abc123/refunds/ref_abc123def456 \
@@ -1301,7 +1297,7 @@ This endpoint allows you to cancel a pending refund for a specific order. Only p
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -X DELETE https://api.vatly.com/v1/orders/ord_abc123/refunds/ref_abc123def456 \

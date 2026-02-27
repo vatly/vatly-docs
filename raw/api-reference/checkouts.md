@@ -97,11 +97,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -173,11 +169,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
     
     <td>
       <code>
-        object
-      </code>
-      
-       <code>
-        null
+        object | null
       </code>
     </td>
     
@@ -233,11 +225,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -380,7 +368,7 @@ This endpoint allows you to retrieve a paginated list of all your checkouts. By 
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/checkouts \
@@ -615,7 +603,7 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/checkouts \
@@ -685,7 +673,7 @@ header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
 
 This endpoint allows you to retrieve a checkout by providing the checkout id. Refer to [the list](#the-checkout-api-resource) at the top of this page to see which properties are included with checkout objects.
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/checkouts/chk_abc123def456 \

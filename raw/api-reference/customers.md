@@ -133,11 +133,7 @@ Below you'll find all properties for the Vatly Customer API resource.
     
     <td>
       <code>
-        object
-      </code>
-      
-       <code>
-        null
+        object | null
       </code>
     </td>
     
@@ -254,7 +250,7 @@ This endpoint allows you to retrieve a paginated list of all your customers. By 
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/customers \
@@ -392,7 +388,7 @@ This endpoint allows you to add a new customer to Vatly. To add a customer, you 
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/customers \
@@ -437,7 +433,7 @@ $vatly->customers->create([
 
 This endpoint allows you to retrieve a customer by providing their Vatly id. Refer to [the list](#the-customer-api-resource) at the top of this page to see which properties are included with customer objects.
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/customers/cus_abc123def456 \

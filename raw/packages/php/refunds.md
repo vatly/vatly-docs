@@ -1,7 +1,5 @@
 # Refunds
 
-> Vatly PHP SDK - Refunds
-
 Refunds allow you to return money to your customers for orders.
 
 ## The Refund Resource
@@ -146,17 +144,11 @@ Below you'll find all properties for the Vatly Refund resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      Reason for the refund.
+      null`
     </td>
   </tr>
   

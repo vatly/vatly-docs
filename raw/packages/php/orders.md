@@ -1,7 +1,5 @@
 # Orders
 
-> Vatly PHP SDK - Orders
-
 Orders are created automatically when a checkout completes successfully or when a subscription renews.
 
 ## The Order Resource
@@ -106,17 +104,11 @@ Below you'll find all properties for the Vatly Order resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      The checkout ID (for initial orders).
+      null`
     </td>
   </tr>
   
@@ -128,17 +120,11 @@ Below you'll find all properties for the Vatly Order resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      The subscription ID (for recurring orders).
+      null`
     </td>
   </tr>
   
@@ -240,17 +226,11 @@ Below you'll find all properties for the Vatly Order resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      When the order was paid (ISO 8601).
+      null`
     </td>
   </tr>
   

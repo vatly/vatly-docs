@@ -1,7 +1,5 @@
 # Webhooks
 
-> Vatly Laravel - Webhooks
-
 Vatly sends webhooks to notify your application of events like subscription starts, cancellations, and payment updates. Vatly Laravel handles webhook verification, storage, and event dispatching automatically.
 
 ## Endpoint
@@ -109,7 +107,7 @@ The package includes listeners that automatically handle subscription lifecycle 
 Listen for Vatly events in your `EventServiceProvider` or using the `Event` facade:
 
 ```php
-use Vatly\Fluent\Events\SubscriptionStarted;
+use Vatly\Laravel\Events\SubscriptionStarted;
 
 Event::listen(SubscriptionStarted::class, function (SubscriptionStarted $event) {
     // $event->subscriptionId

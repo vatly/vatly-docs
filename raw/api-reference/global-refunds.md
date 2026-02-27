@@ -79,11 +79,7 @@ The refund model contains all the information about refunds, including the refun
     
     <td>
       <code>
-        string
-      </code>
-      
-       <code>
-        null
+        string | null
       </code>
     </td>
     
@@ -444,7 +440,7 @@ This endpoint allows you to retrieve a paginated list of all refunds across your
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/refunds \
@@ -586,7 +582,7 @@ This endpoint allows you to retrieve details of a specific refund.
 </tbody>
 </table>
 
-<code-group sync="lang">
+<code-group>
 
 ```bash [cURL]
 curl https://api.vatly.com/v1/refunds/ref_abc123def456 \

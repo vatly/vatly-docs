@@ -1,7 +1,5 @@
 # Checkouts
 
-> Vatly PHP SDK - Checkouts
-
 Checkouts create hosted payment pages for your customers. When a checkout completes successfully, an Order is created.
 
 ## The Checkout Resource
@@ -114,17 +112,11 @@ Below you'll find all properties for the Vatly Checkout resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      Order ID (available after successful payment).
+      null`
     </td>
   </tr>
   
@@ -208,17 +200,11 @@ Below you'll find all properties for the Vatly Checkout resource.
     </td>
     
     <td>
-      <code>
-        string
-      </code>
-      
-       <code>
-        null
-      </code>
+      `string
     </td>
     
     <td>
-      Expiration timestamp (ISO 8601).
+      null`
     </td>
   </tr>
   

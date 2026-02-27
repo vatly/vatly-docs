@@ -1,7 +1,5 @@
 # Checkouts
 
-> Vatly Laravel - Checkouts
-
 Checkouts redirect your customer to Vatly's hosted payment page. After payment, the customer is redirected back to your application.
 
 ## Creating a checkout
