@@ -88,13 +88,13 @@ useSeo({
           >
             Read the quickstart guide →
           </NuxtLink>
-          <NuxtLink
-            to="/openapi.yaml"
-            target="_blank"
+          <a
+            href="https://docs.vatly.com/openapi.yaml"
+            download
             class="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
           >
             OpenAPI spec ↓
-          </NuxtLink>
+          </a>
         </div>
       </div>
     </section>
