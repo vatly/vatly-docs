@@ -213,7 +213,7 @@ Below you'll find all properties for the Vatly Chargeback resource.
     
     <td>
       <code>
-        string|null
+        string | null
       </code>
     </td>
     

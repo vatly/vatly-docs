@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly Subscription resource.
     
     <td>
       Unique identifier for the subscription (<code>
-        sub_...
+        subscription_...
       </code>
       
       ).
@@ -186,11 +186,13 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      `string
+      <code>
+        string | null
+      </code>
     </td>
     
     <td>
-      null`
+      When the subscription was canceled (ISO 8601).
     </td>
   </tr>
   
@@ -202,11 +204,13 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      `string
+      <code>
+        string | null
+      </code>
     </td>
     
     <td>
-      null`
+      When the subscription ended (ISO 8601).
     </td>
   </tr>
   
@@ -218,11 +222,13 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      `string
+      <code>
+        string | null
+      </code>
     </td>
     
     <td>
-      null`
+      Trial period start (ISO 8601).
     </td>
   </tr>
   
@@ -234,11 +240,13 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      `string
+      <code>
+        string | null
+      </code>
     </td>
     
     <td>
-      null`
+      Trial period end (ISO 8601).
     </td>
   </tr>
   
@@ -289,7 +297,7 @@ Below you'll find all properties for the Vatly Subscription resource.
 Retrieve a subscription by its ID.
 
 ```php
-$subscription = $vatly->subscriptions->get('sub_abc123');
+$subscription = $vatly->subscriptions->get('subscription_abc123');
 
 echo $subscription->status;
 echo $subscription->planId;
@@ -392,7 +400,7 @@ foreach ($subscriptions as $subscription) {
 
 // Filter by customer
 $subscriptions = $vatly->subscriptions->list([
-    'customerId' => 'cus_abc123',
+    'customerId' => 'customer_abc123',
 ]);
 ```
 
@@ -433,7 +441,7 @@ If you do not provide a custom key, the SDK generates one automatically for the 
 Cancel a subscription. The subscription will remain active until the end of the current billing period.
 
 ```php
-$subscription = $vatly->subscriptions->cancel('sub_abc123');
+$subscription = $vatly->subscriptions->cancel('subscription_abc123');
 
 // Subscription is now on grace period until current period ends
 echo $subscription->status;        // 'on_grace_period'

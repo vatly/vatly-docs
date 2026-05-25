@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly One-Off Product resource.
     
     <td>
       Unique identifier for the product (<code>
-        prod_...
+        one_off_product_...
       </code>
       
       ).
@@ -76,11 +76,13 @@ Below you'll find all properties for the Vatly One-Off Product resource.
     </td>
     
     <td>
-      `string
+      <code>
+        string | null
+      </code>
     </td>
     
     <td>
-      null`
+      Description of the product.
     </td>
   </tr>
   
@@ -197,7 +199,7 @@ Below you'll find all properties for the Vatly One-Off Product resource.
 Retrieve a one-off product by its ID.
 
 ```php
-$product = $vatly->oneOffProducts->get('prod_abc123');
+$product = $vatly->oneOffProducts->get('one_off_product_abc123');
 
 echo $product->name;
 echo $product->amount / 100 . ' ' . $product->currency;

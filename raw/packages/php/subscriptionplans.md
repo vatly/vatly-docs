@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly Subscription Plan resource.
     
     <td>
       Unique identifier for the plan (<code>
-        plan_...
+        subscription_plan_...
       </code>
       
       ).
@@ -76,11 +76,13 @@ Below you'll find all properties for the Vatly Subscription Plan resource.
     </td>
     
     <td>
-      `string
+      <code>
+        string | null
+      </code>
     </td>
     
     <td>
-      null`
+      Description of the plan.
     </td>
   </tr>
   
@@ -180,11 +182,13 @@ Below you'll find all properties for the Vatly Subscription Plan resource.
     </td>
     
     <td>
-      `integer
+      <code>
+        integer | null
+      </code>
     </td>
     
     <td>
-      null`
+      Default trial period in days.
     </td>
   </tr>
   
@@ -265,7 +269,7 @@ Below you'll find all properties for the Vatly Subscription Plan resource.
 Retrieve a subscription plan by its ID.
 
 ```php
-$plan = $vatly->subscriptionPlans->get('plan_abc123');
+$plan = $vatly->subscriptionPlans->get('subscription_plan_abc123');
 
 echo $plan->name;
 echo $plan->amount / 100 . ' ' . $plan->currency;

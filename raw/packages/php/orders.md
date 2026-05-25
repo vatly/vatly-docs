@@ -43,7 +43,7 @@ Below you'll find all properties for the Vatly Order resource.
     
     <td>
       Unique identifier for the order (<code>
-        ord_...
+        order_...
       </code>
       
       ).
@@ -106,11 +106,13 @@ Below you'll find all properties for the Vatly Order resource.
     </td>
     
     <td>
-      `string
+      <code>
+        string | null
+      </code>
     </td>
     
     <td>
-      null`
+      The checkout ID (for initial orders).
     </td>
   </tr>
   
@@ -122,11 +124,13 @@ Below you'll find all properties for the Vatly Order resource.
     </td>
     
     <td>
-      `string
+      <code>
+        string | null
+      </code>
     </td>
     
     <td>
-      null`
+      The subscription ID (for recurring orders).
     </td>
   </tr>
   
@@ -228,11 +232,13 @@ Below you'll find all properties for the Vatly Order resource.
     </td>
     
     <td>
-      `string
+      <code>
+        string | null
+      </code>
     </td>
     
     <td>
-      null`
+      When the order was paid (ISO 8601).
     </td>
   </tr>
   
@@ -265,7 +271,7 @@ Below you'll find all properties for the Vatly Order resource.
 Retrieve an order by its ID.
 
 ```php
-$order = $vatly->orders->get('ord_abc123');
+$order = $vatly->orders->get('order_abc123');
 
 echo $order->status;
 echo $order->amount / 100 . ' ' . $order->currency;
@@ -368,7 +374,7 @@ foreach ($orders as $order) {
 
 // Filter by customer
 $orders = $vatly->orders->list([
-    'customerId' => 'cus_abc123',
+    'customerId' => 'customer_abc123',
 ]);
 ```
 
