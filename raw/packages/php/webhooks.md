@@ -225,7 +225,29 @@ The SDK provides a helper to parse and verify incoming webhooks.
   <tr>
     <td>
       <code>
-        type
+        resource
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Always <code>
+        webhook_event
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        eventName
       </code>
     </td>
     
@@ -237,7 +259,7 @@ The SDK provides a helper to parse and verify incoming webhooks.
     
     <td>
       Event type (e.g., <code>
-        checkout.paid
+        order.paid
       </code>
       
       ).
@@ -247,10 +269,44 @@ The SDK provides a helper to parse and verify incoming webhooks.
   <tr>
     <td>
       <code>
-        data
+        entityType
       </code>
     </td>
     
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Type of the resource this event relates to (e.g., <code>
+        order
+      </code>
+      
+      ).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        entityId
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      ID of the resource this event relates to.
+    </td>
+  </tr>
+  
+  <tr>
     <td>
       <code>
         object
@@ -258,7 +314,13 @@ The SDK provides a helper to parse and verify incoming webhooks.
     </td>
     
     <td>
-      The resource object that triggered the event.
+      <code>
+        object|null
+      </code>
+    </td>
+    
+    <td>
+      The full resource payload at the time of the event.
     </td>
   </tr>
   
@@ -271,7 +333,7 @@ The SDK provides a helper to parse and verify incoming webhooks.
     
     <td>
       <code>
-        string
+        string|null
       </code>
     </td>
     
@@ -284,7 +346,7 @@ The SDK provides a helper to parse and verify incoming webhooks.
 
 ```php
 use Vatly\API\VatlyApiClient;
-use Vatly\API\Webhook;
+use Vatly\API\Webhooks\Webhook;
 
 $vatly = new VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
@@ -297,19 +359,19 @@ $secret = 'your_webhook_secret';
 // Parse and verify the webhook
 $event = Webhook::parse($payload, $signature, $secret);
 
-switch ($event->type) {
+switch ($event->eventName) {
     case 'checkout.paid':
-        $checkout = $event->data;
+        $checkout = $event->object;
         // Fulfill the order
         break;
 
     case 'subscription.renewed':
-        $subscription = $event->data;
+        $subscription = $event->object;
         // Extend access
         break;
 
     case 'chargeback.created':
-        $chargeback = $event->data;
+        $chargeback = $event->object;
         // Suspend account, notify team
         break;
 }
@@ -325,7 +387,7 @@ http_response_code(200);
 Always verify webhook signatures to ensure the request came from Vatly.
 
 ```php
-use Vatly\API\Webhook;
+use Vatly\API\Webhooks\Webhook;
 use Vatly\API\Exceptions\InvalidSignatureException;
 
 try {
@@ -348,7 +410,7 @@ For Laravel applications, you can use controller middleware and route handling.
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Vatly\API\Webhook;
+use Vatly\API\Webhooks\Webhook;
 
 class VatlyWebhookController extends Controller
 {
@@ -360,9 +422,9 @@ class VatlyWebhookController extends Controller
             config('services.vatly.webhook_secret')
         );
 
-        match ($event->type) {
-            'checkout.paid' => $this->handleCheckoutPaid($event->data),
-            'subscription.canceled' => $this->handleCanceled($event->data),
+        match ($event->eventName) {
+            'checkout.paid' => $this->handleCheckoutPaid($event->object),
+            'subscription.canceled' => $this->handleCanceled($event->object),
             default => null,
         };
 
