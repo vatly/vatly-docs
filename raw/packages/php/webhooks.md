@@ -337,6 +337,42 @@ Every delivery carries a [`WebhookEvent`](../src/API/Resources/WebhookEvent.php)
   <tr>
     <td>
       <code>
+        createdAt
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      When the event occurred (ISO 8601).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        testmode
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        bool
+      </code>
+    </td>
+    
+    <td>
+      Whether this event was generated in test mode.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         links
       </code>
     </td>
@@ -373,6 +409,8 @@ Every delivery carries a [`WebhookEvent`](../src/API/Resources/WebhookEvent.php)
         "status": "paid",
         "total": { "value": "29.99", "currency": "EUR" }
     },
+    "createdAt": "2026-01-11T10:50:50+02:00",
+    "testmode": true,
     "links": {
         "self": {
             "href": "https://api.vatly.com/v1/webhook-events/webhook_event_Qk8pRtSvWm2NjLhYcZaE",
