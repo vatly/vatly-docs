@@ -2,6 +2,8 @@
   "name": "vatly-docs",
   "scripts": {
     "dev": "nuxt dev --extends docus",
+    "cache:clear": "rm -rf .nuxt .data node_modules/.cache",
+    "cache:clear:dev": "npm run cache:clear && npm run dev",
     "build": "nuxt build --extends docus",
     "postinstall": "cp app/components/OgImage/OgImageDocs.vue node_modules/docus/app/components/OgImage/OgImageDocs.vue",
     "lint:md": "npx markdownlint-cli2 'content/**/*.md'"
@@ -9,7 +11,7 @@
   "dependencies": {
     "@nuxtjs/sitemap": "^7.6.0",
     "better-sqlite3": "^12.6.2",
-    "docus": "latest",
+    "docus": "5.6.1",
     "nuxt": "^4.3.1"
   }
 }

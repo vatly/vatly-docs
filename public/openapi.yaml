@@ -62,6 +62,49 @@ info:
 
     Values are strings to preserve decimal precision.
 
+    ## Email Format
+
+    Email addresses are accepted and returned in their **Punycode (ASCII)** form
+    per [RFC 3492](https://www.rfc-editor.org/rfc/rfc3492). Internationalized
+    domains must be encoded before submission:
+
+    - Submit: `user@xn--mller-kva.de` (✓)
+    - Reject: `user@müller.de` (returns `422` with `email_domain_not_ascii`)
+
+    Responses always return the canonical ASCII form — what the caller sent in
+    is what the caller gets back. This keeps email values stable for
+    programmatic use (equality checks, deduplication, hashing) and matches
+    Mollie's own API contract.
+
+    For human-friendly display in your own UI, decode the domain back to
+    Unicode. Most languages provide this in the standard library — for
+    example, PHP's `idn_to_utf8()`, Python's `idna.decode()`, or Node's
+    [`url.domainToUnicode()`](https://nodejs.org/api/url.html#urldomaintounicodedomain).
+
+    Local-part Unicode (EAI / SMTPUTF8) is not supported.
+
+    ## Idempotency
+
+    All mutating requests (`POST`, `PATCH`, `PUT`, `DELETE`) accept an
+    optional `Idempotency-Key` header. When present, Vatly records the
+    first response keyed by `(token, endpoint, key)` and returns it
+    verbatim on subsequent requests with the same key, marking the
+    replay with an `Idempotent-Replayed: true` response header.
+
+    - **Use a fresh key per logical operation.** Generate one client-side
+      (UUIDv4 is recommended) and retry transparently with the same key
+      on network errors.
+    - **Keys are bound to the exact parameters of the first request.**
+      Replaying with a different body or different query parameters
+      returns `409 Conflict`. Either retry with the original parameters
+      or generate a new key.
+    - **Keys expire after 24 hours.** After that the key is reusable as
+      a fresh idempotency boundary.
+    - **Scope is per endpoint.** The same key value on a different
+      endpoint is treated as a new key.
+
+    Sending an `Idempotency-Key` on a `GET` or `HEAD` request is ignored.
+
     ## Errors
 
     The API returns standard HTTP status codes and JSON error responses:
@@ -72,6 +115,7 @@ info:
     | 401 | Unauthorized - Missing or invalid token |
     | 403 | Forbidden - Token invalid or insufficient permissions |
     | 404 | Not Found - Resource doesn't exist |
+    | 409 | Conflict - Idempotency-Key reused with different request parameters |
     | 422 | Unprocessable Entity - Validation failed |
     | 429 | Too Many Requests - Rate limit exceeded |
     | 500 | Internal Server Error |
@@ -155,6 +199,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -219,6 +264,8 @@ paths:
         - If not provided, a new customer is created based on checkout form input
       tags:
         - Checkouts
+      parameters:
+        - $ref: '#/components/parameters/idempotencyKey'
       requestBody:
         required: true
         content:
@@ -259,6 +306,9 @@ paths:
       responses:
         '201':
           description: Checkout created successfully
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
           content:
             application/json:
               schema:
@@ -287,6 +337,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/ValidationFailed'
   /checkouts/{checkoutId}:
@@ -359,6 +411,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -420,6 +473,8 @@ paths:
         - Link existing users from your system to Vatly
       tags:
         - Customers
+      parameters:
+        - $ref: '#/components/parameters/idempotencyKey'
       requestBody:
         required: true
         content:
@@ -433,6 +488,9 @@ paths:
       responses:
         '201':
           description: Customer created successfully
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
           content:
             application/json:
               schema:
@@ -453,6 +511,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/ValidationFailed'
   /customers/{customerId}:
@@ -515,6 +575,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -531,6 +592,7 @@ paths:
                   - id: subscription_Lp3mNvBxKw7RjTgYcZaE
                     resource: subscription
                     customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                    subscriptionPlanId: subscription_plan_Rk5pQrSvWm8NjLhYbUcP
                     testmode: false
                     name: Pro Monthly
                     description: Full access to all Pro features
@@ -548,6 +610,9 @@ paths:
                     interval: month
                     intervalCount: 1
                     status: active
+                    mandate:
+                      method: card
+                      maskedIdentifier: '4242'
                     startedAt: '2024-01-15T10:30:00Z'
                     endedAt: null
                     cancelledAt: null
@@ -601,6 +666,7 @@ paths:
                 id: subscription_Lp3mNvBxKw7RjTgYcZaE
                 resource: subscription
                 customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                subscriptionPlanId: subscription_plan_Rk5pQrSvWm8NjLhYbUcP
                 testmode: false
                 name: Pro Monthly
                 description: Full access to all Pro features
@@ -618,6 +684,9 @@ paths:
                 interval: month
                 intervalCount: 1
                 status: active
+                mandate:
+                  method: card
+                  maskedIdentifier: '4242'
                 startedAt: '2024-01-15T10:30:00Z'
                 endedAt: null
                 cancelledAt: null
@@ -664,6 +733,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -767,6 +837,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -888,6 +959,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -960,6 +1032,9 @@ paths:
                         type: application/json
                       customer:
                         href: https://api.vatly.com/v1/customers/customer_Xk9pQrSvWm4NjLhYbUcP
+                        type: application/json
+                      customerInvoice:
+                        href: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP
                         type: application/json
                 count: 1
                 links:
@@ -1053,21 +1128,25 @@ paths:
                   customer:
                     href: https://api.vatly.com/v1/customers/customer_Xk9pQrSvWm4NjLhYbUcP
                     type: application/json
+                  customerInvoice:
+                    href: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP
+                    type: application/json
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
-  /orders/{orderId}/request-address-update-link:
+  /orders/{orderId}/invoice-update-link:
     post:
-      operationId: requestOrderAddressUpdateLink
-      summary: Request address update link
+      operationId: createOrderInvoiceUpdateLink
+      summary: Create invoice update link
       description: |
-        Generates a signed URL that allows the customer to update their billing address for this order.
+        Generates a signed URL that allows the customer to update the invoice details for this order
+        (billing address, VAT number, company name).
 
         The link is valid for a limited time (typically 24 hours) and can be sent to the customer
-        to self-service update their invoice details.
+        to self-service update their invoice.
 
         **Use cases:**
         - Customer needs to add/update VAT number
@@ -1077,9 +1156,13 @@ paths:
         - Orders
       parameters:
         - $ref: '#/components/parameters/orderId'
+        - $ref: '#/components/parameters/idempotencyKey'
       responses:
         '200':
-          description: Address update link generated
+          description: Invoice update link generated
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
           content:
             application/json:
               schema:
@@ -1093,6 +1176,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
   /orders/{orderId}/refunds:
     get:
       operationId: listOrderRefunds
@@ -1119,6 +1204,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -1219,6 +1305,7 @@ paths:
         - Refunds
       parameters:
         - $ref: '#/components/parameters/orderId'
+        - $ref: '#/components/parameters/idempotencyKey'
       requestBody:
         required: true
         content:
@@ -1252,6 +1339,9 @@ paths:
       responses:
         '201':
           description: Refund created successfully
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
           content:
             application/json:
               schema:
@@ -1315,6 +1405,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '422':
           description: |
             Validation failed. Common errors:
@@ -1360,6 +1452,7 @@ paths:
         - Refunds
       parameters:
         - $ref: '#/components/parameters/orderId'
+        - $ref: '#/components/parameters/idempotencyKey'
       requestBody:
         required: false
         content:
@@ -1372,6 +1465,9 @@ paths:
       responses:
         '201':
           description: Full refund created successfully
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
           content:
             application/json:
               schema:
@@ -1435,6 +1531,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/ValidationFailed'
   /orders/{orderId}/refunds/{refundId}:
@@ -1537,15 +1635,21 @@ paths:
       parameters:
         - $ref: '#/components/parameters/orderId'
         - $ref: '#/components/parameters/refundId'
+        - $ref: '#/components/parameters/idempotencyKey'
       responses:
         '204':
           description: Refund canceled successfully
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '422':
           description: Cannot cancel refund (not in pending status)
           content:
@@ -1580,6 +1684,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -1705,6 +1810,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -1890,6 +1996,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -2020,6 +2127,8 @@ paths:
                   subtotal:
                     value: '24.79'
                     currency: EUR
+                createdAt: '2026-05-21T14:32:08+00:00'
+                testmode: false
                 links:
                   self:
                     href: https://api.vatly.com/v1/webhook-events/webhook_event_Qk8pRtSvWm2NjLhYcZaE
@@ -2055,6 +2164,7 @@ paths:
                   - data
                   - count
                   - links
+                additionalProperties: false
                 properties:
                   data:
                     type: array
@@ -2071,6 +2181,7 @@ paths:
                   - id: subscription_Lp3mNvBxKw7RjTgYcZaE
                     resource: subscription
                     customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                    subscriptionPlanId: subscription_plan_Rk5pQrSvWm8NjLhYbUcP
                     testmode: false
                     name: Pro Monthly
                     description: Full access to all Pro features
@@ -2088,6 +2199,9 @@ paths:
                     interval: month
                     intervalCount: 1
                     status: active
+                    mandate:
+                      method: card
+                      maskedIdentifier: '4242'
                     startedAt: '2024-01-15T10:30:00Z'
                     endedAt: null
                     cancelledAt: null
@@ -2105,6 +2219,7 @@ paths:
                   - id: subscription_Wt5mNvBxKw7YcZaEjLhR
                     resource: subscription
                     customerId: customer_Mn6xBtPvKw2RjTgYcZaE
+                    subscriptionPlanId: subscription_plan_Wt5mNvBxKw7YcZaEjLhR
                     testmode: false
                     name: Enterprise Yearly
                     description: Enterprise features with priority support
@@ -2123,6 +2238,9 @@ paths:
                     interval: year
                     intervalCount: 1
                     status: active
+                    mandate:
+                      method: card
+                      maskedIdentifier: '4242'
                     startedAt: '2024-01-01T00:00:00Z'
                     endedAt: null
                     cancelledAt: null
@@ -2170,6 +2288,7 @@ paths:
                 id: subscription_Lp3mNvBxKw7RjTgYcZaE
                 resource: subscription
                 customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                subscriptionPlanId: subscription_plan_Rk5pQrSvWm8NjLhYbUcP
                 testmode: false
                 name: Pro Monthly
                 description: Full access to all Pro features
@@ -2187,6 +2306,9 @@ paths:
                 interval: month
                 intervalCount: 1
                 status: active
+                mandate:
+                  method: card
+                  maskedIdentifier: '4242'
                 startedAt: '2024-01-15T10:30:00Z'
                 endedAt: null
                 cancelledAt: null
@@ -2238,6 +2360,7 @@ paths:
         - Subscriptions
       parameters:
         - $ref: '#/components/parameters/subscriptionId'
+        - $ref: '#/components/parameters/idempotencyKey'
       requestBody:
         required: true
         content:
@@ -2264,11 +2387,18 @@ paths:
                   applyImmediately: false
               extendTrial:
                 summary: Extend trial period
+                description: |
+                  `trialUntil` cannot be sent on its own — at least one of
+                  `subscriptionPlanId` or `quantity` is required.
                 value:
+                  quantity: 1
                   trialUntil: '2024-02-28T00:00:00Z'
       responses:
         '200':
           description: Subscription updated successfully
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
           content:
             application/json:
               schema:
@@ -2277,6 +2407,7 @@ paths:
                 id: subscription_Lp3mNvBxKw7RjTgYcZaE
                 resource: subscription
                 customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                subscriptionPlanId: subscription_plan_Wt5mNvBxKw7YcZaEjLhR
                 testmode: false
                 name: Pro Yearly
                 description: Full access to all Pro features, billed yearly
@@ -2294,6 +2425,9 @@ paths:
                 interval: year
                 intervalCount: 1
                 status: active
+                mandate:
+                  method: card
+                  maskedIdentifier: '4242'
                 startedAt: '2024-01-15T10:30:00Z'
                 endedAt: null
                 cancelledAt: null
@@ -2314,6 +2448,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '422':
           description: |
             Validation failed. Common errors:
@@ -2335,13 +2471,16 @@ paths:
         - **Immediate:** Subscription ends immediately when `immediately=true` is specified
 
         **Notes:**
-        - Canceled subscriptions cannot be reactivated through the API
+        - A subscription that was canceled with a grace period (the default) can be resumed via
+          `POST /subscriptions/{subscriptionId}/resume` while `ends_at` is still in the future
+        - A subscription that was canceled immediately cannot be reactivated; create a new subscription instead
         - Customers retain access until `renewedUntil` date (unless canceled immediately)
         - No refunds are issued automatically; use the Refunds API if needed
       tags:
         - Subscriptions
       parameters:
         - $ref: '#/components/parameters/subscriptionId'
+        - $ref: '#/components/parameters/idempotencyKey'
         - name: immediately
           in: query
           description: |
@@ -2355,27 +2494,30 @@ paths:
       responses:
         '204':
           description: Subscription canceled successfully
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '422':
           description: Subscription cannot be canceled (already canceled or ended)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /subscriptions/{subscriptionId}/update-billing:
-    patch:
-      operationId: updateSubscriptionBilling
-      summary: Update billing details (hosted)
+  /subscriptions/{subscriptionId}/billing-update-link:
+    post:
+      operationId: createSubscriptionBillingUpdateLink
+      summary: Create billing update link
       description: |
-        Initiates a hosted billing update flow for the subscription.
-
-        Returns a redirect URL where the customer can update their billing address,
-        VAT number, and other invoice details.
+        Generates a signed URL that allows the customer to update the billing details for this
+        subscription (billing address, VAT number, company name) via a hosted flow.
 
         **Flow:**
         1. Call this endpoint with redirect URLs
@@ -2391,6 +2533,7 @@ paths:
         - Subscriptions
       parameters:
         - $ref: '#/components/parameters/subscriptionId'
+        - $ref: '#/components/parameters/idempotencyKey'
       requestBody:
         required: true
         content:
@@ -2405,7 +2548,10 @@ paths:
                 taxId: DE123456789
       responses:
         '200':
-          description: Billing update flow initiated
+          description: Billing update link generated
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
           content:
             application/json:
               schema:
@@ -2413,6 +2559,7 @@ paths:
                 required:
                   - href
                   - type
+                additionalProperties: false
                 properties:
                   href:
                     type: string
@@ -2429,8 +2576,106 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+  /subscriptions/{subscriptionId}/resume:
+    post:
+      operationId: resumeSubscription
+      summary: Resume a canceled subscription
+      description: |
+        Resumes a subscription that was previously canceled with a grace period, while it is still
+        within that grace period.
+
+        **When this works:**
+        - The subscription's `status` is `on_grace_period`
+        - The subscription's `endsAt` is still in the future
+
+        **Result:**
+        - Status returns to `active`
+        - The existing billing cycle and renewal schedule are preserved (no new charge fires immediately)
+        - The original payment mandate remains in effect
+        - A `subscription.resumed` webhook is delivered to your configured endpoint
+        - `canceledAt` and `endsAt` are cleared; `resumedAt` is set on the subscription
+        - The refreshed subscription is returned in the response body
+
+        **When this does NOT work:**
+        - Subscription was canceled immediately (`status` is `canceled`) — create a new subscription instead
+        - Grace period has already lapsed (`endsAt` is in the past) — create a new subscription instead
+        - Subscription is already active (no-op rejected for clarity, not silently ignored)
+      tags:
+        - Subscriptions
+      parameters:
+        - $ref: '#/components/parameters/subscriptionId'
+        - $ref: '#/components/parameters/idempotencyKey'
+      responses:
+        '200':
+          description: Subscription resumed successfully
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+              example:
+                id: subscription_Lp3mNvBxKw7RjTgYcZaE
+                resource: subscription
+                customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                subscriptionPlanId: subscription_plan_Rk5pQrSvWm8NjLhYbUcP
+                testmode: false
+                name: Pro Monthly
+                description: Full access to all Pro features
+                billingAddress:
+                  fullName: John Doe
+                  companyName: Acme Corp
+                  streetAndNumber: 123 Main Street
+                  city: Berlin
+                  postalCode: '10115'
+                  country: DE
+                basePrice:
+                  value: '29.00'
+                  currency: EUR
+                quantity: 1
+                interval: month
+                intervalCount: 1
+                status: active
+                mandate:
+                  method: card
+                  maskedIdentifier: '4242'
+                startedAt: '2024-01-15T10:30:00Z'
+                endedAt: null
+                cancelledAt: null
+                renewedAt: '2024-02-15T10:30:00Z'
+                renewedUntil: '2024-03-15T10:30:00Z'
+                nextRenewalAt: '2024-03-15T10:30:00Z'
+                trialUntil: null
+                links:
+                  self:
+                    href: https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE
+                    type: application/json
+                  customer:
+                    href: https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE
+                    type: application/json
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          description: |
+            Subscription is not within an active grace period. Common causes:
+            - Subscription was canceled immediately (status `canceled`)
+            - Grace period has already lapsed (`endsAt` in the past)
+            - Subscription is already active (was not canceled, or already resumed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
   /test-helpers/subscriptions/{subscriptionId}/fast-forward-renewal:
     post:
       operationId: fastForwardSubscriptionRenewal
@@ -2449,9 +2694,13 @@ paths:
         - Test Helpers
       parameters:
         - $ref: '#/components/parameters/subscriptionId'
+        - $ref: '#/components/parameters/idempotencyKey'
       responses:
         '200':
           description: Subscription renewed successfully
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
           content:
             application/json:
               schema:
@@ -2460,6 +2709,7 @@ paths:
                 id: subscription_Lp3mNvBxKw7RjTgYcZaE
                 resource: subscription
                 customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                subscriptionPlanId: subscription_plan_Rk5pQrSvWm8NjLhYbUcP
                 testmode: true
                 name: Pro Monthly
                 description: Full access to all Pro features
@@ -2477,6 +2727,9 @@ paths:
                 interval: month
                 intervalCount: 1
                 status: active
+                mandate:
+                  method: card
+                  maskedIdentifier: '4242'
                 startedAt: '2024-01-15T10:30:00Z'
                 endedAt: null
                 cancelledAt: null
@@ -2497,6 +2750,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
   /test-helpers/mandated-payments/{transactionId}/simulate-failure:
     post:
       operationId: simulatePaymentFailure
@@ -2522,6 +2777,7 @@ paths:
           schema:
             type: string
           example: mollie_mandated_payment_Xk9pQrSvWm4NjLhYbUcP
+        - $ref: '#/components/parameters/idempotencyKey'
       requestBody:
         required: false
         content:
@@ -2547,6 +2803,9 @@ paths:
       responses:
         '200':
           description: Payment failure simulated
+          headers:
+            Idempotent-Replayed:
+              $ref: '#/components/headers/IdempotentReplayed'
           content:
             application/json:
               schema:
@@ -2555,6 +2814,7 @@ paths:
                   - id
                   - status
                   - failureReason
+                additionalProperties: false
                 properties:
                   id:
                     type: string
@@ -2578,6 +2838,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
 components:
   securitySchemes:
     BearerAuth:
@@ -2634,6 +2896,28 @@ components:
       schema:
         type: string
       example: checkout_Rk5pQrSvWm8NjLhYbUcP
+    idempotencyKey:
+      name: Idempotency-Key
+      in: header
+      description: |
+        A unique key the client generates per logical mutating operation to
+        make retries safe. Vatly stores the first response keyed by
+        `(token, endpoint, key)` and returns it verbatim on subsequent
+        requests with the same key, setting `Idempotent-Replayed: true` on
+        the replayed response.
+
+        Replaying with a different request body or different query
+        parameters returns `409 Conflict`. Keys are scoped per endpoint and
+        retained for 24 hours.
+
+        Recommended format: UUIDv4. Send on every mutating request
+        (POST, PATCH, PUT, DELETE) where retry safety matters.
+      required: false
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 255
+      example: 9f6a3b1c-7e2d-4f7b-9c5a-2c1d5b7e9f3a
     checkoutId:
       name: checkoutId
       in: path
@@ -2708,6 +2992,15 @@ components:
       schema:
         type: string
       example: webhook_event_Qk8pRtSvWm2NjLhYcZaE
+  headers:
+    IdempotentReplayed:
+      description: |
+        Present and set to `true` when the response was replayed from a
+        previously stored result keyed by `Idempotency-Key`. Absent (or
+        `false`) for first-time requests.
+      schema:
+        type: boolean
+      example: true
   responses:
     Unauthorized:
       description: Unauthorized - Authentication credentials were missing or invalid
@@ -2746,6 +3039,36 @@ components:
                 - The email must be a valid email address.
               products.0.id:
                 - The selected products.0.id is invalid.
+    Conflict:
+      description: |
+        Conflict — The request could not be completed because of one of
+        the following:
+
+        - **Idempotency replay mismatch** (`Idempotency-Key` reused with
+          different request parameters). Retry with the original parameters
+          or generate a new key.
+        - **Optimistic concurrency conflict** (two writers modifying the
+          same resource at the same version). Reload the latest state
+          and retry — the conflict resolves itself unless contention is
+          sustained.
+
+        The HTTP status (`409`) is the same for both; the `message`
+        distinguishes them.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            idempotency_replay_mismatch:
+              summary: Idempotency-Key reused with a different payload
+              value:
+                message: Idempotency-Key has already been used with different request parameters.
+                details:
+                  idempotency_key: 9f6a3b1c-7e2d-4f7b-9c5a-2c1d5b7e9f3a
+            concurrency_conflict:
+              summary: Concurrent write on the same resource
+              value:
+                message: The resource was modified concurrently. Reload the latest state and retry.
     NotFound:
       description: Not Found - The requested resource does not exist
       content:
@@ -2775,6 +3098,34 @@ components:
             errors:
               customerId:
                 - Customer exists, but the wrong mode is used. Try switching live / test API keys.
+    IdempotencyConflict:
+      description: |
+        Conflict — A request was replayed with the same `Idempotency-Key`
+        but a different request body or different query parameters.
+        Idempotency keys are bound to the exact parameters of the first
+        request and cannot be reused with a different payload. Either
+        retry with the original parameters or generate a new key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Idempotency-Key has already been used with different request parameters.
+            details:
+              idempotency_key: 9f6a3b1c-7e2d-4f7b-9c5a-2c1d5b7e9f3a
+    ConcurrencyConflict:
+      description: |
+        Conflict — Two writers tried to modify the same resource at the
+        same version. The earlier write won; this one was rejected to
+        preserve aggregate consistency. Reload the latest state of the
+        resource and retry the request — the conflict resolves itself
+        on the next attempt unless contention is sustained.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: The resource was modified concurrently. Reload the latest state and retry.
     TooManyRequests:
       description: Too Many Requests - Rate limit exceeded
       content:
@@ -2804,20 +3155,41 @@ components:
       required:
         - value
         - currency
+      additionalProperties: false
       properties:
         value:
           type: string
           description: |
-            The amount as a decimal string.
-            Uses string type to preserve precision for financial calculations.
+            The amount as a decimal string. Sent and returned as a string to
+            preserve precision for financial calculations.
+
+            The number of decimal places must match the currency's ISO 4217
+            minor-unit count. The `(value, currency)` pair is validated
+            together — mixing precisions is rejected:
+
+            - 0 decimals for JPY: `"100"` ✓, `"100.00"` ✗
+            - 2 decimals for EUR, USD: `"10.00"` ✓, `"10"` ✗, `"10.0"` ✗
+            - 3 decimals (reserved for future BHD/KWD/OMR/TND): `"1.000"` ✓
+
+            Validation is currency-aware (server uses
+            [moneyphp/money](https://github.com/moneyphp/money)'s
+            `DecimalMoneyParser`), so there's no ambiguity between
+            decimal-amount and minor-unit representations: `"10000"` is
+            accepted for JPY (10,000 yen) and rejected for EUR (EUR needs
+            `"10000.00"`).
           example: '99.99'
-          pattern: ^\d+(\.\d{1,2})?$
+          pattern: ^\d+(\.\d{1,3})?$
         currency:
           type: string
-          description: ISO 4217 currency code
+          description: |
+            ISO 4217 currency code. Vatly aligns its supported currency set
+            with Mollie's; currencies are enabled as PSP support and
+            downstream tax/FX coverage are in place. Expansion beyond this
+            list is tracked in issue #1404.
+          enum:
+            - EUR
+            - USD
           example: EUR
-          minLength: 3
-          maxLength: 3
     Link:
       type: object
       description: HATEOAS link to a related resource
@@ -2963,7 +3335,10 @@ components:
             - string
             - 'null'
           format: email
-          description: Email address
+          description: |
+            Email address.
+            Internationalized domains must use their Punycode (ASCII) form
+            per RFC 3492 — e.g. `billing@xn--mller-kva.de`.
           example: billing@acme.com
     Metadata:
       type:
@@ -3001,7 +3376,13 @@ components:
           description: Link to the previous page (null if on the first page)
     Error:
       type: object
-      description: Standard error response
+      description: |
+        Standard error response.
+
+        Every non-validation error path returns this shape — `message` is
+        always present, and `details` (if present) is an object carrying
+        structured context attached by the originating exception. HTTP
+        status code is the primary programmatic discriminator.
       required:
         - message
       properties:
@@ -3009,6 +3390,17 @@ components:
           type: string
           description: Human-readable error message
           example: The requested resource was not found.
+        details:
+          type: object
+          description: |
+            Optional structured context attached by the originating exception.
+            Shape depends on the specific error case; clients should treat
+            unknown keys as forward-compatible additions and rely on the HTTP
+            status code for branching logic.
+          additionalProperties: true
+          example:
+            resource_type: checkout
+            resource_id: checkout_abc123
     ValidationError:
       type: object
       description: Validation error response with field-specific errors
@@ -3050,6 +3442,7 @@ components:
         - status
         - createdAt
         - links
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3118,6 +3511,7 @@ components:
           required:
             - checkoutUrl
             - self
+          additionalProperties: false
           properties:
             checkoutUrl:
               allOf:
@@ -3137,6 +3531,7 @@ components:
       description: A product to add to the checkout
       required:
         - id
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3177,6 +3572,7 @@ components:
         - redirectUrlSuccess
         - redirectUrlCanceled
         - products
+      additionalProperties: false
       properties:
         redirectUrlSuccess:
           type: string
@@ -3223,6 +3619,7 @@ components:
         - createdAt
         - metadata
         - links
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3240,7 +3637,11 @@ components:
         email:
           type: string
           format: email
-          description: Customer's email address
+          description: |
+            Customer's email address.
+            Internationalized domains are stored and returned in their
+            Punycode (ASCII) form per RFC 3492 — e.g. `user@xn--mller-kva.de`.
+            Convert back to Unicode for display in your own UI.
           example: customer@example.com
         createdAt:
           type: string
@@ -3254,6 +3655,7 @@ components:
           description: HATEOAS links to related resources
           required:
             - self
+          additionalProperties: false
           properties:
             self:
               $ref: '#/components/schemas/Link'
@@ -3263,6 +3665,7 @@ components:
       description: Request body for creating a new customer
       required:
         - email
+      additionalProperties: false
       properties:
         email:
           type: string
@@ -3270,6 +3673,10 @@ components:
           description: |
             Customer's email address.
             Must be unique within the merchant's account for the given testmode.
+            Internationalized domains must be submitted in their Punycode (ASCII)
+            form per RFC 3492 — e.g. `user@xn--mller-kva.de` instead of
+            `user@müller.de`. Submitting a Unicode domain returns a validation
+            error.
           example: customer@example.com
         metadata:
           $ref: '#/components/schemas/Metadata'
@@ -3288,6 +3695,7 @@ components:
         - status
         - createdAt
         - links
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3336,6 +3744,7 @@ components:
           description: HATEOAS links to related resources
           required:
             - self
+          additionalProperties: false
           properties:
             self:
               $ref: '#/components/schemas/Link'
@@ -3357,6 +3766,7 @@ components:
         - status
         - createdAt
         - links
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3426,6 +3836,7 @@ components:
           description: HATEOAS links to related resources
           required:
             - self
+          additionalProperties: false
           properties:
             self:
               $ref: '#/components/schemas/Link'
@@ -3448,6 +3859,7 @@ components:
         - lines
         - customerDetails
         - links
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3529,6 +3941,8 @@ components:
           description: HATEOAS links to related resources
           required:
             - self
+            - customerInvoice
+          additionalProperties: false
           properties:
             self:
               allOf:
@@ -3554,6 +3968,7 @@ components:
         - total
         - subtotal
         - taxes
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3593,6 +4008,7 @@ components:
       required:
         - href
         - type
+      additionalProperties: false
       properties:
         href:
           type: string
@@ -3624,6 +4040,7 @@ components:
         - taxSummary
         - lines
         - links
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3699,6 +4116,7 @@ components:
           required:
             - self
             - originalOrder
+          additionalProperties: false
           properties:
             self:
               allOf:
@@ -3725,6 +4143,7 @@ components:
         - total
         - subtotal
         - taxes
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3763,6 +4182,7 @@ components:
       description: Request body for creating a partial refund
       required:
         - items
+      additionalProperties: false
       properties:
         items:
           type: array
@@ -3781,6 +4201,7 @@ components:
     CreateFullRefundRequest:
       type: object
       description: Request body for creating a full refund
+      additionalProperties: false
       properties:
         metadata:
           $ref: '#/components/schemas/Metadata'
@@ -3799,6 +4220,7 @@ components:
         - reason
         - originalOrderId
         - links
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3855,6 +4277,7 @@ components:
           required:
             - self
             - originalOrder
+          additionalProperties: false
           properties:
             self:
               allOf:
@@ -3881,7 +4304,10 @@ components:
         - entityType
         - entityId
         - object
+        - createdAt
+        - testmode
         - links
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -3900,6 +4326,7 @@ components:
             - `order.canceled` - Order was canceled
             - `order.chargeback_received` - Chargeback was received for an order
             - `order.chargeback_reversed` - Chargeback was reversed
+            - `payment.failed` - A payment failed and a dunning process was initiated for the order
             - `refund.completed` - Refund was processed successfully
             - `refund.failed` - Refund processing failed
             - `refund.canceled` - Refund was canceled
@@ -3907,6 +4334,10 @@ components:
             - `subscription.canceled_immediately` - Subscription was canceled immediately
             - `subscription.canceled_with_grace_period` - Subscription was canceled with a grace period
             - `subscription.cancellation_grace_period_completed` - Subscription grace period ended
+            - `subscription.resumed` - A canceled subscription was resumed during its grace period
+            - `checkout.paid` - Checkout was paid successfully
+            - `checkout.failed` - Checkout payment failed
+            - `checkout.canceled` - Checkout was canceled
             - `checkout.expired` - Checkout session expired
           example: order.paid
         entityType:
@@ -3922,11 +4353,23 @@ components:
           description: |
             The full resource payload at the time of the event.
             The shape depends on the `entityType` (e.g., Order, Refund, Chargeback, Subscription, Checkout).
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of when the webhook event was created.
+          example: '2026-05-21T14:32:08+00:00'
+        testmode:
+          type: boolean
+          description: |
+            Whether the event originated from a test-mode resource.
+            `true` for events created with a `test_` prefixed token, `false` for live events.
+          example: false
         links:
           type: object
           description: HATEOAS links to related resources
           required:
             - self
+          additionalProperties: false
           properties:
             self:
               allOf:
@@ -3941,6 +4384,7 @@ components:
         - id
         - resource
         - customerId
+        - subscriptionPlanId
         - testmode
         - name
         - description
@@ -3950,7 +4394,16 @@ components:
         - interval
         - intervalCount
         - status
+        - mandate
+        - startedAt
+        - endedAt
+        - cancelledAt
+        - renewedAt
+        - renewedUntil
+        - nextRenewalAt
+        - trialUntil
         - links
+      additionalProperties: false
       properties:
         id:
           type: string
@@ -4024,6 +4477,15 @@ components:
             - paused
             - canceled
           example: active
+        mandate:
+          oneOf:
+            - $ref: '#/components/schemas/Mandate'
+            - type: 'null'
+          description: |
+            Payment method on file for this subscription, as an inline summary
+            intended for billing-portal rendering ("Visa ending in 4242"). May
+            be `null` when the subscription has no mandate yet (e.g. ended /
+            canceled-before-payment states).
         startedAt:
           type:
             - string
@@ -4080,6 +4542,7 @@ components:
           required:
             - self
             - customer
+          additionalProperties: false
           properties:
             self:
               allOf:
@@ -4094,6 +4557,7 @@ components:
       description: |
         Request body for updating a subscription.
         At least one of `subscriptionPlanId` or `quantity` must be provided.
+      additionalProperties: false
       properties:
         subscriptionPlanId:
           type: string
@@ -4136,9 +4600,23 @@ components:
             - 'null'
           format: date
           description: |
-            Reset the billing anchor to this date.
-            Cannot be combined with `trialUntil`.
+            Set the billing anchor to a specific calendar date (YYYY-MM-DD,
+            interpreted in UTC). The new billing cycle is recalculated around
+            this anchor. Date-only by design — the anchor identifies a day,
+            not an instant, so daylight-saving transitions don't shift it.
+            Cannot be combined with `resetAnchor`.
           example: '2024-02-01'
+        resetAnchor:
+          type: boolean
+          description: |
+            Reset the billing anchor to "now" — the moment the update
+            is processed becomes the new cycle anchor, and future
+            renewals align to it. Useful when a customer upgrades
+            mid-cycle and you want the new plan's billing period to
+            start fresh from today.
+            Cannot be combined with `anchor`.
+          default: false
+          example: true
         trialUntil:
           type:
             - string
@@ -4154,6 +4632,7 @@ components:
       required:
         - redirectUrlSuccess
         - redirectUrlCanceled
+      additionalProperties: false
       properties:
         redirectUrlSuccess:
           type: string
@@ -4172,6 +4651,53 @@ components:
           description: |
             Pre-fill billing address fields.
             Customer can modify these values in the hosted form.
+    Mandate:
+      type: object
+      description: |
+        A mandate represents an authorization to charge a customer's payment method
+        on a recurring basis (cards, SEPA Direct Debit, PayPal, Bacs).
+
+        This shape is the inline summary exposed on subscriptions — enough to
+        render "Visa ending in 4242" in a billing portal without an extra round
+        trip. A dedicated `/v1/mandates/{id}` endpoint with richer detail (status,
+        validity timestamps, billing snapshot) is on the roadmap; fields here are
+        forward-compatible additions to that future schema.
+      required:
+        - method
+        - maskedIdentifier
+      additionalProperties: false
+      properties:
+        method:
+          type: string
+          description: |
+            Normalized payment method category, provider-agnostic:
+            - `card` — credit/debit card (incl. Apple Pay, Google Pay wallets)
+            - `sepa_debit` — SEPA Direct Debit (incl. iDEAL, Bancontact, KBC and
+              other rail aliases that settle into a directdebit mandate)
+            - `paypal` — PayPal billing agreement
+            - `bacs_debit` — UK Bacs Direct Debit
+          enum:
+            - card
+            - sepa_debit
+            - paypal
+            - bacs_debit
+          example: card
+        maskedIdentifier:
+          type:
+            - string
+            - 'null'
+          description: |
+            Customer-facing masked identifier for the payment method on file:
+            the last 4 of a card (`"4242"`), a masked IBAN (`"NL91****4300"`),
+            a masked PayPal email (`"j***@example.com"`), or last 4 of a Bacs
+            account (`"****5678"`).
+
+            May briefly be `null` for freshly-subscribed customers when the
+            underlying authorization event doesn't carry the masked identifier
+            inline — in that case it lands on a follow-up sync (runs at most
+            every 5 minutes) and the field updates from `null` to the resolved
+            value once the sync completes.
+          example: '4242'
     TaxSummaryRate:
       type: object
       description: Simplified tax rate information
@@ -4210,6 +4736,7 @@ components:
       required:
         - itemId
         - amount
+      additionalProperties: false
       properties:
         itemId:
           type: string

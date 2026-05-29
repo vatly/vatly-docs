@@ -76,6 +76,14 @@ for (const file of files) {
     (_, name) => `](/packages/php/${name.toLowerCase()})`
   )
 
+  // The SDK docs link to source files with GitHub-relative paths (e.g.
+  // `[Webhook](../src/API/Webhooks/Webhook.php)`), which resolve on GitHub
+  // but 404 in the docs site. Rewrite them to absolute github.com URLs.
+  transformed = transformed.replaceAll(
+    '](../src/',
+    '](https://github.com/Vatly/vatly-api-php/blob/main/src/',
+  )
+
   // Add frontmatter if missing
   if (!hasFrontmatter) {
     transformed = `---\ntitle: "${title}"\ndescription: "Vatly PHP SDK - ${title}"\n---\n\n${transformed}`
