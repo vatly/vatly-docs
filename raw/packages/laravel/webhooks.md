@@ -28,17 +28,21 @@ Exclude the webhook route from CSRF verification. In Laravel 11+, this is typica
 
 ## Events
 
-When a webhook is received, Vatly Laravel dispatches typed events that you can listen to:
+When a webhook is received, the driver's `LaravelEventDispatcher` forwards fluent's typed domain events straight onto Laravel's event bus, so you listen for the fluent classes directly. They all live under the `Vatly\Fluent\Events\` namespace:
 
 <table>
 <thead>
   <tr>
     <th>
-      Event
+      Event (<code>
+        Vatly\Fluent\Events\…
+      </code>
+      
+      )
     </th>
     
     <th>
-      Description
+      Dispatched when
     </th>
   </tr>
 </thead>
@@ -47,24 +51,16 @@ When a webhook is received, Vatly Laravel dispatches typed events that you can l
   <tr>
     <td>
       <code>
-        WebhookReceived
-      </code>
-    </td>
-    
-    <td>
-      Raw webhook received (dispatched for every webhook)
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
         SubscriptionStarted
       </code>
     </td>
     
     <td>
-      A new subscription was activated
+      A <code>
+        subscription.started
+      </code>
+      
+       webhook is received
     </td>
   </tr>
   
@@ -76,7 +72,11 @@ When a webhook is received, Vatly Laravel dispatches typed events that you can l
     </td>
     
     <td>
-      Subscription was canceled and ended immediately
+      A <code>
+        subscription.canceled_immediately
+      </code>
+      
+       webhook is received
     </td>
   </tr>
   
@@ -88,36 +88,140 @@ When a webhook is received, Vatly Laravel dispatches typed events that you can l
     </td>
     
     <td>
-      Subscription was canceled but remains active until <code>
-        ends_at
+      A <code>
+        subscription.canceled_with_grace_period
       </code>
+      
+       webhook is received
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        OrderPaid
+      </code>
+    </td>
+    
+    <td>
+      An <code>
+        order.paid
+      </code>
+      
+       webhook is received (enriched with the full tax breakdown)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        PaymentFailed
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        payment.failed
+      </code>
+      
+       webhook is received — typically the start of dunning (enriched with the full tax breakdown)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        UnsupportedWebhookReceived
+      </code>
+    </td>
+    
+    <td>
+      A webhook arrives that has no typed mapping (carries the raw <code>
+        eventName
+      </code>
+      
+       / <code>
+        object
+      </code>
+      
+      )
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        LocalSubscriptionCreated
+      </code>
+    </td>
+    
+    <td>
+      A new local <code>
+        Subscription
+      </code>
+      
+       row was just created from a <code>
+        subscription.started
+      </code>
+      
+       webhook (application-level event; carries the stored <code>
+        $subscription
+      </code>
+      
+      )
     </td>
   </tr>
 </tbody>
 </table>
 
-## Built-in listeners
+Exactly one of the webhook events above is dispatched per incoming webhook (`UnsupportedWebhookReceived` is the fallback for unmapped events). `LocalSubscriptionCreated` fires additionally, from the subscription-sync reaction, only when a brand-new local row is created.
 
-The package includes listeners that automatically handle subscription lifecycle events:
+## Built-in reactions
 
-- **StartSubscriptionListener** -- Creates a local `Subscription` model when a subscription starts
-- **CancelSubscriptionImmediatelyListener** -- Sets `ends_at` to now when immediately canceled
-- **CancelSubscriptionWithGracePeriodListener** -- Sets `ends_at` to the grace period end date
+Before the event is dispatched, the package keeps your local tables in sync automatically via fluent's standard webhook *reactions*. These are wired by `WebhookProcessorFactory` inside the `Vatly` composition root — no registration needed on your side. They live under `Vatly\Fluent\Webhooks\Reactions\`:
+
+- **SyncSubscriptionOnStarted** -- On `SubscriptionStarted`, creates (or updates) the local `Subscription` row, then dispatches `LocalSubscriptionCreated` for newly-created rows.
+- **CancelSubscriptionOnCanceled** -- On `SubscriptionCanceledImmediately` / `SubscriptionCanceledWithGracePeriod`, sets the local subscription's `ends_at`.
+- **StoreOrderOnPaid** -- On `OrderPaid`, stores (or updates) the local `Order` row.
+- **StoreOrderOnPaymentFailed** -- On `PaymentFailed`, stores (or updates) the local `Order` row, mirroring the upstream order status verbatim.
 
 ## Custom listeners
 
-Listen for Vatly events in your `EventServiceProvider` or using the `Event` facade:
+Listen for the fluent events in your `EventServiceProvider` or using the `Event` facade:
 
 ```php
-use Vatly\Laravel\Events\SubscriptionStarted;
+use Illuminate\Support\Facades\Event;
+use Vatly\Fluent\Events\SubscriptionStarted;
 
 Event::listen(SubscriptionStarted::class, function (SubscriptionStarted $event) {
+    // $event->customerId
     // $event->subscriptionId
     // $event->planId
+    // $event->type
     // $event->name
     // $event->quantity
-    
+
     // Send welcome email, provision features, etc.
+});
+```
+
+Order events (`OrderPaid` / `PaymentFailed`) carry the full, API-enriched order — including the tax breakdown — so you can materialize an invoice without a follow-up API call:
+
+```php
+use Illuminate\Support\Facades\Event;
+use Vatly\Fluent\Events\OrderPaid;
+
+Event::listen(OrderPaid::class, function (OrderPaid $event) {
+    // $event->orderId
+    // $event->customerId
+    // $event->status
+    // $event->total      // minor units (cents)
+    // $event->subtotal   // minor units (cents)
+    // $event->currency
+    // $event->taxSummary
+    // $event->invoiceNumber
+    // $event->paymentMethod
+    // $event->metadata
 });
 ```
 
