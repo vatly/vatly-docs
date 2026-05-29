@@ -6,7 +6,7 @@ Vatly sends webhooks to notify your application when events happen — for examp
 
 ## Webhook events
 
-The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Types\WebhookEvent`](../src/API/Types/WebhookEvent.php) for the constants.
+The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Types\WebhookEventName`](../src/API/Types/WebhookEventName.php) for the constants.
 
 <table>
 <thead>
@@ -67,6 +67,18 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
     
     <td>
       Chargeback was reversed.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        payment.failed
+      </code>
+    </td>
+    
+    <td>
+      A payment failed and a dunning process was initiated for the order.
     </td>
   </tr>
   
@@ -151,6 +163,54 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
     
     <td>
       Grace period after cancellation ended.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription.resumed
+      </code>
+    </td>
+    
+    <td>
+      A canceled subscription was resumed during its grace period.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        checkout.paid
+      </code>
+    </td>
+    
+    <td>
+      Checkout was paid successfully.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        checkout.failed
+      </code>
+    </td>
+    
+    <td>
+      Checkout payment failed.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        checkout.canceled
+      </code>
+    </td>
+    
+    <td>
+      Checkout was canceled.
     </td>
   </tr>
   

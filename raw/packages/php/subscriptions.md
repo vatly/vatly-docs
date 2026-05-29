@@ -53,7 +53,7 @@ Below you'll find all properties for the Vatly Subscription resource.
   <tr>
     <td>
       <code>
-        status
+        resource
       </code>
     </td>
     
@@ -64,24 +64,8 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      The status: <code>
-        active
-      </code>
-      
-      , <code>
-        created
-      </code>
-      
-      , <code>
-        trial
-      </code>
-      
-      , <code>
-        on_grace_period
-      </code>
-      
-      , or <code>
-        paused
+      Resource type, always <code>
+        subscription
       </code>
       
       .
@@ -102,14 +86,14 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      The customer ID.
+      ID of the customer who owns this subscription.
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        planId
+        subscriptionPlanId
       </code>
     </td>
     
@@ -120,7 +104,7 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      The subscription plan ID.
+      ID of the subscription plan this subscription is based on.
     </td>
   </tr>
   
@@ -138,14 +122,14 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      Whether this is a test subscription.
+      Whether this subscription is in test mode.
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        currentPeriodStart
+        name
       </code>
     </td>
     
@@ -156,14 +140,14 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      Current billing period start (ISO 8601).
+      Name of the subscription (from the plan).
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        currentPeriodEnd
+        description
       </code>
     </td>
     
@@ -174,25 +158,153 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      Current billing period end (ISO 8601).
+      Description of the subscription.
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        canceledAt
+        billingAddress
       </code>
     </td>
     
     <td>
       <code>
-        string | null
+        Address
       </code>
     </td>
     
     <td>
-      When the subscription was canceled (ISO 8601).
+      Customer's billing address for this subscription.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        basePrice
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Price per billing cycle before taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        quantity
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        int
+      </code>
+    </td>
+    
+    <td>
+      Number of subscription units (e.g. seats).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        interval
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Billing interval unit: <code>
+        day
+      </code>
+      
+      , <code>
+        week
+      </code>
+      
+      , <code>
+        month
+      </code>
+      
+      , or <code>
+        year
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        intervalCount
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        int
+      </code>
+    </td>
+    
+    <td>
+      Number of interval units between billing cycles.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        status
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      The subscription status (see <a href="#subscription-statuses">
+        Subscription statuses
+      </a>
+      
+      ).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        startedAt
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      When the subscription started (ISO 8601).
     </td>
   </tr>
   
@@ -217,7 +329,7 @@ Below you'll find all properties for the Vatly Subscription resource.
   <tr>
     <td>
       <code>
-        trialStart
+        canceledAt
       </code>
     </td>
     
@@ -228,14 +340,14 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      Trial period start (ISO 8601).
+      When the subscription was canceled (ISO 8601).
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        trialEnd
+        renewedAt
       </code>
     </td>
     
@@ -246,43 +358,113 @@ Below you'll find all properties for the Vatly Subscription resource.
     </td>
     
     <td>
-      Trial period end (ISO 8601).
+      When the subscription was last renewed (ISO 8601).
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        metadata
+        renewedUntil
       </code>
     </td>
     
     <td>
       <code>
-        array
+        string | null
       </code>
     </td>
     
     <td>
-      Your custom metadata.
+      Current billing period end date (ISO 8601).
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        createdAt
+        nextRenewalAt
       </code>
     </td>
     
     <td>
       <code>
-        string
+        string | null
       </code>
     </td>
     
     <td>
-      Creation timestamp (ISO 8601).
+      When the next renewal will be attempted (ISO 8601). Null if canceled or ended.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        trialUntil
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      When the trial period ends (ISO 8601). Null if not in trial or trial has ended.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        mandate
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Mandate | null
+      </code>
+    </td>
+    
+    <td>
+      Payment method on file (<code>
+        method
+      </code>
+      
+      , <code>
+        maskedIdentifier
+      </code>
+      
+      ). Null when the subscription has no mandate yet.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        links
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        SubscriptionLinks
+      </code>
+    </td>
+    
+    <td>
+      HATEOAS links to related resources (<code>
+        self
+      </code>
+      
+      , <code>
+        customer
+      </code>
+      
+      ).
     </td>
   </tr>
 </tbody>
@@ -300,7 +482,7 @@ Retrieve a subscription by its ID.
 $subscription = $vatly->subscriptions->get('subscription_abc123');
 
 echo $subscription->status;
-echo $subscription->planId;
+echo $subscription->subscriptionPlanId;
 
 if ($subscription->isActive()) {
     echo 'Subscription is active';
@@ -445,7 +627,7 @@ $subscription = $vatly->subscriptions->cancel('subscription_abc123');
 
 // Subscription is now on grace period until current period ends
 echo $subscription->status;        // 'on_grace_period'
-echo $subscription->currentPeriodEnd;  // When it ends
+echo $subscription->renewedUntil;  // Current billing period end
 ```
 
 ---
@@ -494,7 +676,7 @@ $subscription->resume();
     </td>
     
     <td>
-      Subscription is active and billing
+      Subscription is active and will renew
     </td>
   </tr>
   
@@ -506,7 +688,7 @@ $subscription->resume();
     </td>
     
     <td>
-      Subscription created, not yet active
+      Subscription has been created but not yet started
     </td>
   </tr>
   
@@ -518,7 +700,7 @@ $subscription->resume();
     </td>
     
     <td>
-      In trial period
+      Subscription is in trial period
     </td>
   </tr>
   
@@ -530,7 +712,7 @@ $subscription->resume();
     </td>
     
     <td>
-      Canceled but still active until current period ends
+      Subscription is canceled but still active until the period ends
     </td>
   </tr>
   
@@ -542,7 +724,19 @@ $subscription->resume();
     </td>
     
     <td>
-      Subscription is paused
+      Subscription is temporarily paused
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        canceled
+      </code>
+    </td>
+    
+    <td>
+      Subscription has been canceled
     </td>
   </tr>
 </tbody>
@@ -555,9 +749,8 @@ $subscription->resume();
 The Subscription object provides convenient helper methods.
 
 ```php
-$subscription->isActive();       // true if status is 'active'
-$subscription->isCreated();      // true if status is 'created'
-$subscription->onTrial();        // true if status is 'trial'
-$subscription->onGracePeriod();  // true if status is 'on_grace_period'
-$subscription->isPaused();       // true if status is 'paused'
+$subscription->isActive();         // true if status is 'active'
+$subscription->isTrial();          // true if status is 'trial'
+$subscription->isOnGracePeriod();  // true if status is 'on_grace_period'
+$subscription->isCanceled();       // true if status is 'canceled'
 ```
