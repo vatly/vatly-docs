@@ -6,7 +6,7 @@ Vatly sends webhooks to notify your application when events happen — for examp
 
 ## Webhook events
 
-The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Types\WebhookEventName`](../src/API/Types/WebhookEventName.php) for the constants.
+The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Types\WebhookEventName`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Types/WebhookEventName.php) for the constants.
 
 <table>
 <thead>
@@ -232,7 +232,7 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
 
 ## The WebhookEvent resource
 
-Every delivery carries a [`WebhookEvent`](../src/API/Resources/WebhookEvent.php) JSON object in the request body. This is the same shape returned by `GET /v1/webhook-events/:id`.
+Every delivery carries a [`WebhookEvent`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Resources/WebhookEvent.php) JSON object in the request body. This is the same shape returned by `GET /v1/webhook-events/:id`.
 
 ### Properties
 
@@ -540,7 +540,7 @@ The signature scheme prefix (`v1=`) leaves room for future algorithm versions; r
 
 ## Handling webhooks
 
-The SDK ships [`Webhook::parse()`](../src/API/Webhooks/Webhook.php) — a one-shot helper that verifies the signature, decodes the JSON, and returns a typed [`WebhookPayload`](../src/API/Webhooks/WebhookPayload.php) ready to dispatch on.
+The SDK ships [`Webhook::parse()`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Webhooks/Webhook.php) — a one-shot helper that verifies the signature, decodes the JSON, and returns a typed [`WebhookPayload`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Webhooks/WebhookPayload.php) ready to dispatch on.
 
 Verification is performed against the **raw request body bytes**. JSON that is parsed and re-encoded will not match the signature — read the body directly (e.g. `file_get_contents('php://input')`) before any framework deserialises it.
 
@@ -581,7 +581,7 @@ http_response_code(200);
 
 ### Replay-window tolerance
 
-The signed timestamp (`t=...`) lets receivers reject stale deliveries. By default signatures more than **300 seconds** old are rejected. If you need a custom window — for example when replaying captured fixtures in a test suite — instantiate [`WebhookSignatureValidator`](../src/API/Webhooks/WebhookSignatureValidator.php) directly:
+The signed timestamp (`t=...`) lets receivers reject stale deliveries. By default signatures more than **300 seconds** old are rejected. If you need a custom window — for example when replaying captured fixtures in a test suite — instantiate [`WebhookSignatureValidator`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Webhooks/WebhookSignatureValidator.php) directly:
 
 ```php
 use Vatly\API\Webhooks\WebhookSignatureValidator;
@@ -594,7 +594,7 @@ Keep the default in production. A tighter window makes a leaked signature less u
 
 ### Lower-level access
 
-If you only need signature verification (e.g. handling the decoded body yourself, or operating on a non-standard payload shape), use [`WebhookSignatureValidator`](../src/API/Webhooks/WebhookSignatureValidator.php) directly. It exposes `verify()`, `isValid()`, and `calculateSignature()`, plus header-name constants:
+If you only need signature verification (e.g. handling the decoded body yourself, or operating on a non-standard payload shape), use [`WebhookSignatureValidator`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Webhooks/WebhookSignatureValidator.php) directly. It exposes `verify()`, `isValid()`, and `calculateSignature()`, plus header-name constants:
 
 ```php
 WebhookSignatureValidator::SIGNATURE_HEADER_NAME; // 'Vatly-Signature'
