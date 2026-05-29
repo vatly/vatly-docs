@@ -68,6 +68,14 @@ for (const file of files) {
     transformed = transformed.replaceAll(`](${from})`, `](${to})`)
   }
 
+  // Rewrite SDK-repo-relative links like (/docs/Checkouts.md) → (/packages/php/checkouts).
+  // The README in the SDK repo points at sibling files; in the docs site those become
+  // separate pages under /packages/php/<lowercased-name>.
+  transformed = transformed.replace(
+    /\]\(\/docs\/([A-Za-z]+)\.md\)/g,
+    (_, name) => `](/packages/php/${name.toLowerCase()})`
+  )
+
   // The SDK docs link to source files with GitHub-relative paths (e.g.
   // `[Webhook](../src/API/Webhooks/Webhook.php)`), which resolve on GitHub
   // but 404 in the docs site. Rewrite them to absolute github.com URLs.
