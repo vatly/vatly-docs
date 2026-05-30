@@ -225,8 +225,41 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
       Checkout session expired.
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <code>
+        webhook.setup
+      </code>
+    </td>
+    
+    <td>
+      Verification call sent when an endpoint is registered or its URL is updated. <code>
+        entityType
+      </code>
+      
+       is <code>
+        webhook
+      </code>
+      
+      ; <code>
+        object
+      </code>
+      
+       is the (secret-free) endpoint config.
+    </td>
+  </tr>
 </tbody>
 </table>
+
+### The `webhook.setup` event
+
+When you register a webhook endpoint (or change its URL), Vatly sends a signed
+`webhook.setup` event to confirm the endpoint is reachable. It is delivered as a normal
+webhook — same envelope, same signature, same `Vatly-Event-Id` header — so there is
+**nothing special to parse**: `Webhook::parse()` returns an ordinary `WebhookPayload`.
+Just acknowledge it with a `2xx` and take no action; the `default` arm of an event
+`match` already does this.
 
 ---
 
