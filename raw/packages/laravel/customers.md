@@ -57,25 +57,56 @@ A common flow: a visitor buys *before* they sign up — checkout completes, Vatl
 The package handles this without losing data:
 
 - The `vatly_subscriptions` and `vatly_orders` tables both have a nullable `owner_id`/`owner_type` plus a `customer_id` column. The webhook writes the row with `owner_id = null` but populates `customer_id` with the Vatly customer id (`cus_…`).
-- When the visitor later signs up (or signs in for the first time), call `claimVatlyCustomer($vatlyCustomerId)` on the new `User` to retroactively link the prior rows:
+- When the visitor returns on the checkout-success redirect, call `claimVatlyCustomerFromReturn()` to link those rows to the now-known user.
+
+### Learning the checkout on the redirect back: the `{CHECKOUT_ID}` placeholder
+
+The one hard part of guest checkout is: *how does your app know which Vatly customer to claim when the buyer lands back on your site?* You don't have to plumb the `cus_…` through a session or cookie yourself (that approach breaks under multi-tab / double-click — the last write wins, and the buyer may finish the checkout that *isn't* in the session).
+
+Instead, put the literal `{CHECKOUT_ID}` placeholder in your return URL. Vatly substitutes it with the checkout's id at creation:
 
 ```php
-// In your signup controller — $vatlyCustomerId typically comes from
-// a query param on the checkout-success URL, a session, or a cookie
-// set during the anonymous checkout flow.
-$user = User::create([...]);
-
-$claimed = $user->claimVatlyCustomer($vatlyCustomerId);
-// $claimed is the number of subscription + order rows that were
-// re-attributed to the user. Subsequent $user->orders / $user->subscriptions
-// return them as you'd expect.
+$user->checkout()->create(
+    items: [['id' => 'product_abc123', 'quantity' => 1]],
+    redirectUrlSuccess: route('vatly.return').'?checkout_id={CHECKOUT_ID}',
+    redirectUrlCanceled: route('billing'),
+);
 ```
 
-`claimVatlyCustomer()` does three things:
+On the return route, hand the request to `claimVatlyCustomerFromReturn()`:
+
+```php
+public function return(Request $request)
+{
+    // Reads ?checkout_id=…, resolves that checkout's Vatly customer, and
+    // (if there is one) claims it for the authenticated user.
+    $request->user()->claimVatlyCustomerFromReturn($request);
+
+    return redirect()->route('dashboard');
+}
+```
+
+It returns `true` when a claim happened and `false` for a missing / unknown checkout id or a checkout with no customer yet — so it's safe to call unconditionally. Pass a second argument to read a different query key:
+
+```php
+$user->claimVatlyCustomerFromReturn($request, 'cid'); // reads ?cid=…
+```
+
+This is **multi-tab safe by construction**: each tab carries its own checkout id in its own redirect URL, so two checkouts in flight resolve independently — there is no shared carrier whose last write wins.
+
+> The checkout id travels in the URL, so it may also appear in the `Referer` header and your server logs. It is low-sensitivity — it only names a checkout the buyer just completed — but treat it like any URL parameter.
+
+Under the hood `claimVatlyCustomerFromReturn()` resolves the checkout's customer id via the Vatly API and then runs `claimVatlyCustomer()`, which:
 
 1. Binds the Vatly customer id to this host entity via the configured `CustomerBindingRepository` (default impl: writes `vatly_id` on the billable table).
 2. Saves the model.
 3. Backfills `owner_type` / `owner_id` on every `vatly_subscriptions` and `vatly_orders` row that carries the same `customer_id` but had no owner yet.
+
+The `order.paid` / `subscription.started` webhook usually lands *before* the buyer is redirected back, so those rows already exist (with `owner_id = null`) by the time you claim — step 3 simply backfills them. The reverse order works too: if the claim runs first, it binds the customer, and a later webhook for the same `customer_id` finds the binding and writes `owner_id` directly. Either way the purchase ends up attributed.
+
+If you already hold the `cus_…` by other means, you can still call `claimVatlyCustomer($vatlyCustomerId)` directly; it returns the number of rows re-attributed.
+
+> **Out of scope:** buyers who never come back via the redirect link (closed the tab, switched device). Recovering those is the email-based recovery story — a separate concern this helper does not cover.
 
 Need the email / name on the customer to surface a "would you like to claim purchase X?" prompt at signup? Fetch the customer via the Vatly API:
 
