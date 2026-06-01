@@ -99,6 +99,34 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards fluen
   <tr>
     <td>
       <code>
+        SubscriptionCancellationGracePeriodCompleted
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        subscription.cancellation_grace_period_completed
+      </code>
+      
+       webhook is received — the grace period stamped by the cancellation has now elapsed (carries <code>
+        customerId
+      </code>
+      
+      , <code>
+        subscriptionId
+      </code>
+      
+      , <code>
+        endsAt
+      </code>
+      
+      )
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         OrderPaid
       </code>
     </td>
@@ -125,6 +153,94 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards fluen
       </code>
       
        webhook is received — typically the start of dunning (enriched with the full tax breakdown)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        CheckoutPaid
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        checkout.paid
+      </code>
+      
+       webhook is received — the hosted checkout was paid (fires before <code>
+        order.paid
+      </code>
+      
+      's enrichment GET; carries <code>
+        checkoutId
+      </code>
+      
+      , nullable <code>
+        customerId
+      </code>
+      
+       / <code>
+        orderId
+      </code>
+      
+      , <code>
+        status
+      </code>
+      
+      , <code>
+        metadata
+      </code>
+      
+      )
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        CheckoutFailed
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        checkout.failed
+      </code>
+      
+       webhook is received — the hosted checkout's payment failed (route into a retry flow)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        CheckoutCanceled
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        checkout.canceled
+      </code>
+      
+       webhook is received — the customer abandoned the hosted checkout (cart-abandonment hook)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        CheckoutExpired
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        checkout.expired
+      </code>
+      
+       webhook is received — the hosted checkout session timed out without completion
     </td>
   </tr>
   
@@ -184,6 +300,8 @@ Before the event is dispatched, the package keeps your local tables in sync auto
 - **CancelSubscriptionOnCanceled** -- On `SubscriptionCanceledImmediately` / `SubscriptionCanceledWithGracePeriod`, sets the local subscription's `ends_at`.
 - **StoreOrderOnPaid** -- On `OrderPaid`, stores (or updates) the local `Order` row.
 - **StoreOrderOnPaymentFailed** -- On `PaymentFailed`, stores (or updates) the local `Order` row, mirroring the upstream order status verbatim.
+
+The checkout events (`CheckoutPaid` / `CheckoutFailed` / `CheckoutCanceled` / `CheckoutExpired`) and `SubscriptionCancellationGracePeriodCompleted` ship no built-in reaction — they touch no local table. The checkout payloads carry the full Checkout resource (so they're dispatched without an enrichment GET), and the grace-period-completed transition needs no write because the cancellation that scheduled the grace period already stamped `ends_at` onto the local subscription. Listen for them directly to drive receipt/retry/cart-abandonment UI or to flip your own application-level state.
 
 ## Custom listeners
 
