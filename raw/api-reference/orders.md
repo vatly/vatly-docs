@@ -261,6 +261,42 @@ The order model contains all the information about your orders, including the or
   <tr>
     <td>
       <code>
+        reversedSubtotal
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Amount of the captured payment already returned to the customer, before taxes, via refund or chargeback (settled).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        refundableSubtotal
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Remaining amount that can still be refunded, before taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         taxSummary
       </code>
     </td>
@@ -723,6 +759,14 @@ $orders = $vatly->orders->page();
         "value": "29.00",
         "currency": "EUR"
       },
+      "reversedSubtotal": {
+        "value": "0.00",
+        "currency": "EUR"
+      },
+      "refundableSubtotal": {
+        "value": "29.00",
+        "currency": "EUR"
+      },
       "taxSummary": [
         {
           "taxRate": {
@@ -885,6 +929,14 @@ $order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
     "currency": "EUR"
   },
   "subtotal": {
+    "value": "29.00",
+    "currency": "EUR"
+  },
+  "reversedSubtotal": {
+    "value": "0.00",
+    "currency": "EUR"
+  },
+  "refundableSubtotal": {
     "value": "29.00",
     "currency": "EUR"
   },
