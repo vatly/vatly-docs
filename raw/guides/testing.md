@@ -58,7 +58,7 @@ No request body is required.
 
 ### Example
 
-<code-group sync="api">
+<code-group sync="client">
 
 ```bash [cURL]
 curl -X POST https://api.vatly.com/v1/test-helpers/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE/fast-forward-renewal \
@@ -299,7 +299,7 @@ Simulates a failed mandated payment, allowing you to test payment failure handli
 
 ### Example
 
-<code-group sync="api">
+<code-group sync="client">
 
 ```bash [cURL]
 curl -X POST https://api.vatly.com/v1/test-helpers/mandated-payments/mollie_mandated_payment_Xk9pQrSvWm4NjLhYbUcP/simulate-failure \

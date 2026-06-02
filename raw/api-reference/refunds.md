@@ -1470,7 +1470,7 @@ This endpoint allows you to cancel a pending refund for a specific order. Only p
 </tbody>
 </table>
 
-<code-group sync="api">
+<code-group sync="client">
 
 ```bash [cURL]
 curl -X DELETE https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds/refund_Mn6xBtPvKw2RjTgYcZaE \

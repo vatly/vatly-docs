@@ -1679,7 +1679,7 @@ During the grace period the subscription's `status` is `on_grace_period` and `ca
 </tbody>
 </table>
 
-<code-group sync="api">
+<code-group>
 
 ```bash [cURL]
 curl -X DELETE https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
