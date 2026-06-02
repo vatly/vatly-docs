@@ -91,6 +91,28 @@ The subscription model contains all the information about recurring billing rela
   <tr>
     <td>
       <code>
+        subscriptionPlanId
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      ID of the subscription plan this subscription is based on (starts with <code>
+        subscription_plan_
+      </code>
+      
+      ).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         testmode
       </code>
     </td>
@@ -165,7 +187,7 @@ The subscription model contains all the information about recurring billing rela
       </code>
       
       , <code>
-        vatNumber
+        taxId
       </code>
       
       , <code>
@@ -337,6 +359,48 @@ The subscription model contains all the information about recurring billing rela
   <tr>
     <td>
       <code>
+        mandate
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        object | null
+      </code>
+    </td>
+    
+    <td>
+      The payment method (mandate) on file. Contains <code>
+        method
+      </code>
+      
+       (e.g. <code>
+        card
+      </code>
+      
+      , <code>
+        sepa_debit
+      </code>
+      
+      , <code>
+        paypal
+      </code>
+      
+      , <code>
+        bacs_debit
+      </code>
+      
+      ) and <code>
+        maskedIdentifier
+      </code>
+      
+       (e.g. the last 4 digits). Null if no mandate is set.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         startedAt
       </code>
     </td>
@@ -366,14 +430,18 @@ The subscription model contains all the information about recurring billing rela
     </td>
     
     <td>
-      When the subscription ended (ISO 8601 format). Null if the subscription is still active.
+      When the subscription actually ended (ISO 8601 format). Stays <code>
+        null
+      </code>
+      
+       during a cancellation grace period — it is only set once the subscription has fully ended.
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        cancelledAt
+        canceledAt
       </code>
     </td>
     
@@ -384,7 +452,11 @@ The subscription model contains all the information about recurring billing rela
     </td>
     
     <td>
-      When the subscription was cancelled (ISO 8601 format). Null if not cancelled.
+      When the subscription was canceled (ISO 8601 format). Set while in <code>
+        on_grace_period
+      </code>
+      
+      , and cleared again if the subscription is resumed. Null if not canceled.
     </td>
   </tr>
   
@@ -600,7 +672,7 @@ $subscriptions = $vatly->subscriptions->page();
       "billingAddress": {
         "fullName": "John Doe",
         "companyName": "Acme Corp",
-        "vatNumber": null,
+        "taxId": null,
         "streetAndNumber": "123 Main Street",
         "streetAdditional": null,
         "city": "Berlin",
@@ -618,7 +690,7 @@ $subscriptions = $vatly->subscriptions->page();
       "status": "active",
       "startedAt": "2024-01-15T10:30:00Z",
       "endedAt": null,
-      "cancelledAt": null,
+      "canceledAt": null,
       "renewedAt": "2024-02-15T10:30:00Z",
       "renewedUntil": "2024-03-15T10:30:00Z",
       "nextRenewalAt": "2024-03-15T10:30:00Z",
@@ -644,7 +716,7 @@ $subscriptions = $vatly->subscriptions->page();
       "billingAddress": {
         "fullName": "Jane Smith",
         "companyName": "TechCorp Ltd",
-        "vatNumber": "GB123456789",
+        "taxId": "GB123456789",
         "streetAndNumber": "456 Tech Lane",
         "streetAdditional": null,
         "city": "London",
@@ -662,7 +734,7 @@ $subscriptions = $vatly->subscriptions->page();
       "status": "active",
       "startedAt": "2024-01-01T00:00:00Z",
       "endedAt": null,
-      "cancelledAt": null,
+      "canceledAt": null,
       "renewedAt": "2024-01-01T00:00:00Z",
       "renewedUntil": "2025-01-01T00:00:00Z",
       "nextRenewalAt": "2025-01-01T00:00:00Z",
@@ -766,7 +838,7 @@ $subscription = $vatly->subscriptions->get('subscription_Lp3mNvBxKw7RjTgYcZaE');
   "billingAddress": {
     "fullName": "John Doe",
     "companyName": "Acme Corp",
-    "vatNumber": null,
+    "taxId": null,
     "streetAndNumber": "123 Main Street",
     "streetAdditional": null,
     "city": "Berlin",
@@ -784,7 +856,7 @@ $subscription = $vatly->subscriptions->get('subscription_Lp3mNvBxKw7RjTgYcZaE');
   "status": "active",
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
-  "cancelledAt": null,
+  "canceledAt": null,
   "renewedAt": "2024-02-15T10:30:00Z",
   "renewedUntil": "2024-03-15T10:30:00Z",
   "nextRenewalAt": "2024-03-15T10:30:00Z",
@@ -934,7 +1006,7 @@ $subscriptions = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE
       "billingAddress": {
         "fullName": "John Doe",
         "companyName": "Acme Corp",
-        "vatNumber": null,
+        "taxId": null,
         "streetAndNumber": "123 Main Street",
         "streetAdditional": null,
         "city": "Berlin",
@@ -952,7 +1024,7 @@ $subscriptions = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE
       "status": "active",
       "startedAt": "2024-01-15T10:30:00Z",
       "endedAt": null,
-      "cancelledAt": null,
+      "canceledAt": null,
       "renewedAt": "2024-02-15T10:30:00Z",
       "renewedUntil": "2024-03-15T10:30:00Z",
       "nextRenewalAt": "2024-03-15T10:30:00Z",
@@ -1074,7 +1146,7 @@ $subscription = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE'
   "billingAddress": {
     "fullName": "John Doe",
     "companyName": "Acme Corp",
-    "vatNumber": null,
+    "taxId": null,
     "streetAndNumber": "123 Main Street",
     "streetAdditional": null,
     "city": "Berlin",
@@ -1092,7 +1164,7 @@ $subscription = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE'
   "status": "active",
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
-  "cancelledAt": null,
+  "canceledAt": null,
   "renewedAt": "2024-02-15T10:30:00Z",
   "renewedUntil": "2024-03-15T10:30:00Z",
   "nextRenewalAt": "2024-03-15T10:30:00Z",
@@ -1270,8 +1342,38 @@ At least one of `subscriptionPlanId` or `quantity` must be provided.
     </td>
     
     <td>
-      Reset the billing anchor to this date. Cannot be combined with <code>
-        trialUntil
+      Set the billing anchor to a specific calendar date (<code>
+        YYYY-MM-DD
+      </code>
+      
+      , interpreted in UTC); the billing cycle is recalculated around it. Cannot be combined with <code>
+        resetAnchor
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        resetAnchor
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        boolean
+      </code>
+    </td>
+    
+    <td>
+      Reset the billing anchor to "now" — the moment the update is processed becomes the new cycle anchor and future renewals align to it. Cannot be combined with <code>
+        anchor
+      </code>
+      
+      . Default: <code>
+        false
       </code>
       
       .
@@ -1337,7 +1439,7 @@ $subscription = $vatly->subscriptions->update('subscription_Lp3mNvBxKw7RjTgYcZaE
   "billingAddress": {
     "fullName": "John Doe",
     "companyName": "Acme Corp",
-    "vatNumber": null,
+    "taxId": null,
     "streetAndNumber": "123 Main Street",
     "streetAdditional": null,
     "city": "Berlin",
@@ -1355,7 +1457,7 @@ $subscription = $vatly->subscriptions->update('subscription_Lp3mNvBxKw7RjTgYcZaE
   "status": "active",
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
-  "cancelledAt": null,
+  "canceledAt": null,
   "renewedAt": "2024-02-15T10:30:00Z",
   "renewedUntil": "2025-02-15T10:30:00Z",
   "nextRenewalAt": "2025-02-15T10:30:00Z",
@@ -1531,6 +1633,8 @@ header('Location: ' . $response->href, true, 303);
 
 This endpoint allows you to cancel a subscription. By default, the subscription will remain active until the end of the current billing period (grace period), after which it will be fully canceled. Set `immediately=true` to cancel immediately.
 
+During the grace period the subscription's `status` is `on_grace_period` and `canceledAt` is set, while `endedAt` stays `null`. A grace-period cancellation can still be reversed with [Resume a subscription](#resume-a-subscription) until the period lapses. A subscription canceled with `immediately=true` (status `canceled`) cannot be reactivated — create a new subscription instead.
+
 ### Optional query parameters
 
 <table>
@@ -1597,3 +1701,123 @@ $vatly->subscriptions->cancel('subscription_Lp3mNvBxKw7RjTgYcZaE');
 </code-group>
 
 Returns `204 No Content` on success.
+
+---
+
+## Resume a subscription
+
+`POST /v1/subscriptions/:id/resume`
+
+Resumes a subscription that was canceled **with a grace period**, while it is still within that period.
+
+**When this works:**
+
+- The subscription's `status` is `on_grace_period`.
+- `endedAt` stays `null` throughout the grace period — resumability is keyed off `status`, not `endedAt`.
+
+**Result:**
+
+- Status returns to `active`.
+- The existing billing cycle and renewal schedule are preserved (no new charge fires immediately) and the original payment mandate remains in effect.
+- `canceledAt` is cleared and a `subscription.resumed` webhook is delivered.
+- The refreshed subscription is returned in the response body.
+
+**When this does not work** (returns `422`):
+
+- The subscription was canceled immediately (`status` is `canceled`).
+- The grace period has already lapsed (`status` is now `canceled` and `endedAt` is set).
+- The subscription is already active (the no-op is rejected for clarity, not silently ignored).
+
+In all of those cases, create a new subscription instead.
+
+### Parameters
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        id
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      The unique identifier of the subscription.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<code-group sync="api">
+
+```bash [cURL]
+curl -X POST https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE/resume \
+  -H "Authorization: Bearer live_your_api_key_here"
+```
+
+```php [PHP]
+$vatly = new \Vatly\API\VatlyApiClient();
+$vatly->setApiKey('live_your_api_key_here');
+
+$subscription = $vatly->subscriptions->resume('subscription_Lp3mNvBxKw7RjTgYcZaE');
+```
+
+```json [Response]
+{
+  "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
+  "resource": "subscription",
+  "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
+  "subscriptionPlanId": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP",
+  "testmode": false,
+  "name": "Pro Monthly",
+  "status": "active",
+  "basePrice": {
+    "value": "29.00",
+    "currency": "EUR"
+  },
+  "quantity": 1,
+  "interval": "month",
+  "intervalCount": 1,
+  "startedAt": "2024-01-15T10:30:00Z",
+  "endedAt": null,
+  "canceledAt": null,
+  "renewedAt": "2024-02-15T10:30:00Z",
+  "renewedUntil": "2024-03-15T10:30:00Z",
+  "nextRenewalAt": "2024-03-15T10:30:00Z",
+  "trialUntil": null,
+  "links": {
+    "self": {
+      "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
+      "type": "application/json"
+    },
+    "customer": {
+      "href": "https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE",
+      "type": "application/json"
+    }
+  }
+}
+```
+
+</code-group>

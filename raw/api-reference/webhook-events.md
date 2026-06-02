@@ -4,7 +4,7 @@
 
 ## The webhook event model
 
-Webhook events let you inspect the exact payload Vatly generated for a domain event.
+Webhook events let you inspect the exact payload Vatly generated for a domain event. This is the **persisted** event — the record returned by this endpoint. The `webhook.setup` verification call is a delivery-only handshake and is never persisted, so it does not appear here. For the full list of events and the live delivery envelope, see the [Webhooks guide](/guides/webhooks).
 
 ### Properties
 
@@ -92,7 +92,11 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
         refund.completed
       </code>
       
-      .
+      . See the <a href="/guides/webhooks#event-types">
+        Webhooks guide
+      </a>
+      
+       for the full list.
     </td>
   </tr>
   
@@ -166,7 +170,63 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
     </td>
     
     <td>
-      The full resource payload as it existed when the event occurred.
+      The full resource payload as it existed when the event occurred (an Order, Chargeback, Refund, Subscription, or Checkout), keyed by its own <code>
+        resource
+      </code>
+      
+       field. Note <code>
+        object.resource
+      </code>
+      
+       can differ from <code>
+        entityType
+      </code>
+      
+      : chargeback events carry <code>
+        entityType: order
+      </code>
+      
+       but a Chargeback <code>
+        object
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        createdAt
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      When the event occurred (ISO 8601 format).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        testmode
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        boolean
+      </code>
+    </td>
+    
+    <td>
+      Whether the event originated from a test-mode resource.
     </td>
   </tr>
   
@@ -263,6 +323,8 @@ $event = $vatly->webhookEvents->get('webhook_event_Qk8pRtSvWm2NjLhYcZaE');
   "eventName": "order.paid",
   "entityType": "order",
   "entityId": "order_Hn5xWqVfKm8RjTgYbUcP",
+  "createdAt": "2024-01-15T10:30:00Z",
+  "testmode": false,
   "object": {
     "id": "order_Hn5xWqVfKm8RjTgYbUcP",
     "resource": "order",

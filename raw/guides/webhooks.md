@@ -325,8 +325,44 @@ The `eventName` field identifies what happened. The available events are:
       A canceled subscription was resumed during its grace period.
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription.billing_updated
+      </code>
+    </td>
+    
+    <td>
+      A subscription's billing details changed — in practice the mandate (payment method on file), e.g. a refreshed masked payment-method identifier.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        webhook.setup
+      </code>
+    </td>
+    
+    <td>
+      A verification call Vatly sends when you register a webhook endpoint or change its URL. See the note below.
+    </td>
+  </tr>
 </tbody>
 </table>
+
+<note>
+
+**object is the affected resource, keyed by its own resource field** (`order`, `chargeback`, `refund`, `subscription`, `checkout`, or `webhook`). For chargeback events this differs from `entityType`: `order.chargeback_received` / `order.chargeback_reversed` carry `entityType: order` (the order the chargeback belongs to) but the `object` is a Chargeback.
+
+</note>
+
+<note>
+
+**webhook.setup** is delivered when you register an endpoint (or change its URL) to confirm it's reachable. It arrives as a normal, signed delivery (`entityType: webhook`, `object` is the secret-free endpoint config), so there's nothing special to parse — just acknowledge it with a `2xx`. Unlike event deliveries, the setup call is a one-shot verification check: a non-`2xx` response fails endpoint registration and is **not** retried. It is also the one event that is never persisted, so it does not appear on the [Get webhook event](/api-reference/webhook-events) endpoint.
+
+</note>
 
 ### Example: `subscription.started`
 

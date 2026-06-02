@@ -91,6 +91,24 @@ Below you'll find all properties for the Vatly Checkout API resource.
   <tr>
     <td>
       <code>
+        customerId
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      The customer associated with this checkout. Only present once a customer has been associated — for an anonymous checkout this happens when the buyer completes payment.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         testmode
       </code>
     </td>
@@ -120,7 +138,15 @@ Below you'll find all properties for the Vatly Checkout API resource.
     </td>
     
     <td>
-      The URL to which the checkout should redirect the user after the checkout has been paid successfully.
+      The URL to which the checkout should redirect the user after the checkout has been paid successfully. May contain the literal <code>
+        {CHECKOUT_ID}
+      </code>
+      
+       placeholder, which Vatly substitutes with this checkout's ID at creation time (e.g. <code>
+        https://example.com/return?checkout_id={CHECKOUT_ID}
+      </code>
+      
+      ).
     </td>
   </tr>
   
@@ -138,7 +164,15 @@ Below you'll find all properties for the Vatly Checkout API resource.
     </td>
     
     <td>
-      The URL to which the user should get redirected when the user cancels the checkout.
+      The URL to which the user should get redirected when the user cancels the checkout. Supports the same <code>
+        {CHECKOUT_ID}
+      </code>
+      
+       placeholder as <code>
+        redirectUrlSuccess
+      </code>
+      
+      .
     </td>
   </tr>
   
@@ -496,7 +530,11 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
     </td>
     
     <td>
-      The URL to which the checkout should redirect the user after the checkout has been paid successfully.
+      The URL to which the checkout should redirect the user after the checkout has been paid successfully. You may include the literal <code>
+        {CHECKOUT_ID}
+      </code>
+      
+       placeholder anywhere in the URL — Vatly substitutes it with this checkout's ID, so your return page can read the checkout ID without a server-side token store.
     </td>
   </tr>
   
@@ -514,7 +552,11 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
     </td>
     
     <td>
-      The URL to which the user should get redirected when the user cancels the checkout.
+      The URL to which the user should get redirected when the user cancels the checkout. Supports the same <code>
+        {CHECKOUT_ID}
+      </code>
+      
+       placeholder.
     </td>
   </tr>
 </tbody>
@@ -589,7 +631,7 @@ curl https://api.vatly.com/v1/checkouts \
       {"id": "one_off_product_Vr8kQdFhSrG4Y3DnfsdqH", "quantity": 1},
       {"id": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP", "trialDays": 14}
     ],
-    "redirectUrlSuccess": "https://example.com/success",
+    "redirectUrlSuccess": "https://example.com/return?checkout_id={CHECKOUT_ID}",
     "redirectUrlCanceled": "https://example.com/canceled"
   }'
 ```
@@ -603,7 +645,7 @@ $checkout = $vatly->checkouts->create([
     ['id' => 'one_off_product_Vr8kQdFhSrG4Y3DnfsdqH', 'quantity' => 1],
     ['id' => 'subscription_plan_Rk5pQrSvWm8NjLhYbUcP', 'trialDays' => 14],
   ],
-  'redirectUrlSuccess' => 'https://example.com/success',
+  'redirectUrlSuccess' => 'https://example.com/return?checkout_id={CHECKOUT_ID}',
   'redirectUrlCanceled' => 'https://example.com/canceled',
 ]);
 
@@ -617,7 +659,7 @@ header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
   "resource": "checkout",
   "orderId": null,
   "testmode": false,
-  "redirectUrlSuccess": "https://example.com/success",
+  "redirectUrlSuccess": "https://example.com/return?checkout_id=checkout_Bm7xNvPwKr3YjTgHcZaE",
   "redirectUrlCanceled": "https://example.com/canceled",
   "metadata": {},
   "status": "created",

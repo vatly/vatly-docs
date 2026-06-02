@@ -52,7 +52,7 @@ $subscription = $vatly->testHelpers->fastForwardSubscriptionRenewal('sub_abc123d
   "billingAddress": {
     "fullName": "John Doe",
     "companyName": null,
-    "vatNumber": null,
+    "taxId": null,
     "streetAndNumber": "123 Main St",
     "streetAdditional": null,
     "city": "Amsterdam",
@@ -70,7 +70,7 @@ $subscription = $vatly->testHelpers->fastForwardSubscriptionRenewal('sub_abc123d
   "status": "active",
   "startedAt": "2026-01-15T10:30:00Z",
   "endedAt": null,
-  "cancelledAt": null,
+  "canceledAt": null,
   "renewedAt": "2026-02-15T10:30:00Z",
   "renewedUntil": "2026-03-15T10:30:00Z",
   "nextRenewalAt": "2026-03-15T10:30:00Z",

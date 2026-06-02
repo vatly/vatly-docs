@@ -101,7 +101,7 @@ Returns the updated subscription with new renewal dates:
   "status": "active",
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
-  "cancelledAt": null,
+  "canceledAt": null,
   "renewedAt": "2024-03-15T10:30:00Z",
   "renewedUntil": "2024-04-15T10:30:00Z",
   "nextRenewalAt": "2024-04-15T10:30:00Z",

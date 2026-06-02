@@ -337,7 +337,7 @@ The order model contains all the information about your orders, including the or
       </code>
       
       , <code>
-        vatNumber
+        taxId
       </code>
       
       , <code>
@@ -772,7 +772,7 @@ $orders = $vatly->orders->page();
       "customerDetails": {
         "fullName": "John Doe",
         "companyName": "Acme Corp",
-        "vatNumber": null,
+        "taxId": null,
         "streetAndNumber": "123 Main Street",
         "streetAdditional": null,
         "city": "Berlin",
@@ -937,7 +937,7 @@ $order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
   "customerDetails": {
     "fullName": "John Doe",
     "companyName": "Acme Corp",
-    "vatNumber": null,
+    "taxId": null,
     "streetAndNumber": "123 Main Street",
     "streetAdditional": null,
     "city": "Berlin",
