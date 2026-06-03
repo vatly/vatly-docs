@@ -8,7 +8,7 @@ Vatly Laravel provides a full subscription lifecycle: creating, checking, swappi
 
 ```php
 $checkout = $user->subscribe()
-    ->toPlan('plan_premium')
+    ->toPlan('subscription_plan_annual')
     ->create();
 
 return redirect($checkout->links->checkoutUrl->href);
@@ -21,14 +21,14 @@ Trials defer the first charge until the trial elapses. Set them on the builder, 
 ```php
 // Whole days from checkout creation
 $user->subscribe()
-    ->toPlan('plan_premium')
+    ->toPlan('subscription_plan_annual')
     ->withTrialDays(14)
     ->create();
 
 // Or an end date — the remaining time is rounded *up* to whole days, so the
 // trial never ends earlier than requested (Vatly's trial input is day-granular)
 $user->subscribe()
-    ->toPlan('plan_premium')
+    ->toPlan('subscription_plan_annual')
     ->withTrialEndsAt(now()->addMonth())
     ->create();
 ```
