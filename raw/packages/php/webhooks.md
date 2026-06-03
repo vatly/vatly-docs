@@ -73,7 +73,7 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
   <tr>
     <td>
       <code>
-        payment.failed
+        order.payment_failed
       </code>
     </td>
     
@@ -258,8 +258,14 @@ When you register a webhook endpoint (or change its URL), Vatly sends a signed
 `webhook.setup` event to confirm the endpoint is reachable. It is delivered as a normal
 webhook — same envelope, same signature, same `Vatly-Event-Id` header — so there is
 **nothing special to parse**: `Webhook::parse()` returns an ordinary `WebhookPayload`.
-Just acknowledge it with a `2xx` and take no action; the `default` arm of an event
-`match` already does this.
+Just acknowledge it with a `2xx` and take no action.
+
+For strongly-typed handling, this package ships a
+[`WebhookSetupReceived`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Webhooks/Events/WebhookSetupReceived.php) event DTO
+(`Vatly\API\Webhooks\Events\WebhookSetupReceived`) that carries the webhook envelope
+(`id`, `resource`, `eventName`, `entityType`, `entityId`, `testmode`, `createdAt`,
+`object`). Build it from a `WebhookReceived` via `WebhookSetupReceived::fromWebhook()`;
+`object` is the (secret-free) endpoint config and may be empty.
 
 ---
 
