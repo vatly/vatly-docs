@@ -612,6 +612,30 @@ http_response_code(200);
 
 `Webhook::parse()` throws `Vatly\API\Exceptions\InvalidSignatureException` when the signature header is malformed, the timestamp is outside the tolerance window, or the HMAC does not match. It throws `InvalidArgumentException` when the body is not valid JSON or is missing required fields.
 
+### Typed event DTOs
+
+`Webhook::parse()` returns the raw, generic [`WebhookPayload`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Webhooks/WebhookPayload.php). For consumers that prefer a strongly-typed, per-event object, this package also owns immutable event DTOs under [`Vatly\API\Webhooks\Events`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Webhooks/Events). Each DTO:
+
+- exposes a `VATLY_EVENT_NAME` constant (a [`WebhookEventName`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Types/WebhookEventName.php) value) for matching;
+- carries `from*()` factory methods — `fromApiOrder()`, `fromApiRefund()`, `fromApiChargeback()`, `fromApiSubscription()` to build from an enriched API resource, and/or `fromWebhook(WebhookReceived $webhook)` to build from the raw payload;
+- normalizes money to integer **cents** (via [`Money::toCents()`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Types/Money.php)) and carries the per-rate VAT breakdown as a [`TaxSummaryCollection`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Types/TaxSummaryCollection.php).
+
+```php
+use Vatly\API\Resources\Order;
+use Vatly\API\Webhooks\Events\OrderPaid;
+
+// $order is a fully-hydrated API Order resource (e.g. from $vatly->orders->get(...))
+$event = OrderPaid::fromApiOrder($order);
+
+$event->total;       // int cents, e.g. 4999
+$event->taxSummary;  // Vatly\API\Types\TaxSummaryCollection
+$event->lines;       // Vatly\API\Data\OrderLineData[]
+```
+
+These DTOs are the canonical, framework-agnostic event shapes that higher-level integrations (e.g. `vatly-fluent-php`) build on. The line-item DTO lives at [`Vatly\API\Data\OrderLineData`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Data/OrderLineData.php).
+
+The full set of incoming webhook payloads is also described in the [webhooks OpenAPI spec](../openapi.yaml) under the top-level `webhooks:` section — one entry per `WebhookEventName`, each referencing the `WebhookDelivery` envelope.
+
 ### Replay-window tolerance
 
 The signed timestamp (`t=...`) lets receivers reject stale deliveries. By default signatures more than **300 seconds** old are rejected. If you need a custom window — for example when replaying captured fixtures in a test suite — instantiate [`WebhookSignatureValidator`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Webhooks/WebhookSignatureValidator.php) directly:
