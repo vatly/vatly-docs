@@ -28,14 +28,14 @@ Exclude the webhook route from CSRF verification. In Laravel 11+, this is typica
 
 ## Events
 
-When a webhook is received, the driver's `LaravelEventDispatcher` forwards fluent's typed domain events straight onto Laravel's event bus, so you listen for the fluent classes directly. They all live under the `Vatly\Fluent\Events\` namespace:
+When a webhook is received, the driver's `LaravelEventDispatcher` forwards the typed domain events straight onto Laravel's event bus, so you listen for the DTO classes directly. The webhook event DTOs live in `vatly-api-php` under the `Vatly\API\Webhooks\Events\` namespace (so a payload change is a single api-php release); the one exception is `LocalSubscriptionCreated`, an internal fluent signal under `Vatly\Fluent\Events\`:
 
 <table>
 <thead>
   <tr>
     <th>
       Event (<code>
-        Vatly\Fluent\Events\…
+        Vatly\API\Webhooks\Events\…
       </code>
       
       )
@@ -61,6 +61,38 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards fluen
       </code>
       
        webhook is received
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionBillingUpdated
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        subscription.billing_updated
+      </code>
+      
+       webhook is received — the stored mandate is refreshed
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionResumed
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        subscription.resumed
+      </code>
+      
+       webhook is received — the stored end date is cleared
     </td>
   </tr>
   
@@ -143,6 +175,24 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards fluen
   <tr>
     <td>
       <code>
+        OrderCanceled
+      </code>
+    </td>
+    
+    <td>
+      An <code>
+        order.canceled
+      </code>
+      
+       webhook is received — the local order status is mirrored to <code>
+        canceled
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         PaymentFailed
       </code>
     </td>
@@ -153,6 +203,82 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards fluen
       </code>
       
        webhook is received — typically the start of dunning (enriched with the full tax breakdown)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        OrderChargebackReceived
+      </code>
+      
+       / <code>
+        OrderChargebackReversed
+      </code>
+    </td>
+    
+    <td>
+      An <code>
+        order.chargeback_received
+      </code>
+      
+       / <code>
+        order.chargeback_reversed
+      </code>
+      
+       webhook is received — enriched with <code>
+        customerId
+      </code>
+      
+      , dispute <code>
+        status
+      </code>
+      
+      , totals and <code>
+        taxSummary
+      </code>
+      
+      ; persisted to <code>
+        vatly_chargebacks
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        RefundCompleted
+      </code>
+      
+       / <code>
+        RefundFailed
+      </code>
+      
+       / <code>
+        RefundCanceled
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        refund.completed
+      </code>
+      
+       / <code>
+        refund.failed
+      </code>
+      
+       / <code>
+        refund.canceled
+      </code>
+      
+       webhook is received — each carries the full <code>
+        taxSummary
+      </code>
+      
+      ; persisted to <code>
+        vatly_refunds
+      </code>
     </td>
   </tr>
   
@@ -269,6 +395,12 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards fluen
       <code>
         LocalSubscriptionCreated
       </code>
+      
+       (in <code>
+        Vatly\Fluent\Events\
+      </code>
+      
+      )
     </td>
     
     <td>
@@ -306,11 +438,11 @@ The checkout events (`CheckoutPaid` / `CheckoutFailed` / `CheckoutCanceled` / `C
 
 ## Custom listeners
 
-Listen for the fluent events in your `EventServiceProvider` or using the `Event` facade:
+Listen for the events in your `EventServiceProvider` or using the `Event` facade:
 
 ```php
 use Illuminate\Support\Facades\Event;
-use Vatly\Fluent\Events\SubscriptionStarted;
+use Vatly\API\Webhooks\Events\SubscriptionStarted;
 
 Event::listen(SubscriptionStarted::class, function (SubscriptionStarted $event) {
     // $event->customerId
@@ -328,7 +460,7 @@ Order events (`OrderPaid` / `PaymentFailed`) carry the full, API-enriched order 
 
 ```php
 use Illuminate\Support\Facades\Event;
-use Vatly\Fluent\Events\OrderPaid;
+use Vatly\API\Webhooks\Events\OrderPaid;
 
 Event::listen(OrderPaid::class, function (OrderPaid $event) {
     // $event->orderId
