@@ -484,6 +484,8 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
 </tbody>
 </table>
 
+**Money fields.** On the order and refund events (`OrderPaid`, `OrderPaymentFailed`, `RefundCompleted` / `RefundFailed` / `RefundCanceled`), `total` and `subtotal` are non-null `Vatly\API\Types\Money` value objects (a decimal-string `value` plus a `currency`); read the currency via `$event->total->currency` and minor units via `$event->total->toCents()`. These events no longer carry a standalone `currency` field. The chargeback events (`OrderChargebackReceived` / `OrderChargebackReversed`) carry nullable `?Money` `total` / `subtotal` and **keep** their standalone `currency` field.
+
 Exactly one of the webhook events above is dispatched per incoming webhook (`UnsupportedWebhookReceived` is the fallback for unmapped events). `SubscriptionWasCreatedFromWebhook` and `OrderWasCreatedFromWebhook` fire additionally, from the subscription- and order-sync reactions, only when a brand-new local row is created.
 
 ## Built-in reactions
@@ -528,9 +530,11 @@ Event::listen(OrderPaid::class, function (OrderPaid $event) {
     // $event->orderId
     // $event->customerId
     // $event->status
-    // $event->total      // minor units (cents)
-    // $event->subtotal   // minor units (cents)
-    // $event->currency
+    // $event->total              // Vatly\API\Types\Money
+    // $event->subtotal           // Vatly\API\Types\Money
+    // $event->total->currency    // e.g. "EUR"
+    // $event->total->value       // decimal string, e.g. "99.00"
+    // $event->total->toCents()   // minor units (cents), e.g. 9900
     // $event->taxSummary
     // $event->invoiceNumber
     // $event->paymentMethod
