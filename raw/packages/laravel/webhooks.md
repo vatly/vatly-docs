@@ -28,7 +28,7 @@ Exclude the webhook route from CSRF verification. In Laravel 11+, this is typica
 
 ## Events
 
-When a webhook is received, the driver's `LaravelEventDispatcher` forwards the typed domain events straight onto Laravel's event bus, so you listen for the DTO classes directly. The webhook event DTOs live in `vatly-api-php` under the `Vatly\API\Webhooks\Events\` namespace (so a payload change is a single api-php release); the one exception is `SubscriptionWasCreatedFromWebhook`, an internal fluent signal under `Vatly\Fluent\Events\`:
+When a webhook is received, the driver's `LaravelEventDispatcher` forwards the typed domain events straight onto Laravel's event bus, so you listen for the DTO classes directly. The webhook event DTOs live in `vatly-api-php` under the `Vatly\API\Webhooks\Events\` namespace (so a payload change is a single api-php release); the exceptions are `SubscriptionWasCreatedFromWebhook` and `OrderWasCreatedFromWebhook`, internal fluent signals under `Vatly\Fluent\Events\`:
 
 <table>
 <thead>
@@ -193,13 +193,13 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
   <tr>
     <td>
       <code>
-        PaymentFailed
+        OrderPaymentFailed
       </code>
     </td>
     
     <td>
-      A <code>
-        payment.failed
+      An <code>
+        order.payment_failed
       </code>
       
        webhook is received — typically the start of dunning (enriched with the full tax breakdown)
@@ -373,6 +373,34 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
   <tr>
     <td>
       <code>
+        WebhookSetupReceived
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        webhook.setup
+      </code>
+      
+       verification call is received — Vatly confirms a newly registered (or re-pointed) endpoint is reachable. There's no resource to enrich and no local row to touch; just acknowledge with a <code>
+        2xx
+      </code>
+      
+      . Carries only the webhook envelope (<code>
+        eventName
+      </code>
+      
+       / <code>
+        object
+      </code>
+      
+      )
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         UnsupportedWebhookReceived
       </code>
     </td>
@@ -419,10 +447,44 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
       )
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <code>
+        OrderWasCreatedFromWebhook
+      </code>
+      
+       (in <code>
+        Vatly\Fluent\Events\
+      </code>
+      
+      )
+    </td>
+    
+    <td>
+      The order analogue of <code>
+        SubscriptionWasCreatedFromWebhook
+      </code>
+      
+      : a new local <code>
+        Order
+      </code>
+      
+       row was just created from an <code>
+        order.paid
+      </code>
+      
+       webhook (fires once on a brand-new order; carries the stored <code>
+        $order
+      </code>
+      
+      ). A clean hook for receipts / fulfillment
+    </td>
+  </tr>
 </tbody>
 </table>
 
-Exactly one of the webhook events above is dispatched per incoming webhook (`UnsupportedWebhookReceived` is the fallback for unmapped events). `SubscriptionWasCreatedFromWebhook` fires additionally, from the subscription-sync reaction, only when a brand-new local row is created.
+Exactly one of the webhook events above is dispatched per incoming webhook (`UnsupportedWebhookReceived` is the fallback for unmapped events). `SubscriptionWasCreatedFromWebhook` and `OrderWasCreatedFromWebhook` fire additionally, from the subscription- and order-sync reactions, only when a brand-new local row is created.
 
 ## Built-in reactions
 
@@ -430,8 +492,8 @@ Before the event is dispatched, the package keeps your local tables in sync auto
 
 - **SyncSubscriptionOnStarted** -- On `SubscriptionStarted`, creates (or updates) the local `Subscription` row, then dispatches `SubscriptionWasCreatedFromWebhook` for newly-created rows.
 - **CancelSubscriptionOnCanceled** -- On `SubscriptionCanceledImmediately` / `SubscriptionCanceledWithGracePeriod`, sets the local subscription's `ends_at`.
-- **StoreOrderOnPaid** -- On `OrderPaid`, stores (or updates) the local `Order` row.
-- **StoreOrderOnPaymentFailed** -- On `PaymentFailed`, stores (or updates) the local `Order` row, mirroring the upstream order status verbatim.
+- **StoreOrderOnPaid** -- On `OrderPaid`, stores (or updates) the local `Order` row, then dispatches `OrderWasCreatedFromWebhook` for newly-created rows.
+- **StoreOrderOnPaymentFailed** -- On `OrderPaymentFailed`, stores (or updates) the local `Order` row, mirroring the upstream order status verbatim.
 - **EndSubscriptionOnGracePeriodCompleted** -- On `SubscriptionCancellationGracePeriodCompleted`, stamps the actual `ends_at` onto the local subscription. Usually an idempotent re-write of what `CancelSubscriptionOnCanceled` already stored, but it self-heals a missed/out-of-order `subscription.canceled_with_grace_period` webhook (which would otherwise leave `ends_at` null and the subscription looking active forever) and corrects any drift between the scheduled and actual end.
 
 The checkout events (`CheckoutPaid` / `CheckoutFailed` / `CheckoutCanceled` / `CheckoutExpired`) ship no built-in reaction — they touch no local table. The checkout payloads carry the full Checkout resource (so they're dispatched without an enrichment GET), and there is no local checkout entity to keep in sync. Listen for them directly to drive receipt/retry/cart-abandonment UI or to flip your own application-level state. `SubscriptionCancellationGracePeriodCompleted` is likewise dispatched (on top of the reaction above) for consumers that want to flip their own application-level "fully ended" status.
@@ -456,7 +518,7 @@ Event::listen(SubscriptionStarted::class, function (SubscriptionStarted $event) 
 });
 ```
 
-Order events (`OrderPaid` / `PaymentFailed`) carry the full, API-enriched order — including the tax breakdown — so you can materialize an invoice without a follow-up API call:
+Order events (`OrderPaid` / `OrderPaymentFailed`) carry the full, API-enriched order — including the tax breakdown — so you can materialize an invoice without a follow-up API call:
 
 ```php
 use Illuminate\Support\Facades\Event;
