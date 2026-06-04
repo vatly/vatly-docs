@@ -643,7 +643,7 @@ $event->lines;             // Vatly\API\Types\OrderLineData[]
 
 These DTOs are the canonical, framework-agnostic event shapes that higher-level integrations (e.g. `vatly-fluent-php`) build on. The line-item DTO lives at [`Vatly\API\Types\OrderLineData`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Types/OrderLineData.php); its `basePrice`/`total`/`subtotal` are `Money` too.
 
-The full set of incoming webhook payloads is also described in the [webhooks OpenAPI spec](../openapi.yaml) under the top-level `webhooks:` section — one entry per `WebhookEventName`, each referencing the `WebhookDelivery` envelope.
+The full set of incoming webhook payloads is also described in the [webhooks OpenAPI spec](/openapi.yaml) under the top-level `webhooks:` section — one entry per `WebhookEventName`, each referencing the `WebhookDelivery` envelope.
 
 ### Replay-window tolerance
 
