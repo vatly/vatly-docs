@@ -1,7 +1,8 @@
-openapi: 3.2.0
+openapi: 3.1.0
 info:
   title: Vatly API
   version: '1.0'
+  x-generated-at: '2026-05-28'
   description: |
     Vatly is a Merchant of Record billing platform for European SaaS companies.
     This API enables you to manage checkouts, customers, orders, subscriptions, refunds, and more.
@@ -215,6 +216,7 @@ paths:
                 data:
                   - id: checkout_QdEpFhdSrG4Y3DnfsdqsH
                     resource: checkout
+                    customerId: null
                     orderId: null
                     testmode: false
                     redirectUrlSuccess: https://example.com/success
@@ -244,6 +246,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
     post:
       operationId: createCheckout
       summary: Create a checkout
@@ -254,7 +258,7 @@ paths:
         Checkouts expire after a configurable period (default: 24 hours).
 
         **Products:**
-        - Include one or more products using their `prod_` or `plan_` IDs
+        - Include one or more products using their `one_off_product_` or `subscription_plan_` IDs
         - Mix one-off products and subscription plans in the same checkout
         - Override prices for specific products using the `price` field
         - Add trial periods to subscription plans using `trialDays`
@@ -316,6 +320,7 @@ paths:
               example:
                 id: checkout_Bm7xNvPwKr3YjTgHcZaE
                 resource: checkout
+                customerId: null
                 orderId: null
                 testmode: false
                 redirectUrlSuccess: https://example.com/success
@@ -340,7 +345,31 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
         '422':
-          $ref: '#/components/responses/ValidationFailed'
+          description: |
+            Unprocessable Entity - The request was well-formed but contained validation errors.
+            This includes the case where a referenced resource (e.g. `customerId`) exists but
+            was created in a different mode — switch between live/test API tokens to access it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                validationFailed:
+                  summary: Field validation failed
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      products.0.id:
+                        - The selected products.0.id is invalid.
+                testmodeMismatch:
+                  summary: Referenced resource exists but in the wrong mode
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      customerId:
+                        - Customer exists, but the wrong mode is used. Try switching live / test API keys.
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /checkouts/{checkoutId}:
     get:
       operationId: getCheckout
@@ -388,6 +417,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /customers:
     get:
       operationId: listCustomers
@@ -460,6 +491,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
     post:
       operationId: createCustomer
       summary: Create a customer
@@ -516,6 +549,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /customers/{customerId}:
     get:
       operationId: getCustomer
@@ -550,6 +585,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /customers/{customerId}/subscriptions:
     get:
       operationId: listCustomerSubscriptions
@@ -643,6 +680,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /customers/{customerId}/subscriptions/{subscriptionId}:
     get:
       operationId: getCustomerSubscription
@@ -708,6 +747,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /one-off-products:
     get:
       operationId: listOneOffProducts
@@ -775,6 +816,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /one-off-products/{oneOffProductId}:
     get:
       operationId: getOneOffProduct
@@ -812,6 +855,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /subscription-plans:
     get:
       operationId: listSubscriptionPlans
@@ -897,6 +942,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /subscription-plans/{subscriptionPlanId}:
     get:
       operationId: getSubscriptionPlan
@@ -936,6 +983,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /orders:
     get:
       operationId: listOrders
@@ -1025,6 +1074,8 @@ paths:
                             amount:
                               value: '6.09'
                               currency: EUR
+                        productType: subscription
+                        productId: subscription_Hn5xWqVfKm8RjTgYbUcP
                     customerDetails:
                       fullName: John Doe
                       companyName: Acme Corp
@@ -1042,7 +1093,7 @@ paths:
                         type: application/json
                       customerInvoice:
                         href: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP
-                        type: application/json
+                        type: text/html
                 count: 1
                 links:
                   self:
@@ -1056,6 +1107,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /orders/{orderId}:
     get:
       operationId: getOrder
@@ -1126,6 +1179,8 @@ paths:
                         amount:
                           value: '6.09'
                           currency: EUR
+                    productType: subscription
+                    productId: subscription_Hn5xWqVfKm8RjTgYbUcP
                 customerDetails:
                   fullName: John Doe
                   companyName: Acme Corp
@@ -1143,13 +1198,15 @@ paths:
                     type: application/json
                   customerInvoice:
                     href: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP
-                    type: application/json
+                    type: text/html
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /orders/{orderId}/invoice-update-link:
     post:
       operationId: createOrderInvoiceUpdateLink
@@ -1179,7 +1236,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AddressUpdateLink'
+                $ref: '#/components/schemas/InvoiceUpdateLink'
               example:
                 href: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP/edit?signature=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
                 type: text/html
@@ -1191,6 +1248,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /orders/{orderId}/refunds:
     get:
       operationId: listOrderRefunds
@@ -1298,6 +1357,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
     post:
       operationId: createOrderRefund
       summary: Create a partial refund
@@ -1445,6 +1506,8 @@ paths:
                     errors:
                       items.0.amount:
                         - 'Refund amount exceeds remaining refundable amount. Maximum: 15.00 EUR'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /orders/{orderId}/refunds/full:
     post:
       operationId: createFullOrderRefund
@@ -1548,6 +1611,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /orders/{orderId}/refunds/{refundId}:
     get:
       operationId: getOrderRefund
@@ -1629,6 +1694,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
     delete:
       operationId: cancelOrderRefund
       summary: Cancel a refund
@@ -1671,6 +1738,8 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: Only pending refunds can be canceled.
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /orders/{orderId}/chargebacks:
     get:
       operationId: listOrderChargebacks
@@ -1721,6 +1790,22 @@ paths:
                     settlementAmount:
                       value: '35.09'
                       currency: EUR
+                    customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                    status: lost
+                    total:
+                      value: '35.09'
+                      currency: EUR
+                    subtotal:
+                      value: '29.00'
+                      currency: EUR
+                    taxSummary:
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '6.09'
+                          currency: EUR
                     reason: product_not_received
                     originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
                     orderId: order_Rk5pQrSvWm8NjLhYbUcP
@@ -1749,6 +1834,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /orders/{orderId}/chargebacks/{chargebackId}:
     get:
       operationId: getOrderChargeback
@@ -1780,6 +1867,22 @@ paths:
                 settlementAmount:
                   value: '35.09'
                   currency: EUR
+                customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                status: lost
+                total:
+                  value: '35.09'
+                  currency: EUR
+                subtotal:
+                  value: '29.00'
+                  currency: EUR
+                taxSummary:
+                  - taxRate:
+                      name: VAT
+                      percentage: 21
+                      taxablePercentage: 100
+                    amount:
+                      value: '6.09'
+                      currency: EUR
                 reason: fraud
                 originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
                 orderId: order_Rk5pQrSvWm8NjLhYbUcP
@@ -1799,6 +1902,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /refunds:
     get:
       operationId: listRefunds
@@ -1904,6 +2009,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /refunds/{refundId}:
     get:
       operationId: getRefund
@@ -1981,6 +2088,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /chargebacks:
     get:
       operationId: listChargebacks
@@ -2033,6 +2142,22 @@ paths:
                     settlementAmount:
                       value: '35.09'
                       currency: EUR
+                    customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                    status: lost
+                    total:
+                      value: '35.09'
+                      currency: EUR
+                    subtotal:
+                      value: '29.00'
+                      currency: EUR
+                    taxSummary:
+                      - taxRate:
+                          name: VAT
+                          percentage: 21
+                          taxablePercentage: 100
+                        amount:
+                          value: '6.09'
+                          currency: EUR
                     reason: fraud
                     originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
                     orderId: order_Rk5pQrSvWm8NjLhYbUcP
@@ -2059,6 +2184,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /chargebacks/{chargebackId}:
     get:
       operationId: getChargeback
@@ -2086,6 +2213,22 @@ paths:
                 settlementAmount:
                   value: '35.09'
                   currency: EUR
+                customerId: customer_Lp3mNvBxKw7RjTgYcZaE
+                status: lost
+                total:
+                  value: '35.09'
+                  currency: EUR
+                subtotal:
+                  value: '29.00'
+                  currency: EUR
+                taxSummary:
+                  - taxRate:
+                      name: VAT
+                      percentage: 21
+                      taxablePercentage: 100
+                    amount:
+                      value: '6.09'
+                      currency: EUR
                 reason: fraud
                 originalOrderId: order_Fp2kQrSvWm8NjLhYbUcP
                 orderId: order_Rk5pQrSvWm8NjLhYbUcP
@@ -2105,6 +2248,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /webhook-events/{eventId}:
     get:
       operationId: getWebhookEvent
@@ -2181,6 +2326,8 @@ paths:
                           amount:
                             value: '5.20'
                             currency: EUR
+                      productType: subscription
+                      productId: subscription_Hn5xWqVfKm8RjTgYbUcP
                   customerDetails:
                     fullName: John Doe
                     companyName: Acme Corp
@@ -2198,7 +2345,7 @@ paths:
                       type: application/json
                     customerInvoice:
                       href: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP
-                      type: application/json
+                      type: text/html
                 createdAt: '2026-05-21T14:32:08+00:00'
                 testmode: false
                 links:
@@ -2211,6 +2358,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /subscriptions:
     get:
       operationId: listSubscriptions
@@ -2340,6 +2489,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /subscriptions/{subscriptionId}:
     get:
       operationId: getSubscription
@@ -2401,6 +2552,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
     patch:
       operationId: updateSubscription
       summary: Update a subscription
@@ -2532,6 +2685,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+              examples:
+                validationFailed:
+                  summary: Field validation failed
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      subscriptionPlanId:
+                        - At least one of subscriptionPlanId or quantity is required.
+                testmodeMismatch:
+                  summary: Plan exists but in the wrong mode
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      subscriptionPlanId:
+                        - Subscription plan exists, but the wrong mode is used. Try switching live / test API keys.
+        default:
+          $ref: '#/components/responses/UnexpectedError'
     delete:
       operationId: cancelSubscription
       summary: Cancel a subscription
@@ -2583,6 +2753,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /subscriptions/{subscriptionId}/billing-update-link:
     post:
       operationId: createSubscriptionBillingUpdateLink
@@ -2652,6 +2824,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /subscriptions/{subscriptionId}/resume:
     post:
       operationId: resumeSubscription
@@ -2750,6 +2924,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /test-helpers/subscriptions/{subscriptionId}/fast-forward-renewal:
     post:
       operationId: fastForwardSubscriptionRenewal
@@ -2826,6 +3002,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
   /test-helpers/mandated-payments/{transactionId}/simulate-failure:
     post:
       operationId: simulatePaymentFailure
@@ -2914,6 +3092,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
+        default:
+          $ref: '#/components/responses/UnexpectedError'
 webhooks:
   order.paid:
     post:
@@ -2979,10 +3159,10 @@ webhooks:
       responses:
         2XX:
           $ref: '#/components/responses/Acknowledged'
-  payment.failed:
+  order.payment_failed:
     post:
-      operationId: onPaymentFailed
-      summary: Payment failed
+      operationId: onOrderPaymentFailed
+      summary: Order payment failed
       description: |
         A payment failed and a dunning process was initiated for the order.
         `entityType` is `order` and `object` is the Order.
@@ -3407,6 +3587,30 @@ components:
         type: boolean
       example: true
   responses:
+    UnexpectedError:
+      description: |
+        Catch-all for any status not explicitly enumerated on the operation.
+        Branch on the HTTP status code:
+        - `400` Bad Request — malformed request (e.g. invalid JSON body)
+        - `429` Too Many Requests — rate limit exceeded; the `Retry-After`
+          header gives the number of seconds to wait before retrying
+        - `500` Internal Server Error — an unexpected error occurred; the
+          request can typically be retried
+
+        The body is always the standard `Error` shape.
+      headers:
+        Retry-After:
+          description: Present on `429` responses — seconds to wait before retrying.
+          required: false
+          schema:
+            type: integer
+          example: 60
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: An unexpected error occurred. Please try again later.
     Unauthorized:
       description: Unauthorized - Authentication credentials were missing or invalid
       content:
@@ -3492,77 +3696,6 @@ components:
         deliveries, the setup call is a synchronous verification check: a non-2xx
         response or timeout fails endpoint registration/verification and is NOT
         retried.
-    BadRequest:
-      description: Bad Request - The request was malformed or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Invalid request format
-    TestmodeMismatch:
-      description: |
-        Unprocessable Entity - A referenced resource exists but was created in a different mode.
-        Switch between live/test API tokens to access the correct resources.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ValidationError'
-          example:
-            message: The given data was invalid.
-            errors:
-              customerId:
-                - Customer exists, but the wrong mode is used. Try switching live / test API keys.
-    IdempotencyConflict:
-      description: |
-        Conflict — A request was replayed with the same `Idempotency-Key`
-        but a different request body or different query parameters.
-        Idempotency keys are bound to the exact parameters of the first
-        request and cannot be reused with a different payload. Either
-        retry with the original parameters or generate a new key.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Idempotency-Key has already been used with different request parameters.
-            details:
-              idempotency_key: 9f6a3b1c-7e2d-4f7b-9c5a-2c1d5b7e9f3a
-    ConcurrencyConflict:
-      description: |
-        Conflict — Two writers tried to modify the same resource at the
-        same version. The earlier write won; this one was rejected to
-        preserve aggregate consistency. Reload the latest state of the
-        resource and retry the request — the conflict resolves itself
-        on the next attempt unless contention is sustained.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: The resource was modified concurrently. Reload the latest state and retry.
-    TooManyRequests:
-      description: Too Many Requests - Rate limit exceeded
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Too many requests. Please try again later.
-      headers:
-        Retry-After:
-          description: Number of seconds to wait before retrying
-          schema:
-            type: integer
-          example: 60
-    InternalServerError:
-      description: Internal Server Error - An unexpected error occurred
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: An unexpected error occurred. Please try again later.
   schemas:
     Money:
       type: object
@@ -3914,6 +4047,8 @@ components:
       required:
         - id
         - resource
+        - customerId
+        - orderId
         - testmode
         - redirectUrlSuccess
         - redirectUrlCanceled
@@ -3933,10 +4068,12 @@ components:
           const: checkout
           example: checkout
         customerId:
-          type: string
+          type:
+            - string
+            - 'null'
           description: |
             ID of the customer associated with this checkout.
-            Only present once a customer has been associated (for an anonymous
+            Null until a customer has been associated (for an anonymous
             checkout this happens when the buyer completes payment).
           example: customer_7kBmRtPvXw2NjLhYcZaE
         orderId:
@@ -3944,8 +4081,9 @@ components:
             - string
             - 'null'
           description: |
-            ID of the order created from this checkout.
-            Only present after checkout completion.
+            ID of the order created from this checkout. Always present in the
+            payload; `null` until the checkout completes, then set to the created
+            order id.
           example: order_Tk7mNvBxKw2RjTgYcZaE
         testmode:
           type: boolean
@@ -3997,6 +4135,7 @@ components:
           required:
             - checkoutUrl
             - self
+            - order
           additionalProperties: false
           properties:
             checkoutUrl:
@@ -4011,7 +4150,7 @@ components:
               oneOf:
                 - $ref: '#/components/schemas/Link'
                 - type: 'null'
-              description: Link to the created order (only after completion)
+              description: Link to the created order. Always present; `null` until the checkout completes.
     CheckoutProduct:
       type: object
       description: A product to add to the checkout
@@ -4343,6 +4482,7 @@ components:
       required:
         - id
         - resource
+        - customerId
         - testmode
         - metadata
         - createdAt
@@ -4370,7 +4510,7 @@ components:
           type:
             - string
             - 'null'
-          description: ID of the customer who made this purchase. Only present when a customer is associated.
+          description: ID of the customer who made this purchase. Always present; `null` for orders with no associated customer.
           example: customer_Lp3mNvBxKw7RjTgYcZaE
         testmode:
           type: boolean
@@ -4443,6 +4583,7 @@ components:
           description: HATEOAS links to related resources
           required:
             - self
+            - customer
             - customerInvoice
           additionalProperties: false
           properties:
@@ -4451,13 +4592,14 @@ components:
                 - $ref: '#/components/schemas/Link'
               description: Link to this order resource
             customer:
-              allOf:
+              oneOf:
                 - $ref: '#/components/schemas/Link'
-              description: Link to the customer who made this purchase. Only present when a customer is associated.
+                - type: 'null'
+              description: Link to the customer who made this purchase. Null for orders with no associated customer.
             customerInvoice:
               allOf:
                 - $ref: '#/components/schemas/Link'
-              description: Link to the customer-facing invoice in the customer portal
+              description: Link to the customer-facing invoice page in the customer portal (text/html)
     OrderLine:
       type: object
       description: A line item in an order
@@ -4504,9 +4646,28 @@ components:
           description: Tax breakdown by rate for this line
           items:
             $ref: '#/components/schemas/TaxSummaryItem'
-    AddressUpdateLink:
+        productType:
+          type:
+            - string
+            - 'null'
+          enum:
+            - one_off_product
+            - subscription_plan
+            - subscription
+            - billing_details_verification
+            - auth_request_product
+            - null
+          description: The product type this line links to; null when the line has no product link.
+          example: subscription
+        productId:
+          type:
+            - string
+            - 'null'
+          description: The linked product's id; for a `subscription` line this is the public `subscription_…` id.
+          example: subscription_Hn5xWqVfKm8RjTgYbUcP
+    InvoiceUpdateLink:
       type: object
-      description: A signed URL to update order billing address
+      description: A signed URL for the customer to update invoice details (billing address, VAT number, company name)
       required:
         - href
         - type
@@ -4532,6 +4693,7 @@ components:
       required:
         - id
         - resource
+        - orderId
         - customerId
         - testmode
         - createdAt
@@ -4558,8 +4720,9 @@ components:
             - string
             - 'null'
           description: |
-            ID of the credit note order created for this refund.
-            Only present after the refund is processed.
+            ID of the credit note order created for this refund. Always present in
+            the payload; `null` until the refund is processed, then set to the
+            credit-note order id.
           example: order_Vr8kQdFhSrG4Y3DnfsdqH
         customerId:
           type: string
@@ -4618,6 +4781,7 @@ components:
           required:
             - self
             - originalOrder
+            - order
           additionalProperties: false
           properties:
             self:
@@ -4632,7 +4796,7 @@ components:
               oneOf:
                 - $ref: '#/components/schemas/Link'
                 - type: 'null'
-              description: Link to the credit note order (if created)
+              description: Link to the credit note order. Always present; `null` until the credit-note order is created.
     RefundLine:
       type: object
       description: A line item in a refund
@@ -4715,12 +4879,18 @@ components:
       required:
         - id
         - resource
+        - customerId
         - testmode
         - createdAt
+        - status
         - amount
         - settlementAmount
+        - total
+        - subtotal
+        - taxSummary
         - reason
         - originalOrderId
+        - orderId
         - links
       additionalProperties: false
       properties:
@@ -4733,6 +4903,10 @@ components:
           description: Resource type identifier
           const: chargeback
           example: chargeback
+        customerId:
+          type: string
+          description: ID of the customer the chargeback was raised against
+          example: customer_Lp3mNvBxKw7RjTgYcZaE
         testmode:
           type: boolean
           description: Whether this chargeback is in test mode
@@ -4742,6 +4916,24 @@ components:
           format: date-time
           description: When this chargeback was created (ISO 8601 format)
           example: '2024-01-15T10:30:00Z'
+        status:
+          type: string
+          description: |
+            Current status of the chargeback dispute:
+            - `pending` - Dispute received, awaiting action
+            - `accepted` - Merchant accepted the dispute
+            - `rejected` - Dispute rejected
+            - `evidence_submitted` - Evidence submitted, awaiting decision
+            - `won` - Dispute resolved in the merchant's favor
+            - `lost` - Dispute resolved in the customer's favor
+          enum:
+            - pending
+            - accepted
+            - rejected
+            - evidence_submitted
+            - won
+            - lost
+          example: pending
         amount:
           $ref: '#/components/schemas/Money'
           description: Amount of the chargeback
@@ -4750,6 +4942,17 @@ components:
           description: |
             Amount that was deducted from the merchant's settlement.
             May differ from `amount` due to currency conversion or fees.
+        total:
+          $ref: '#/components/schemas/Money'
+          description: Total chargeback amount including taxes
+        subtotal:
+          $ref: '#/components/schemas/Money'
+          description: Chargeback subtotal before taxes
+        taxSummary:
+          type: array
+          description: Tax breakdown by rate for the chargeback
+          items:
+            $ref: '#/components/schemas/TaxSummaryItem'
         reason:
           type: string
           description: |
@@ -4770,8 +4973,9 @@ components:
             - string
             - 'null'
           description: |
-            ID of the credit note order created for this chargeback.
-            Only present after the chargeback is processed.
+            ID of the credit note order created for this chargeback. Always present
+            in the payload; `null` until the chargeback is processed, then set to the
+            credit-note order id.
           example: order_Rk5pQrSvWm8NjLhYbUcP
         links:
           type: object
@@ -4779,6 +4983,7 @@ components:
           required:
             - self
             - originalOrder
+            - order
           additionalProperties: false
           properties:
             self:
@@ -4793,7 +4998,7 @@ components:
               oneOf:
                 - $ref: '#/components/schemas/Link'
                 - type: 'null'
-              description: Link to the credit note order (if created)
+              description: Link to the credit note order. Always present; `null` until the credit-note order is created.
     WebhookEvent:
       type: object
       description: |
@@ -4833,7 +5038,7 @@ components:
             - `order.canceled` - Order was canceled
             - `order.chargeback_received` - Chargeback was received for an order
             - `order.chargeback_reversed` - Chargeback was reversed
-            - `payment.failed` - A payment failed and a dunning process was initiated for the order
+            - `order.payment_failed` - A payment failed and a dunning process was initiated for the order
             - `refund.completed` - Refund was processed successfully
             - `refund.failed` - Refund processing failed
             - `refund.canceled` - Refund was canceled
@@ -4858,7 +5063,7 @@ components:
             - order.canceled
             - order.chargeback_received
             - order.chargeback_reversed
-            - payment.failed
+            - order.payment_failed
             - refund.completed
             - refund.failed
             - refund.canceled
@@ -4886,7 +5091,7 @@ components:
             The full resource payload at the time of the event, serialized identically
             to the corresponding REST resource. The concrete shape is selected by the
             payload's own `resource` field (the discriminator):
-              - `order.paid`, `order.canceled`, `payment.failed` → Order
+              - `order.paid`, `order.canceled`, `order.payment_failed` → Order
               - `order.chargeback_received`, `order.chargeback_reversed` → Chargeback
               - `refund.*` → Refund
               - `subscription.*` → Subscription
@@ -5385,7 +5590,7 @@ components:
             - `order.canceled` - Order was canceled
             - `order.chargeback_received` - Chargeback was received for an order
             - `order.chargeback_reversed` - Chargeback was reversed
-            - `payment.failed` - A payment failed and a dunning process was initiated for the order
+            - `order.payment_failed` - A payment failed and a dunning process was initiated for the order
             - `refund.completed` - Refund was processed successfully
             - `refund.failed` - Refund processing failed
             - `refund.canceled` - Refund was canceled
@@ -5408,7 +5613,7 @@ components:
             - order.canceled
             - order.chargeback_received
             - order.chargeback_reversed
-            - payment.failed
+            - order.payment_failed
             - refund.completed
             - refund.failed
             - refund.canceled
@@ -5437,7 +5642,7 @@ components:
             The full resource payload at the time of the event, serialized identically
             to the corresponding REST resource. The concrete shape is selected by the
             payload's own `resource` field (the discriminator):
-              - `order.paid`, `order.canceled`, `payment.failed` → Order
+              - `order.paid`, `order.canceled`, `order.payment_failed` → Order
               - `order.chargeback_received`, `order.chargeback_reversed` → Chargeback
               - `refund.*` → Refund
               - `subscription.*` → Subscription
