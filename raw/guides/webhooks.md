@@ -221,7 +221,7 @@ The `eventName` field identifies what happened. The available events are:
   <tr>
     <td>
       <code>
-        payment.failed
+        order.payment_failed
       </code>
     </td>
     
