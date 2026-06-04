@@ -34,7 +34,7 @@ app/
 ├── app.config.ts                 # Docus theme config (logo, colors)
 └── pages/index.vue               # Custom landing page
 public/
-├── openapi.yaml                  # OpenAPI 3.2 spec
+├── openapi.yaml                  # OpenAPI 3.1.0 spec
 └── vatly-logo-*.{svg,png}        # Brand assets
 ```
 
