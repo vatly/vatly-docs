@@ -4,6 +4,8 @@
 
 Checkouts create hosted payment pages for your customers. When a checkout completes successfully, an Order is created.
 
+> **Authoritative field reference.** This page covers the common cases. The complete, canonical request/response schema — every accepted field, its type, and its validation rules — lives in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml) (see the `Checkout`, `CheckoutProduct`, and `Money` schemas). When in doubt about what a field is named or whether it exists, trust the spec, not an example.
+
 ## The Checkout Resource
 
 Below you'll find all properties for the Vatly Checkout resource.
@@ -276,19 +278,11 @@ Create a new hosted checkout for your customer.
     </td>
     
     <td>
-      An array of product objects with <code>
-        id
-      </code>
+      An array of product items. See <a href="#product-items">
+        Product items
+      </a>
       
-      , optional <code>
-        quantity
-      </code>
-      
-      , and optional <code>
-        trialDays
-      </code>
-      
-      .
+       below for the accepted per-item fields.
     </td>
   </tr>
   
@@ -427,6 +421,30 @@ $checkout = $vatly->checkouts->create([
 ```
 
 If you omit `idempotencyKey`, the SDK generates an `Idempotency-Key` header automatically.
+
+### Product items
+
+Each entry in `products` references a product you have **already created in the Vatly dashboard** — there is no API endpoint to create products on the fly. The `id` is either a `one_off_product_…` or `subscription_plan_…` id.
+
+To charge an amount other than the product's dashboard price, set a `price` override (a `Money` object). For the full list of accepted item fields and their validation rules, see the `CheckoutProduct` schema in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml).
+
+```php
+// Override the price of a pre-configured product at checkout time.
+$checkout = $vatly->checkouts->create([
+    'products' => [
+        [
+            'id' => 'one_off_product_Vr8kQdFhSrG4Y3DnfsdqH',
+            'quantity' => 2,
+            'price' => [
+                'value' => '49.99',
+                'currency' => 'EUR',
+            ],
+        ],
+    ],
+    'redirectUrlSuccess' => 'https://yourapp.com/success',
+    'redirectUrlCanceled' => 'https://yourapp.com/canceled',
+]);
+```
 
 ```json
 {

@@ -89,36 +89,30 @@ Below you'll find all properties for the Vatly One-Off Product resource.
   <tr>
     <td>
       <code>
-        amount
+        basePrice
       </code>
     </td>
     
     <td>
       <code>
-        integer
+        Money
       </code>
     </td>
     
     <td>
-      Price in cents.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
-        currency
+      The price as a <code>
+        Money
       </code>
-    </td>
-    
-    <td>
-      <code>
-        string
+      
+       object — read <code>
+        ->value
       </code>
-    </td>
-    
-    <td>
-      Three-letter ISO currency code.
+      
+       (decimal string) and <code>
+        ->currency
+      </code>
+      
+       (ISO 4217 code).
     </td>
   </tr>
   
@@ -202,7 +196,7 @@ Retrieve a one-off product by its ID.
 $product = $vatly->oneOffProducts->get('one_off_product_abc123');
 
 echo $product->name;
-echo $product->amount / 100 . ' ' . $product->currency;
+echo $product->basePrice->value . ' ' . $product->basePrice->currency;
 ```
 
 ---
@@ -275,6 +269,6 @@ Retrieve a paginated list of all one-off products.
 $products = $vatly->oneOffProducts->list();
 
 foreach ($products as $product) {
-    echo $product->name . ': ' . ($product->amount / 100) . ' ' . $product->currency;
+    echo $product->name . ': ' . $product->basePrice->value . ' ' . $product->basePrice->currency;
 }
 ```
