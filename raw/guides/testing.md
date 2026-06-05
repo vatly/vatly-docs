@@ -6,6 +6,610 @@
 
 Vatly provides test helper endpoints that let you simulate billing events without waiting for real billing cycles. These endpoints are only available in **test mode** and require a `test_` prefixed API token.
 
+## Taxes in test mode
+
+<warning>
+
+In test mode, Vatly does **not** run real tax determination. Checkouts and orders created with a `test_` token use a **fixed, predefined set of tax rates** so results are predictable while you build your integration. **These rates are simulated for testing only — they are not guaranteed to match real, current statutory rates, and must never be relied upon for pricing decisions, accounting, invoicing, or tax compliance.** Switch to a `live_` token to get Vatly's real, jurisdiction-accurate tax determination.
+
+</warning>
+
+### How test-mode rates are applied
+
+The buyer's country determines a single fixed standard rate. Any country **not** in the table below is taxed at a flat **20% "VAT"**.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Country
+    </th>
+    
+    <th>
+      Code
+    </th>
+    
+    <th>
+      Rate
+    </th>
+    
+    <th>
+      Name
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      Austria
+    </td>
+    
+    <td>
+      <code>
+        AT
+      </code>
+    </td>
+    
+    <td>
+      20%
+    </td>
+    
+    <td>
+      MwSt./USt.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Belgium
+    </td>
+    
+    <td>
+      <code>
+        BE
+      </code>
+    </td>
+    
+    <td>
+      21%
+    </td>
+    
+    <td>
+      BTW/TVA/MWSt
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Bulgaria
+    </td>
+    
+    <td>
+      <code>
+        BG
+      </code>
+    </td>
+    
+    <td>
+      20%
+    </td>
+    
+    <td>
+      ДДС
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Croatia
+    </td>
+    
+    <td>
+      <code>
+        HR
+      </code>
+    </td>
+    
+    <td>
+      25%
+    </td>
+    
+    <td>
+      PDV
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Cyprus
+    </td>
+    
+    <td>
+      <code>
+        CY
+      </code>
+    </td>
+    
+    <td>
+      19%
+    </td>
+    
+    <td>
+      ΦΠΑ
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Czechia
+    </td>
+    
+    <td>
+      <code>
+        CZ
+      </code>
+    </td>
+    
+    <td>
+      21%
+    </td>
+    
+    <td>
+      DPH
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Denmark
+    </td>
+    
+    <td>
+      <code>
+        DK
+      </code>
+    </td>
+    
+    <td>
+      25%
+    </td>
+    
+    <td>
+      moms
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Estonia
+    </td>
+    
+    <td>
+      <code>
+        EE
+      </code>
+    </td>
+    
+    <td>
+      20%
+    </td>
+    
+    <td>
+      km
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Finland
+    </td>
+    
+    <td>
+      <code>
+        FI
+      </code>
+    </td>
+    
+    <td>
+      24%
+    </td>
+    
+    <td>
+      ALV/Moms
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      France
+    </td>
+    
+    <td>
+      <code>
+        FR
+      </code>
+    </td>
+    
+    <td>
+      20%
+    </td>
+    
+    <td>
+      TVA
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Germany
+    </td>
+    
+    <td>
+      <code>
+        DE
+      </code>
+    </td>
+    
+    <td>
+      19%
+    </td>
+    
+    <td>
+      MwSt./USt.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Greece
+    </td>
+    
+    <td>
+      <code>
+        EL
+      </code>
+    </td>
+    
+    <td>
+      24%
+    </td>
+    
+    <td>
+      ΦΠΑ
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Hungary
+    </td>
+    
+    <td>
+      <code>
+        HU
+      </code>
+    </td>
+    
+    <td>
+      27%
+    </td>
+    
+    <td>
+      ÁFA
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Ireland
+    </td>
+    
+    <td>
+      <code>
+        IE
+      </code>
+    </td>
+    
+    <td>
+      23%
+    </td>
+    
+    <td>
+      VAT/CBL
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Italy
+    </td>
+    
+    <td>
+      <code>
+        IT
+      </code>
+    </td>
+    
+    <td>
+      22%
+    </td>
+    
+    <td>
+      IVA
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Latvia
+    </td>
+    
+    <td>
+      <code>
+        LV
+      </code>
+    </td>
+    
+    <td>
+      21%
+    </td>
+    
+    <td>
+      PVN
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Lithuania
+    </td>
+    
+    <td>
+      <code>
+        LT
+      </code>
+    </td>
+    
+    <td>
+      21%
+    </td>
+    
+    <td>
+      PVM
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Luxembourg
+    </td>
+    
+    <td>
+      <code>
+        LU
+      </code>
+    </td>
+    
+    <td>
+      17%
+    </td>
+    
+    <td>
+      TVA
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Malta
+    </td>
+    
+    <td>
+      <code>
+        MT
+      </code>
+    </td>
+    
+    <td>
+      18%
+    </td>
+    
+    <td>
+      VAT
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Netherlands
+    </td>
+    
+    <td>
+      <code>
+        NL
+      </code>
+    </td>
+    
+    <td>
+      21%
+    </td>
+    
+    <td>
+      BTW
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Poland
+    </td>
+    
+    <td>
+      <code>
+        PL
+      </code>
+    </td>
+    
+    <td>
+      23%
+    </td>
+    
+    <td>
+      PTU
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Portugal
+    </td>
+    
+    <td>
+      <code>
+        PT
+      </code>
+    </td>
+    
+    <td>
+      23%
+    </td>
+    
+    <td>
+      IVA
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Romania
+    </td>
+    
+    <td>
+      <code>
+        RO
+      </code>
+    </td>
+    
+    <td>
+      19%
+    </td>
+    
+    <td>
+      TVA
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Slovakia
+    </td>
+    
+    <td>
+      <code>
+        SK
+      </code>
+    </td>
+    
+    <td>
+      20%
+    </td>
+    
+    <td>
+      DPH
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Slovenia
+    </td>
+    
+    <td>
+      <code>
+        SI
+      </code>
+    </td>
+    
+    <td>
+      22%
+    </td>
+    
+    <td>
+      DDV
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Spain
+    </td>
+    
+    <td>
+      <code>
+        ES
+      </code>
+    </td>
+    
+    <td>
+      21%
+    </td>
+    
+    <td>
+      IVA
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Sweden
+    </td>
+    
+    <td>
+      <code>
+        SE
+      </code>
+    </td>
+    
+    <td>
+      25%
+    </td>
+    
+    <td>
+      Moms
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <em>
+        Any other country
+      </em>
+    </td>
+    
+    <td>
+      —
+    </td>
+    
+    <td>
+      20%
+    </td>
+    
+    <td>
+      VAT
+    </td>
+  </tr>
+</tbody>
+</table>
+
+As an example of multi-rate handling, a Canada (`CA`) buyer is given the 20% default plus an additional 9.975% `QST` line.
+
+### Tax IDs and reverse charge in test mode
+
+Tax IDs are **not** checked against VIES or any real registry in test mode. A test tax ID is treated as **valid only when it starts with the buyer's uppercase country code** — for example `DE123456789` is valid for a German buyer, while `de123456789` or `FR123…` for a German buyer is not.
+
+When a **valid** test tax ID is supplied and the buyer's country **differs** from the seller's, a **0% reverse charge** is applied (B2B cross-border). Otherwise the buyer's country rate from the table above applies.
+
 ## Fast-forward subscription renewal
 
 Simulates a subscription renewal cycle, allowing you to test renewal billing flows, lifecycle events, and webhooks without waiting for the actual billing interval.
