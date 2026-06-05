@@ -47,8 +47,11 @@ for (const file of files) {
   // Check if frontmatter already exists
   const hasFrontmatter = content.startsWith('---')
 
-  // Strip the first H1 heading to avoid duplicate with frontmatter title
-  let transformed = content.replace(/^#\s+.+\n+/, '')
+  // Strip the first H1 heading to avoid duplicate with frontmatter title.
+  // The `m` flag lets this match even when a banner image precedes the H1
+  // (e.g. `![…](banner.png)` at the very top of the README) — the image is
+  // kept, only the title line is removed.
+  let transformed = content.replace(/^#\s+.+\n+/m, '')
 
   // Rewrite internal links to point to SDK pages
   const linkMap = {
