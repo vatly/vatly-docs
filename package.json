@@ -4,6 +4,8 @@
     "dev": "nuxt dev --extends docus",
     "cache:clear": "rm -rf .nuxt .data node_modules/.cache",
     "cache:clear:dev": "npm run cache:clear && npm run dev",
+    "sitemap": "node scripts/generate-sitemap.mjs",
+    "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "nuxt build --extends docus",
     "postinstall": "cp app/components/OgImage/OgImageDocs.vue node_modules/docus/app/components/OgImage/OgImageDocs.vue",
     "lint:md": "npx markdownlint-cli2 'content/**/*.md'"

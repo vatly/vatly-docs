@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate sitemap
+        run: node scripts/generate-sitemap.mjs
+
       - name: Build
         run: npx nuxi build
 

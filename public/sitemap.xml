@@ -3,21 +3,25 @@
   <url><loc>https://docs.vatly.com/</loc><priority>1.0</priority></url>
   <url><loc>https://docs.vatly.com/introduction</loc><priority>0.9</priority></url>
   <url><loc>https://docs.vatly.com/guides/quickstart</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/guides/selling-workflow</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/guides/sdks</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/guides/authentication</loc><priority>0.8</priority></url>
-  <url><loc>https://docs.vatly.com/guides/pagination</loc><priority>0.7</priority></url>
-  <url><loc>https://docs.vatly.com/guides/errors</loc><priority>0.7</priority></url>
+  <url><loc>https://docs.vatly.com/guides/pagination</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/guides/errors</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/guides/webhooks</loc><priority>0.8</priority></url>
-  <url><loc>https://docs.vatly.com/guides/idempotency</loc><priority>0.7</priority></url>
+  <url><loc>https://docs.vatly.com/guides/idempotency</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/guides/testing</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/customers</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/checkouts</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/api-reference/one-off-products</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/subscriptions</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/subscription-plans</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/orders</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/refunds</loc><priority>0.8</priority></url>
-  <url><loc>https://docs.vatly.com/api-reference/global-refunds</loc><priority>0.7</priority></url>
-  <url><loc>https://docs.vatly.com/api-reference/chargebacks</loc><priority>0.7</priority></url>
-  <url><loc>https://docs.vatly.com/api-reference/one-off-products</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/api-reference/global-refunds</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/api-reference/chargebacks</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/api-reference/test-helpers</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/api-reference/webhook-events</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/packages</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/packages/php/readme</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/packages/php/customers</loc><priority>0.6</priority></url>
@@ -35,5 +39,8 @@
   <url><loc>https://docs.vatly.com/packages/laravel/subscriptions</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/laravel/orders</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/laravel/webhooks</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/laravel/comparison</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/laravel/migrating-to-vatly</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/laravel/configuration</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/integrations</loc><priority>0.7</priority></url>
 </urlset>
