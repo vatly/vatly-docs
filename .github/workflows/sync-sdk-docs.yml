@@ -40,10 +40,13 @@ jobs:
           cp tmp/laravel-repo/docs/*.md tmp/laravel-docs/ 2>/dev/null || true
           node scripts/transform-laravel-docs.mjs tmp/laravel-docs content/3.packages/2.laravel
 
+      - name: Regenerate sitemap
+        run: node scripts/generate-sitemap.mjs
+
       - name: Check for changes
         id: changes
         run: |
-          git add content/3.packages/
+          git add content/3.packages/ public/sitemap.xml
           if git diff --staged --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
