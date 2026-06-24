@@ -2,8 +2,6 @@
 
 > Vatly Laravel Package - Comparison
 
-![Vatly for Laravel](https://raw.githubusercontent.com/Vatly/vatly-laravel/main/art/banner.png)
-
 Picking the billing layer for a new Laravel app? If you've reached for Laravel Cashier
 before, Vatly will feel immediately familiar — a `Billable` trait, `subscribed()`,
 `subscription()->swap()`, a wired-up webhook endpoint. The difference is what sits *behind*
