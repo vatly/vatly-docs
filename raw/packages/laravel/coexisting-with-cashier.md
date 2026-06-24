@@ -1,6 +1,6 @@
-# Running Vatly next to your current billing provider
+# Side-by-side billing
 
-> Vatly Laravel Package - Running Vatly next to your current billing provider
+> Vatly Laravel Package - Side-by-side billing
 
 ![Vatly for Laravel](https://raw.githubusercontent.com/Vatly/vatly-laravel/main/art/banner.png)
 
