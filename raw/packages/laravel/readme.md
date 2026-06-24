@@ -6,6 +6,11 @@
 
 Vatly Laravel provides a Cashier-like integration for [Vatly](https://vatly.com) billing in your Laravel application. It handles subscriptions, checkouts, customers, webhooks, and payment method updates.
 
+> **Evaluating Vatly, or moving from another biller?**
+> 
+> - [How Vatly compares to Cashier (Stripe, Paddle) & Lemon Squeezy](Comparison) — for a greenfield app.
+> - [Running Vatly next to another billing provider](Coexisting-with-Cashier) — run it alongside your current one and move customers over gradually.
+
 ## Requirements
 
 - PHP 8.3+
