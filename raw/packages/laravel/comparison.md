@@ -413,26 +413,15 @@ Cashier-style packages you might otherwise reach for —
 </tbody>
 </table>
 
-Three things to take from this table:
+Two takeaways:
 
-1. **The Laravel Cashier (Stripe) package is not a Merchant-of-Record path.** `laravel/cashier`
-drives *classic Stripe Billing*, where **you** are the seller of record: you register for
-VAT/sales tax wherever you cross a threshold, you file, you remit, you issue compliant
-invoices. [Stripe Tax](https://stripe.com/tax) (`Cashier::calculateTaxes()`) computes the
-rate; the legal and operational burden stays with you. Paddle, Lemon Squeezy and Vatly are
-the seller instead.
-2. **Stripe the company does now offer an MoR — Stripe Managed Payments —
-but it's a different product, not the Cashier you're running.** It withholds VAT/GST/sales tax
-across 80+ countries and takes on fraud, disputes and transaction support. Three things to know
-before you lean on it: you reach it through *Stripe Checkout / Payment Links* with
-`managed_payments` enabled, **not** through Cashier's subscription API today; Stripe itself
-describes it as not yet a *complete* MoR (you stay responsible in unsupported territories and
-for parts of dispute/refund handling); and it's a **US** company's offering — it's also where
-[Lemon Squeezy is being folded in](https://www.lemonsqueezy.com/blog/2026-update).
-3. **Among the MoRs, the deciding difference is where the entity sits.** Paddle is UK-based;
-Lemon Squeezy and Stripe Managed Payments are US. Vatly is EEA-based, under EU jurisdiction —
-your customer data and your seller-of-record relationship stay in Europe. That, not the API,
-is the reason to choose one over another.
+1. **laravel/cashier runs on classic Stripe Billing, where you're the seller of record** and
+own VAT registration, filing and remittance. Stripe has a real MoR too
+([Managed Payments](https://stripe.com/managed-payments)), and Cashier — actively maintained —
+will likely support it before long. Being an MoR is table stakes now, not a Vatly-only edge.
+2. **So the real difference between MoRs is jurisdiction.** Paddle is UK, Lemon Squeezy and Stripe
+are US, Vatly is EEA — your seller-of-record entity and customer data stay under EU law. That,
+not the API, is the reason to choose one over another.
 
 ---
 
