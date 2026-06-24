@@ -6,7 +6,7 @@
  * - Adds navigation ordering
  */
 
-import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync, rmSync } from 'fs'
 import { join, basename, extname } from 'path'
 
 const SDK_SOURCE = process.argv[2] || 'tmp/sdk-docs'
@@ -31,6 +31,12 @@ if (!existsSync(SDK_SOURCE)) {
 }
 
 mkdirSync(SDK_TARGET, { recursive: true })
+
+// Mirror the source dir: drop previously-generated pages so a renamed or removed
+// source doc doesn't leave an orphaned page (and stale nav entry) behind.
+for (const stale of readdirSync(SDK_TARGET).filter(f => extname(f) === '.md')) {
+  rmSync(join(SDK_TARGET, stale))
+}
 
 const files = readdirSync(SDK_SOURCE).filter(f => extname(f) === '.md')
 

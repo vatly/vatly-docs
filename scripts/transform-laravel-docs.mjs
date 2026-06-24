@@ -6,7 +6,7 @@
  * - Adds navigation ordering
  */
 
-import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync, rmSync } from 'fs'
 import { join, basename, extname } from 'path'
 
 const SOURCE = process.argv[2] || 'tmp/laravel-docs'
@@ -19,6 +19,8 @@ const ORDER = {
   'Subscriptions.md': 3,
   'Orders.md': 4,
   'Webhooks.md': 5,
+  'Comparison.md': 6,
+  'Migrating-to-Vatly.md': 7,
 }
 
 if (!existsSync(SOURCE)) {
@@ -27,6 +29,12 @@ if (!existsSync(SOURCE)) {
 }
 
 mkdirSync(TARGET, { recursive: true })
+
+// Mirror the source dir: drop previously-generated pages so a renamed or removed
+// source doc doesn't leave an orphaned page (and stale nav entry) behind.
+for (const stale of readdirSync(TARGET).filter(f => extname(f) === '.md')) {
+  rmSync(join(TARGET, stale))
+}
 
 const files = readdirSync(SOURCE).filter(f => extname(f) === '.md')
 
@@ -60,6 +68,15 @@ for (const file of files) {
   for (const [from, to] of Object.entries(linkMap)) {
     transformed = transformed.replaceAll(`](${from})`, `](${to})`)
   }
+
+  // Rewrite relative sibling links — `](Subscriptions.md)`, `](./Webhooks.md)`,
+  // `](./Webhooks)` — to their docs-site routes. Each page's route is its
+  // lowercased file name under /packages/laravel/, so the slug is just the
+  // lowercased base name. Without this the renderer keeps the original mixed
+  // case (e.g. /packages/laravel/Subscriptions), which 404s on the live site.
+  transformed = transformed
+    .replace(/\]\((?:\.\/)?([A-Za-z][\w-]*)\.md\)/g, (_, n) => `](/packages/laravel/${n.toLowerCase()})`)
+    .replace(/\]\(\.\/([A-Za-z][\w-]*)\)/g, (_, n) => `](/packages/laravel/${n.toLowerCase()})`)
 
   // Add frontmatter if missing
   if (!hasFrontmatter) {
