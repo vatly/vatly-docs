@@ -1,6 +1,6 @@
-# Migrating to Vatly
+# Migrating from Cashier
 
-> Vatly Laravel Package - Migrating to Vatly
+> Vatly Laravel Package - Migrating from Cashier
 
 You don't swap a Merchant of Record overnight. The payment mandate for every active customer
 lives with your *current* seller of record, and the only way to move a customer is to have them

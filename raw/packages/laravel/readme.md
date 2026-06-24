@@ -9,7 +9,7 @@ Vatly Laravel provides a Cashier-like integration for [Vatly](https://vatly.com)
 > **Evaluating Vatly, or moving from another biller?**
 > 
 > - [How Vatly compares to Cashier (Stripe, Paddle) & Lemon Squeezy](Comparison) — for a greenfield app.
-> - [Migrating to Vatly](Migrating-to-Vatly) — run it alongside your current one and move customers over gradually.
+> - [Migrating from Cashier](Migrating-to-Vatly) — run it alongside your current one and move customers over gradually.
 
 ## Requirements
 

@@ -16,7 +16,7 @@ Cashier-style packages you might otherwise reach for —
 [Lemon Squeezy for Laravel](https://github.com/lmsqueezy/laravel) — gaps included.
 
 > **Already running one of these in an existing app?** This page helps you choose. Once you
-> have, [Migrating to Vatly](Migrating-to-Vatly) shows how to add Vatly
+> have, [Migrating from Cashier](Migrating-to-Vatly) shows how to add Vatly
 > next to your current biller and migrate customers over gradually.
 
 ---
@@ -658,7 +658,7 @@ rewrite.
 
 - **Starting fresh** → [Getting started](README) wires up the trait, config, migrations and
 webhook in a few minutes.
-- **Already running another provider** → [Migrating to Vatly](Migrating-to-Vatly)
+- **Already running another provider** → [Migrating from Cashier](Migrating-to-Vatly)
 shows how to add Vatly beside your current biller and migrate customers over gradually.
 - **Reference** → [Configuration](configuration) · [Customers](Customers) · [Checkouts](Checkouts) · [Subscriptions](Subscriptions) · [Orders](Orders) · [Webhooks](Webhooks)
 
