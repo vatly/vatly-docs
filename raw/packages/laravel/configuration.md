@@ -149,4 +149,4 @@ Use test credentials while building your integration. Switch to your live key on
 
 Make sure your webhook secret in `.env` matches the webhook endpoint configured in Vatly. The package uses this secret to verify the `x-vatly-signature` header on incoming webhooks.
 
-For the full webhook setup flow, see [Webhooks](./Webhooks).
+For the full webhook setup flow, see [Webhooks](/packages/laravel/webhooks).

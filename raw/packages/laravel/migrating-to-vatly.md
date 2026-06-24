@@ -14,7 +14,7 @@ integration ([Stripe](https://laravel.com/docs/12.x/billing) /
 [Lemon Squeezy](https://github.com/lmsqueezy/laravel)): the one thing you have to resolve, the
 things that *don't* need resolving, and the step-by-step.
 
-> **Still deciding whether to switch?** Start with [How Vatly compares](Comparison) — the
+> **Still deciding whether to switch?** Start with [How Vatly compares](/packages/laravel/comparison) — the
 > side-by-side on the Merchant-of-Record model, features, and what's on the roadmap. This page
 > assumes you've decided to run Vatly alongside what you already have.
 
@@ -426,7 +426,7 @@ self-call trap can't bite.
 tested implementation; a fix to the claim / re-attribution logic reaches both.
 
 > **Vatly is your only biller?** Use the plain `Billable` trait instead (`subscribe()`,
-> `subscribed()`, …) — see [Getting started](README). `VatlyBillable` exists purely for running
+> `subscribed()`, …) — see [Getting started](/packages/laravel/readme). `VatlyBillable` exists purely for running
 > beside another provider.
 
 <details>
@@ -608,7 +608,7 @@ return redirect($user->checkout('variant-id')); // your existing provider
 Nothing special — register Vatly's webhook URL and secret in the Vatly dashboard, keep your
 existing provider's webhook pointed where it already is. Subscriptions and orders from each
 provider sync into their own tables. Listen for Vatly events on Laravel's event bus the usual way
-(see [Webhooks](Webhooks)):
+(see [Webhooks](/packages/laravel/webhooks)):
 
 ```php
 use Vatly\API\Webhooks\Events\SubscriptionStarted;
@@ -1107,7 +1107,7 @@ overlay (`@paddleJS`, `@lemonJS`). If you're moving off an overlay, you're remov
 JS, not adding it.
 - **Guest checkout** is first-class in Vatly: put `{CHECKOUT_ID}` in your return URL and call
 `claimVatlyCustomerFromReturn()` on the way back to link the purchase — no session plumbing,
-multi-tab safe. See [Customers](Customers).
+multi-tab safe. See [Customers](/packages/laravel/customers).
 - **Refunds and chargebacks are real models** in Vatly (`$user->vatlyRefunds`,
 `$order->chargebacks`, reversal helpers like `$order->isFullyReversed()`), with dedicated
 webhook events — not something you reconstruct from raw payloads.
@@ -1116,10 +1116,10 @@ webhook events — not something you reconstruct from raw payloads.
 
 ## Reference
 
-- **Deciding / comparing** → [How Vatly compares](Comparison) (Merchant-of-Record model,
+- **Deciding / comparing** → [How Vatly compares](/packages/laravel/comparison) (Merchant-of-Record model,
 feature parity, roadmap)
-- **Getting started** → [Getting started](README) · [Configuration](configuration)
-- **API surface** → [Customers](Customers) · [Checkouts](Checkouts) · [Subscriptions](Subscriptions) · [Orders](Orders) · [Webhooks](Webhooks)
+- **Getting started** → [Getting started](/packages/laravel/readme) · [Configuration](/packages/laravel/configuration)
+- **API surface** → [Customers](/packages/laravel/customers) · [Checkouts](/packages/laravel/checkouts) · [Subscriptions](/packages/laravel/subscriptions) · [Orders](/packages/laravel/orders) · [Webhooks](/packages/laravel/webhooks)
 
 Compared against, at time of writing:
 [Laravel Cashier (Stripe)](https://laravel.com/docs/12.x/billing) ·

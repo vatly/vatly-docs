@@ -16,7 +16,7 @@ Cashier-style packages you might otherwise reach for —
 [Lemon Squeezy for Laravel](https://github.com/lmsqueezy/laravel) — gaps included.
 
 > **Already running one of these in an existing app?** This page helps you choose. Once you
-> have, [Migrating from Cashier](Migrating-to-Vatly) shows how to add Vatly
+> have, [Migrating from Cashier](/packages/laravel/migrating-to-vatly) shows how to add Vatly
 > next to your current biller and migrate customers over gradually.
 
 ---
@@ -471,8 +471,8 @@ foreach ($user->orders as $order) {
 ```
 
 No VAT logic, no tax tables, no invoice templates, no client-side checkout widget to embed —
-the checkout is a server-side redirect, like Stripe Checkout. See [Subscriptions](Subscriptions)
-and [Checkouts](Checkouts) for the full surface.
+the checkout is a server-side redirect, like Stripe Checkout. See [Subscriptions](/packages/laravel/subscriptions)
+and [Checkouts](/packages/laravel/checkouts) for the full surface.
 
 ---
 
@@ -656,11 +656,11 @@ rewrite.
 
 ## Next steps
 
-- **Starting fresh** → [Getting started](README) wires up the trait, config, migrations and
+- **Starting fresh** → [Getting started](/packages/laravel/readme) wires up the trait, config, migrations and
 webhook in a few minutes.
-- **Already running another provider** → [Migrating from Cashier](Migrating-to-Vatly)
+- **Already running another provider** → [Migrating from Cashier](/packages/laravel/migrating-to-vatly)
 shows how to add Vatly beside your current biller and migrate customers over gradually.
-- **Reference** → [Configuration](configuration) · [Customers](Customers) · [Checkouts](Checkouts) · [Subscriptions](Subscriptions) · [Orders](Orders) · [Webhooks](Webhooks)
+- **Reference** → [Configuration](/packages/laravel/configuration) · [Customers](/packages/laravel/customers) · [Checkouts](/packages/laravel/checkouts) · [Subscriptions](/packages/laravel/subscriptions) · [Orders](/packages/laravel/orders) · [Webhooks](/packages/laravel/webhooks)
 
 Compared against, at time of writing:
 [Laravel Cashier (Stripe)](https://laravel.com/docs/12.x/billing) ·
