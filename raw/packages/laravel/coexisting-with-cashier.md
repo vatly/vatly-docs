@@ -1,6 +1,6 @@
-# Side-by-side billing
+# Running Vatly next to another billing provider
 
-> Vatly Laravel Package - Side-by-side billing
+> Vatly Laravel Package - Running Vatly next to another billing provider
 
 You don't swap a Merchant of Record overnight. The payment mandate for every active customer
 lives with your *current* seller of record, and the only way to move a customer is to have them
