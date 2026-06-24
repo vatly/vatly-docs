@@ -56,7 +56,11 @@ const PACKAGE_REPOS: PackageRepo[] = [
       subscriptions: 'Subscriptions.md',
       orders: 'Orders.md',
       webhooks: 'Webhooks.md',
-      configuration: 'Configuration.md',
+      comparison: 'Comparison.md',
+      'migrating-to-vatly': 'Migrating-to-Vatly.md',
+      // Source file is lowercase (docs/configuration.md), unlike the
+      // PascalCase siblings — the edit link must match the real filename.
+      configuration: 'configuration.md',
     },
   },
 ]
