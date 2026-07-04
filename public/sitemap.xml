@@ -20,6 +20,7 @@
   <url><loc>https://docs.vatly.com/api-reference/refunds</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/global-refunds</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/chargebacks</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/api-reference/webhook-endpoints</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/test-helpers</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/webhook-events</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/packages</loc><priority>0.7</priority></url>
