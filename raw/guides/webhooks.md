@@ -6,6 +6,8 @@
 
 To register a new webhook, you need to have a URL in your app that Vatly can call. You can configure a new webhook from the Vatly dashboard under [API settings](#). Give your webhook a name, pick the [events](#event-types) you want to listen for, and add your URL.
 
+You can also manage the endpoint programmatically with the [Webhook Endpoints API](/api-reference/webhook-endpoints) — handy for provisioning from CI / infrastructure-as-code or pointing an ephemeral preview environment at its own public URL. There is at most one endpoint per mode (test and live), and you supply the signing secret when you register it.
+
 Now, whenever something of interest happens in your app, a webhook is fired off by Vatly. In the next section, we'll look at how to consume webhooks.
 
 <note>
@@ -347,6 +349,46 @@ The `eventName` field identifies what happened. The available events are:
   <tr>
     <td>
       <code>
+        subscription.updated
+      </code>
+    </td>
+    
+    <td>
+      A subscription changed immediately (effective now, not at the next cycle) — a plan, price, interval, or quantity change. <code>
+        object
+      </code>
+      
+       is the subscription with its new values.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription.update_scheduled
+      </code>
+    </td>
+    
+    <td>
+      A plan, price, or quantity change was scheduled to take effect at the next billing cycle. <code>
+        object
+      </code>
+      
+       is the subscription as it is <em>
+        today
+      </em>
+      
+      ; the target values are carried in <code>
+        object.scheduledUpdate
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         webhook.setup
       </code>
     </td>
@@ -361,6 +403,12 @@ The `eventName` field identifies what happened. The available events are:
 <note>
 
 **object is the affected resource, keyed by its own resource field** (`order`, `chargeback`, `refund`, `subscription`, `checkout`, or `webhook`). For chargeback events this differs from `entityType`: `order.chargeback_received` / `order.chargeback_reversed` carry `entityType: order` (the order the chargeback belongs to) but the `object` is a Chargeback.
+
+</note>
+
+<note>
+
+**subscription.update_scheduled** carries the subscription's **current** state in `object`, plus the future target values in `object.scheduledUpdate` (`subscriptionPlanId`, `name`, `description`, `basePrice`, `quantity`, `interval`, `intervalCount`). `scheduledUpdate` is present only on this delivery — it is never returned by the REST API. The matching `subscription.updated` event (for changes that take effect immediately) has no `scheduledUpdate`; its `object` already reflects the new values.
 
 </note>
 
@@ -427,12 +475,11 @@ That endpoint returns the event metadata plus the exact resource snapshot that w
 
 ## Testing webhook flows
 
-For recurring billing flows, Vatly also exposes test helpers so you can trigger webhook-producing scenarios in test mode:
+For recurring billing flows, Vatly also exposes a test helper so you can trigger webhook-producing scenarios in test mode:
 
 - [Fast-forward subscription renewal](/api-reference/test-helpers)
-- [Simulate a mandated payment failure](/api-reference/test-helpers)
 
-This is useful when you want to verify renewals, failure handling, retries, and dunning behavior without waiting for real billing dates.
+This is useful when you want to verify renewals and the events they produce without waiting for real billing dates.
 
 ---
 

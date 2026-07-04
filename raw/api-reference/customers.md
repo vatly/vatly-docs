@@ -109,6 +109,24 @@ Below you'll find all properties for the Vatly Customer API resource.
   <tr>
     <td>
       <code>
+        name
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The customer's display / account-holder name. An identity field used for communication (dunning emails, dashboard) — distinct from, and with no effect on, the billing name on invoices.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         createdAt
       </code>
     </td>
@@ -273,6 +291,7 @@ $customers = $vatly->customers->page();
       "resource": "customer",
       "testmode": false,
       "email": "john.doe@example.com",
+      "name": "John Doe",
       "createdAt": "2024-01-15T10:30:00Z",
       "metadata": {
         "userId": "user_Qp8kNvBxKw7RjTgYcZaE"
@@ -289,6 +308,7 @@ $customers = $vatly->customers->page();
       "resource": "customer",
       "testmode": false,
       "email": "jane.smith@acme.com",
+      "name": "Jane Smith",
       "createdAt": "2024-01-10T08:15:00Z",
       "metadata": {},
       "links": {
@@ -386,6 +406,24 @@ Customers are uniquely identified by email within each testmode. Creating a cust
   <tr>
     <td>
       <code>
+        name
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      The customer's display / account-holder name (max 255 characters).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         metadata
       </code>
     </td>
@@ -430,6 +468,7 @@ $vatly->customers->create([
   "resource": "customer",
   "testmode": false,
   "email": "customer@example.com",
+  "name": "John Doe",
   "createdAt": "2024-01-15T10:30:00Z",
   "metadata": {
     "userId": "user_Qp8kNvBxKw7RjTgYcZaE"
@@ -473,6 +512,116 @@ $vatly->customers->get('customer_7kBmRtPvXw2NjLhYcZaE');
   "resource": "customer",
   "testmode": false,
   "email": "john.doe@example.com",
+  "name": "John Doe",
+  "createdAt": "2024-01-15T10:30:00Z",
+  "metadata": {
+    "userId": "user_Qp8kNvBxKw7RjTgYcZaE"
+  },
+  "links": {
+    "self": {
+      "href": "https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE",
+      "type": "application/json"
+    }
+  }
+}
+```
+
+</code-group>
+
+---
+
+## Update a customer
+
+`PATCH /v1/customers/:id`
+
+Updates a customer's identity fields. Only `name` and `email` may be changed here, and both are optional — send whichever you want to update.
+
+Billing-address details (company name, tax ID, street, city, country, etc.) are **not** supported by this endpoint and are ignored. Amend those through the [hosted billing-update flow](/api-reference/subscriptions#create-billing-update-link), which validates tax-relevant data centrally so invoices stay accurate.
+
+### Optional attributes
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        name
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The customer's display / account-holder name (max 255 characters).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        email
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      The customer's email address. Must be unique within the merchant's account for the given testmode.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<code-group sync="api">
+
+```bash [cURL]
+curl -X PATCH https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE \
+  -H "Authorization: Bearer live_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Doe", "email": "new.email@example.com"}'
+```
+
+```php [PHP]
+$vatly = new \Vatly\API\VatlyApiClient();
+$vatly->setApiKey('live_your_api_key_here');
+
+$customer = $vatly->customers->update('customer_7kBmRtPvXw2NjLhYcZaE', [
+  'name' => 'John Doe',
+  'email' => 'new.email@example.com',
+]);
+```
+
+```json [Response]
+{
+  "id": "customer_7kBmRtPvXw2NjLhYcZaE",
+  "resource": "customer",
+  "testmode": false,
+  "email": "new.email@example.com",
+  "name": "John Doe",
   "createdAt": "2024-01-15T10:30:00Z",
   "metadata": {
     "userId": "user_Qp8kNvBxKw7RjTgYcZaE"

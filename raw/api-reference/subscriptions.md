@@ -1190,11 +1190,11 @@ $subscription = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE'
 
 `PATCH /v1/subscriptions/:id`
 
-This endpoint allows you to update a subscription. You can change the plan, quantity, or apply proration settings.
+This endpoint allows you to update a subscription. You can change the plan, quantity, or recurring price, and control proration and timing.
 
 ### Optional attributes
 
-At least one of `subscriptionPlanId` or `quantity` must be provided.
+At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
 
 <table>
 <thead>
@@ -1250,7 +1250,45 @@ At least one of `subscriptionPlanId` or `quantity` must be provided.
     </td>
     
     <td>
-      The new quantity for the subscription. Must be at least 1.
+      The new total quantity for the subscription (e.g. number of seats). This sets the quantity to the given value — it is not added to the current quantity. Must be at least 1.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        price
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        object
+      </code>
+    </td>
+    
+    <td>
+      Set a new recurring price while keeping the current plan. A Money object with <code>
+        value
+      </code>
+      
+       (decimal string) and <code>
+        currency
+      </code>
+      
+       (<code>
+        EUR
+      </code>
+      
+       or <code>
+        USD
+      </code>
+      
+      ); the currency must match the subscription's own currency. Sent alongside <code>
+        subscriptionPlanId
+      </code>
+      
+      , it overrides the new plan's default price.
     </td>
   </tr>
   
@@ -1413,6 +1451,16 @@ curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjT
   -d '{
     "subscriptionPlanId": "subscription_plan_Wt5mNvBxKw7YcZaEjLhR",
     "prorate": true,
+    "applyImmediately": true
+  }'
+```
+
+```bash [cURL (change price)]
+curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
+  -H "Authorization: Bearer live_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "price": { "value": "29.00", "currency": "EUR" },
     "applyImmediately": true
   }'
 ```
