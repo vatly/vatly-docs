@@ -34,6 +34,7 @@
   <url><loc>https://docs.vatly.com/packages/php/oneoffproducts</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/php/chargebacks</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/php/webhooks</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/php/webhookendpoints</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/laravel/readme</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/packages/laravel/customers</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/laravel/checkouts</loc><priority>0.6</priority></url>
