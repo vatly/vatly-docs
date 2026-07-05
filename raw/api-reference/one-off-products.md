@@ -2,7 +2,7 @@
 
 > On this page, we'll dive into the different one-off product endpoints you can use to query your products programmatically.
 
-A one-off product is a digital product that can be bought once. Products are configured in the Vatly dashboard and can be added to checkouts.
+A one-off product is a digital product that can be bought once. Products can be created via the API or in the Vatly dashboard, and added to checkouts.
 
 Looking for subscription plans? See the [Subscription Plans API](/api-reference/subscription-plans) instead.
 
@@ -358,6 +358,176 @@ $products = $vatly->oneOffProducts->page();
     },
     "next": null,
     "prev": null
+  }
+}
+```
+
+</code-group>
+
+---
+
+## Create a one-off product
+
+`POST /v1/one-off-products`
+
+Creates a new one-off product for the authenticated merchant, in the testmode determined from the API token.
+
+A product created with a `live_` token starts in `pending` status and must be approved by Vatly before it can be used in checkouts — the same review that applies to products created in the dashboard. A product created with a `test_` token is auto-approved (`active`) so you can trial checkout immediately.
+
+### Required attributes
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        name
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Display name of the product (3–255 characters).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        description
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Detailed description of the product.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        basePrice
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Price of the product. A Money object with <code>
+        value
+      </code>
+      
+       (decimal string) and <code>
+        currency
+      </code>
+      
+       (ISO 4217 code).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        productType
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Tax product classification. One of <code>
+        saas
+      </code>
+      
+       (Software as a Service) or <code>
+        ebook
+      </code>
+      
+       (electronic book).
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<code-group sync="api">
+
+```bash [cURL]
+curl https://api.vatly.com/v1/one-off-products \
+  -H "Authorization: Bearer live_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Premium License",
+    "description": "Lifetime access to all premium features",
+    "basePrice": { "value": "299.00", "currency": "EUR" },
+    "productType": "saas"
+  }'
+```
+
+```php [PHP]
+$vatly = new \Vatly\API\VatlyApiClient();
+$vatly->setApiKey('live_your_api_key_here');
+
+$product = $vatly->oneOffProducts->create([
+  'name' => 'Premium License',
+  'description' => 'Lifetime access to all premium features',
+  'basePrice' => ['value' => '299.00', 'currency' => 'EUR'],
+  'productType' => 'saas',
+]);
+```
+
+```json [Response]
+{
+  "id": "one_off_product_Vr8kQdFhSrG4Y3DnfsdqH",
+  "resource": "one_off_product",
+  "testmode": false,
+  "name": "Premium License",
+  "description": "Lifetime access to all premium features",
+  "basePrice": {
+    "value": "299.00",
+    "currency": "EUR"
+  },
+  "status": "pending",
+  "createdAt": "2024-01-15T10:30:00Z",
+  "links": {
+    "self": {
+      "href": "https://api.vatly.com/v1/one-off-products/one_off_product_Vr8kQdFhSrG4Y3DnfsdqH",
+      "type": "application/json"
+    }
   }
 }
 ```

@@ -443,6 +443,236 @@ $plans = $vatly->subscriptionPlans->page();
 
 ---
 
+## Create a subscription plan
+
+`POST /v1/subscription-plans`
+
+Creates a new subscription plan for the authenticated merchant, in the testmode determined from the API token.
+
+A plan created with a `live_` token starts in `pending` status and must be approved by Vatly before it can be used in checkouts — the same review that applies to plans created in the dashboard. A plan created with a `test_` token is auto-approved (`active`) so you can trial checkout immediately.
+
+**Constraints:**
+
+- `productType` must be `saas` — e-books are one-off purchases and cannot be sold on a recurring basis.
+- The `day` interval is sandbox-only; live plans support `week`, `month`, and `year`.
+- `intervalCount` is bounded per unit: up to 365 days, 52 weeks, or 12 months. `year` always bills once per year (`intervalCount` is ignored).
+
+### Required attributes
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        name
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Display name of the plan (3–255 characters).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        description
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Detailed description of the plan.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        basePrice
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Price per billing interval. A Money object with <code>
+        value
+      </code>
+      
+       (decimal string) and <code>
+        currency
+      </code>
+      
+       (ISO 4217 code).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        productType
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Tax product classification. Must be <code>
+        saas
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        interval
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Billing interval unit. One of <code>
+        day
+      </code>
+      
+       (sandbox-only), <code>
+        week
+      </code>
+      
+      , <code>
+        month
+      </code>
+      
+      , or <code>
+        year
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        intervalCount
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        integer
+      </code>
+    </td>
+    
+    <td>
+      Number of interval units between billing cycles (at least 1).
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<code-group sync="api">
+
+```bash [cURL]
+curl https://api.vatly.com/v1/subscription-plans \
+  -H "Authorization: Bearer live_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Pro Monthly",
+    "description": "Full access to all Pro features, billed monthly",
+    "basePrice": { "value": "29.00", "currency": "EUR" },
+    "productType": "saas",
+    "interval": "month",
+    "intervalCount": 1
+  }'
+```
+
+```php [PHP]
+$vatly = new \Vatly\API\VatlyApiClient();
+$vatly->setApiKey('live_your_api_key_here');
+
+$plan = $vatly->subscriptionPlans->create([
+  'name' => 'Pro Monthly',
+  'description' => 'Full access to all Pro features, billed monthly',
+  'basePrice' => ['value' => '29.00', 'currency' => 'EUR'],
+  'productType' => 'saas',
+  'interval' => 'month',
+  'intervalCount' => 1,
+]);
+```
+
+```json [Response]
+{
+  "id": "subscription_plan_Bm7xNvPwKr3YjTgHcZaE",
+  "resource": "subscription_plan",
+  "testmode": false,
+  "name": "Pro Monthly",
+  "description": "Full access to all Pro features, billed monthly",
+  "basePrice": {
+    "value": "29.00",
+    "currency": "EUR"
+  },
+  "interval": "month",
+  "intervalCount": 1,
+  "status": "pending",
+  "createdAt": "2024-01-15T10:30:00Z",
+  "links": {
+    "self": {
+      "href": "https://api.vatly.com/v1/subscription-plans/subscription_plan_Bm7xNvPwKr3YjTgHcZaE",
+      "type": "application/json"
+    }
+  }
+}
+```
+
+</code-group>
+
+---
+
 ## Retrieve a subscription plan
 
 `GET /v1/subscription-plans/:id`
