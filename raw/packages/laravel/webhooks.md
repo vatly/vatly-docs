@@ -83,6 +83,52 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
   <tr>
     <td>
       <code>
+        SubscriptionUpdated
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        subscription.updated
+      </code>
+      
+       webhook is received — an immediate plan/price/interval/quantity change; the local <code>
+        plan_id
+      </code>
+      
+       / <code>
+        name
+      </code>
+      
+       / <code>
+        quantity
+      </code>
+      
+       are refreshed
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionUpdateScheduled
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        subscription.update_scheduled
+      </code>
+      
+       webhook is received — a change scheduled for the next cycle; dispatched only (no local change), target values in <code>
+        scheduledUpdate
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         SubscriptionResumed
       </code>
     </td>
