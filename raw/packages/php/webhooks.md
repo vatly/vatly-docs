@@ -181,6 +181,70 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
   <tr>
     <td>
       <code>
+        subscription.updated
+      </code>
+    </td>
+    
+    <td>
+      A subscription changed immediately (plan, price, interval or quantity). <code>
+        object
+      </code>
+      
+       is the subscription with its new values.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription.update_scheduled
+      </code>
+    </td>
+    
+    <td>
+      A change was scheduled for the next billing cycle. <code>
+        object
+      </code>
+      
+       is the subscription's current state; the target values are in <code>
+        object.scheduledUpdate
+      </code>
+      
+       (<code>
+        subscriptionPlanId
+      </code>
+      
+      , <code>
+        name
+      </code>
+      
+      , <code>
+        description
+      </code>
+      
+      , <code>
+        basePrice
+      </code>
+      
+      , <code>
+        quantity
+      </code>
+      
+      , <code>
+        interval
+      </code>
+      
+      , <code>
+        intervalCount
+      </code>
+      
+      ).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         checkout.paid
       </code>
     </td>

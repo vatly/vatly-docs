@@ -592,13 +592,270 @@ $subscriptions = $vatly->subscriptions->list([
 
 `PATCH /v1/subscriptions/:id`
 
-Update mutable subscription fields such as quantity.
+Change a subscription's plan, quantity and/or price. **At least one of
+subscriptionPlanId, quantity, or price is required.**
+
+### Optional attributes
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        subscriptionPlanId
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Switch to a new plan (<code>
+        subscription_plan_...
+      </code>
+      
+      ). Must match the subscription's testmode.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        quantity
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        int
+      </code>
+    </td>
+    
+    <td>
+      The <strong>
+        new total
+      </strong>
+      
+       quantity (e.g. number of seats). This sets the quantity to the given value — it is not added to the current quantity.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        price
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        array
+      </code>
+    </td>
+    
+    <td>
+      Override the recurring price: <code>
+        ['value' => '99.99', 'currency' => 'EUR']
+      </code>
+      
+      . The <code>
+        currency
+      </code>
+      
+       must match the subscription's currency. Provide <code>
+        price
+      </code>
+      
+       alone to change the price in place, or combine it with <code>
+        subscriptionPlanId
+      </code>
+      
+       to switch plans at a custom price (overriding the new plan's default).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        prorate
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        bool
+      </code>
+    </td>
+    
+    <td>
+      Prorate charges for the partial billing period (default <code>
+        true
+      </code>
+      
+      ).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        applyImmediately
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        bool
+      </code>
+    </td>
+    
+    <td>
+      Apply the change now (<code>
+        true
+      </code>
+      
+      ) or at the end of the current period (<code>
+        false
+      </code>
+      
+      , default).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        invoiceImmediately
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        bool
+      </code>
+    </td>
+    
+    <td>
+      Generate and charge a proration invoice immediately. Only applies when <code>
+        applyImmediately
+      </code>
+      
+       and <code>
+        prorate
+      </code>
+      
+       are both <code>
+        true
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        anchor
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      Set the billing anchor to a specific date (<code>
+        YYYY-MM-DD
+      </code>
+      
+      , UTC). Cannot be combined with <code>
+        resetAnchor
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        resetAnchor
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        bool
+      </code>
+    </td>
+    
+    <td>
+      Reset the billing anchor to now. Cannot be combined with <code>
+        anchor
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        trialUntil
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      Extend or set a trial until this date (ISO 8601). Cannot be combined with <code>
+        anchor
+      </code>
+      
+      .
+    </td>
+  </tr>
+</tbody>
+</table>
 
 ```php
+// Change the quantity (new total) and pass a custom idempotency key.
 $subscription = $vatly->subscriptions->update('subscription_123', [
     'quantity' => 2,
 ], [
     'idempotencyKey' => 'subscription-update-123',
+]);
+
+// Switch plan at a custom price (currency must match the subscription).
+$subscription = $vatly->subscriptions->update('subscription_123', [
+    'subscriptionPlanId' => 'subscription_plan_Wt5mNvBxKw7YcZaEjLhR',
+    'price' => ['value' => '99.99', 'currency' => 'EUR'],
+    'applyImmediately' => true,
 ]);
 ```
 

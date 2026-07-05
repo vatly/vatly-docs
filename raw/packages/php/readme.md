@@ -304,6 +304,18 @@ The SDK provides access to all Vatly API resources.
       Real-time event notifications
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <a href="/packages/php/webhookendpoints">
+        Webhook Endpoints
+      </a>
+    </td>
+    
+    <td>
+      Register delivery endpoints
+    </td>
+  </tr>
 </tbody>
 </table>
 
