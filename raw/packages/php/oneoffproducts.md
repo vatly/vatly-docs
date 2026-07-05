@@ -2,7 +2,7 @@
 
 > Vatly PHP SDK - One-Off Products
 
-One-off products are single-purchase items (not recurring subscriptions). Create and manage them in the Vatly dashboard, then use the API to retrieve them.
+One-off products are single-purchase items (not recurring subscriptions). Create them in the Vatly dashboard or through the API, then use them in checkouts. Live products are reviewed and approved by Vatly before they can be added to checkouts.
 
 ## The One-Off Product Resource
 
@@ -149,15 +149,15 @@ Below you'll find all properties for the Vatly One-Off Product resource.
     
     <td>
       The status: <code>
-        approved
+        active
       </code>
       
-      , <code>
-        draft
+       (purchasable), <code>
+        pending
       </code>
       
-      , or <code>
-        archived
+       (awaiting approval), or <code>
+        rejected
       </code>
       
       .
@@ -183,6 +183,135 @@ Below you'll find all properties for the Vatly One-Off Product resource.
   </tr>
 </tbody>
 </table>
+
+---
+
+## Create a product
+
+`POST /v1/one-off-products`
+
+Create a one-off product. A product created with a `live_` token starts in
+`pending` status and must be approved by Vatly before it can be added to
+checkouts; a product created with a `test_` token is auto-approved (`active`) so
+you can trial checkout immediately.
+
+### Required attributes
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        name
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Display name (3–255 characters).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        description
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Detailed description of the product.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        basePrice
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        array
+      </code>
+    </td>
+    
+    <td>
+      Price as <code>
+        ['value' => '299.00', 'currency' => 'EUR']
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        productType
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Tax classification: <code>
+        saas
+      </code>
+      
+       or <code>
+        ebook
+      </code>
+      
+      .
+    </td>
+  </tr>
+</tbody>
+</table>
+
+```php
+$product = $vatly->oneOffProducts->create([
+    'name' => 'Premium License',
+    'description' => 'Lifetime access to all premium features',
+    'basePrice' => ['value' => '299.00', 'currency' => 'EUR'],
+    'productType' => 'saas',
+]);
+
+echo $product->id;      // one_off_product_...
+echo $product->status;  // 'pending' (live) or 'active' (test)
+```
 
 ---
 
