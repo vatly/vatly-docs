@@ -14,9 +14,13 @@ integration ([Stripe](https://laravel.com/docs/12.x/billing) /
 [Lemon Squeezy](https://github.com/lmsqueezy/laravel)): the one thing you have to resolve, the
 things that *don't* need resolving, and the step-by-step.
 
-> **Still deciding whether to switch?** Start with [How Vatly compares](/packages/laravel/comparison) — the
-> side-by-side on the Merchant-of-Record model, features, and what's on the roadmap. This page
-> assumes you've decided to run Vatly alongside what you already have.
+<note>
+
+**Still deciding whether to switch?** Start with [How Vatly compares](/packages/laravel/comparison) — the
+side-by-side on the Merchant-of-Record model, features, and what's on the roadmap. This page
+assumes you've decided to run Vatly alongside what you already have.
+
+</note>
 
 ---
 
@@ -421,9 +425,13 @@ self-call trap can't bite.
 `findBillable()` — don't collide, so `VatlyBillable` and the standalone `Billable` share one
 tested implementation; a fix to the claim / re-attribution logic reaches both.
 
-> **Vatly is your only biller?** Use the plain `Billable` trait instead (`subscribe()`,
-> `subscribed()`, …) — see [Getting started](/packages/laravel/readme). `VatlyBillable` exists purely for running
-> beside another provider.
+<note>
+
+**Vatly is your only biller?** Use the plain `Billable` trait instead (`subscribe()`,
+`subscribed()`, …) — see [Getting started](/packages/laravel/readme). `VatlyBillable` exists purely for running
+beside another provider.
+
+</note>
 
 <details>
 <summary>

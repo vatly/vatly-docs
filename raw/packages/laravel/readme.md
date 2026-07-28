@@ -6,10 +6,14 @@
 
 Vatly Laravel provides a Cashier-like integration for [Vatly](https://vatly.com) billing in your Laravel application. It handles subscriptions, checkouts, customers, webhooks, and payment method updates.
 
-> **Evaluating Vatly, or moving from another biller?**
-> 
-> - [How Vatly compares to Cashier (Stripe, Paddle) & Lemon Squeezy](/packages/laravel/comparison) — for a greenfield app.
-> - [Migrating from Cashier](/packages/laravel/migrating-to-vatly) — run it alongside your current one and move customers over gradually.
+<note>
+
+**Evaluating Vatly, or moving from another biller?**
+
+- [How Vatly compares to Cashier (Stripe, Paddle) & Lemon Squeezy](/packages/laravel/comparison) — for a greenfield app.
+- [Migrating from Cashier](/packages/laravel/migrating-to-vatly) — run it alongside your current one and move customers over gradually.
+
+</note>
 
 ## Requirements
 
@@ -23,7 +27,11 @@ Vatly Laravel provides a Cashier-like integration for [Vatly](https://vatly.com)
 composer require vatly/vatly-laravel:v0.2.0-alpha.1
 ```
 
-> **Note:** This is an alpha release. Pin to an exact version to avoid breaking changes.
+<warning>
+
+This is an alpha release. Pin to an exact version to avoid breaking changes.
+
+</warning>
 
 ## Configuration
 
@@ -196,7 +204,11 @@ VATLY_REDIRECT_URL_CANCELED=https://your-app.com/checkout/canceled
 </tbody>
 </table>
 
-> **Note:** Testmode is automatically determined from your API key prefix. Keys starting with `test_` use testmode; keys starting with `live_` use production mode. No configuration needed.
+<note>
+
+Testmode is automatically determined from your API key prefix. Keys starting with `test_` use testmode; keys starting with `live_` use production mode. No configuration needed.
+
+</note>
 
 ## Database setup
 
