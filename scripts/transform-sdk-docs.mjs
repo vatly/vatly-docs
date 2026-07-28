@@ -93,6 +93,17 @@ for (const file of files) {
     '](https://github.com/Vatly/vatly-api-php/blob/main/src/',
   )
 
+  // Convert GitHub alert blockquotes (> [!NOTE] / [!TIP] / [!WARNING] / …) into
+  // Docus MDC callouts — see transform-laravel-docs.mjs.
+  transformed = transformed.replace(
+    /^> \[!(\w+)\][^\n]*\n((?:>[^\n]*(?:\n|$))*)/gim,
+    (_, type, body) => {
+      const comp = { note: 'note', tip: 'tip', important: 'note', warning: 'warning', caution: 'warning' }[type.toLowerCase()] ?? 'note'
+      const inner = body.replace(/^> ?/gm, '').replace(/\n+$/, '')
+      return `::${comp}\n${inner}\n::\n`
+    },
+  )
+
   // Add frontmatter if missing
   if (!hasFrontmatter) {
     transformed = `---\ntitle: "${title}"\ndescription: "Vatly PHP SDK - ${title}"\n---\n\n${transformed}`

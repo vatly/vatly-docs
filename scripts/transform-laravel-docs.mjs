@@ -78,6 +78,19 @@ for (const file of files) {
     .replace(/\]\((?:\.\/)?([A-Za-z][\w-]*)\.md\)/g, (_, n) => `](/packages/laravel/${n.toLowerCase()})`)
     .replace(/\]\(\.\/([A-Za-z][\w-]*)\)/g, (_, n) => `](/packages/laravel/${n.toLowerCase()})`)
 
+  // Convert GitHub alert blockquotes (> [!NOTE] / [!TIP] / [!WARNING] / …) into
+  // Docus MDC callouts. Authors keep GitHub-native alert syntax in the source (it
+  // renders on github.com); the docs site gets proper callout boxes. The theme
+  // ships note / tip / warning, so IMPORTANT maps to note and CAUTION to warning.
+  transformed = transformed.replace(
+    /^> \[!(\w+)\][^\n]*\n((?:>[^\n]*(?:\n|$))*)/gim,
+    (_, type, body) => {
+      const comp = { note: 'note', tip: 'tip', important: 'note', warning: 'warning', caution: 'warning' }[type.toLowerCase()] ?? 'note'
+      const inner = body.replace(/^> ?/gm, '').replace(/\n+$/, '')
+      return `::${comp}\n${inner}\n::\n`
+    },
+  )
+
   // Add frontmatter if missing
   if (!hasFrontmatter) {
     transformed = `---\ntitle: "${title}"\ndescription: "Vatly Laravel Package - ${title}"\n---\n\n${transformed}`
