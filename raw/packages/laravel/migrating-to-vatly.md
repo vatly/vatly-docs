@@ -205,26 +205,14 @@ PHP does not let two traits define the same method on one class — you get a fa
 *"trait method collision"* the moment you write `use LemonSqueezyBillable, VatlyBillable;`. So you
 have to decide, deliberately, **which provider owns the unprefixed method names**.
 
-> <span>
-> 
-> !TIP
-> 
-> </span>
-> 
-> **The cleanest fix is often to not share a model at all.** None of these `Billable` traits is
+> **Tip — the cleanest fix is often to not share a model at all.** None of these `Billable` traits is
 > tied to `User` — they work on any Eloquent model (`Team`, `Account`, `Organization`, …), and
 > Vatly's records are polymorphic (`owner_type` / `owner_id`). If your app bills a model that
 > isn't already carrying a Cashier-style trait — or you can introduce one — put Vatly's `Billable`
 > there and the collision disappears entirely. When both providers genuinely must live on the
 > *same* model, read on.
 
-> <span>
-> 
-> !IMPORTANT
-> 
-> </span>
-> 
-> **The self-call trap.** Plain trait aliasing (`insteadof` / `as`) is *not* enough here, and it
+> **Important — the self-call trap.** Plain trait aliasing (`insteadof` / `as`) is *not* enough here, and it
 > fails quietly. Vatly's `subscription()` and `subscribed()` call `$this->subscriptions()`
 > internally. If you alias `subscriptions` to the legacy provider with `insteadof`, then
 > `vatlySubscription()` will read the *legacy* subscriptions table and silently return the wrong
@@ -381,7 +369,7 @@ php artisan vendor:publish --tag=vatly-billable-migrations
 php artisan migrate
 ```
 
-This adds the `vatly_id` column and the `vatly_*` tables. Your existing tables are untouched. Add
+This creates the `vatly_*` tables and adds one nullable `vatly_id` column to your billable model's table. It's purely additive — no existing column or data is changed. Add
 the Vatly credentials alongside your current ones in `.env`:
 
 ```env

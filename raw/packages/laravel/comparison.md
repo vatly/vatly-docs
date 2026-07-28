@@ -415,10 +415,11 @@ Cashier-style packages you might otherwise reach for —
 
 Two takeaways:
 
-1. **laravel/cashier runs on classic Stripe Billing, where you're the seller of record** and
-own VAT registration, filing and remittance. Stripe has a real MoR too
-([Managed Payments](https://stripe.com/managed-payments)), and Cashier — actively maintained —
-will likely support it before long. Being an MoR is table stakes now, not a Vatly-only edge.
+1. **With laravel/cashier, you're the seller of record.** It runs on classic Stripe Billing, so
+you register for VAT, file, and remit in every market you sell into — the compliance and the
+liability sit with your company. (Stripe's own Merchant-of-Record product,
+[Managed Payments](https://stripe.com/managed-payments), is a separate, US-based service you'd
+integrate instead — not the Cashier subscriptions you're building on.)
 2. **So the real difference between MoRs is jurisdiction.** Paddle is UK, Lemon Squeezy and Stripe
 are US, Vatly is EEA — your seller-of-record entity and customer data stay under EU law. That,
 not the API, is the reason to choose one over another.
@@ -637,10 +638,9 @@ Europe and the world, there's enough here to launch today.
 
 ## Why teams choose Vatly
 
-A Merchant of Record handles VAT, invoicing and tax remittance for you — and that part is now
-table stakes. Paddle, Lemon Squeezy, Stripe Managed Payments and Vatly all do it; on Stripe it's
-a flag on the request. So the real question isn't *whether* compliance is handled — it's whose
-entity you sell through:
+A Merchant of Record makes the tax burden disappear — it becomes the legal seller, so VAT,
+invoicing and remittance stop being your problem. The real question is *whose* entity you hand that
+to, and that's where Vatly stands apart:
 
 - **Europe-first, by design.** EEA-based, EU jurisdiction, customer data kept in Europe. The other
 MoRs sit in the UK (Paddle) or the US (Lemon Squeezy, Stripe Managed Payments) — jurisdiction is
