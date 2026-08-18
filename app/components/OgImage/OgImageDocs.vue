@@ -45,7 +45,7 @@ const description = computed(() => (props.description || '').slice(0, 200))
     </svg>
 
     <!-- Top accent bar -->
-    <div style="height: 5px; background: linear-gradient(90deg, #326bff 0%, #5e8dff 100%);" />
+    <div style="height: 5px; background: linear-gradient(90deg, #326bff 0%, #5993ff 100%);" />
 
     <div class="flex-1 flex flex-col justify-center pl-[80px] pr-[80px]">
       <!-- Vatly logo -->
@@ -60,7 +60,7 @@ const description = computed(() => (props.description || '').slice(0, 200))
       <!-- Headline / breadcrumb -->
       <p
         v-if="headline"
-        style="color: #5e8dff; font-size: 22px; font-weight: 600; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;"
+        style="color: #5993ff; font-size: 22px; font-weight: 600; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;"
       >
         {{ headline }}
       </p>

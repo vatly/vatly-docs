@@ -37,16 +37,12 @@ export default defineNuxtConfig({
         },
         {
           rel: 'preconnect',
-          href: 'https://fonts.googleapis.com',
-        },
-        {
-          rel: 'preconnect',
-          href: 'https://fonts.gstatic.com',
+          href: 'https://fonts.bunny.net',
           crossorigin: '',
         },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
+          href: 'https://fonts.bunny.net/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
         },
       ],
       meta: [
@@ -68,12 +64,18 @@ export default defineNuxtConfig({
           children: `
             :root {
               --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+              /* Vatly neutrals, from resources/css/app.css. Referenced by
+                 overrides.css so the code-block treatment stops hardcoding
+                 a palette. */
+              --vatly-gray-200: #e4e4e7;
+              --vatly-gray-800: #26272b;
             }
             :root, :host, .light {
               --ui-primary: #326bff;
             }
             .dark {
-              --ui-primary: #5e8dff;
+              --ui-primary: #5993ff;
             }
             body {
               font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;

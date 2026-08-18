@@ -48,10 +48,10 @@ useSeo({
           v-for="feature in features"
           :key="feature.title"
           :to="feature.to"
-          class="group relative rounded-xl border border-gray-200 dark:border-gray-800 p-6 hover:border-[#326bff] dark:hover:border-[#5e8dff] hover:shadow-md transition-all"
+          class="group relative rounded-xl border border-gray-200 dark:border-gray-800 p-6 hover:border-[#326bff] dark:hover:border-[#5993ff] hover:shadow-md transition-all"
         >
           <div class="flex items-center gap-3 mb-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950 text-[#326bff] dark:text-[#5e8dff]">
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950 text-[#326bff] dark:text-[#5993ff]">
               <UIcon :name="feature.icon" class="h-5 w-5" />
             </div>
             <h3 class="text-base font-semibold text-gray-900 dark:text-white">
@@ -75,16 +75,16 @@ useSeo({
           Getting started with Vatly is easy!
         </p>
         <ol class="space-y-3 text-gray-600 dark:text-gray-400 list-decimal list-inside">
-          <li>Create a new account at <NuxtLink to="https://my.vatly.com" class="text-[#326bff] dark:text-[#5e8dff] hover:underline" target="_blank">vatly.com</NuxtLink>.</li>
+          <li>Create a new account at <NuxtLink to="https://my.vatly.com" class="text-[#326bff] dark:text-[#5993ff] hover:underline" target="_blank">vatly.com</NuxtLink>.</li>
           <li>Grab your API keys from <strong class="text-gray-900 dark:text-white">Settings → API</strong>.</li>
           <li>Connect your Mollie account.</li>
           <li>Set up your products.</li>
-          <li>Integrate Vatly in your SaaS using one of our <NuxtLink to="/guides/sdks" class="text-[#326bff] dark:text-[#5e8dff] hover:underline">SDKs</NuxtLink>.</li>
+          <li>Integrate Vatly in your SaaS using one of our <NuxtLink to="/guides/sdks" class="text-[#326bff] dark:text-[#5993ff] hover:underline">SDKs</NuxtLink>.</li>
         </ol>
         <div class="mt-8 flex items-center gap-6">
           <NuxtLink
             to="/guides/quickstart"
-            class="text-[#326bff] dark:text-[#5e8dff] font-medium hover:underline"
+            class="text-[#326bff] dark:text-[#5993ff] font-medium hover:underline"
           >
             Read the quickstart guide →
           </NuxtLink>
