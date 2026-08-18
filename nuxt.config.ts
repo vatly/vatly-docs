@@ -37,16 +37,12 @@ export default defineNuxtConfig({
         },
         {
           rel: 'preconnect',
-          href: 'https://fonts.googleapis.com',
-        },
-        {
-          rel: 'preconnect',
-          href: 'https://fonts.gstatic.com',
+          href: 'https://fonts.bunny.net',
           crossorigin: '',
         },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
+          href: 'https://fonts.bunny.net/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
         },
       ],
       meta: [
@@ -73,7 +69,7 @@ export default defineNuxtConfig({
               --ui-primary: #326bff;
             }
             .dark {
-              --ui-primary: #5e8dff;
+              --ui-primary: #5993ff;
             }
             body {
               font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
