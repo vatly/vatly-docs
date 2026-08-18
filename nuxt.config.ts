@@ -64,6 +64,12 @@ export default defineNuxtConfig({
           children: `
             :root {
               --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+              /* Vatly neutrals, from resources/css/app.css. Referenced by
+                 overrides.css so the code-block treatment stops hardcoding
+                 a palette. */
+              --vatly-gray-200: #e4e4e7;
+              --vatly-gray-800: #26272b;
             }
             :root, :host, .light {
               --ui-primary: #326bff;
