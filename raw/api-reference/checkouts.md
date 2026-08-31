@@ -197,6 +197,64 @@ Below you'll find all properties for the Vatly Checkout API resource.
   <tr>
     <td>
       <code>
+        locale
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The language the hosted checkout was asked to present in, as sent on creation. <code>
+        null
+      </code>
+      
+       means none was specified and the checkout picks a language from the shopper's browser. One of <code>
+        en
+      </code>
+      
+      , <code>
+        de
+      </code>
+      
+      , <code>
+        fr
+      </code>
+      
+      , <code>
+        nl
+      </code>
+      
+      , <code>
+        es
+      </code>
+      
+      , <code>
+        it
+      </code>
+      
+      , <code>
+        pt
+      </code>
+      
+      , <code>
+        pl
+      </code>
+      
+      , or <code>
+        null
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         status
       </code>
     </td>
@@ -410,6 +468,7 @@ $checkouts = $vatly->checkouts->page();
       "redirectUrlSuccess": "https://example.com/success",
       "redirectUrlCanceled": "https://example.com/canceled",
       "metadata": {},
+      "locale": null,
       "status": "created",
       "expiresAt": "2024-01-16T10:30:00Z",
       "createdAt": "2024-01-15T10:30:00Z",
@@ -617,6 +676,80 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
       The ID for an existing customer to associate with this checkout. If provided, the customer's email will be pre-filled. Must match the testmode of the API token.
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <code>
+        locale
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      Language to present the hosted checkout in, including its validation and error messages. Send a bare language code (<code>
+        de
+      </code>
+      
+      ), a BCP 47 tag (<code>
+        de-AT
+      </code>
+      
+      ), or a POSIX / ISO 15897 locale (<code>
+        de_DE
+      </code>
+      
+      ) — all three fold to the language, so there are no region-specific variants. The language also carries through to the payment provider's own hosted page. Supported languages: <code>
+        en
+      </code>
+      
+      , <code>
+        de
+      </code>
+      
+      , <code>
+        fr
+      </code>
+      
+      , <code>
+        nl
+      </code>
+      
+      , <code>
+        es
+      </code>
+      
+      , <code>
+        it
+      </code>
+      
+      , <code>
+        pt
+      </code>
+      
+      , <code>
+        pl
+      </code>
+      
+      ; anything else is a <code>
+        422
+      </code>
+      
+       naming the supported set. Omit it (or send <code>
+        null
+      </code>
+      
+      ) to detect the language from the shopper's <code>
+        Accept-Language
+      </code>
+      
+       header, falling back to English. The response echoes back the folded language, not the string you sent.
+    </td>
+  </tr>
 </tbody>
 </table>
 
@@ -632,7 +765,8 @@ curl https://api.vatly.com/v1/checkouts \
       {"id": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP", "trialDays": 14}
     ],
     "redirectUrlSuccess": "https://example.com/return?checkout_id={CHECKOUT_ID}",
-    "redirectUrlCanceled": "https://example.com/canceled"
+    "redirectUrlCanceled": "https://example.com/canceled",
+    "locale": "de"
   }'
 ```
 
@@ -647,6 +781,7 @@ $checkout = $vatly->checkouts->create([
   ],
   'redirectUrlSuccess' => 'https://example.com/return?checkout_id={CHECKOUT_ID}',
   'redirectUrlCanceled' => 'https://example.com/canceled',
+  'locale' => 'de',
 ]);
 
 // Redirect the user to the checkout URL
@@ -662,6 +797,7 @@ header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
   "redirectUrlSuccess": "https://example.com/return?checkout_id=checkout_Bm7xNvPwKr3YjTgHcZaE",
   "redirectUrlCanceled": "https://example.com/canceled",
   "metadata": {},
+  "locale": "de",
   "status": "created",
   "expiresAt": "2024-01-16T10:30:00Z",
   "createdAt": "2024-01-15T10:30:00Z",
@@ -684,6 +820,8 @@ header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
 ### Custom pricing
 
 Charge an amount that differs from the product's dashboard price by setting `price` on the item — a `Money` object (`value` is a decimal string, `currency` an ISO 4217 code). The `id` still references a product you created in the dashboard; products cannot be created on the fly via the API. Omit `price` to use the product's configured price.
+
+For a **subscription plan**, a custom `price` is not a first-cycle discount — it becomes the subscription's recurring price and carries over to every renewal. This is how you give a cohort a permanent price (for example, a lower price for an early group of customers). If you'd prefer to track that cohort separately, create a dedicated subscription plan at the target price and check out against that instead — the recurring price is the same, but reporting stays cleaner.
 
 <code-group sync="api">
 
@@ -720,11 +858,79 @@ $checkout = $vatly->checkouts->create([
 
 </code-group>
 
+### VAT and reverse charge
+
+As Merchant of Record, Vatly determines the applicable tax when the checkout is paid, based on the buyer's country and tax status — you don't calculate or configure rates yourself. For EU B2B, the buyer's VAT ID is validated against the EU's VIES registry as part of that determination: when a valid VAT ID is supplied and the buyer is in a different country from the supplier, the **reverse charge** applies (0% VAT) and the resulting order reflects it. Otherwise the buyer's country standard rate applies.
+
+<note>
+
+This describes **live mode**. In test mode VIES is not called and validity is simulated — see [Tax IDs and reverse charge in test mode](/guides/testing#tax-ids-and-reverse-charge-in-test-mode).
+
+</note>
+
 <tip>
 
 The full request and response schema — every accepted field and its validation rules — is published in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml). Point your code generator or AI assistant at it when an example leaves a field ambiguous.
 
 </tip>
+
+### Payment methods in test mode
+
+A few payment methods work in live mode but cannot be completed in test mode, because the payment provider cannot settle them there. A test-mode checkout still lists them, greyed out and labelled as unavailable, so you can see they exist without being able to select one:
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Method
+    </th>
+    
+    <th>
+      Test mode
+    </th>
+    
+    <th>
+      Reason
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        banktransfer
+      </code>
+    </td>
+    
+    <td>
+      Not selectable
+    </td>
+    
+    <td>
+      The provider cannot settle bank transfers in test mode.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        paybybank
+      </code>
+    </td>
+    
+    <td>
+      Not selectable
+    </td>
+    
+    <td>
+      The provider cannot settle Pay by Bank in test mode.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+Every other method behaves identically in both modes. Test a checkout with any selectable method — `creditcard` and `ideal` cover the one-off and mandate flows — and the resulting orders, invoices and webhooks are the same ones live mode produces.
 
 ---
 
@@ -759,6 +965,7 @@ $checkout = $vatly->checkouts->get('checkout_QdEpFhdSrG4Y3DnfsdqsH');
   "metadata": {
     "campaign": "summer-sale"
   },
+  "locale": null,
   "status": "paid",
   "expiresAt": "2024-01-16T10:30:00Z",
   "createdAt": "2024-01-15T10:30:00Z",

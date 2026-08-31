@@ -389,6 +389,214 @@ The `eventName` field identifies what happened. The available events are:
   <tr>
     <td>
       <code>
+        one_off_product.update_submitted
+      </code>
+    </td>
+    
+    <td>
+      An update to a one-off product was submitted and is awaiting review. <code>
+        object
+      </code>
+      
+       is the one-off product, with the requested changes in <code>
+        object.pendingUpdates
+      </code>
+      
+       and <code>
+        object.updateStatus: pending
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.update_approved
+      </code>
+    </td>
+    
+    <td>
+      A submitted one-off product update was approved and is now live. <code>
+        object
+      </code>
+      
+       is the one-off product with the new values applied and <code>
+        object.pendingUpdates: null
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.update_rejected
+      </code>
+    </td>
+    
+    <td>
+      A submitted one-off product update was rejected. <code>
+        object
+      </code>
+      
+       is the unchanged one-off product with <code>
+        object.pendingUpdates: null
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.archived
+      </code>
+    </td>
+    
+    <td>
+      A one-off product was archived and taken out of the sellable catalogue. <code>
+        object
+      </code>
+      
+       is the one-off product with a non-null <code>
+        object.archivedAt
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.unarchived
+      </code>
+    </td>
+    
+    <td>
+      An archived one-off product was put back on sale. <code>
+        object
+      </code>
+      
+       is the one-off product with <code>
+        object.archivedAt: null
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.update_submitted
+      </code>
+    </td>
+    
+    <td>
+      An update to a subscription plan was submitted and is awaiting review. <code>
+        object
+      </code>
+      
+       is the subscription plan, with the requested changes in <code>
+        object.pendingUpdates
+      </code>
+      
+       and <code>
+        object.updateStatus: pending
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.update_approved
+      </code>
+    </td>
+    
+    <td>
+      A submitted subscription plan update was approved and is now live. <code>
+        object
+      </code>
+      
+       is the subscription plan with the new values applied and <code>
+        object.pendingUpdates: null
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.update_rejected
+      </code>
+    </td>
+    
+    <td>
+      A submitted subscription plan update was rejected. <code>
+        object
+      </code>
+      
+       is the unchanged subscription plan with <code>
+        object.pendingUpdates: null
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.archived
+      </code>
+    </td>
+    
+    <td>
+      A subscription plan was archived and closed to new business. <code>
+        object
+      </code>
+      
+       is the subscription plan with a non-null <code>
+        object.archivedAt
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.unarchived
+      </code>
+    </td>
+    
+    <td>
+      An archived subscription plan was re-opened to new business. <code>
+        object
+      </code>
+      
+       is the subscription plan with <code>
+        object.archivedAt: null
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         webhook.setup
       </code>
     </td>
@@ -402,13 +610,13 @@ The `eventName` field identifies what happened. The available events are:
 
 <note>
 
-**object is the affected resource, keyed by its own resource field** (`order`, `chargeback`, `refund`, `subscription`, `checkout`, or `webhook`). For chargeback events this differs from `entityType`: `order.chargeback_received` / `order.chargeback_reversed` carry `entityType: order` (the order the chargeback belongs to) but the `object` is a Chargeback.
+**object is the affected resource, keyed by its own resource field** (`order`, `chargeback`, `refund`, `subscription`, `checkout`, `one_off_product`, `subscription_plan`, or `webhook`). For chargeback events this differs from `entityType`: `order.chargeback_received` / `order.chargeback_reversed` carry `entityType: order` (the order the chargeback belongs to) but the `object` is a Chargeback.
 
 </note>
 
 <note>
 
-**subscription.update_scheduled** carries the subscription's **current** state in `object`, plus the future target values in `object.scheduledUpdate` (`subscriptionPlanId`, `name`, `description`, `basePrice`, `quantity`, `interval`, `intervalCount`). `scheduledUpdate` is present only on this delivery — it is never returned by the REST API. The matching `subscription.updated` event (for changes that take effect immediately) has no `scheduledUpdate`; its `object` already reflects the new values.
+**subscription.update_scheduled** carries the subscription's **current** state in `object`, plus the future target values in `object.scheduledUpdate` (`subscriptionPlanId`, `name`, `description`, `basePrice`, `quantity`, `interval`, `intervalCount`, `effectiveAt`). The same `scheduledUpdate` object is also returned on the subscription resource by the REST API, so you can reconcile a pending change at any time without relying on this once-delivered event. The matching `subscription.updated` event (for changes that take effect immediately) has no pending `scheduledUpdate`; its `object` already reflects the new values.
 
 </note>
 

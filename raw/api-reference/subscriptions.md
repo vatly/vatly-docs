@@ -535,6 +535,80 @@ The subscription model contains all the information about recurring billing rela
   <tr>
     <td>
       <code>
+        scheduledUpdate
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        object | null
+      </code>
+    </td>
+    
+    <td>
+      The target values for a plan/price/quantity change scheduled to take effect at the subscription's next billing cycle, set by an <a href="#update-a-subscription">
+        update
+      </a>
+      
+       with <code>
+        applyImmediately: false
+      </code>
+      
+      . The rest of the resource reflects the subscription's <em>
+        current
+      </em>
+      
+       state; <code>
+        scheduledUpdate
+      </code>
+      
+       is what it will become. Contains <code>
+        subscriptionPlanId
+      </code>
+      
+      , <code>
+        name
+      </code>
+      
+      , <code>
+        description
+      </code>
+      
+      , <code>
+        basePrice
+      </code>
+      
+      , <code>
+        quantity
+      </code>
+      
+      , <code>
+        interval
+      </code>
+      
+      , <code>
+        intervalCount
+      </code>
+      
+      , and <code>
+        effectiveAt
+      </code>
+      
+       (the next renewal date when the change applies, or <code>
+        null
+      </code>
+      
+       if there is no scheduled renewal). Null when nothing is pending. This is the authoritative way to reconcile a pending change — always present on the resource, so you don't need to rely on the <code>
+        subscription.update_scheduled
+      </code>
+      
+       webhook. Cleared when the change is applied at renewal, and when it is discarded because the subscription was canceled before that renewal.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         links
       </code>
     </td>
@@ -695,6 +769,7 @@ $subscriptions = $vatly->subscriptions->page();
       "renewedUntil": "2024-03-15T10:30:00Z",
       "nextRenewalAt": "2024-03-15T10:30:00Z",
       "trialUntil": null,
+      "scheduledUpdate": null,
       "links": {
         "self": {
           "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
@@ -739,6 +814,7 @@ $subscriptions = $vatly->subscriptions->page();
       "renewedUntil": "2025-01-01T00:00:00Z",
       "nextRenewalAt": "2025-01-01T00:00:00Z",
       "trialUntil": null,
+      "scheduledUpdate": null,
       "links": {
         "self": {
           "href": "https://api.vatly.com/v1/subscriptions/subscription_Wt5mNvBxKw7YcZaEjLhR",
@@ -861,6 +937,7 @@ $subscription = $vatly->subscriptions->get('subscription_Lp3mNvBxKw7RjTgYcZaE');
   "renewedUntil": "2024-03-15T10:30:00Z",
   "nextRenewalAt": "2024-03-15T10:30:00Z",
   "trialUntil": null,
+  "scheduledUpdate": null,
   "links": {
     "self": {
       "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
@@ -1029,6 +1106,7 @@ $subscriptions = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE
       "renewedUntil": "2024-03-15T10:30:00Z",
       "nextRenewalAt": "2024-03-15T10:30:00Z",
       "trialUntil": null,
+      "scheduledUpdate": null,
       "links": {
         "self": {
           "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
@@ -1169,6 +1247,7 @@ $subscription = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE'
   "renewedUntil": "2024-03-15T10:30:00Z",
   "nextRenewalAt": "2024-03-15T10:30:00Z",
   "trialUntil": null,
+  "scheduledUpdate": null,
   "links": {
     "self": {
       "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
@@ -1328,7 +1407,19 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
     </td>
     
     <td>
-      Whether to apply changes immediately or at the end of the current billing period. Default: <code>
+      Whether to apply changes immediately or at the end of the current billing period. When <code>
+        true
+      </code>
+      
+      , changes take effect immediately (with proration if enabled). When <code>
+        false
+      </code>
+      
+      , the change is scheduled for the end of the current period and surfaced on the subscription's <code>
+        scheduledUpdate
+      </code>
+      
+      . Default: <code>
         false
       </code>
       
@@ -1350,7 +1441,7 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
     </td>
     
     <td>
-      Whether to generate an invoice immediately for proration. Only applies when <code>
+      Whether to generate and charge an invoice immediately for proration. Only applies when <code>
         applyImmediately
       </code>
       
@@ -1358,7 +1449,19 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
         prorate
       </code>
       
-       are both true. Default: <code>
+       are both true. When <code>
+        false
+      </code>
+      
+       (the default), the proration delta is parked on the current cycle and billed as a line on the next renewal invoice — the customer gets one invoice and one payment covering both. If the subscription is canceled before that renewal, the parked amount is waived, so a customer is never charged at the moment they cancel. <strong>
+        Set this to <code>
+          true
+        </code>
+        
+         on yearly and other long-interval plans
+      </strong>
+      
+      , where the deferred delta may not be billed for many months and is waived entirely if the customer cancels in between. Default: <code>
         false
       </code>
       
@@ -1442,6 +1545,13 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
 </tbody>
 </table>
 
+**Scheduling and proration behavior:**
+
+- With `applyImmediately: false` (the default), the change is scheduled for the next billing cycle and returned on the subscription's `scheduledUpdate`. Scheduled updates are applied at renewal — they are no longer silently discarded — and are cleared only if the subscription is canceled before that renewal.
+- A subscription whose `status` is `on_grace_period` has no next billing period. Scheduling an update for it returns `422`; resume the subscription first, or set `applyImmediately: true` to apply the change to the remaining period.
+- An immediate update on an `on_grace_period` subscription can change the plan, price, or quantity for the remaining period, but not when that period ends — `anchor`, `resetAnchor`, and switching to a plan with a different interval each return `422`, because each would move the already-communicated end date.
+- When `invoiceImmediately` is `false`, the proration delta is parked on the current cycle and billed on the next renewal invoice. If the subscription is canceled before that renewal, the parked charge is waived.
+
 <code-group sync="api">
 
 ```bash [cURL]
@@ -1510,6 +1620,7 @@ $subscription = $vatly->subscriptions->update('subscription_Lp3mNvBxKw7RjTgYcZaE
   "renewedUntil": "2025-02-15T10:30:00Z",
   "nextRenewalAt": "2025-02-15T10:30:00Z",
   "trialUntil": null,
+  "scheduledUpdate": null,
   "links": {
     "self": {
       "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
@@ -1855,6 +1966,7 @@ $subscription = $vatly->subscriptions->resume('subscription_Lp3mNvBxKw7RjTgYcZaE
   "renewedUntil": "2024-03-15T10:30:00Z",
   "nextRenewalAt": "2024-03-15T10:30:00Z",
   "trialUntil": null,
+  "scheduledUpdate": null,
   "links": {
     "self": {
       "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",

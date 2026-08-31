@@ -72,9 +72,147 @@ Simulates a subscription renewal cycle, allowing you to test renewal billing flo
 </tbody>
 </table>
 
-No request body is required.
+The request body is **optional**. Omit it to advance the billing cycle and leave the renewal payment pending — the endpoint's original behaviour. Provide it to force a specific renewal payment outcome so you can exercise your payment-recovery handling.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Field
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        paymentStatus
+      </code>
+    </td>
+    
+    <td>
+      string
+    </td>
+    
+    <td>
+      Optional. Outcome to force on the renewal payment: <code>
+        paid
+      </code>
+      
+       or <code>
+        failed
+      </code>
+      
+      . Omit to leave the payment pending. <code>
+        failed
+      </code>
+      
+       declines the payment and starts a payment recovery (delivering <code>
+        order.payment_failed
+      </code>
+      
+       to your webhook); <code>
+        paid
+      </code>
+      
+       settles it.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        failureReason
+      </code>
+    </td>
+    
+    <td>
+      string
+    </td>
+    
+    <td>
+      Optional. Which decline to simulate, valid only with <code>
+        paymentStatus: failed
+      </code>
+      
+      . Soft declines (<code>
+        insufficient_funds
+      </code>
+      
+      , <code>
+        temporary_decline
+      </code>
+      
+      , <code>
+        general_failure
+      </code>
+      
+      ) retry over multiple weeks; every other value is a hard decline that asks the customer for a new payment method. Defaults to <code>
+        general_failure
+      </code>
+      
+      . Allowed values: <code>
+        insufficient_funds
+      </code>
+      
+      , <code>
+        temporary_decline
+      </code>
+      
+      , <code>
+        general_failure
+      </code>
+      
+      , <code>
+        invalid_mandate
+      </code>
+      
+      , <code>
+        mandate_canceled
+      </code>
+      
+      , <code>
+        account_closed
+      </code>
+      
+      , <code>
+        card_expired
+      </code>
+      
+      , <code>
+        card_lost_or_stolen
+      </code>
+      
+      , <code>
+        invalid_card_details
+      </code>
+      
+      , <code>
+        authentication_failed
+      </code>
+      
+      , <code>
+        fraud_suspected
+      </code>
+      
+      .
+    </td>
+  </tr>
+</tbody>
+</table>
 
 ### Example
+
+Advance the cycle and leave the renewal payment pending:
 
 <code-group sync="client">
 
@@ -89,6 +227,29 @@ $vatly->testHelpers->fastForwardRenewal('subscription_Lp3mNvBxKw7RjTgYcZaE');
 
 </code-group>
 
+Force the renewal payment to fail with a hard decline to test payment recovery:
+
+<code-group sync="client">
+
+```bash [cURL]
+curl -X POST https://api.vatly.com/v1/test-helpers/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE/fast-forward-renewal \
+  -H "Authorization: Bearer test_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "paymentStatus": "failed",
+    "failureReason": "card_expired"
+  }'
+```
+
+```php [PHP]
+$vatly->testHelpers->fastForwardRenewal('subscription_Lp3mNvBxKw7RjTgYcZaE', [
+    'paymentStatus' => 'failed',
+    'failureReason' => 'card_expired',
+]);
+```
+
+</code-group>
+
 ### Response
 
 Returns the updated subscription with new renewal dates:
@@ -98,6 +259,7 @@ Returns the updated subscription with new renewal dates:
   "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
   "resource": "subscription",
   "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
+  "subscriptionPlanId": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP",
   "testmode": true,
   "name": "Pro Monthly",
   "description": "Full access to all Pro features",
@@ -117,6 +279,10 @@ Returns the updated subscription with new renewal dates:
   "interval": "month",
   "intervalCount": 1,
   "status": "active",
+  "mandate": {
+    "method": "card",
+    "maskedIdentifier": "4242"
+  },
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "canceledAt": null,
@@ -124,6 +290,7 @@ Returns the updated subscription with new renewal dates:
   "renewedUntil": "2024-04-15T10:30:00Z",
   "nextRenewalAt": "2024-04-15T10:30:00Z",
   "trialUntil": null,
+  "scheduledUpdate": null,
   "links": {
     "self": {
       "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",

@@ -88,8 +88,12 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
         order.paid
       </code>
       
-       or <code>
+      , <code>
         refund.completed
+      </code>
+      
+      , or <code>
+        subscription_plan.update_approved
       </code>
       
       . See the <a href="/guides/webhooks#event-types">
@@ -130,8 +134,16 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
         subscription
       </code>
       
-      , or <code>
+      , <code>
         checkout
+      </code>
+      
+      , <code>
+        one_off_product
+      </code>
+      
+      , or <code>
+        subscription_plan
       </code>
       
       .
@@ -170,7 +182,7 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
     </td>
     
     <td>
-      The full resource payload as it existed when the event occurred (an Order, Chargeback, Refund, Subscription, or Checkout), keyed by its own <code>
+      The full resource payload as it existed when the event occurred (an Order, Chargeback, Refund, Subscription, Checkout, OneOffProduct, or SubscriptionPlan), keyed by its own <code>
         resource
       </code>
       

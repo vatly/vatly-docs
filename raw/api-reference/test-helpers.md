@@ -25,63 +25,224 @@ Useful for:
 - testing renewal billing flows without waiting for the real billing interval
 - verifying subscription lifecycle events and webhook delivery
 - validating dunning or invoice follow-up automation in your sandbox flow
+- forcing the renewal payment to fail so you can exercise your payment-recovery handling
+
+### Request body
+
+The request body is optional. Omit it to advance the billing cycle and leave the renewal payment pending (this endpoint's original behaviour).
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Attribute
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        paymentStatus
+      </code>
+    </td>
+    
+    <td>
+      string
+    </td>
+    
+    <td>
+      Optional. Outcome to force on the renewal payment. One of <code>
+        paid
+      </code>
+      
+       or <code>
+        failed
+      </code>
+      
+      . Omit to leave the renewal payment pending. <code>
+        failed
+      </code>
+      
+       declines the payment and starts a payment recovery for the renewal order (delivering <code>
+        order.payment_failed
+      </code>
+      
+       to your webhook endpoint); <code>
+        paid
+      </code>
+      
+       settles it.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        failureReason
+      </code>
+    </td>
+    
+    <td>
+      string
+    </td>
+    
+    <td>
+      Optional. Which decline to simulate. Only valid alongside <code>
+        paymentStatus: failed
+      </code>
+      
+       (sending it with <code>
+        paid
+      </code>
+      
+       is rejected). Soft declines (<code>
+        insufficient_funds
+      </code>
+      
+      , <code>
+        temporary_decline
+      </code>
+      
+      , <code>
+        general_failure
+      </code>
+      
+      ) keep the payment method and retry on a multi-week timeline; every other value is a hard decline that drives the customer to supply a new payment method on a short timeline. Defaults to <code>
+        general_failure
+      </code>
+      
+      . Allowed values: <code>
+        insufficient_funds
+      </code>
+      
+      , <code>
+        temporary_decline
+      </code>
+      
+      , <code>
+        general_failure
+      </code>
+      
+      , <code>
+        invalid_mandate
+      </code>
+      
+      , <code>
+        mandate_canceled
+      </code>
+      
+      , <code>
+        account_closed
+      </code>
+      
+      , <code>
+        card_expired
+      </code>
+      
+      , <code>
+        card_lost_or_stolen
+      </code>
+      
+      , <code>
+        invalid_card_details
+      </code>
+      
+      , <code>
+        authentication_failed
+      </code>
+      
+      , <code>
+        fraud_suspected
+      </code>
+      
+      .
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<note>
+
+Requesting an outcome for a renewal that produced no payable order, or whose payment has already settled, returns a `409` error rather than a silent no-op.
+
+</note>
 
 <code-group>
 
 ```bash [cURL]
-curl -X POST https://api.vatly.com/v1/test-helpers/subscriptions/sub_abc123def456/fast-forward-renewal \
-  -H "Authorization: Bearer test_your_api_key_here"
+curl -X POST https://api.vatly.com/v1/test-helpers/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE/fast-forward-renewal \
+  -H "Authorization: Bearer test_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "paymentStatus": "failed",
+    "failureReason": "card_expired"
+  }'
 ```
 
 ```php [PHP]
 $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('test_your_api_key_here');
 
-$subscription = $vatly->testHelpers->fastForwardSubscriptionRenewal('sub_abc123def456');
+$subscription = $vatly->testHelpers->fastForwardRenewal('subscription_Lp3mNvBxKw7RjTgYcZaE', [
+    'paymentStatus' => 'failed',
+    'failureReason' => 'card_expired',
+]);
 ```
 
 ```json [Response]
 {
-  "id": "sub_abc123def456",
+  "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
   "resource": "subscription",
-  "customerId": "cus_xyz789",
-  "subscriptionPlanId": "subscription_plan_premium",
+  "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
+  "subscriptionPlanId": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP",
   "testmode": true,
-  "name": "Premium Plan",
-  "description": "Access to all premium features",
+  "name": "Pro Monthly",
+  "description": "Full access to all Pro features",
   "billingAddress": {
     "fullName": "John Doe",
-    "companyName": null,
-    "taxId": null,
-    "streetAndNumber": "123 Main St",
-    "streetAdditional": null,
-    "city": "Amsterdam",
-    "region": null,
-    "postalCode": "1011AB",
-    "country": "NL"
+    "companyName": "Acme Corp",
+    "streetAndNumber": "123 Main Street",
+    "city": "Berlin",
+    "postalCode": "10115",
+    "country": "DE"
   },
   "basePrice": {
-    "value": "99.99",
+    "value": "29.00",
     "currency": "EUR"
   },
   "quantity": 1,
   "interval": "month",
   "intervalCount": 1,
   "status": "active",
-  "startedAt": "2026-01-15T10:30:00Z",
+  "mandate": {
+    "method": "card",
+    "maskedIdentifier": "4242"
+  },
+  "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "canceledAt": null,
-  "renewedAt": "2026-02-15T10:30:00Z",
-  "renewedUntil": "2026-03-15T10:30:00Z",
-  "nextRenewalAt": "2026-03-15T10:30:00Z",
+  "renewedAt": "2024-03-15T10:30:00Z",
+  "renewedUntil": "2024-04-15T10:30:00Z",
+  "nextRenewalAt": "2024-04-15T10:30:00Z",
   "trialUntil": null,
+  "scheduledUpdate": null,
   "links": {
     "self": {
-      "href": "https://api.vatly.com/v1/subscriptions/sub_abc123def456",
+      "href": "https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE",
       "type": "application/json"
     },
     "customer": {
-      "href": "https://api.vatly.com/v1/customers/cus_xyz789",
+      "href": "https://api.vatly.com/v1/customers/customer_Lp3mNvBxKw7RjTgYcZaE",
       "type": "application/json"
     }
   }
@@ -139,6 +300,38 @@ $subscription = $vatly->testHelpers->fastForwardSubscriptionRenewal('sub_abc123d
     
     <td>
       Subscription not found
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        409
+      </code>
+    </td>
+    
+    <td>
+      No payable renewal order exists, or its payment has already settled
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        422
+      </code>
+    </td>
+    
+    <td>
+      Invalid request body (for example, <code>
+        failureReason
+      </code>
+      
+       sent with <code>
+        paymentStatus: paid
+      </code>
+      
+      )
     </td>
   </tr>
 </tbody>
