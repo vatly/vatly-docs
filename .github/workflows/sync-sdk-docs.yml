@@ -53,13 +53,43 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit and push
+      - name: Commit and push (signed via GitHub API)
         if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
         run: |
-          git config user.name "Sander van Hooft"
-          git config user.email "sandervanhooft@users.noreply.github.com"
-          git commit -m "docs: sync SDK documentation"
-          git push
+          # Commit through the GraphQL createCommitOnBranch mutation so GitHub
+          # signs the commit with its web-flow key -> shows as "Verified".
+          # Attributed to github-actions[bot]; no signing key/secret to manage.
+          HEAD_OID=$(git rev-parse HEAD)
+
+          additions=$(git diff --staged --no-renames -z --name-only --diff-filter=ACM \
+            | while IFS= read -r -d '' f; do
+                jq -n --arg path "$f" --arg contents "$(base64 -w0 "$f")" \
+                  '{path: $path, contents: $contents}'
+              done | jq -s '.')
+
+          deletions=$(git diff --staged --no-renames -z --name-only --diff-filter=D \
+            | while IFS= read -r -d '' f; do
+                jq -n --arg path "$f" '{path: $path}'
+              done | jq -s '.')
+
+          jq -n \
+            --arg query 'mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid url } } }' \
+            --arg repo "$REPO" \
+            --arg branch "$BRANCH" \
+            --arg oid "$HEAD_OID" \
+            --argjson additions "$additions" \
+            --argjson deletions "$deletions" \
+            '{query: $query, variables: {input: {
+                branch: {repositoryNameWithOwner: $repo, branchName: $branch},
+                message: {headline: "docs: sync SDK documentation"},
+                expectedHeadOid: $oid,
+                fileChanges: {additions: $additions, deletions: $deletions}
+            }}}' \
+            | gh api graphql --input -
 
       - name: Build and deploy
         if: steps.changes.outputs.changed == 'true'
