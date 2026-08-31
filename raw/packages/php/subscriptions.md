@@ -445,6 +445,64 @@ Below you'll find all properties for the Vatly Subscription resource.
   <tr>
     <td>
       <code>
+        scheduledUpdate
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        object | null
+      </code>
+    </td>
+    
+    <td>
+      The target values for a change scheduled to take effect at the next billing cycle — set by an update with <code>
+        applyImmediately: false
+      </code>
+      
+       — or <code>
+        null
+      </code>
+      
+       when nothing is pending. Carries <code>
+        subscriptionPlanId
+      </code>
+      
+      , <code>
+        name
+      </code>
+      
+      , <code>
+        description
+      </code>
+      
+      , <code>
+        basePrice
+      </code>
+      
+      , <code>
+        quantity
+      </code>
+      
+      , <code>
+        interval
+      </code>
+      
+      , <code>
+        intervalCount
+      </code>
+      
+      , and <code>
+        effectiveAt
+      </code>
+      
+      . Always present on both the REST resource and webhook deliveries, so this is the authoritative way to reconcile a pending change.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         links
       </code>
     </td>
@@ -767,7 +825,19 @@ subscriptionPlanId, quantity, or price is required.**
         true
       </code>
       
-      .
+      . Defaults to <code>
+        false
+      </code>
+      
+      , which parks the proration delta on the current cycle and bills it as a line on the next renewal invoice (and waives it if the subscription is cancelled first). <strong>
+        Set this to <code>
+          true
+        </code>
+        
+         on yearly and other long-interval plans
+      </strong>
+      
+      , where the deferral to the next renewal costs you the most.
     </td>
   </tr>
   

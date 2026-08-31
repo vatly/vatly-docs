@@ -293,6 +293,126 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
   <tr>
     <td>
       <code>
+        one_off_product.update_submitted
+      </code>
+    </td>
+    
+    <td>
+      An update to a one-off product was submitted for review.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.update_approved
+      </code>
+    </td>
+    
+    <td>
+      A submitted one-off product update was approved and applied.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.update_rejected
+      </code>
+    </td>
+    
+    <td>
+      A submitted one-off product update was rejected.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.archived
+      </code>
+    </td>
+    
+    <td>
+      A one-off product was archived (taken out of the sellable catalogue).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.unarchived
+      </code>
+    </td>
+    
+    <td>
+      An archived one-off product was put back on sale.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.update_submitted
+      </code>
+    </td>
+    
+    <td>
+      An update to a subscription plan was submitted for review.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.update_approved
+      </code>
+    </td>
+    
+    <td>
+      A submitted subscription plan update was approved and applied.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.update_rejected
+      </code>
+    </td>
+    
+    <td>
+      A submitted subscription plan update was rejected.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.archived
+      </code>
+    </td>
+    
+    <td>
+      A subscription plan was archived (closed to new business).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.unarchived
+      </code>
+    </td>
+    
+    <td>
+      An archived subscription plan was re-opened to new business.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         webhook.setup
       </code>
     </td>
@@ -315,6 +435,263 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
   </tr>
 </tbody>
 </table>
+
+The ten catalogue events (`one_off_product.*` and `subscription_plan.*`) ship
+dedicated typed event DTOs, just like the order/subscription/refund/checkout
+events. `WebhookEventFactory` hydrates each one's `object` — byte-identical to
+the corresponding `GET` body — straight into the matching resource, with **no
+follow-up API call**:
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Event
+    </th>
+    
+    <th>
+      Typed DTO
+    </th>
+    
+    <th>
+      Hydrated resource
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        one_off_product.update_submitted
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        OneOffProductUpdateSubmitted
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->oneOffProduct
+      </code>
+      
+       (<code>
+        OneOffProduct
+      </code>
+      
+      )
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.update_approved
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        OneOffProductUpdateApproved
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->oneOffProduct
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.update_rejected
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        OneOffProductUpdateRejected
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->oneOffProduct
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.archived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        OneOffProductArchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->oneOffProduct
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        one_off_product.unarchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        OneOffProductUnarchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->oneOffProduct
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.update_submitted
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        SubscriptionPlanUpdateSubmitted
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->subscriptionPlan
+      </code>
+      
+       (<code>
+        SubscriptionPlan
+      </code>
+      
+      )
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.update_approved
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        SubscriptionPlanUpdateApproved
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->subscriptionPlan
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.update_rejected
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        SubscriptionPlanUpdateRejected
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->subscriptionPlan
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.archived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        SubscriptionPlanArchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->subscriptionPlan
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription_plan.unarchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        SubscriptionPlanUnarchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        $event->subscriptionPlan
+      </code>
+    </td>
+  </tr>
+</tbody>
+</table>
+
+Each DTO also exposes the resource id (`$event->oneOffProductId` /
+`$event->subscriptionPlanId`) and `$event->testmode` at the top level, and
+carries a `VATLY_EVENT_NAME` constant for matching (all live under
+`Vatly\API\Webhooks\Events\`).
+
+```php
+$event = $factory->createFromWebhook($webhook);
+
+if ($event instanceof OneOffProductUpdateApproved) {
+    // The approved product, already hydrated — no extra GET needed.
+    echo $event->oneOffProduct->name;
+    echo $event->oneOffProduct->basePrice->value;
+}
+
+if ($event instanceof SubscriptionPlanArchived) {
+    echo $event->subscriptionPlan->archivedAt; // non-null
+}
+```
 
 ### The `webhook.setup` event
 

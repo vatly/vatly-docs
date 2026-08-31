@@ -201,6 +201,60 @@ Below you'll find all properties for the Vatly Checkout resource.
   <tr>
     <td>
       <code>
+        locale
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The language the hosted checkout is presented in (<code>
+        en
+      </code>
+      
+      , <code>
+        de
+      </code>
+      
+      , <code>
+        fr
+      </code>
+      
+      , <code>
+        nl
+      </code>
+      
+      , <code>
+        es
+      </code>
+      
+      , <code>
+        it
+      </code>
+      
+      , <code>
+        pt
+      </code>
+      
+      , <code>
+        pl
+      </code>
+      
+      ), echoed back as the folded language. <code>
+        null
+      </code>
+      
+       means none was specified and the checkout picks a language from the shopper's browser.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         expiresAt
       </code>
     </td>
@@ -379,6 +433,80 @@ Create a new hosted checkout for your customer.
       Your custom metadata to store with the checkout.
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <code>
+        locale
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Language to present the hosted checkout in — set this when you already know the customer's language. Accepts a bare language code (<code>
+        de
+      </code>
+      
+      ), a BCP 47 tag (<code>
+        de-AT
+      </code>
+      
+      ), or a POSIX/ISO 15897 locale (<code>
+        de_DE
+      </code>
+      
+      ); all three fold to the language. Supported: <code>
+        en
+      </code>
+      
+      , <code>
+        de
+      </code>
+      
+      , <code>
+        fr
+      </code>
+      
+      , <code>
+        nl
+      </code>
+      
+      , <code>
+        es
+      </code>
+      
+      , <code>
+        it
+      </code>
+      
+      , <code>
+        pt
+      </code>
+      
+      , <code>
+        pl
+      </code>
+      
+       (anything else returns <code>
+        422
+      </code>
+      
+      ). Omit (or <code>
+        null
+      </code>
+      
+      ) to detect the language from the shopper's <code>
+        Accept-Language
+      </code>
+      
+       header, falling back to English. The response echoes back the folded language.
+    </td>
+  </tr>
 </tbody>
 </table>
 
@@ -394,10 +522,13 @@ $checkout = $vatly->checkouts->create([
     'redirectUrlSuccess' => 'https://yourapp.com/success',
     'redirectUrlCanceled' => 'https://yourapp.com/canceled',
     'customerId' => 'customer_xyz789',
+    'locale' => 'de', // optional; present the hosted checkout in German
     'metadata' => [
         'user_id' => '12345',
     ],
 ]);
+
+echo $checkout->locale; // 'de'
 
 // Redirect to hosted checkout
 $checkoutUrl = $checkout->getCheckoutUrl();
