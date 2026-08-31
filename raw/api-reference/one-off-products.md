@@ -1098,7 +1098,7 @@ $product = $vatly->oneOffProducts->update('one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
 
 `POST /v1/one-off-products/:oneOffProductId/archive`
 
-Takes the product out of your sellable catalogue. It is hidden from `GET /v1/one-off-products` (unless `includeArchived=true`) and refused by `POST /v1/checkouts`; existing orders and refunds are untouched.
+Archives the product so it can no longer be sold. It is hidden from `GET /v1/one-off-products` (unless `includeArchived=true`) and refused by `POST /v1/checkouts`; existing orders and refunds are untouched.
 
 Archiving applies to *new* checkouts only. A checkout created before the product was archived snapshots its product data at creation time and can still be completed — the same window that applies when a product is rejected after a checkout was opened.
 

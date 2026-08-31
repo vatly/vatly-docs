@@ -238,6 +238,10 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
         intervalCount
       </code>
       
+      , <code>
+        effectiveAt
+      </code>
+      
       ).
     </td>
   </tr>

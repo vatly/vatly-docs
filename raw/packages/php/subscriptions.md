@@ -451,7 +451,7 @@ Below you'll find all properties for the Vatly Subscription resource.
     
     <td>
       <code>
-        object | null
+        ScheduledSubscriptionUpdate | null
       </code>
     </td>
     
@@ -464,7 +464,13 @@ Below you'll find all properties for the Vatly Subscription resource.
         null
       </code>
       
-       when nothing is pending. Carries <code>
+       when nothing is pending. A typed <a href="https://github.com/Vatly/vatly-api-php/blob/main/src/API/Types/ScheduledSubscriptionUpdate.php" rel="nofollow">
+        <code>
+          ScheduledSubscriptionUpdate
+        </code>
+      </a>
+      
+       carrying <code>
         subscriptionPlanId
       </code>
       
@@ -480,7 +486,11 @@ Below you'll find all properties for the Vatly Subscription resource.
         basePrice
       </code>
       
-      , <code>
+       (<code>
+        Money
+      </code>
+      
+      ), <code>
         quantity
       </code>
       
@@ -496,7 +506,7 @@ Below you'll find all properties for the Vatly Subscription resource.
         effectiveAt
       </code>
       
-      . Always present on both the REST resource and webhook deliveries, so this is the authoritative way to reconcile a pending change.
+       (next-renewal date the change applies, nullable). Always present on both the REST resource and webhook deliveries, so this is the authoritative way to reconcile a pending change.
     </td>
   </tr>
   

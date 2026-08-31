@@ -458,7 +458,7 @@ The `eventName` field identifies what happened. The available events are:
     </td>
     
     <td>
-      A one-off product was archived and taken out of the sellable catalogue. <code>
+      A one-off product was archived and can no longer be sold. <code>
         object
       </code>
       
