@@ -71,7 +71,7 @@ $session->url;        // single-use HTTPS entry link
 $session->expiresAt;  // ISO 8601 — the link expires after ~15 minutes
 ```
 
-The link is locked to this customer, expires after roughly 15 minutes, and can be used once. It is credential-bearing, so **never cache or log it** — generate a fresh one each time you send the customer to the portal. Both helpers throw `NoVatlyCustomerException` if the user has no Vatly customer yet.
+The link is locked to this customer **and to the storefront your configured Vatly API token is issued for** — the customer lands directly in that one storefront's portal, never a storefront picker or any other store. (If your Vatly account has multiple storefronts, each API token mints portal links for its own store.) It expires after roughly 15 minutes and can be used once. It is credential-bearing, so **never cache or log it** — generate a fresh one each time you send the customer to the portal. Both helpers throw `NoVatlyCustomerException` if the user has no Vatly customer yet.
 
 Both are available under the same names on the coexistence-friendly `VatlyBillable` trait (they already carry the `vatly` prefix, so there's no collision with another Cashier-style biller).
 
