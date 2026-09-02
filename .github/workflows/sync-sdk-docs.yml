@@ -100,4 +100,6 @@ jobs:
           npx nuxi build
           echo "docs.vatly.com" > .output/public/CNAME
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/Vatly/vatly-docs.git
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           npx gh-pages --dotfiles -d .output/public
