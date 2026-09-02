@@ -293,6 +293,44 @@ Below you'll find all properties for the Vatly Subscription resource.
   <tr>
     <td>
       <code>
+        cancellationReason
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      Why the subscription was canceled — <code>
+        payment_failure
+      </code>
+      
+       (recovery exhausted after failed renewals), <code>
+        merchant_request
+      </code>
+      
+      , or <code>
+        customer_request
+      </code>
+      
+       (self-service portal) — or <code>
+        null
+      </code>
+      
+       unless a cancellation has been requested. See <code>
+        Vatly\API\Types\CancellationReason
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         startedAt
       </code>
     </td>

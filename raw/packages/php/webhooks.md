@@ -145,6 +145,26 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
   <tr>
     <td>
       <code>
+        subscription.canceled_for_nonpayment
+      </code>
+    </td>
+    
+    <td>
+      Payment recovery was exhausted, so the subscription was canceled. <code>
+        object
+      </code>
+      
+       carries <code>
+        cancellationReason: payment_failure
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         subscription.canceled_with_grace_period
       </code>
     </td>

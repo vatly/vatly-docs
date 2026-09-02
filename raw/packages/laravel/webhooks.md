@@ -154,7 +154,55 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
         subscription.canceled_immediately
       </code>
       
-       webhook is received
+       webhook is received — the local subscription's <code>
+        ends_at
+      </code>
+      
+       is stamped
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionCanceledForNonpayment
+      </code>
+    </td>
+    
+    <td>
+      A <code>
+        subscription.canceled_for_nonpayment
+      </code>
+      
+       webhook is received — a <strong>
+        hard cancellation
+      </strong>
+      
+       after payment recovery for a failed renewal is exhausted. Handled exactly like <code>
+        subscription.canceled_immediately
+      </code>
+      
+       (the local subscription's <code>
+        ends_at
+      </code>
+      
+       is stamped), and additionally carries <code>
+        cancellationReason: payment_failure
+      </code>
+      
+       (<code>
+        customerId
+      </code>
+      
+      , <code>
+        subscriptionId
+      </code>
+      
+      , <code>
+        endsAt
+      </code>
+      
+      )
     </td>
   </tr>
   
@@ -846,7 +894,7 @@ Event::listen(SubscriptionPlanUpdateApproved::class, function (SubscriptionPlanU
 Before the event is dispatched, the package keeps your local tables in sync automatically via fluent's standard webhook *reactions*. These are wired by `WebhookProcessorFactory` inside the `Vatly` composition root — no registration needed on your side. They live under `Vatly\Fluent\Webhooks\Reactions\`:
 
 - **SyncSubscriptionOnStarted** -- On `SubscriptionStarted`, creates (or updates) the local `Subscription` row, then dispatches `SubscriptionWasCreatedFromWebhook` for newly-created rows.
-- **CancelSubscriptionOnCanceled** -- On `SubscriptionCanceledImmediately` / `SubscriptionCanceledWithGracePeriod`, sets the local subscription's `ends_at`.
+- **CancelSubscriptionOnCanceled** -- On `SubscriptionCanceledImmediately` / `SubscriptionCanceledForNonpayment` / `SubscriptionCanceledWithGracePeriod`, sets the local subscription's `ends_at`. The nonpayment case (a hard cancellation after payment recovery is exhausted) ends the subscription just like an immediate cancellation; read `$event->cancellationReason` (`payment_failure`) on the dispatched event if you want to branch your own dunning/win-back UI off it.
 - **StoreOrderOnPaid** -- On `OrderPaid`, stores (or updates) the local `Order` row, then dispatches `OrderWasCreatedFromWebhook` for newly-created rows.
 - **StoreOrderOnPaymentFailed** -- On `OrderPaymentFailed`, stores (or updates) the local `Order` row, mirroring the upstream order status verbatim.
 - **EndSubscriptionOnGracePeriodCompleted** -- On `SubscriptionCancellationGracePeriodCompleted`, stamps the actual `ends_at` onto the local subscription. Usually an idempotent re-write of what `CancelSubscriptionOnCanceled` already stored, but it self-heals a missed/out-of-order `subscription.canceled_with_grace_period` webhook (which would otherwise leave `ends_at` null and the subscription looking active forever) and corrects any drift between the scheduled and actual end.

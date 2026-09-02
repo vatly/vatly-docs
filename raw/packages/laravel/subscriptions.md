@@ -214,6 +214,86 @@ The actual cancellation is processed via webhooks. Depending on the Vatly config
 - End immediately (`SubscriptionCanceledImmediately` event)
 - Enter a grace period (`SubscriptionCanceledWithGracePeriod` event)
 
+A subscription can also be canceled **by Vatly**, not by your `cancel()` call: when payment recovery for a failed renewal is exhausted, Vatly hard-cancels it and sends `subscription.canceled_for_nonpayment` (`SubscriptionCanceledForNonpayment`). The package ends the local subscription exactly as it does for an immediate cancellation — its `ends_at` is stamped, `canceled()` flips to `true` — so you don't need any special handling to keep local state correct.
+
+### Cancellation reason
+
+Vatly tags each cancellation with a reason, exposed on the dispatched event as `$event->cancellationReason` (`Vatly\API\Types\CancellationReason`):
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Value
+    </th>
+    
+    <th>
+      Meaning
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        payment_failure
+      </code>
+    </td>
+    
+    <td>
+      Payment recovery was exhausted after failed renewals (carried by <code>
+        SubscriptionCanceledForNonpayment
+      </code>
+      
+      )
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        merchant_request
+      </code>
+    </td>
+    
+    <td>
+      The merchant canceled the subscription
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        customer_request
+      </code>
+    </td>
+    
+    <td>
+      The customer canceled from the self-service portal
+    </td>
+  </tr>
+</tbody>
+</table>
+
+Listen for the cancellation event to branch dunning / win-back flows off the reason:
+
+```php
+use Illuminate\Support\Facades\Event;
+use Vatly\API\Types\CancellationReason;
+use Vatly\API\Webhooks\Events\SubscriptionCanceledForNonpayment;
+
+Event::listen(SubscriptionCanceledForNonpayment::class, function (SubscriptionCanceledForNonpayment $event) {
+    // $event->subscriptionId
+    // $event->customerId
+    // $event->endsAt
+    // $event->cancellationReason === CancellationReason::PAYMENT_FAILURE
+    // Trigger a win-back email, flag the account for re-collection, etc.
+});
+```
+
+The reason is not stored on the local `vatly_subscriptions` row — read it from the event when a cancellation arrives, or from the live API resource (`Vatly\API\Resources\Subscription::$cancellationReason`, fetched via `Vatly::getSubscription()->execute($vatlyId)`).
+
 ## Updating billing details
 
 ```php
