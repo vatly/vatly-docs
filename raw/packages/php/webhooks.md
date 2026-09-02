@@ -138,7 +138,19 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
     </td>
     
     <td>
-      Subscription was canceled immediately.
+      Subscription was canceled immediately. <code>
+        object
+      </code>
+      
+       carries <code>
+        cancellationReason
+      </code>
+      
+       (typically <code>
+        merchant_request
+      </code>
+      
+      ).
     </td>
   </tr>
   
@@ -170,7 +182,23 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
     </td>
     
     <td>
-      Subscription was canceled, customer keeps access until the period ends.
+      Subscription was canceled, customer keeps access until the period ends. <code>
+        object
+      </code>
+      
+       carries <code>
+        cancellationReason
+      </code>
+      
+       (<code>
+        customer_request
+      </code>
+      
+       or <code>
+        merchant_request
+      </code>
+      
+      ).
     </td>
   </tr>
   
