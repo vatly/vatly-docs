@@ -718,3 +718,163 @@ $customer = $vatly->customers->update('customer_7kBmRtPvXw2NjLhYcZaE', [
 ```
 
 </code-group>
+
+---
+
+## Create a customer portal session
+
+`POST /v1/customers/:customerId/portal-sessions`
+
+Creates a short-lived, single-use link that sends an authenticated customer straight to this API token's storefront in Vatly's hosted portal. The session is locked to the customer, storefront, merchant, and live/test mode represented by the token; it never exposes a storefront picker or other stores associated with the same email address.
+
+Redirect the customer's browser to `url`. The link expires after roughly 15 minutes by default and can be consumed once. If an idempotency key replays a response after its URL has already been used, request a replacement with a fresh key.
+
+The response is credential-bearing, so it is returned with `Cache-Control: no-store, private`. Do not log or store the `url`.
+
+### Optional attributes
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        returnUrl
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      Absolute HTTPS URL without embedded credentials, rendered as a return link in the hosted portal (max 2048 bytes). Vatly never fetches or automatically redirects to this URL.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+### Response
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        url
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Single-use HTTPS URL to redirect the customer to.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        expiresAt
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Expiry of the one-time entry link, not of the resulting browser session (ISO 8601 format).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        returnUrl
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The validated absolute HTTPS return URL supplied in the request, or <code>
+        null
+      </code>
+      
+      .
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<code-group sync="api">
+
+```bash [cURL]
+curl https://api.vatly.com/v1/customers/customer_7kBmRtPvXw2NjLhYcZaE/portal-sessions \
+  -H "Authorization: Bearer live_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"returnUrl": "https://merchant.example/account/billing"}'
+```
+
+```php [PHP]
+$vatly = new \Vatly\API\VatlyApiClient();
+$vatly->setApiKey('live_your_api_key_here');
+
+$vatly->customers->createPortalSession('customer_7kBmRtPvXw2NjLhYcZaE', [
+  'returnUrl' => 'https://merchant.example/account/billing',
+]);
+```
+
+```json [Response]
+{
+  "url": "https://billing.vatly.com/authenticate?credential=...",
+  "expiresAt": "2026-09-01T12:15:00Z",
+  "returnUrl": "https://merchant.example/account/billing"
+}
+```
+
+</code-group>

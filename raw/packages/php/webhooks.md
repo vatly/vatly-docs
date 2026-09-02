@@ -338,7 +338,7 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
     </td>
     
     <td>
-      A one-off product was archived (taken out of the sellable catalogue).
+      A one-off product was archived (it can no longer be sold).
     </td>
   </tr>
   
@@ -440,7 +440,7 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
 </tbody>
 </table>
 
-The ten catalogue events (`one_off_product.*` and `subscription_plan.*`) ship
+The ten product events (`one_off_product.*` and `subscription_plan.*`) ship
 dedicated typed event DTOs, just like the order/subscription/refund/checkout
 events. `WebhookEventFactory` hydrates each one's `object` — byte-identical to
 the corresponding `GET` body — straight into the matching resource, with **no

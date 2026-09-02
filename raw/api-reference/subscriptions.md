@@ -359,6 +359,36 @@ The subscription model contains all the information about recurring billing rela
   <tr>
     <td>
       <code>
+        cancellationReason
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      Why the subscription was canceled. Can be <code>
+        payment_failure
+      </code>
+      
+       (payment recovery was exhausted after failed renewals), <code>
+        merchant_request
+      </code>
+      
+       (the merchant canceled the subscription), or <code>
+        customer_request
+      </code>
+      
+       (the customer canceled from the self-service portal). Null unless a cancellation has been requested.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         mandate
       </code>
     </td>
@@ -762,6 +792,7 @@ $subscriptions = $vatly->subscriptions->page();
       "interval": "month",
       "intervalCount": 1,
       "status": "active",
+      "cancellationReason": null,
       "startedAt": "2024-01-15T10:30:00Z",
       "endedAt": null,
       "canceledAt": null,
@@ -807,6 +838,7 @@ $subscriptions = $vatly->subscriptions->page();
       "interval": "year",
       "intervalCount": 1,
       "status": "active",
+      "cancellationReason": null,
       "startedAt": "2024-01-01T00:00:00Z",
       "endedAt": null,
       "canceledAt": null,
@@ -930,6 +962,7 @@ $subscription = $vatly->subscriptions->get('subscription_Lp3mNvBxKw7RjTgYcZaE');
   "interval": "month",
   "intervalCount": 1,
   "status": "active",
+  "cancellationReason": null,
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "canceledAt": null,
@@ -1099,6 +1132,7 @@ $subscriptions = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE
       "interval": "month",
       "intervalCount": 1,
       "status": "active",
+      "cancellationReason": null,
       "startedAt": "2024-01-15T10:30:00Z",
       "endedAt": null,
       "canceledAt": null,
@@ -1240,6 +1274,7 @@ $subscription = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE'
   "interval": "month",
   "intervalCount": 1,
   "status": "active",
+  "cancellationReason": null,
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "canceledAt": null,
@@ -1613,6 +1648,7 @@ $subscription = $vatly->subscriptions->update('subscription_Lp3mNvBxKw7RjTgYcZaE
   "interval": "year",
   "intervalCount": 1,
   "status": "active",
+  "cancellationReason": null,
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "canceledAt": null,
@@ -1952,6 +1988,7 @@ $subscription = $vatly->subscriptions->resume('subscription_Lp3mNvBxKw7RjTgYcZaE
   "testmode": false,
   "name": "Pro Monthly",
   "status": "active",
+  "cancellationReason": null,
   "basePrice": {
     "value": "29.00",
     "currency": "EUR"

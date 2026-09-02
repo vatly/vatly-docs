@@ -447,6 +447,78 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
   <tr>
     <td>
       <code>
+        OneOffProductUpdateSubmitted
+      </code>
+      
+       / <code>
+        OneOffProductUpdateApproved
+      </code>
+      
+       / <code>
+        OneOffProductUpdateRejected
+      </code>
+      
+       / <code>
+        OneOffProductArchived
+      </code>
+      
+       / <code>
+        OneOffProductUnarchived
+      </code>
+    </td>
+    
+    <td>
+      The <code>
+        one_off_product.*
+      </code>
+      
+       product-moderation events — see <a href="#product-moderation-events">
+        Product moderation events
+      </a>
+      
+       below
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionPlanUpdateSubmitted
+      </code>
+      
+       / <code>
+        SubscriptionPlanUpdateApproved
+      </code>
+      
+       / <code>
+        SubscriptionPlanUpdateRejected
+      </code>
+      
+       / <code>
+        SubscriptionPlanArchived
+      </code>
+      
+       / <code>
+        SubscriptionPlanUnarchived
+      </code>
+    </td>
+    
+    <td>
+      The <code>
+        subscription_plan.*
+      </code>
+      
+       product-moderation events — see <a href="#product-moderation-events">
+        Product moderation events
+      </a>
+      
+       below
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         UnsupportedWebhookReceived
       </code>
     </td>
@@ -533,6 +605,241 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
 **Money fields.** On the order and refund events (`OrderPaid`, `OrderPaymentFailed`, `RefundCompleted` / `RefundFailed` / `RefundCanceled`), `total` and `subtotal` are non-null `Vatly\API\Types\Money` value objects (a decimal-string `value` plus a `currency`); read the currency via `$event->total->currency` and minor units via `$event->total->toCents()`. These events no longer carry a standalone `currency` field. The chargeback events (`OrderChargebackReceived` / `OrderChargebackReversed`) carry nullable `?Money` `total` / `subtotal` and **keep** their standalone `currency` field.
 
 Exactly one of the webhook events above is dispatched per incoming webhook (`UnsupportedWebhookReceived` is the fallback for unmapped events). `SubscriptionWasCreatedFromWebhook` and `OrderWasCreatedFromWebhook` fire additionally, from the subscription- and order-sync reactions, only when a brand-new local row is created.
+
+## Product moderation events
+
+Vatly emits ten product events for the one-off-product and subscription-plan approval workflow (the "Manage Products" surface). Each is a typed event under `Vatly\API\Webhooks\Events\`, hydrated straight from the fat webhook payload — its `object` is the full `OneOffProduct` / `SubscriptionPlan` resource, carrying `pendingUpdates` (the proposed changes) and `updateStatus` (`pending` while an edit awaits approval, back to `null` once it's approved or rejected):
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Event
+    </th>
+    
+    <th>
+      <code>
+        eventName
+      </code>
+    </th>
+    
+    <th>
+      Meaning
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        OneOffProductUpdateSubmitted
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        one_off_product.update_submitted
+      </code>
+    </td>
+    
+    <td>
+      An edit to a one-off product was submitted for approval — <code>
+        pendingUpdates
+      </code>
+      
+       holds the proposed values, <code>
+        updateStatus: pending
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        OneOffProductUpdateApproved
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        one_off_product.update_approved
+      </code>
+    </td>
+    
+    <td>
+      A submitted edit was approved and applied — <code>
+        pendingUpdates: null
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        OneOffProductUpdateRejected
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        one_off_product.update_rejected
+      </code>
+    </td>
+    
+    <td>
+      A submitted edit was rejected — the product is unchanged, <code>
+        pendingUpdates: null
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        OneOffProductArchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        one_off_product.archived
+      </code>
+    </td>
+    
+    <td>
+      A one-off product was archived (<code>
+        archivedAt
+      </code>
+      
+       set)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        OneOffProductUnarchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        one_off_product.unarchived
+      </code>
+    </td>
+    
+    <td>
+      A previously archived one-off product was restored
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionPlanUpdateSubmitted
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        subscription_plan.update_submitted
+      </code>
+    </td>
+    
+    <td>
+      An edit to a subscription plan was submitted for approval
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionPlanUpdateApproved
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        subscription_plan.update_approved
+      </code>
+    </td>
+    
+    <td>
+      A submitted plan edit was approved and applied
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionPlanUpdateRejected
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        subscription_plan.update_rejected
+      </code>
+    </td>
+    
+    <td>
+      A submitted plan edit was rejected
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionPlanArchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        subscription_plan.archived
+      </code>
+    </td>
+    
+    <td>
+      A subscription plan was archived
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        SubscriptionPlanUnarchived
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        subscription_plan.unarchived
+      </code>
+    </td>
+    
+    <td>
+      A previously archived subscription plan was restored
+    </td>
+  </tr>
+</tbody>
+</table>
+
+These are product-management signals, not billing events: they carry no customer and there is no local row for the package to keep in sync, so **no built-in reaction touches them**. They are still fully received — signature-verified, recorded in `vatly_webhook_calls` (with `entity_type` `one_off_product` / `subscription_plan` and `vatly_customer_id` `null`), and dispatched onto the event bus — so you can drive your own cache-busting or product-mirroring off them.
+
+Each one-off-product event exposes `$event->oneOffProductId`, `$event->testmode`, and the hydrated `$event->oneOffProduct` (a `Vatly\API\Resources\OneOffProduct`); each subscription-plan event exposes `$event->subscriptionPlanId`, `$event->testmode`, and `$event->subscriptionPlan` (a `Vatly\API\Resources\SubscriptionPlan`).
+
+```php
+use Illuminate\Support\Facades\Event;
+use Vatly\API\Webhooks\Events\SubscriptionPlanUpdateApproved;
+
+Event::listen(SubscriptionPlanUpdateApproved::class, function (SubscriptionPlanUpdateApproved $event) {
+    // $event->subscriptionPlanId              // e.g. "subscription_plan_7Hd9Kf2Lm"
+    // $event->subscriptionPlan->pendingUpdates // null once approved
+    // Bust your local plan cache, re-pull your products, etc.
+});
+```
 
 ## Built-in reactions
 

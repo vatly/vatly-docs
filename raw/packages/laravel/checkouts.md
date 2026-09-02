@@ -42,6 +42,31 @@ $checkout = $user->checkout()
     );
 ```
 
+## Checkout language (locale)
+
+Set `locale` to present the hosted checkout — including its validation and error messages — in the customer's language. Do this when you already know their language: it is a better signal than their browser's, and it carries through to the payment provider's own hosted page.
+
+`create()` takes a fourth argument, `payloadOverrides`, that is merged into the checkout payload, so pass `locale` there:
+
+```php
+$checkout = $user->checkout()->create(
+    items: [['id' => 'product_abc123', 'quantity' => 1]],
+    redirectUrlSuccess: 'https://your-app.com/success',
+    redirectUrlCanceled: 'https://your-app.com/canceled',
+    payloadOverrides: ['locale' => 'de'],
+);
+```
+
+For the subscription flow, `subscribe()->create()` takes the same overrides:
+
+```php
+$checkout = $user->subscribe()
+    ->toPlan('subscription_plan_monthly')
+    ->create(['locale' => 'de']);
+```
+
+Send a bare language code (`de`), a BCP 47 tag (`de-AT`), or a POSIX / ISO 15897 locale (`de_DE`) — whichever your stack already stores. All three fold to the language, so `de`, `de-AT` and `de_DE` are the same request; there are no region-specific variants. Leave `locale` unset to let Vatly fall back to the customer's browser language.
+
 ## How it works
 
 The checkout flow:

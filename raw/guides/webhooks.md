@@ -234,7 +234,15 @@ The `eventName` field identifies what happened. The available events are:
     </td>
     
     <td>
-      A payment failed and a dunning process was initiated for the order.
+      A payment for this order failed and Vatly's automated payment recovery (dunning) has started. Delivered once, when recovery begins — not on each retry. If recovery succeeds you receive <code>
+        order.paid
+      </code>
+      
+       for the same order; if exhausted the related subscription is canceled. See <a href="#handling-failed-subscription-payments">
+        Handling failed subscription payments
+      </a>
+      
+      .
     </td>
   </tr>
   
@@ -294,7 +302,35 @@ The `eventName` field identifies what happened. The available events are:
     </td>
     
     <td>
-      A subscription was canceled immediately.
+      A subscription was canceled with immediate effect at the merchant's request. <code>
+        object
+      </code>
+      
+       is the subscription and carries <code>
+        cancellationReason: merchant_request
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subscription.canceled_for_nonpayment
+      </code>
+    </td>
+    
+    <td>
+      Payment recovery for a failed renewal was exhausted, so the subscription was canceled with immediate effect. <code>
+        object
+      </code>
+      
+       is the subscription and carries <code>
+        cancellationReason: payment_failure
+      </code>
+      
+      .
     </td>
   </tr>
   
@@ -670,6 +706,35 @@ The `eventName` field identifies what happened. The available events are:
   }
 }
 ```
+
+## Handling failed subscription payments
+
+When a subscription renewal payment fails, Vatly runs an automated **payment recovery** process (dunning) on your behalf. You never have to schedule your own retries — but you do decide when to restrict access.
+
+Here is what happens, and what you receive:
+
+1. The renewal payment fails and recovery begins. You receive a single `order.payment_failed` webhook for the renewal order — sent once, when recovery starts, not on each retry. The subscription's `status` stays `active` throughout recovery: it does **not** move to a "past due" state, and `on_grace_period` is never used for payment failure — that status means a *voluntary* cancellation that keeps access until the period ends.
+2. Vatly attempts to recover the payment, and how it does so depends on why the charge failed:
+
+  - **Soft decline** (e.g. insufficient funds, a temporary decline): the payment method is still valid, so Vatly automatically re-attempts the charge over a multi-week window, emailing the customer along the way.
+  - **Hard decline** (e.g. an expired, canceled, or invalid payment method): retrying cannot succeed, so Vatly instead prompts the customer to supply a new payment method, on a shorter window.
+3. **If recovery succeeds**, the original renewal order is paid and you receive `order.paid` for that same order. Because the subscription was never interrupted, access simply continues — nothing else is needed.
+4. **If recovery is exhausted** (the customer never resolves it), Vatly cancels the subscription: you receive `subscription.canceled_for_nonpayment` and the subscription `status` becomes `canceled` with `cancellationReason: payment_failure`.
+
+### Recommended integration
+
+Gate access on the events, not on a timer you keep in sync with ours:
+
+- On `order.payment_failed`: keep access on, and start your own grace period if your product has one.
+- On `order.paid` for the same order: recovery succeeded — clear that grace period.
+- If your grace period elapses with no matching `order.paid`: restrict access on your side if you wish. Vatly's recovery keeps running underneath, so a later `order.paid` lets you restore access automatically.
+- On the subscription's cancellation: remove access permanently.
+
+<note>
+
+The number of retry attempts and the exact retry cadence are operational details that Vatly tunes over time. Integrate against these webhook events rather than against specific durations or attempt counts.
+
+</note>
 
 ## Inspecting webhooks
 

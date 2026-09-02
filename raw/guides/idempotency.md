@@ -51,12 +51,25 @@ The idempotency key must be a unique string up to 64 characters. We recommend us
 
 ## How it works
 
-1. When you make a request with an idempotency key, our API stores the key along with the response.
-2. If you retry the request with the same key:
+1. When you make a request with an idempotency key, our API records the **first** response keyed by that request and returns it verbatim on any later request with the same key.
+2. A replayed response carries an `Idempotent-Replayed: true` header so you can tell it apart from a freshly processed request.
+3. **The first HTTP response is final for that key.** This includes a rendered `4xx` or `5xx` response, once request processing has started. Retry the exact request with the same key to retrieve that stored response. Only use a fresh key for corrected parameters after you have reconciled whether the original mutation took effect.
+4. After 24 hours, idempotency keys expire and become reusable as a fresh idempotency boundary.
 
-  - If the original request succeeded, we'll return the stored response
-  - If the original request failed or is still processing, we'll process the request normally
-3. After 24 hours, idempotency keys expire and are removed from our system.
+## What binds an idempotency key
+
+A key is bound to the exact shape of the first request. The following are **contract-significant** — replaying the same key with a different value returns `409 Conflict` **without executing the operation again**:
+
+- The HTTP method
+- The public endpoint and its concrete path
+- The query string
+- The request body
+- The normalized `Content-Type` media type
+- The normalized, ordered `Content-Encoding`
+
+When you hit a mismatch `409`, either retry with the original parameters or generate a new key.
+
+**Scope is per public route URI template.** The same key value used against a different endpoint is treated as a new key. Internal route-name or controller refactors on our side do not change replay identity — only the public route matters.
 
 ## Best practices
 
@@ -102,14 +115,16 @@ function createCheckoutWithRetry($vatly, $data) {
 
 ## Supported endpoints
 
-The following endpoints support idempotency:
+All mutating requests accept an optional `Idempotency-Key` header:
 
 - All `POST` requests
 - All `PATCH` requests
+- All `PUT` requests
+- All `DELETE` requests
 
 <note>
 
-`GET` and `DELETE` requests are naturally idempotent and don't require an idempotency key.
+An `Idempotency-Key` sent on a `GET` or `HEAD` request is ignored — those methods don't mutate state.
 
 </note>
 
@@ -117,10 +132,24 @@ The following endpoints support idempotency:
 
 If you receive an error response, check the status code to determine if you should retry the request:
 
-- `409 Conflict`: The request conflicts with another request using the same idempotency key. This usually means the key was already used for a different request.
 - `4xx` errors: Client errors (like validation errors) should not be retried with the same data.
 - `5xx` errors: Server errors can be safely retried with the same idempotency key.
 
+### Understanding `409 Conflict`
+
+A `409` shares one HTTP status across several distinct cases. The `message` distinguishes them, and idempotency cases also set `details.idempotency_outcome`:
+
+- **Replay mismatch**: the `Idempotency-Key` was reused with different request parameters (see [What binds an idempotency key](#what-binds-an-idempotency-key)). Retry with the original parameters or generate a new key.
+- **details.idempotency_outcome = in_progress** — **retryable.** Another caller is still processing this exact request. Wait the number of seconds in the `Retry-After` header, then resend the exact same request and key.
+- **details.idempotency_outcome = unknown** — **not retryable.** The mutation may have completed, but its response could not be recorded and cannot be replayed safely. Read and reconcile the affected resource state before taking any further mutating action. Never automatically retry — with either the same key or a fresh one.
+- **Concurrent write**: two writers modified the same resource at the same version. Reload the latest state and retry; the conflict resolves itself unless contention is sustained.
+
+<note>
+
+`Retry-After` is present only for the `in_progress` case. It tells you how many seconds to wait before resending the exact request and key.
+
+</note>
+
 ## Rate limits
 
-Idempotency keys count towards your rate limits only when they result in a new request being processed. Retries that return a stored response don't count towards your limits.
+**Exact replays still consume rate-limit budget.** API and per-merchant write throttles run *before* the idempotency lookup, so an otherwise valid replay can return `429 Too Many Requests` instead of the stored response. When this happens, wait for the interval in the `Retry-After` header, then resend the exact same request and key.
