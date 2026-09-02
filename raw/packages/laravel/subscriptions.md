@@ -218,7 +218,13 @@ A subscription can also be canceled **by Vatly**, not by your `cancel()` call: w
 
 ### Cancellation reason
 
-Vatly tags each cancellation with a reason, exposed on the dispatched event as `$event->cancellationReason` (`Vatly\API\Types\CancellationReason`):
+Vatly tags each cancellation with a reason. The package **persists it locally**: on any cancellation webhook (`subscription.canceled_immediately`, `subscription.canceled_with_grace_period`, `subscription.canceled_for_nonpayment`) the reason is written to the `cancellation_reason` column on the `vatly_subscriptions` row, so you can read it straight off the model:
+
+```php
+$user->subscription()->model()->cancellation_reason;   // e.g. "payment_failure", or null if not canceled
+```
+
+The same value is on the dispatched event as `$event->cancellationReason` (`Vatly\API\Types\CancellationReason`):
 
 <table>
 <thead>
@@ -292,7 +298,7 @@ Event::listen(SubscriptionCanceledForNonpayment::class, function (SubscriptionCa
 });
 ```
 
-The reason is not stored on the local `vatly_subscriptions` row — read it from the event when a cancellation arrives, or from the live API resource (`Vatly\API\Resources\Subscription::$cancellationReason`, fetched via `Vatly::getSubscription()->execute($vatlyId)`).
+The local `cancellation_reason` is only ever set, never cleared, by the webhook reactions — a `null` reason on an incoming update leaves the stored value untouched. If you also need the live value from Vatly, it's on the API resource as `Vatly\API\Resources\Subscription::$cancellationReason` (fetched via `Vatly::getSubscription()->execute($vatlyId)`).
 
 ## Updating billing details
 
