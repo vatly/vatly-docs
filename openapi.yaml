@@ -823,7 +823,9 @@ paths:
         customer directly to this API token's storefront in Vatly's hosted
         portal. The session is locked to the customer, storefront, merchant, and
         live/test mode represented by the token; it never exposes a storefront
-        picker or other stores associated with the same email address.
+        picker or other stores associated with the same email address. For a
+        merchant with multiple storefronts, each API token issues portal links
+        for its own storefront.
 
         Redirect the customer's browser to `url`. The link expires after roughly
         15 minutes by default and can be consumed once. If an idempotency key
