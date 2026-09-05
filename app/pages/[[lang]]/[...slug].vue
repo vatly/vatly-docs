@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // Overrides the docus theme's catch-all docs page
 // (node_modules/docus/app/pages/[[lang]]/[...slug].vue).
-// Identical to upstream except the "Edit this page" and "Report an issue"
-// links are resolved through `useSourceRepo()` so that on package reference
-// pages — which are synced in from their SDK repos — they point at the real
-// source repository (and the exact source file, for editing) rather than the
-// core docs repo. Core pages keep the theme's default behaviour.
+// Kept in sync with upstream (docus 5.13) except the "Edit this page" and
+// "Report an issue" links are resolved through `useSourceRepo()` so that on
+// package reference pages — which are synced in from their SDK repos — they
+// point at the real source repository (and the exact source file, for editing)
+// rather than the core docs repo. Core pages keep the theme's default behaviour.
 import { kebabCase } from 'scule'
 import type { ContentNavigationItem, Collections, DocsCollectionItem } from '@nuxt/content'
 import { findPageHeadline } from '@nuxt/content/utils'
@@ -16,10 +16,9 @@ definePageMeta({
 
 const route = useRoute()
 const { locale, isEnabled, t } = useDocusI18n()
+const { isOpen } = useAssistant()
 const appConfig = useAppConfig()
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation')
-const { shouldPushContent: shouldHideToc } = useAssistant()
-
 const collectionName = computed(() => isEnabled.value ? `docs_${locale.value}` : 'docs')
 
 const [{ data: page }, { data: surround }] = await Promise.all([
@@ -52,8 +51,10 @@ watch(() => navigation?.value, () => {
   headline.value = findPageHeadline(navigation?.value, page.value?.path) || headline.value
 })
 
-defineOgImageComponent('Docs', {
+defineOgImage('Docs', {
   headline: headline.value,
+  title: title?.slice(0, 60),
+  description: formatOgDescription(title, description),
 })
 
 const github = computed(() => appConfig.github ? appConfig.github : null)
@@ -89,7 +90,7 @@ addPrerenderPath(`/raw${route.path}.md`)
 <template>
   <UPage
     v-if="page"
-    :key="`page-${shouldHideToc}`"
+    :ui="isOpen ? { center: 'lg:col-span-10' } : undefined"
   >
     <UPageHeader
       :title="page.title"
@@ -131,35 +132,31 @@ addPrerenderPath(`/raw${route.path}.md`)
           >
             {{ t('docs.edit') }}
           </UButton>
-          <span>{{ t('common.or') }}</span>
-          <UButton
-            variant="link"
-            color="neutral"
-            :to="source.issuesUrl"
-            target="_blank"
-            icon="i-lucide-alert-circle"
-            :ui="{ leadingIcon: 'size-4' }"
-          >
-            {{ t('docs.report') }}
-          </UButton>
+          <template v-if="source.issuesUrl">
+            <span>{{ t('common.or') }}</span>
+            <UButton
+              variant="link"
+              color="neutral"
+              :to="source.issuesUrl"
+              target="_blank"
+              icon="i-lucide-alert-circle"
+              :ui="{ leadingIcon: 'size-4' }"
+            >
+              {{ t('docs.report') }}
+            </UButton>
+          </template>
         </div>
       </USeparator>
       <UContentSurround :surround="surround" />
     </UPageBody>
 
     <template
-      v-if="page?.body?.toc?.links?.length && !shouldHideToc"
+      v-if="!isOpen"
       #right
     >
-      <UContentToc
-        highlight
-        :title="appConfig.toc?.title || t('docs.toc')"
-        :links="page.body?.toc?.links"
-      >
-        <template #bottom>
-          <DocsAsideRightBottom />
-        </template>
-      </UContentToc>
+      <DocsAsideRight
+        :page="page"
+      />
     </template>
   </UPage>
 </template>

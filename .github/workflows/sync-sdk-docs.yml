@@ -102,6 +102,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          npm install -g npm@11
           npm ci
           npx nuxi build
           echo "docs.vatly.com" > .output/public/CNAME

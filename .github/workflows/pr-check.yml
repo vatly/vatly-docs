@@ -35,6 +35,10 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
+      # docus 5.13's dependency tree needs npm 11 (see deploy.yml).
+      - name: Update npm
+        run: npm install -g npm@11
+
       - name: Install dependencies
         run: npm ci
 
