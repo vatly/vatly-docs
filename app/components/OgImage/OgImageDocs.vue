@@ -2,12 +2,22 @@
 import { computed } from 'vue'
 
 const props = withDefaults(defineProps<{ title?: string, description?: string, headline?: string }>(), {
-  title: 'title',
-  description: 'description',
+  title: 'Vatly Docs',
+  description: '',
+  headline: '',
 })
 
-const title = computed(() => (props.title || '').slice(0, 60))
-const description = computed(() => (props.description || '').slice(0, 200))
+// Coerce every prop to a string before slicing. nuxt-og-image renders this
+// component as a Nuxt island and feeds the resulting HTML to satori's
+// htmlDecodeQuotes(). If the render throws — e.g. calling .slice() on a
+// non-string frontmatter value like a number — the island payload comes back
+// with `html: undefined`, and htmlDecodeQuotes() then crashes with
+// "Cannot read properties of undefined (reading 'replace')", 500-ing every
+// per-page og.png. String(... || fallback) keeps the render total for any
+// prop shape, so the PNG always generates.
+const title = computed(() => String(props.title || 'Vatly Docs').slice(0, 60))
+const description = computed(() => String(props.description || '').slice(0, 200))
+const headline = computed(() => String(props.headline || ''))
 </script>
 
 <template>
