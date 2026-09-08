@@ -11,6 +11,16 @@ const { title, description, headline } = defineProps<{ title?: string, descripti
 const safeTitle = String(title || 'Vatly Docs').slice(0, 60)
 const safeDescription = String(description || '').slice(0, 200)
 const safeHeadline = String(headline || '')
+
+// Scale the title down as it gets longer so it stays on a single line. takumi
+// does not reserve height for a wrapped heading, so a two-line title overlaps
+// the description below it (e.g. the homepage's "Vatly Developer Documentation").
+// Short docs titles keep the full 64px.
+const titleSizeClass = safeTitle.length > 34
+  ? 'text-[40px]'
+  : safeTitle.length > 22
+    ? 'text-[50px]'
+    : 'text-[64px]'
 </script>
 
 <template>
@@ -47,7 +57,7 @@ const safeHeadline = String(headline || '')
       </p>
       <h1
         v-if="safeTitle"
-        class="m-0 mb-[20px] text-[64px] font-bold text-white leading-[1.08] w-full max-w-[920px] wrap-break-word"
+        :class="`m-0 mb-[20px] ${titleSizeClass} font-bold text-white leading-[1.08] w-full max-w-[960px] wrap-break-word`"
       >
         {{ safeTitle }}
       </h1>
