@@ -21,7 +21,6 @@ const style = (appConfig.ogImageStyle as string | undefined) ?? 'vatly'
 const safeTitle = String(title || 'Vatly Docs').slice(0, 60)
 const safeDescription = String(description || '').slice(0, 200)
 const safeHeadline = String(headline || '')
-const topLabel = safeHeadline || 'Developer Docs'
 
 // Scale the title down as it gets longer so it stays on a single line — takumi
 // does not reserve height for a wrapped heading, so a two-line title would
@@ -51,12 +50,21 @@ const LOGO_PATH = 'M11.099 40.76 0 11.596h8.458l6.401 18.191 6.344-18.191h8.464L
     v-if="style !== 'classic'"
     class="w-full h-full flex flex-col justify-between bg-[#326bff] px-[80px] py-[72px]"
   >
-    <!-- Top row: white wordmark + uppercase section label -->
+    <!-- Top row: persistent "vatly · Developer Docs" lockup (left) + section label (right) -->
     <div class="flex items-center justify-between">
-      <svg width="120" height="47" viewBox="0 0 134 53" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
-        <path :d="LOGO_PATH" />
-      </svg>
-      <span class="uppercase text-[20px] font-semibold tracking-[0.18em] text-[#ffffffd1]">{{ topLabel }}</span>
+      <div class="flex items-center">
+        <svg width="112" height="44" viewBox="0 0 134 53" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+          <path :d="LOGO_PATH" />
+        </svg>
+        <span class="text-[28px] text-[#ffffff8a] mx-[16px]">·</span>
+        <span class="text-[24px] font-medium text-[#ffffffd1]">Developer Docs</span>
+      </div>
+      <span
+        v-if="safeHeadline"
+        class="uppercase text-[20px] font-semibold tracking-[0.18em] text-[#ffffffab]"
+      >
+        {{ safeHeadline }}
+      </span>
     </div>
 
     <!-- Middle: title + description -->
