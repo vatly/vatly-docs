@@ -70,7 +70,7 @@ Sell digital products and subscriptions worldwide with Vatly. Built for European
 Getting started with Vatly is easy!
 
 1. Create a new account at [vatly.com](https://my.vatly.com).
-2. Grab your API keys from **Developers > API keys**.
+2. Grab your API keys from **Developers » API keys**.
 3. Connect your Mollie account.
 4. Set up your products.
 5. Integrate Vatly in your SaaS or landing page using one of our [SDKs](/guides/sdks).
