@@ -1,8 +1,25 @@
 <script setup lang="ts">
+const title = 'Vatly Developer Documentation'
+// No trailing period: nuxt-og-image derives the static OG filename from the
+// props, and on the homepage the description is the final path segment — a
+// trailing "." would make the filename end in "..png", which Nitro silently
+// skips writing (docs pages avoid this because a base64 page-path segment
+// follows their description).
+const description = 'Learn everything about the Vatly API and start selling worldwide'
+
 useSeo({
-  title: 'Vatly Developer Documentation',
-  description: 'Learn everything about the Vatly API and start selling worldwide.',
+  title,
+  description,
   type: 'website',
+})
+
+// Give the homepage a per-page OG card via the same nuxt-og-image v6 / takumi
+// template as the docs pages (Docs.takumi.vue). Without this the homepage falls
+// back to the static og-image.jpg — a bare wordmark at a non-standard 2400x1120
+// ratio that social platforms crop awkwardly.
+defineOgImage('Docs', {
+  title,
+  description,
 })
 </script>
 
