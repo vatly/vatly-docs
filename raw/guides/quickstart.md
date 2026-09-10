@@ -5,7 +5,7 @@
 <note>
 
 Before you can make requests to the Vatly API, you will need to grab your
-API key from your dashboard. You find it under [Settings » API](#).
+API key from your dashboard. You find it under [Developers » API keys](https://my.vatly.com).
 
 </note>
 
@@ -56,7 +56,7 @@ $vatly->checkouts->page();
 
 Great, you're now set up with an API client and have made your first request to the API. Here are a few links that might be handy as you venture further into the Vatly API:
 
-- [Grab your API key from the Vatly dashboard](#)
+- [Grab your API key from the Vatly dashboard](https://my.vatly.com)
 - [Follow the typical selling flow in Vatly](/guides/selling-workflow)
 - [Check out the Checkouts endpoint](/api-reference/checkouts)
 - [Learn about the different error messages in Vatly](/guides/errors)

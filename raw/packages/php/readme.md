@@ -24,7 +24,7 @@ Initialize the client with your API key and create a checkout.
 
 ### API Keys
 
-Get your API keys from the [Vatly Dashboard](https://my.vatly.com) under **Settings > API**.
+Get your API keys from the [Vatly Dashboard](https://my.vatly.com) under **Developers > API keys**.
 
 <table>
 <thead>
