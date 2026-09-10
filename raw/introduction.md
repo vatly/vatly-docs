@@ -35,7 +35,7 @@ Real-time event notifications for checkouts, orders, subscriptions, refunds, and
 ## Get started in minutes
 
 1. Create a new account at [vatly.com](https://my.vatly.com).
-2. Grab your API keys from **Developers > API keys**.
+2. Grab your API keys from **Developers » API keys**.
 3. Connect your Mollie account.
 4. Set up your products.
 5. Integrate Vatly using one of our [packages](/packages).
