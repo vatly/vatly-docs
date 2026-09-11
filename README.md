@@ -1,3 +1,5 @@
+![Vatly Documentation](art/banner.png)
+
 # Vatly Docs
 
 API documentation for [Vatly](https://vatly.com), the Merchant of Record billing platform for European SaaS companies.
