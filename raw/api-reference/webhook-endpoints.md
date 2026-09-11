@@ -607,8 +607,6 @@ Updates a webhook endpoint's `url`, its signing `secret`, and/or its complete `e
 
 Omitting `enabledEvents` preserves the current subscriptions; sending `[]` makes the endpoint dormant; sending a list **replaces** the whole set. Sending an empty body is a no-op that returns the current endpoint.
 
-Repointing the URL is the supported way to follow an ephemeral environment whose public URL changes between runs, without rotating the signing secret.
-
 ### Optional attributes
 
 <table>
