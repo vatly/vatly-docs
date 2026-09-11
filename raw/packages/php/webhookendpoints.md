@@ -2,14 +2,20 @@
 
 > Vatly PHP SDK - Webhook Endpoints
 
-A webhook endpoint is the HTTPS URL Vatly POSTs event deliveries to. You register
-one from code (or infrastructure-as-code) instead of the dashboard. There is **at
-most one endpoint per mode** — one for test and one for live, determined by the
-API token.
+A webhook endpoint is the HTTPS URL Vatly POSTs event deliveries to — registered
+from code (or infrastructure-as-code) rather than the dashboard. A storefront can
+have **up to five endpoints per mode** (test and live are set by the API token),
+each with a URL unique within that storefront and mode. A duplicate URL or a sixth
+endpoint is rejected with `422`.
 
-The signing `secret` you provide is **write-only**: it is sent on create/update
-but is never returned in any response. Store the value you send — you use it to
-verify the `Vatly-Signature` HMAC on deliveries (see [Webhooks](/packages/php/webhooks)).
+Each endpoint has its own `enabledEvents` set — the public event names it receives
+(see [`WebhookSubscriptionEventName`](https://github.com/Vatly/vatly-api-php/blob/main/src/API/Types/WebhookSubscriptionEventName.php)).
+An empty set makes it dormant; `webhook.setup` is never subscribable and is always
+sent when Vatly verifies the endpoint.
+
+The signing `secret` is **write-only**: sent on create/update, never returned.
+Store the value you send — you use it to verify the `Vatly-Signature` HMAC on
+deliveries (see [Webhooks](/packages/php/webhooks)).
 
 ## The WebhookEndpoint Resource
 
@@ -118,6 +124,28 @@ Below you'll find all properties for the Vatly WebhookEndpoint resource.
   <tr>
     <td>
       <code>
+        enabledEvents
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string[]
+      </code>
+    </td>
+    
+    <td>
+      The event names this endpoint is subscribed to. An empty array means dormant (no domain events); <code>
+        webhook.setup
+      </code>
+      
+       is still sent.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         createdAt
       </code>
     </td>
@@ -157,18 +185,15 @@ Below you'll find all properties for the Vatly WebhookEndpoint resource.
 </tbody>
 </table>
 
-> The signing `secret` is never present on the resource — it is write-only.
-
 ---
 
 ## Register a webhook endpoint
 
 `POST /v1/webhook-endpoints`
 
-Register the endpoint for the mode determined by the API token. Vatly sends a
-`webhook.setup` verification ping to the URL and validates its SSL certificate;
-if either fails the request is rejected. Registering a second endpoint for a mode
-that already has one is rejected — update or delete the existing one instead.
+Register an endpoint for the token's mode. Vatly sends a `webhook.setup`
+verification ping and validates the URL's SSL certificate; if either fails,
+registration is rejected with `422`.
 
 ### Required attributes
 
@@ -226,20 +251,77 @@ that already has one is rejected — update or delete the existing one instead.
     </td>
     
     <td>
-      Signing secret (min 10 chars). Write-only — keep this value, the API never returns it.
+      Signing secret (min 10 chars). Write-only — keep it, the API never returns it.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+### Optional attributes
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        enabledEvents
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string[]
+      </code>
+    </td>
+    
+    <td>
+      The events to deliver (<code>
+        WebhookSubscriptionEventName
+      </code>
+      
+       values). Omit to subscribe to every event available at registration (not updated afterwards); send <code>
+        []
+      </code>
+      
+       for a dormant endpoint. <code>
+        webhook.setup
+      </code>
+      
+       is not selectable.
     </td>
   </tr>
 </tbody>
 </table>
 
 ```php
+use Vatly\API\Types\WebhookSubscriptionEventName;
+
 $endpoint = $vatly->webhookEndpoints->create([
     'url' => 'https://merchant.example/webhooks/vatly',
-    'secret' => getenv('VATLY_WEBHOOK_SECRET'), // min 10 chars, keep it — never returned
+    'secret' => getenv('VATLY_WEBHOOK_SECRET'),
+    'enabledEvents' => [
+        WebhookSubscriptionEventName::ORDER_PAID,
+        WebhookSubscriptionEventName::REFUND_COMPLETED,
+    ],
 ]);
 
 echo $endpoint->id;  // webhook_...
-echo $endpoint->url;
 ```
 
 ---
@@ -262,8 +344,7 @@ echo $endpoint->url;
 
 `GET /v1/webhook-endpoints`
 
-List the endpoints for the token's mode. Because there is at most one endpoint
-per mode, this returns at most one endpoint.
+List all endpoints for the token's mode.
 
 ```php
 $endpoints = $vatly->webhookEndpoints->page();
@@ -279,9 +360,9 @@ foreach ($endpoints as $endpoint) {
 
 `PATCH /v1/webhook-endpoints/:id`
 
-Repoint the endpoint (`url`), rotate the signing `secret`, or both. A new URL is
-revalidated for reachability and SSL just like on creation. Sending an empty body
-is a no-op that returns the current endpoint.
+Repoint the endpoint (`url`), rotate the signing `secret`, and/or replace its
+`enabledEvents` set. A new URL is revalidated for reachability and SSL just like
+on creation. An empty body is a no-op that returns the current endpoint.
 
 ### Optional attributes
 
@@ -335,15 +416,51 @@ is a no-op that returns the current endpoint.
     </td>
     
     <td>
-      New signing secret (min 10 chars). Write-only — keep the value.
+      New signing secret (min 10 chars). Write-only.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        enabledEvents
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string[]
+      </code>
+    </td>
+    
+    <td>
+      Replaces the <strong>
+        complete
+      </strong>
+      
+       subscription set (<code>
+        WebhookSubscriptionEventName
+      </code>
+      
+       values). Omit to preserve the current set; send <code>
+        []
+      </code>
+      
+       to make the endpoint dormant.
     </td>
   </tr>
 </tbody>
 </table>
 
 ```php
+use Vatly\API\Types\WebhookSubscriptionEventName;
+
 $endpoint = $vatly->webhookEndpoints->update('webhook_QdEpFhdSrG4Y3DnfsdqsH', [
     'url' => 'https://merchant.example/webhooks/vatly-v2',
+    'enabledEvents' => [
+        WebhookSubscriptionEventName::CHECKOUT_PAID,
+        WebhookSubscriptionEventName::ORDER_PAID,
+    ],
 ]);
 ```
 
