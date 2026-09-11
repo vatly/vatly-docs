@@ -3177,9 +3177,9 @@ paths:
       summary: List webhook endpoints
       description: |
         Returns the webhook endpoints for the authenticated merchant, filtered by
-        the testmode determined from the API token. Because there is at most one
-        endpoint per mode, this returns at most one endpoint. The signing secret
-        is never included.
+        the testmode determined from the API token. A storefront can have up to
+        five endpoints per mode. Each endpoint includes its explicit event
+        subscriptions; the signing secret is never included.
       tags:
         - Webhook Endpoints
       parameters:
@@ -3206,7 +3206,7 @@ paths:
                   count:
                     type: integer
                     description: Number of items in the current page
-                    example: 1
+                    example: 2
                   links:
                     $ref: '#/components/schemas/PaginationLinks'
               example:
@@ -3215,12 +3215,26 @@ paths:
                     resource: webhook_endpoint
                     testmode: false
                     url: https://merchant.example/webhooks/vatly
+                    enabledEvents:
+                      - order.paid
+                      - refund.completed
                     createdAt: '2024-01-15T10:30:00Z'
                     links:
                       self:
                         href: https://api.vatly.com/v1/webhook-endpoints/webhook_QdEpFhdSrG4Y3DnfsdqsH
                         type: application/json
-                count: 1
+                  - id: webhook_Vm6zTjNsKp9LcRwXyBaF
+                    resource: webhook_endpoint
+                    testmode: false
+                    url: https://analytics.example/webhooks/vatly
+                    enabledEvents:
+                      - checkout.paid
+                    createdAt: '2024-02-10T08:15:00Z'
+                    links:
+                      self:
+                        href: https://api.vatly.com/v1/webhook-endpoints/webhook_Vm6zTjNsKp9LcRwXyBaF
+                        type: application/json
+                count: 2
                 links:
                   self:
                     href: https://api.vatly.com/v1/webhook-endpoints
@@ -3247,9 +3261,14 @@ paths:
 
         Vatly sends a `webhook.setup` verification ping to the URL and validates
         its SSL certificate; if either fails the request is rejected with `422`.
-        There is at most one endpoint per mode — registering a second one when the
-        token's mode already has an endpoint returns `422`; update or delete the
-        existing one instead.
+        A storefront may register up to five endpoints in each mode, and each URL
+        must be unique within that storefront and mode. A duplicate URL or a sixth
+        endpoint returns `422`.
+
+        `enabledEvents` is an explicit snapshot. If omitted, Vatly stores every
+        event name available at registration time; events introduced later are
+        not enabled automatically. Send `[]` for a dormant endpoint. The
+        `webhook.setup` verification event is unconditional and cannot be selected.
 
         **Use cases:**
         - Provision an endpoint from CI / infrastructure-as-code
@@ -3267,6 +3286,9 @@ paths:
             example:
               url: https://merchant.example/webhooks/vatly
               secret: whsec_3f9a1c7e2d4f7b9c5a2c1d5b7e9f3a8d
+              enabledEvents:
+                - order.paid
+                - refund.completed
       responses:
         '201':
           description: Webhook endpoint registered successfully
@@ -3282,6 +3304,9 @@ paths:
                 resource: webhook_endpoint
                 testmode: false
                 url: https://merchant.example/webhooks/vatly
+                enabledEvents:
+                  - order.paid
+                  - refund.completed
                 createdAt: '2024-01-15T10:30:00Z'
                 links:
                   self:
@@ -3318,6 +3343,9 @@ paths:
                 resource: webhook_endpoint
                 testmode: false
                 url: https://merchant.example/webhooks/vatly
+                enabledEvents:
+                  - order.paid
+                  - refund.completed
                 createdAt: '2024-01-15T10:30:00Z'
                 links:
                   self:
@@ -3335,10 +3363,12 @@ paths:
       operationId: updateWebhookEndpoint
       summary: Update a webhook endpoint
       description: |
-        Updates a webhook endpoint's `url`, its signing `secret`, or both. A new
-        URL is revalidated for reachability and a valid SSL certificate just like
-        on creation. The secret is write-only and is never returned. Sending an
-        empty body is a no-op that returns the current endpoint.
+        Updates a webhook endpoint's `url`, signing `secret`, and/or complete
+        `enabledEvents` subscription set. A new URL is revalidated for
+        reachability and a valid SSL certificate just like on creation. The secret
+        is write-only and is never returned. Omitting `enabledEvents` preserves
+        the current set; sending `[]` makes the endpoint dormant. Sending an empty
+        body is a no-op that returns the current endpoint.
 
         Repointing the URL is the supported way to follow an ephemeral
         environment whose public URL changes between runs, without rotating the
@@ -3356,6 +3386,9 @@ paths:
               $ref: '#/components/schemas/UpdateWebhookEndpointRequest'
             example:
               url: https://merchant.example/webhooks/vatly-v2
+              enabledEvents:
+                - checkout.paid
+                - order.paid
       responses:
         '200':
           description: Webhook endpoint updated successfully
@@ -3371,6 +3404,9 @@ paths:
                 resource: webhook_endpoint
                 testmode: false
                 url: https://merchant.example/webhooks/vatly-v2
+                enabledEvents:
+                  - checkout.paid
+                  - order.paid
                 createdAt: '2024-01-15T10:30:00Z'
                 links:
                   self:
@@ -6893,8 +6929,9 @@ components:
         and signs each one with the secret you set (see the `Vatly-Signature`
         header).
 
-        There is at most one endpoint per mode: one for test and one for live (the
-        mode is determined by the API token).
+        A storefront can have up to five endpoints in each mode. URLs must be
+        unique within the storefront and mode. Each endpoint receives only the
+        public event names in `enabledEvents`; an empty list makes it dormant.
 
         The signing secret is write-only: you provide it on creation (and may rotate
         it via update) but it is never returned in any response. Store the value you
@@ -6904,6 +6941,7 @@ components:
         - resource
         - testmode
         - url
+        - enabledEvents
         - createdAt
         - links
       additionalProperties: false
@@ -6926,6 +6964,22 @@ components:
           format: uri
           description: The HTTPS URL deliveries are POSTed to
           example: https://merchant.example/webhooks/vatly
+        enabledEvents:
+          type: array
+          description: |
+            The endpoint's persisted subscription names. Current names in this list
+            are delivered; a retired public name can remain visible for stable
+            readback but is inert. New event names are not added automatically;
+            update this list to opt in. An empty list means no domain events are
+            delivered, although `webhook.setup` is still sent whenever Vatly
+            verifies the endpoint configuration.
+          uniqueItems: true
+          items:
+            type: string
+            description: A current subscribable name or a retired public name retained on this endpoint.
+          example:
+            - order.paid
+            - refund.completed
         createdAt:
           type: string
           format: date-time
@@ -6967,12 +7021,27 @@ components:
             variable) and use it to verify inbound webhooks. It is write-only — keep
             this value, as the API never returns it.
           example: whsec_3f9a1c7e2d4f7b9c5a2c1d5b7e9f3a8d
+        enabledEvents:
+          type: array
+          description: |
+            The explicit events delivered to this endpoint. If omitted, Vatly
+            stores all event names available at registration time. New event names
+            added later are not enabled automatically. Send an empty list to create
+            a dormant endpoint. `webhook.setup` cannot be selected and remains an
+            unconditional configuration-verification event.
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/WebhookSubscriptionEventName'
+          example:
+            - order.paid
+            - refund.completed
     UpdateWebhookEndpointRequest:
       type: object
       description: |
         Request body for updating a webhook endpoint. Send `url` to repoint the
-        endpoint, `secret` to rotate the signing secret, or both. Omitting both is a
-        no-op that returns the current endpoint.
+        endpoint, `secret` to rotate the signing secret, and/or `enabledEvents` to
+        replace its full subscription set. Omitting all three is a no-op that
+        returns the current endpoint.
       additionalProperties: false
       properties:
         url:
@@ -6989,6 +7058,19 @@ components:
             New signing secret for this endpoint. Write-only — keep the value, as
             the API never returns it.
           example: whsec_a1b2c3d4e5f60718293a4b5c6d7e8f90
+        enabledEvents:
+          type: array
+          description: |
+            Replaces the endpoint's complete event subscription set. Omit this
+            field to preserve the current subscriptions; send an empty list to make
+            the endpoint dormant. New event names are never added automatically.
+            `webhook.setup` is not subscribable.
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/WebhookSubscriptionEventName'
+          example:
+            - checkout.paid
+            - order.paid
     Subscription:
       type: object
       description: |
@@ -7670,6 +7752,46 @@ components:
             - 'null'
           description: Additional description line for the refund
           example: 'Ticket #12345'
+    WebhookSubscriptionEventName:
+      type: string
+      description: |
+        A public event name that can be enabled for a webhook endpoint. The
+        `webhook.setup` verification event is deliberately excluded: Vatly sends
+        that event whenever it verifies endpoint configuration, regardless of the
+        endpoint's subscriptions.
+      enum:
+        - checkout.canceled
+        - checkout.expired
+        - checkout.failed
+        - checkout.paid
+        - one_off_product.archived
+        - one_off_product.unarchived
+        - one_off_product.update_approved
+        - one_off_product.update_rejected
+        - one_off_product.update_submitted
+        - order.canceled
+        - order.chargeback_received
+        - order.chargeback_reversed
+        - order.paid
+        - order.payment_failed
+        - refund.canceled
+        - refund.completed
+        - refund.failed
+        - subscription.billing_updated
+        - subscription.canceled_for_nonpayment
+        - subscription.canceled_immediately
+        - subscription.canceled_with_grace_period
+        - subscription.cancellation_grace_period_completed
+        - subscription.resumed
+        - subscription.started
+        - subscription.update_scheduled
+        - subscription.updated
+        - subscription_plan.archived
+        - subscription_plan.unarchived
+        - subscription_plan.update_approved
+        - subscription_plan.update_rejected
+        - subscription_plan.update_submitted
+      example: order.paid
     FastForwardSubscriptionRenewalRequest:
       type: object
       properties:
