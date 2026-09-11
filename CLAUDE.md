@@ -1,43 +1,46 @@
-# Vatly Docs Migration - Docus
+# Vatly Docs
 
-## Task
-1. **Verify all docs against the OpenAPI spec** at `/Users/sandervanhooft/vatlify/docs/openapi/`
-   - Compare each API reference page against the corresponding OpenAPI path YAML
-   - Ensure all endpoints, parameters, request/response schemas, and examples match
-   - Flag any missing endpoints or incorrect documentation
-   - Check: customers, checkouts, subscriptions, subscription-plans, orders, refunds, global-refunds (called "Order Refunds" in OpenAPI?), chargebacks, one-off-products
+Docus-based documentation site for the Vatly API, published to **docs.vatly.com** (GitHub Pages).
 
-2. **Fix any discrepancies** - update the markdown docs to match the OpenAPI spec exactly
+## Source of truth: the vatlify OpenAPI spec
 
-3. **Apply Vatly branding** to the Docus site:
-   - Title: "Vatly Docs" (not "docus-starter")
-   - Logo: Use `/Users/sandervanhooft/evy/brand-assets/vatly/vatly-wordmark.svg` (white version for dark, blue for light)
-   - Also available: `/Users/sandervanhooft/evy/brand-assets/vatly/vatly-logo-square-400x400-white-on-blue.png`
-   - Colors:
-     - Primary/Blue: #326bff
-     - Black: #161616
-     - White: #ffffff
-   - Font: Poppins (Light 300, Medium 500, Bold 700)
-   - Both light AND dark mode must look correct
+The API is specified in the private **`sandervanhooft/vatlify`** repo under `docs/openapi/`. There is **no local checkout** on this machine — fetch from GitHub via `gh`:
 
-4. **Copy logo files** into the Docus `public/` directory
+```bash
+gh api "repos/sandervanhooft/vatlify/contents/docs/openapi/dist/openapi.bundled.yaml?ref=main" --jq '.content' | base64 -d
+```
 
-## Brand Guidelines
-- Dark backgrounds: white logo
-- Light backgrounds: blue (#326bff) logo
-- Logo SVG viewBox: 0 0 134 53
+- Bundled (canonical): `docs/openapi/dist/openapi.bundled.yaml`
+- Source: `docs/openapi/openapi.yaml`, paths `docs/openapi/paths/*.yaml`, schemas `docs/openapi/components/schemas/*.yaml`
+- `public/openapi.yaml` in **this** repo is a vendored copy of that bundle (served at docs.vatly.com/openapi.yaml). Keep it in sync.
 
-## OpenAPI Spec Location
-- Main spec: `/Users/sandervanhooft/vatlify/docs/openapi/openapi.yaml`
-- Bundled: `/Users/sandervanhooft/vatlify/docs/openapi/dist/openapi.bundled.yaml`
-- Path files: `/Users/sandervanhooft/vatlify/docs/openapi/paths/*.yaml`
-- Schema files: `/Users/sandervanhooft/vatlify/docs/openapi/components/schemas/*.yaml`
+## Ongoing workflow: adopt spec changes, then cascade downstream
 
-## Docus Config
-- `nuxt.config.ts` for site config (title, description, colors, etc.)
-- `app/` for theme customization
-- `content/` for markdown docs
-- `public/` for static assets
+When the vatlify OpenAPI changes:
 
-## When done
-Run: openclaw system event --text "Done: Vatly docs verified against OpenAPI spec and branded" --mode now
+1. Diff the latest bundle against `public/openapi.yaml`; refresh the copy.
+2. Update the hand-written API reference (`content/2.api-reference/*.md`) and guides (`content/1.guides/*.md`) to match — endpoints, fields, request/response examples, behaviors.
+3. Cascade the same changes to the SDKs, in dependency order, each with an alpha release:
+   **`vatly-api-php` → `vatly-fluent-php` → `vatly-laravel`**
+   Plus the WordPress consumers when affected: `vatly/vatly-fluentcart-wp` and `sandervanhooft/vatly-pmpro` (these don't cut releases yet).
+
+SDK doc pages (`content/3.packages/1.php/*`, `content/3.packages/2.laravel/*`) are **not** hand-edited here — they auto-sync from each SDK repo's `docs/*.md` via the "Sync SDK Docs" GitHub Action. Fix SDK docs in the SDK repo, not here.
+
+## Repo layout
+
+- `content/` — markdown docs: `0.introduction`, `1.guides`, `2.api-reference`, `3.packages` (synced), `4.integrations`
+- `public/` — `openapi.yaml` (vendored spec), logos, static assets
+- `nuxt.config.ts` — Docus/site config; `app/` — theme customization
+- `scripts/` — `transform-sdk-docs.mjs`, `transform-laravel-docs.mjs`, `generate-sitemap.mjs`
+
+## Conventions
+
+- Merchant-facing language: say **"Products" / "Manage Products"**, never "catalogue."
+- Dashboard: the API key and webhooks live under **"Developers"**, not "Settings."
+- Do **not** add attribution lines to commit messages or PR descriptions.
+- Commits push under the GitHub noreply email (`sandervanhooft@users.noreply.github.com`) — the private email is blocked by push protection.
+
+## Branding (applied)
+
+- Title "Vatly Docs"; wordmark in `public/` (white on dark backgrounds, blue on light).
+- Colors: Blue `#326bff`, Black `#161616`, White `#ffffff`. Font: Poppins (300/500/700). Both light and dark mode must look correct.
