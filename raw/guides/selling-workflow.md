@@ -51,7 +51,7 @@ Configure the webhook in the dashboard and make sure the endpoint is:
 
 - Reachable from the public internet
 - Served over HTTPS
-- Able to verify the `x-vatly-signature` header
+- Able to verify the `Vatly-Signature` header
 
 This is a critical part of the integration. Use webhooks to confirm what happened instead of relying only on the customer's browser returning to your site.
 
@@ -111,13 +111,7 @@ The response includes a hosted checkout URL in `links.checkoutUrl.href`. That is
 ```json [Response]
 {
   "id": "checkout_QGQ0qDrQ2B4O1yXVTr6Wc",
-  "status": "open",
-  "products": [
-    {
-      "id": "one_off_product_Vr8kQdFhSrG4Y3DnfsdqH",
-      "quantity": 1
-    }
-  ],
+  "status": "created",
   "redirectUrlSuccess": "https://example.com/success",
   "redirectUrlCanceled": "https://example.com/canceled",
   "links": {

@@ -1029,7 +1029,7 @@ Submits an update to a live subscription plan. Because plans drive VAT-bearing r
 
 Each request is the **complete set of changes** relative to the current live plan, and must contain at least one field. Fields equal to the live value are ignored, and a request that nets to no change clears any pending update. A new request replaces the not-yet-reviewed one; while an update is being reviewed, further requests return `409`. Changing the interval on a plan that has ever been used by a subscription — active or not — also returns `409`. The price stays changeable.
 
-The submitted change is surfaced on the plan resource as `pendingUpdates` (only the fields that differ), with `updateStatus` tracking the review. Approval is signalled by the `subscriptionPlan.update_submitted`, `subscriptionPlan.update_approved`, and `subscriptionPlan.update_rejected` webhook events.
+The submitted change is surfaced on the plan resource as `pendingUpdates` (only the fields that differ), with `updateStatus` tracking the review. Approval is signalled by the `subscription_plan.update_submitted`, `subscription_plan.update_approved`, and `subscription_plan.update_rejected` webhook events.
 
 ### URL parameters
 

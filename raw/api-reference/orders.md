@@ -79,12 +79,16 @@ The order model contains all the information about your orders, including the or
     
     <td>
       <code>
-        string
+        string | null
       </code>
     </td>
     
     <td>
-      ID of the customer who made this purchase.
+      ID of the customer who made this purchase. Always present, but <code>
+        null
+      </code>
+      
+       for orders with no associated customer.
     </td>
   </tr>
   
@@ -637,6 +641,78 @@ The order model contains all the information about your orders, including the or
        Money object.
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <code>
+        productType
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The product type this line links to. One of <code>
+        one_off_product
+      </code>
+      
+      , <code>
+        subscription_plan
+      </code>
+      
+      , <code>
+        subscription
+      </code>
+      
+      , <code>
+        billing_details_verification
+      </code>
+      
+      , <code>
+        auth_request_product
+      </code>
+      
+      , or <code>
+        null
+      </code>
+      
+       when the line has no product link.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        productId
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The linked product's id (e.g. <code>
+        subscription_...
+      </code>
+      
+       for a <code>
+        subscription
+      </code>
+      
+       line). <code>
+        null
+      </code>
+      
+       when the line has no product link.
+    </td>
+  </tr>
 </tbody>
 </table>
 
@@ -810,7 +886,9 @@ $orders = $vatly->orders->page();
                 "currency": "EUR"
               }
             }
-          ]
+          ],
+          "productType": "subscription",
+          "productId": "subscription_Qp7mNvBxKw3RjTgYcZaE"
         }
       ],
       "customerDetails": {
@@ -983,7 +1061,9 @@ $order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
             "currency": "EUR"
           }
         }
-      ]
+      ],
+      "productType": "subscription",
+      "productId": "subscription_Jk4pQrSvWm8NjLhYbUcP"
     }
   ],
   "customerDetails": {

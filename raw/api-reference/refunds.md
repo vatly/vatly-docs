@@ -84,7 +84,11 @@ The refund model contains all the information about order refunds, including the
     </td>
     
     <td>
-      ID of the credit note order created for this refund. Only present after the refund is processed.
+      ID of the credit note order created for this refund. Always present; <code>
+        null
+      </code>
+      
+       until the refund is processed.
     </td>
   </tr>
   

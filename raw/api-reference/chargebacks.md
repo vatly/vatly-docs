@@ -75,6 +75,24 @@ Chargebacks are created automatically when a payment provider initiates a disput
   <tr>
     <td>
       <code>
+        customerId
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      ID of the customer the chargeback was raised against.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         testmode
       </code>
     </td>
@@ -87,6 +105,48 @@ Chargebacks are created automatically when a payment provider initiates a disput
     
     <td>
       Whether this chargeback is in test mode.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        status
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      The current status of the chargeback dispute. Can be <code>
+        pending
+      </code>
+      
+      , <code>
+        accepted
+      </code>
+      
+      , <code>
+        rejected
+      </code>
+      
+      , <code>
+        evidence_submitted
+      </code>
+      
+      , <code>
+        won
+      </code>
+      
+      , or <code>
+        lost
+      </code>
+      
+      .
     </td>
   </tr>
   
@@ -135,6 +195,80 @@ Chargebacks are created automatically when a payment provider initiates a disput
       </code>
       
        due to currency conversion or fees.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        total
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Total chargeback amount including taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subtotal
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Chargeback subtotal before taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        taxSummary
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        array
+      </code>
+    </td>
+    
+    <td>
+      Tax breakdown by rate for the chargeback. Array of objects with <code>
+        taxRate
+      </code>
+      
+       (<code>
+        name
+      </code>
+      
+      , <code>
+        percentage
+      </code>
+      
+      , <code>
+        taxablePercentage
+      </code>
+      
+      ) and <code>
+        amount
+      </code>
+      
+       (Money).
     </td>
   </tr>
   
@@ -216,7 +350,11 @@ Chargebacks are created automatically when a payment provider initiates a disput
         order_
       </code>
       
-      ). Only present after the chargeback is processed.
+      ). Always present; <code>
+        null
+      </code>
+      
+       until the chargeback is processed.
     </td>
   </tr>
   
@@ -375,7 +513,9 @@ $chargebacks = $vatly->chargebacks->page();
     {
       "id": "chargeback_Mn6xBtPvKw2RjTgYcZaE",
       "resource": "chargeback",
+      "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
       "testmode": false,
+      "status": "lost",
       "amount": {
         "value": "35.09",
         "currency": "EUR"
@@ -384,6 +524,27 @@ $chargebacks = $vatly->chargebacks->page();
         "value": "35.09",
         "currency": "EUR"
       },
+      "total": {
+        "value": "35.09",
+        "currency": "EUR"
+      },
+      "subtotal": {
+        "value": "29.00",
+        "currency": "EUR"
+      },
+      "taxSummary": [
+        {
+          "taxRate": {
+            "name": "VAT",
+            "percentage": 21,
+            "taxablePercentage": 100
+          },
+          "amount": {
+            "value": "6.09",
+            "currency": "EUR"
+          }
+        }
+      ],
       "reason": "fraud",
       "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
       "orderId": "order_Rk5pQrSvWm8NjLhYbUcP",
@@ -484,7 +645,9 @@ $chargeback = $vatly->chargebacks->get('chargeback_Mn6xBtPvKw2RjTgYcZaE');
 {
   "id": "chargeback_Mn6xBtPvKw2RjTgYcZaE",
   "resource": "chargeback",
+  "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
   "testmode": false,
+  "status": "lost",
   "amount": {
     "value": "35.09",
     "currency": "EUR"
@@ -493,6 +656,27 @@ $chargeback = $vatly->chargebacks->get('chargeback_Mn6xBtPvKw2RjTgYcZaE');
     "value": "35.09",
     "currency": "EUR"
   },
+  "total": {
+    "value": "35.09",
+    "currency": "EUR"
+  },
+  "subtotal": {
+    "value": "29.00",
+    "currency": "EUR"
+  },
+  "taxSummary": [
+    {
+      "taxRate": {
+        "name": "VAT",
+        "percentage": 21,
+        "taxablePercentage": 100
+      },
+      "amount": {
+        "value": "6.09",
+        "currency": "EUR"
+      }
+    }
+  ],
   "reason": "fraud",
   "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
   "orderId": "order_Rk5pQrSvWm8NjLhYbUcP",
@@ -639,7 +823,9 @@ $chargebacks = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->page()
     {
       "id": "chargeback_Fp2kQrSvWm8NjLhYbUcP",
       "resource": "chargeback",
+      "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
       "testmode": false,
+      "status": "lost",
       "amount": {
         "value": "35.09",
         "currency": "EUR"
@@ -648,6 +834,27 @@ $chargebacks = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->page()
         "value": "35.09",
         "currency": "EUR"
       },
+      "total": {
+        "value": "35.09",
+        "currency": "EUR"
+      },
+      "subtotal": {
+        "value": "29.00",
+        "currency": "EUR"
+      },
+      "taxSummary": [
+        {
+          "taxRate": {
+            "name": "VAT",
+            "percentage": 21,
+            "taxablePercentage": 100
+          },
+          "amount": {
+            "value": "6.09",
+            "currency": "EUR"
+          }
+        }
+      ],
       "reason": "product_not_received",
       "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
       "orderId": "order_Rk5pQrSvWm8NjLhYbUcP",
@@ -766,7 +973,9 @@ $chargeback = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->get('ch
 {
   "id": "chargeback_Mn6xBtPvKw2RjTgYcZaE",
   "resource": "chargeback",
+  "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
   "testmode": false,
+  "status": "lost",
   "amount": {
     "value": "35.09",
     "currency": "EUR"
@@ -775,6 +984,27 @@ $chargeback = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->get('ch
     "value": "35.09",
     "currency": "EUR"
   },
+  "total": {
+    "value": "35.09",
+    "currency": "EUR"
+  },
+  "subtotal": {
+    "value": "29.00",
+    "currency": "EUR"
+  },
+  "taxSummary": [
+    {
+      "taxRate": {
+        "name": "VAT",
+        "percentage": 21,
+        "taxablePercentage": 100
+      },
+      "amount": {
+        "value": "6.09",
+        "currency": "EUR"
+      }
+    }
+  ],
   "reason": "fraud",
   "originalOrderId": "order_Fp2kQrSvWm8NjLhYbUcP",
   "orderId": "order_Rk5pQrSvWm8NjLhYbUcP",

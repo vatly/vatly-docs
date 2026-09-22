@@ -2,7 +2,7 @@
 
 > This guide covers API error handling, including status codes and error types.
 
-You can tell if your request was successful by checking the status code in the API response. If a response is unsuccessful, use the error type and message to understand what went wrong.
+You can tell if your request was successful by checking the status code in the API response. If a response is unsuccessful, use the HTTP status code and error message to understand what went wrong.
 
 ---
 
@@ -165,6 +165,18 @@ Here is a list of the different categories of status codes returned by the Vatly
   <tr>
     <td>
       <code>
+        409
+      </code>
+    </td>
+    
+    <td>
+      Conflict - Idempotency mismatch, request still in progress, outcome unknown, or a concurrent write.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         422
       </code>
     </td>
@@ -206,13 +218,25 @@ Here is a list of the different categories of status codes returned by the Vatly
 
 ---
 
-## Error types
+## Error responses
 
-Whenever a request is unsuccessful, the Vatly API will return an error response with an error type and message. You can use this information to understand better what has gone wrong and how to fix it. Most of the error messages are pretty helpful and actionable.
+Whenever a request is unsuccessful, the Vatly API will return an error response with a human-readable message. Combine it with the HTTP status code to understand what has gone wrong and how to fix it. Most of the error messages are pretty helpful and actionable.
 
 ```json [Error response]
 {
   "message": "Resource not found."
+}
+```
+
+Some errors also include an optional `details` object with structured context about the failure. Treat unknown keys as forward-compatible additions and branch on the HTTP status code rather than the shape of `details`.
+
+```json [Error response with details]
+{
+  "message": "The requested resource was not found.",
+  "details": {
+    "resource_type": "checkout",
+    "resource_id": "checkout_abc123"
+  }
 }
 ```
 

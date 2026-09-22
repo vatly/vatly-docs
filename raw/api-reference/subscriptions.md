@@ -770,6 +770,7 @@ $subscriptions = $vatly->subscriptions->page();
       "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
       "resource": "subscription",
       "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
+      "subscriptionPlanId": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP",
       "testmode": false,
       "name": "Pro Monthly",
       "description": "Full access to all Pro features",
@@ -793,6 +794,10 @@ $subscriptions = $vatly->subscriptions->page();
       "intervalCount": 1,
       "status": "active",
       "cancellationReason": null,
+      "mandate": {
+        "method": "card",
+        "maskedIdentifier": "4242"
+      },
       "startedAt": "2024-01-15T10:30:00Z",
       "endedAt": null,
       "canceledAt": null,
@@ -816,6 +821,7 @@ $subscriptions = $vatly->subscriptions->page();
       "id": "subscription_Wt5mNvBxKw7YcZaEjLhR",
       "resource": "subscription",
       "customerId": "customer_Mn6xBtPvKw2RjTgYcZaE",
+      "subscriptionPlanId": "subscription_plan_Wt5mNvBxKw7YcZaEjLhR",
       "testmode": false,
       "name": "Enterprise Yearly",
       "description": "Enterprise features with priority support",
@@ -839,6 +845,10 @@ $subscriptions = $vatly->subscriptions->page();
       "intervalCount": 1,
       "status": "active",
       "cancellationReason": null,
+      "mandate": {
+        "method": "sepa_debit",
+        "maskedIdentifier": "3000"
+      },
       "startedAt": "2024-01-01T00:00:00Z",
       "endedAt": null,
       "canceledAt": null,
@@ -940,6 +950,7 @@ $subscription = $vatly->subscriptions->get('subscription_Lp3mNvBxKw7RjTgYcZaE');
   "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
   "resource": "subscription",
   "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
+  "subscriptionPlanId": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP",
   "testmode": false,
   "name": "Pro Monthly",
   "description": "Full access to all Pro features",
@@ -963,6 +974,10 @@ $subscription = $vatly->subscriptions->get('subscription_Lp3mNvBxKw7RjTgYcZaE');
   "intervalCount": 1,
   "status": "active",
   "cancellationReason": null,
+  "mandate": {
+    "method": "card",
+    "maskedIdentifier": "4242"
+  },
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "canceledAt": null,
@@ -1110,6 +1125,7 @@ $subscriptions = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE
       "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
       "resource": "subscription",
       "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
+      "subscriptionPlanId": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP",
       "testmode": false,
       "name": "Pro Monthly",
       "description": "Full access to all Pro features",
@@ -1133,6 +1149,10 @@ $subscriptions = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE
       "intervalCount": 1,
       "status": "active",
       "cancellationReason": null,
+      "mandate": {
+        "method": "card",
+        "maskedIdentifier": "4242"
+      },
       "startedAt": "2024-01-15T10:30:00Z",
       "endedAt": null,
       "canceledAt": null,
@@ -1252,6 +1272,7 @@ $subscription = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE'
   "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
   "resource": "subscription",
   "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
+  "subscriptionPlanId": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP",
   "testmode": false,
   "name": "Pro Monthly",
   "description": "Full access to all Pro features",
@@ -1275,6 +1296,10 @@ $subscription = $vatly->customers->subscriptions('customer_Lp3mNvBxKw7RjTgYcZaE'
   "intervalCount": 1,
   "status": "active",
   "cancellationReason": null,
+  "mandate": {
+    "method": "card",
+    "maskedIdentifier": "4242"
+  },
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "canceledAt": null,
@@ -1626,6 +1651,7 @@ $subscription = $vatly->subscriptions->update('subscription_Lp3mNvBxKw7RjTgYcZaE
   "id": "subscription_Lp3mNvBxKw7RjTgYcZaE",
   "resource": "subscription",
   "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
+  "subscriptionPlanId": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP",
   "testmode": false,
   "name": "Pro Yearly",
   "description": "Full access to all Pro features, billed yearly",
@@ -1649,6 +1675,10 @@ $subscription = $vatly->subscriptions->update('subscription_Lp3mNvBxKw7RjTgYcZaE
   "intervalCount": 1,
   "status": "active",
   "cancellationReason": null,
+  "mandate": {
+    "method": "card",
+    "maskedIdentifier": "4242"
+  },
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "canceledAt": null,
@@ -1987,8 +2017,24 @@ $subscription = $vatly->subscriptions->resume('subscription_Lp3mNvBxKw7RjTgYcZaE
   "subscriptionPlanId": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP",
   "testmode": false,
   "name": "Pro Monthly",
+  "description": "Full access to all Pro features",
+  "billingAddress": {
+    "fullName": "John Doe",
+    "companyName": "Acme Corp",
+    "taxId": null,
+    "streetAndNumber": "123 Main Street",
+    "streetAdditional": null,
+    "city": "Berlin",
+    "region": null,
+    "postalCode": "10115",
+    "country": "DE"
+  },
   "status": "active",
   "cancellationReason": null,
+  "mandate": {
+    "method": "card",
+    "maskedIdentifier": "4242"
+  },
   "basePrice": {
     "value": "29.00",
     "currency": "EUR"

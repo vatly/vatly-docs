@@ -127,10 +127,6 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
       </code>
       
       , <code>
-        chargeback
-      </code>
-      
-      , <code>
         subscription
       </code>
       

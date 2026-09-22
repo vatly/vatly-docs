@@ -459,7 +459,7 @@ Addresses are canonicalized before they are compared, so `User@MÜLLER.de` and `
     </td>
     
     <td>
-      The email address for the customer. Must be unique within the merchant's account for the given testmode.
+      The email address for the customer. Must be unique within the storefront for the given testmode.
     </td>
   </tr>
 </tbody>
@@ -494,7 +494,7 @@ Addresses are canonicalized before they are compared, so `User@MÜLLER.de` and `
     
     <td>
       <code>
-        string
+        string | null
       </code>
     </td>
     
@@ -672,7 +672,7 @@ Billing-address details (company name, tax ID, street, city, country, etc.) are 
     </td>
     
     <td>
-      The customer's email address. Must be unique within the merchant's account for the given testmode.
+      The customer's email address. Must be unique within the storefront for the given testmode.
     </td>
   </tr>
 </tbody>

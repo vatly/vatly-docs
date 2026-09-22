@@ -97,12 +97,16 @@ Below you'll find all properties for the Vatly Checkout API resource.
     
     <td>
       <code>
-        string
+        string | null
       </code>
     </td>
     
     <td>
-      The customer associated with this checkout. Only present once a customer has been associated — for an anonymous checkout this happens when the buyer completes payment.
+      The customer associated with this checkout. Always present; <code>
+        null
+      </code>
+      
+       until a customer is associated — for an anonymous checkout this happens when the buyer completes payment.
     </td>
   </tr>
   
@@ -348,11 +352,19 @@ Below you'll find all properties for the Vatly Checkout API resource.
         self
       </code>
       
-      , and optionally <code>
+      , and <code>
         order
       </code>
       
-       (after completion).
+      . <code>
+        order
+      </code>
+      
+       is always present and is <code>
+        null
+      </code>
+      
+       until the checkout completes.
     </td>
   </tr>
 </tbody>
@@ -463,6 +475,7 @@ $checkouts = $vatly->checkouts->page();
     {
       "id": "checkout_QdEpFhdSrG4Y3DnfsdqsH",
       "resource": "checkout",
+      "customerId": null,
       "orderId": null,
       "testmode": false,
       "redirectUrlSuccess": "https://example.com/success",
@@ -792,6 +805,7 @@ header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
 {
   "id": "checkout_Bm7xNvPwKr3YjTgHcZaE",
   "resource": "checkout",
+  "customerId": null,
   "orderId": null,
   "testmode": false,
   "redirectUrlSuccess": "https://example.com/return?checkout_id=checkout_Bm7xNvPwKr3YjTgHcZaE",
@@ -958,6 +972,7 @@ $checkout = $vatly->checkouts->get('checkout_QdEpFhdSrG4Y3DnfsdqsH');
 {
   "id": "checkout_QdEpFhdSrG4Y3DnfsdqsH",
   "resource": "checkout",
+  "customerId": "customer_Hn6pQrSvWm8NjLhYbUcP",
   "orderId": "order_Jk4pQrSvWm8NjLhYbUcP",
   "testmode": false,
   "redirectUrlSuccess": "https://example.com/success",
