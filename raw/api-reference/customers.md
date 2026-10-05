@@ -731,6 +731,12 @@ Redirect the customer's browser to `url`. The link expires after roughly 15 minu
 
 The response is credential-bearing, so it is returned with `Cache-Control: no-store, private`. Do not log or store the `url`.
 
+<note>
+
+Portal sessions are available only for customers that are active, not archived, have a usable email address, belong to the authenticated API token's storefront and mode, and currently have portal-eligible subscription data. Vatly returns `404` when those conditions are not met.
+
+</note>
+
 ### Optional attributes
 
 <table>

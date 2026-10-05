@@ -107,6 +107,44 @@ Webhook events let you inspect the exact payload Vatly generated for a domain ev
   <tr>
     <td>
       <code>
+        reason
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      Why the event fired, for events with more than one cause. Always present; <code>
+        null
+      </code>
+      
+       for every event except <code>
+        subscription.updated
+      </code>
+      
+      , where it is <code>
+        updated_immediately
+      </code>
+      
+      , <code>
+        updated_on_renewal
+      </code>
+      
+      , or <code>
+        renewed
+      </code>
+      
+      . New values may be added over time.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         entityType
       </code>
     </td>
@@ -329,6 +367,7 @@ $event = $vatly->webhookEvents->get('webhook_event_Qk8pRtSvWm2NjLhYcZaE');
   "id": "webhook_event_Qk8pRtSvWm2NjLhYcZaE",
   "resource": "webhook_event",
   "eventName": "order.paid",
+  "reason": null,
   "entityType": "order",
   "entityId": "order_Hn5xWqVfKm8RjTgYbUcP",
   "createdAt": "2024-01-15T10:30:00Z",

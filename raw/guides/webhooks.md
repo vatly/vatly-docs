@@ -18,13 +18,14 @@ For security reasons, your webhook URL needs to be HTTPS with a valid certificat
 
 ## Consuming webhooks
 
-Each delivery is an HTTP `POST` whose body is a `webhook_event` object — the same shape returned by the [Get webhook event](/api-reference/webhook-events) endpoint. Check `eventName` to see what happened, and use `entityType` / `entityId` (or the embedded `object` snapshot) to act on the affected resource.
+Each delivery is an HTTP `POST` whose body is a `webhook_event` object — the same shape returned by the [Get webhook event](/api-reference/webhook-events) endpoint. Check `eventName` to see what happened, and use `entityType` / `entityId` (or the embedded `object` snapshot) to act on the affected resource. The envelope also carries a `reason` field — always present, but `null` for every event except `subscription.updated`, where it says what triggered the change (see [Event types](#event-types)).
 
 ```json [Example delivery body]
 {
   "id": "webhook_event_Qk8pRtSvWm2NjLhYcZaE",
   "resource": "webhook_event",
   "eventName": "order.paid",
+  "reason": null,
   "entityType": "order",
   "entityId": "order_Hn5xWqVfKm8RjTgYbUcP",
   "testmode": false,
@@ -390,11 +391,35 @@ The `eventName` field identifies what happened. The available events are:
     </td>
     
     <td>
-      A subscription changed immediately (effective now, not at the next cycle) — a plan, price, interval, or quantity change. <code>
+      A subscription changed. Fires on an immediate change, when a scheduled change takes effect at renewal, and when a renewal payment is confirmed. <code>
         object
       </code>
       
-       is the subscription with its new values.
+       is the subscription after the change; the envelope's <code>
+        reason
+      </code>
+      
+       says which case it is — <code>
+        updated_immediately
+      </code>
+      
+       (a plan, price, interval, or quantity change took effect now), <code>
+        updated_on_renewal
+      </code>
+      
+       (a scheduled change took effect at renewal, before the renewal is paid), or <code>
+        renewed
+      </code>
+      
+       (a renewal payment was confirmed, so <code>
+        renewedAt
+      </code>
+      
+       / <code>
+        renewedUntil
+      </code>
+      
+       moved). See the note below.
     </td>
   </tr>
   
@@ -652,7 +677,13 @@ The `eventName` field identifies what happened. The available events are:
 
 <note>
 
-**subscription.update_scheduled** carries the subscription's **current** state in `object`, plus the future target values in `object.scheduledUpdate` (`subscriptionPlanId`, `name`, `description`, `basePrice`, `quantity`, `interval`, `intervalCount`, `effectiveAt`). The same `scheduledUpdate` object is also returned on the subscription resource by the REST API, so you can reconcile a pending change at any time without relying on this once-delivered event. The matching `subscription.updated` event (for changes that take effect immediately) has no pending `scheduledUpdate`; its `object` already reflects the new values.
+**subscription.update_scheduled** carries the subscription's **current** state in `object`, plus the future target values in `object.scheduledUpdate` (`subscriptionPlanId`, `name`, `description`, `basePrice`, `quantity`, `interval`, `intervalCount`, `effectiveAt`). The same `scheduledUpdate` object is also returned on the subscription resource by the REST API, so you can reconcile a pending change at any time without relying on this once-delivered event. When that scheduled change takes effect at renewal, Vatly sends `subscription.updated` with `reason: updated_on_renewal`; an immediate change instead arrives as `subscription.updated` with `reason: updated_immediately`. In both cases the delivered `object` already reflects the new values and has no pending `scheduledUpdate`.
+
+</note>
+
+<note>
+
+**subscription.updated and the reason field.** This event fires for three distinct causes, told apart by the envelope's `reason`: `updated_immediately`, `updated_on_renewal`, or `renewed`. A renewal that also applies a scheduled change therefore emits **two** events — `subscription.updated` with `reason: updated_on_renewal` when the change takes effect, then `subscription.updated` with `reason: renewed` once the renewal is paid — each with its own stable `Vatly-Event-Id`. Test-mode renewals, including fast-forwarded ones, emit these too. New `reason` values may be added; treat an unknown one as a generic change and re-read the subscription from `object`.
 
 </note>
 
@@ -669,6 +700,7 @@ The `eventName` field identifies what happened. The available events are:
   "id": "webhook_event_b167W0AChY7Z0Amr",
   "resource": "webhook_event",
   "eventName": "subscription.started",
+  "reason": null,
   "entityType": "subscription",
   "entityId": "subscription_QdEpFhdSrG4Y3DnfsdqsH",
   "testmode": false,

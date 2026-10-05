@@ -127,6 +127,10 @@ Chargebacks are created automatically when a payment provider initiates a disput
       </code>
       
       , <code>
+        requires_amount_review
+      </code>
+      
+      , <code>
         accepted
       </code>
       
@@ -146,7 +150,11 @@ Chargebacks are created automatically when a payment provider initiates a disput
         lost
       </code>
       
-      .
+      . <code>
+        requires_amount_review
+      </code>
+      
+       means the provider's disputed amount exceeds the original order, so financial completion is held (quarantined) pending review.
     </td>
   </tr>
   

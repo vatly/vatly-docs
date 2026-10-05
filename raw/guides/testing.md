@@ -26,7 +26,9 @@ When a **valid** test tax ID is supplied and the buyer's country **differs** fro
 
 ## Fast-forward subscription renewal
 
-Simulates a subscription renewal cycle, allowing you to test renewal billing flows, lifecycle events, and webhooks without waiting for the actual billing interval.
+Simulates a subscription renewal cycle, allowing you to test renewal billing flows, lifecycle events, and webhooks without waiting for the actual billing interval. The subscription must be active and have a scheduled next renewal.
+
+Like a live renewal, this runs **asynchronously**: the request is accepted immediately, the renewal runs from a queue a moment later, and the outcome arrives on your `order.paid` / `order.payment_failed` webhooks. The response therefore returns the subscription **before** the renewal — `renewedAt`, `renewedUntil`, and `nextRenewalAt` have not moved yet.
 
 ### Request
 
@@ -252,7 +254,7 @@ $vatly->testHelpers->fastForwardRenewal('subscription_Lp3mNvBxKw7RjTgYcZaE', [
 
 ### Response
 
-Returns the updated subscription with new renewal dates:
+Returns the subscription **as it was before the renewal** — `renewedAt`, `renewedUntil`, and `nextRenewalAt` still hold their pre-renewal values because the renewal runs from the queue shortly after. Watch your webhooks for the actual outcome.
 
 ```json
 {
@@ -279,6 +281,7 @@ Returns the updated subscription with new renewal dates:
   "interval": "month",
   "intervalCount": 1,
   "status": "active",
+  "cancellationReason": null,
   "mandate": {
     "method": "card",
     "maskedIdentifier": "4242"
@@ -286,9 +289,9 @@ Returns the updated subscription with new renewal dates:
   "startedAt": "2024-01-15T10:30:00Z",
   "endedAt": null,
   "canceledAt": null,
-  "renewedAt": "2024-03-15T10:30:00Z",
-  "renewedUntil": "2024-04-15T10:30:00Z",
-  "nextRenewalAt": "2024-04-15T10:30:00Z",
+  "renewedAt": null,
+  "renewedUntil": null,
+  "nextRenewalAt": "2024-02-15T10:30:00Z",
   "trialUntil": null,
   "scheduledUpdate": null,
   "links": {
@@ -303,3 +306,18 @@ Returns the updated subscription with new renewal dates:
   }
 }
 ```
+
+## Simulate an order payment
+
+When a fast-forward (or its payment recovery) leaves a renewal payment pending, settle or decline it with the order payment simulation helper. It resolves a payment that is already awaiting an outcome **without** advancing the billing cycle — useful for driving an `order.paid` on a renewal, or exercising payment recovery with `paymentStatus: failed`.
+
+`POST /v1/test-helpers/orders/{orderId}/simulate-payment`
+
+```bash [cURL]
+curl -X POST https://api.vatly.com/v1/test-helpers/orders/order_Hn5xWqVfKm8RjTgYbUcP/simulate-payment \
+  -H "Authorization: Bearer test_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"paymentStatus": "paid"}'
+```
+
+Like fast-forward renewal, this is asynchronous — the response returns the order still awaiting payment, and the outcome arrives on your webhooks. See [Simulate an order payment](/api-reference/test-helpers#simulate-an-order-payment) in the API reference for the request body and full response.
