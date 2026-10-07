@@ -11,6 +11,7 @@
   <url><loc>https://docs.vatly.com/guides/webhooks</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/guides/idempotency</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/guides/testing</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/guides/payouts</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/customers</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/checkouts</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/api-reference/one-off-products</loc><priority>0.8</priority></url>
