@@ -395,6 +395,24 @@ paths:
                         currency: EUR
                   metadata:
                     campaign: summer-sale
+              preFilledBillingAddress:
+                summary: Checkout with a pre-filled billing address
+                value:
+                  redirectUrlSuccess: https://example.com/success
+                  redirectUrlCanceled: https://example.com/canceled
+                  billingAddress:
+                    fullName: Jane Doe
+                    companyName: Acme B.V.
+                    taxId: NL123456789B01
+                    streetAndNumber: 123 Main Street
+                    streetAdditional: Suite 456
+                    city: Amsterdam
+                    region: North Holland
+                    postalCode: 1012 AB
+                    country: NL
+                  products:
+                    - id: one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
+                      quantity: 1
       responses:
         '201':
           description: Checkout created successfully
@@ -813,10 +831,11 @@ paths:
         3. Redirect the customer's browser to the `url` returned in the response.
 
         The returned URL is a short-lived, single-use entry link to Vatly's hosted
-        customer portal. The portal lets the customer manage subscriptions for
-        this API token's storefront, including viewing subscriptions, opening
-        invoice history, updating eligible payment methods, and canceling an
-        active subscription.
+        customer portal. The portal lets the customer view invoices and manage
+        subscriptions for this API token's storefront, including opening invoice
+        history, viewing subscriptions, updating eligible payment methods, and
+        canceling an active subscription. Customers with one-off purchases and no
+        subscription can use the portal for their invoice history.
 
         The session is locked to the customer, storefront, merchant, and live/test
         mode represented by the API token. A token for one storefront cannot issue
@@ -826,8 +845,10 @@ paths:
 
         Portal sessions are available only for customers that are active, not
         archived, have a usable email address, belong to the authenticated API
-        token's storefront and mode, and currently have portal-eligible
-        subscription data. If those conditions are not met, Vatly returns `404`.
+        token's storefront and mode, and have at least one issued invoice in that
+        storefront and mode. Invoices remain eligible after a refund or
+        chargeback; a subscription without an issued invoice does not grant
+        access. If those conditions are not met, Vatly returns `404`.
 
         The request body may be omitted or sent as `{}`. Send `returnUrl` in the
         JSON body, not as a query parameter, when you want the hosted portal to
@@ -3960,8 +3981,13 @@ paths:
               redirectUrlSuccess: https://example.com/billing-updated
               redirectUrlCanceled: https://example.com/account/billing
               billingAddress:
+                fullName: Jane Doe
                 companyName: Acme Corp
                 taxId: DE123456789
+                streetAndNumber: Friedrichstrasse 1
+                city: Berlin
+                postalCode: '10117'
+                country: DE
       responses:
         '200':
           description: Billing update link generated
@@ -4248,9 +4274,13 @@ paths:
         subscription update with `invoiceImmediately: true`.
 
         Use this endpoint when a test-mode payment on a saved payment method is
-        still pending. Locally simulated payments created by the fast-forward and
-        payment-recovery helpers deliberately remain pending until an outcome is
-        simulated; provider-backed sandbox payments may settle independently.
+        still pending. Test card payments settle as paid right away. Test SEPA
+        Direct Debit payments are settled as paid automatically 10 to 15 minutes
+        after they are created, unless you simulate an outcome first: simulate
+        `failed` within the first 10 minutes to test your payment-recovery handling.
+        Locally simulated payments created by the fast-forward and payment-recovery
+        helpers are never settled automatically; they stay pending until you
+        simulate an outcome.
 
         **Requirements:**
         - Only available in test mode (requires `test_` prefixed API token)
@@ -5878,6 +5908,15 @@ components:
             If provided, the customer's email will be pre-filled.
             Must match the testmode of the API token.
           example: customer_7kBmRtPvXw2NjLhYcZaE
+        billingAddress:
+          allOf:
+            - $ref: '#/components/schemas/BillingAddress'
+          description: |
+            Optional editable prefill for the billing address fields on the hosted
+            checkout. When `country` is supplied, it takes precedence over the
+            shopper's IP address for determining their country. A supplied `taxId`
+            is only a prefill; it is not registered until the buyer submits the
+            checkout.
         metadata:
           $ref: '#/components/schemas/Metadata'
         locale:
@@ -7717,8 +7756,13 @@ components:
             - $ref: '#/components/schemas/BillingAddress'
             - type: 'null'
           description: |
-            Pre-fill billing address fields.
-            Customer can modify these values in the hosted form.
+            Optional editable prefill for the hosted billing update form. When
+            supplied, it replaces the subscription's stored billing details as the
+            prefill, so send every field you want shown; empty strings give a blank
+            form. Omit it, or send `null` or `{}`, to prefill the stored details.
+            `country` must be an ISO 3166-1 alpha-2 code. A supplied `taxId` is
+            only a prefill; it is not registered until the customer submits the
+            form.
     Mandate:
       type: object
       description: |
