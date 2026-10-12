@@ -693,6 +693,68 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
   <tr>
     <td>
       <code>
+        billingAddress
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        object
+      </code>
+    </td>
+    
+    <td>
+      Optional editable prefill for the billing address fields on the hosted checkout. Accepts the standard address fields (<code>
+        fullName
+      </code>
+      
+      , <code>
+        companyName
+      </code>
+      
+      , <code>
+        taxId
+      </code>
+      
+      , <code>
+        streetAndNumber
+      </code>
+      
+      , <code>
+        streetAdditional
+      </code>
+      
+      , <code>
+        city
+      </code>
+      
+      , <code>
+        region
+      </code>
+      
+      , <code>
+        postalCode
+      </code>
+      
+      , <code>
+        country
+      </code>
+      
+      ). When <code>
+        country
+      </code>
+      
+       is supplied it takes precedence over the shopper's IP address for determining their country. A supplied <code>
+        taxId
+      </code>
+      
+       is only a prefill — it is not registered until the buyer submits the checkout.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         locale
       </code>
     </td>

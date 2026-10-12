@@ -1803,7 +1803,27 @@ Creates a signed link that the customer can use to update the billing details fo
     </td>
     
     <td>
-      Pre-fill billing address fields. Customer can modify these values in the hosted form.
+      Optional editable prefill for the hosted billing update form. When supplied, it <strong>
+        replaces
+      </strong>
+      
+       the subscription's stored billing details as the prefill, so send every field you want shown — empty strings give a blank form. Omit it, or send <code>
+        null
+      </code>
+      
+       or <code>
+        {}
+      </code>
+      
+      , to prefill the stored details. <code>
+        country
+      </code>
+      
+       must be an ISO 3166-1 alpha-2 code. A supplied <code>
+        taxId
+      </code>
+      
+       is only a prefill; it is not registered until the customer submits the form.
     </td>
   </tr>
 </tbody>

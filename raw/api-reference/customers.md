@@ -725,7 +725,7 @@ $customer = $vatly->customers->update('customer_7kBmRtPvXw2NjLhYcZaE', [
 
 `POST /v1/customers/:customerId/portal-sessions`
 
-Creates a short-lived, single-use link that sends an authenticated customer straight to this API token's storefront in Vatly's hosted portal. The session is locked to the customer, storefront, merchant, and live/test mode represented by the token; it never exposes a storefront picker or other stores associated with the same email address. For a merchant with multiple storefronts, each API token issues portal links for its own storefront.
+Creates a short-lived, single-use link that sends an authenticated customer straight to this API token's storefront in Vatly's hosted portal. The portal lets the customer view invoices and manage subscriptions for the storefront — opening invoice history, updating eligible payment methods, and canceling an active subscription. Customers with one-off purchases and no subscription can still use the portal for their invoice history. The session is locked to the customer, storefront, merchant, and live/test mode represented by the token; it never exposes a storefront picker or other stores associated with the same email address. For a merchant with multiple storefronts, each API token issues portal links for its own storefront.
 
 Redirect the customer's browser to `url`. The link expires after roughly 15 minutes by default and can be consumed once. If an idempotency key replays a response after its URL has already been used, request a replacement with a fresh key.
 
@@ -733,7 +733,7 @@ The response is credential-bearing, so it is returned with `Cache-Control: no-st
 
 <note>
 
-Portal sessions are available only for customers that are active, not archived, have a usable email address, belong to the authenticated API token's storefront and mode, and currently have portal-eligible subscription data. Vatly returns `404` when those conditions are not met.
+Portal sessions are available only for customers that are active, not archived, have a usable email address, belong to the authenticated API token's storefront and mode, and have at least one issued invoice in that storefront and mode. Invoices remain eligible after a refund or chargeback; a subscription without an issued invoice does not grant access. Vatly returns `404` when those conditions are not met.
 
 </note>
 
