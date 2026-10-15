@@ -725,15 +725,19 @@ A plan created with a `live_` token starts in `pending` status and must be appro
     </td>
     
     <td>
-      Price per billing interval. A Money object with <code>
+      Price per billing interval. A Money object whose <code>
         value
       </code>
       
-       (decimal string) and <code>
-        currency
+       is a decimal string with exactly two decimals. Currently only <code>
+        EUR
       </code>
       
-       (ISO 4217 code).
+       is accepted; any other currency returns a <code>
+        422
+      </code>
+      
+      .
     </td>
   </tr>
   
@@ -1143,15 +1147,19 @@ At least one field must be provided.
     </td>
     
     <td>
-      New price per billing interval. A Money object with <code>
+      New price per billing interval. A Money object whose <code>
         value
       </code>
       
-       (decimal string) and <code>
-        currency
+       is a decimal string with exactly two decimals. Currently only <code>
+        EUR
       </code>
       
-       (ISO 4217 code).
+       is accepted; any other currency returns a <code>
+        422
+      </code>
+      
+      .
     </td>
   </tr>
   

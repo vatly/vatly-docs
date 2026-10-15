@@ -635,15 +635,19 @@ A product created with a `live_` token starts in `pending` status and must be ap
     </td>
     
     <td>
-      Price of the product. A Money object with <code>
+      Price of the product. A Money object whose <code>
         value
       </code>
       
-       (decimal string) and <code>
-        currency
+       is a decimal string with exactly two decimals. Currently only <code>
+        EUR
       </code>
       
-       (ISO 4217 code).
+       is accepted; any other currency returns a <code>
+        422
+      </code>
+      
+      .
     </td>
   </tr>
   
@@ -995,15 +999,19 @@ At least one attribute must be provided. `taxBehavior` is immutable and cannot b
     </td>
     
     <td>
-      New price of the product. A Money object with <code>
+      New price of the product. A Money object whose <code>
         value
       </code>
       
-       (decimal string) and <code>
-        currency
+       is a decimal string with exactly two decimals. Currently only <code>
+        EUR
       </code>
       
-       (ISO 4217 code).
+       is accepted; any other currency returns a <code>
+        422
+      </code>
+      
+      .
     </td>
   </tr>
   
