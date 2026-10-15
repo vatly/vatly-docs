@@ -79,6 +79,10 @@ info:
 
     Values are strings to preserve decimal precision.
 
+    Prices you set (product and plan prices, checkout price overrides) are
+    currently accepted in EUR only. A subscription price update or a refund amount uses
+    the subscription's or order's own currency.
+
     ## Email Format
 
     Vatly canonicalizes every email address it accepts, and stores and returns
@@ -5464,6 +5468,28 @@ components:
                 - TND
             value:
               pattern: ^\d+\.\d{3}$
+    EurMoney:
+      type: object
+      description: |
+        Monetary value in EUR. Used where the API currently accepts EUR prices
+        only: catalog prices and checkout price overrides. The `value` takes
+        exactly two decimals.
+      required:
+        - value
+        - currency
+      additionalProperties: false
+      properties:
+        value:
+          type: string
+          description: The amount as a decimal string with exactly two decimals.
+          pattern: ^\d+\.\d{2}$
+          example: '99.99'
+        currency:
+          type: string
+          description: ISO 4217 currency code. Only `EUR` is accepted.
+          enum:
+            - EUR
+          example: EUR
     Link:
       type: object
       description: HATEOAS link to a related resource
@@ -5856,11 +5882,16 @@ components:
           example: 2
         price:
           oneOf:
-            - $ref: '#/components/schemas/Money'
+            - $ref: '#/components/schemas/EurMoney'
             - type: 'null'
           description: |
-            Custom price override for this product.
-            If not provided, the product's default price is used.
+            Custom price override for this product, in EUR. If not provided, the
+            product's default price is used.
+
+            Currently only EUR is accepted; any other currency returns a `422`.
+            When the customer pays in another currency, the amount is converted
+            from this EUR price at checkout. For a subscription, the converted
+            amount and currency are then fixed, so renewals charge the same amount.
         trialDays:
           type:
             - integer
@@ -6223,8 +6254,8 @@ components:
           description: Detailed description of the product.
           example: Lifetime access to all premium features
         basePrice:
-          $ref: '#/components/schemas/Money'
-          description: Price of the product.
+          $ref: '#/components/schemas/EurMoney'
+          description: Price of the product, in EUR.
         productType:
           type: string
           description: |
@@ -6455,8 +6486,8 @@ components:
           description: Detailed description of the plan.
           example: Full access to all Pro features, billed monthly
         basePrice:
-          $ref: '#/components/schemas/Money'
-          description: Price per billing interval.
+          $ref: '#/components/schemas/EurMoney'
+          description: Price per billing interval, in EUR.
         productType:
           type: string
           description: |
@@ -7917,8 +7948,8 @@ components:
           description: New description of the product.
           example: Now with more premium
         basePrice:
-          $ref: '#/components/schemas/Money'
-          description: New price of the product.
+          $ref: '#/components/schemas/EurMoney'
+          description: New price of the product, in EUR.
         productType:
           type: string
           description: |
@@ -7959,8 +7990,8 @@ components:
           description: New description of the plan.
           example: Billed weekly
         basePrice:
-          $ref: '#/components/schemas/Money'
-          description: New price per billing interval.
+          $ref: '#/components/schemas/EurMoney'
+          description: New price per billing interval, in EUR.
         productType:
           type: string
           enum:
