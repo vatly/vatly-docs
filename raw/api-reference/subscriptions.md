@@ -1445,7 +1445,7 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
     </td>
     
     <td>
-      Whether to prorate charges for the partial billing period. If true, the customer is credited for unused time on the old plan and charged for remaining time on the new plan. Default: <code>
+      Whether to prorate charges for the partial billing period. If true, the customer is credited for unused time on the old plan and charged for remaining time on the new plan. A prorated downgrade applied immediately is not accepted while time is left on the cycle (see below). Default: <code>
         true
       </code>
       
@@ -1611,7 +1611,10 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
 - A subscription whose `status` is `on_grace_period` has no next billing period. Scheduling an update for it returns `422`; resume the subscription first, or set `applyImmediately: true` to apply the change to the remaining period.
 - An immediate update on an `on_grace_period` subscription can change the plan, price, or quantity for the remaining period, but not when that period ends — `anchor`, `resetAnchor`, and switching to a plan with a different interval each return `422`, because each would move the already-communicated end date.
 - When `invoiceImmediately` is `false`, the proration delta is parked on the current cycle and billed on the next renewal invoice. If the subscription is canceled before that renewal, the parked charge is waived.
-- On an immediate prorated update (`applyImmediately: true`, `prorate: true`), the unused-time credit can exceed the new charge — typically a price decrease or downgrade. The excess cannot be refunded mid-cycle, so the request returns `422` rather than applying a negative charge. Apply the change at the next cycle instead (`applyImmediately: false`), where the lower price simply takes effect.
+- On an immediate prorated update (`applyImmediately: true`, `prorate: true`) that keeps the billing anchor, the customer pays the new price for the time left on the cycle, minus a credit for the old price over that same time.
+- A prorated downgrade, price decrease or seat reduction applied immediately is not accepted while time is left on the cycle. It would give a negative charge, and the difference is not refunded mid-cycle, so the request returns `422`.
+- **Recommended:** schedule the change for the next renewal (`applyImmediately: false`). The customer keeps their current plan until the cycle ends, and the lower price takes effect at renewal with no extra charge.
+- Only switch immediately without proration (`prorate: false`) if the customer must lose access to the higher plan right away. This charges the full price of the new plan for the current cycle, without crediting what was already paid. It is billed right away with `invoiceImmediately: true`, otherwise on the next renewal invoice.
 
 <code-group sync="api">
 
