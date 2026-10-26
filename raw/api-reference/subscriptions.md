@@ -1479,7 +1479,11 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
         scheduledUpdate
       </code>
       
-      . Default: <code>
+      . During a trial, <code>
+        true
+      </code>
+      
+       ends the trial and starts the first paid cycle, which is charged right away (see below). Default: <code>
         false
       </code>
       
@@ -1521,7 +1525,11 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
          on yearly and other long-interval plans
       </strong>
       
-      , where the deferred delta may not be billed for many months and is waived entirely if the customer cancels in between. Default: <code>
+      , where the deferred delta may not be billed for many months and is waived entirely if the customer cancels in between. An immediate update during a trial is always charged right away, whatever this is set to, because it starts the first paid cycle. This does not apply to a subscription that is <code>
+        on_grace_period
+      </code>
+      
+      . Default: <code>
         false
       </code>
       
@@ -1615,6 +1623,13 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
 - A prorated downgrade, price decrease or seat reduction applied immediately is not accepted while time is left on the cycle. It would give a negative charge, and the difference is not refunded mid-cycle, so the request returns `422`.
 - **Recommended:** schedule the change for the next renewal (`applyImmediately: false`). The customer keeps their current plan until the cycle ends, and the lower price takes effect at renewal with no extra charge.
 - Only switch immediately without proration (`prorate: false`) if the customer must lose access to the higher plan right away. This charges the full price of the new plan for the current cycle, without crediting what was already paid. It is billed right away with `invoiceImmediately: true`, otherwise on the next renewal invoice.
+
+**Updating during a trial:**
+
+- An immediate update (`applyImmediately: true`) during a trial ends the trial. The first paid cycle starts that day and is charged right away at the full new price, whatever `prorate` and `invoiceImmediately` are set to. The next renewal is one billing interval later, not at the original end of the trial. For example, a €30 monthly plan with a trial from 1 to 15 October that is changed on 5 October is charged €30 on 5 October and renews on 5 November.
+- With `anchor`, the first paid cycle runs to that date instead. It is charged right away, priced per `prorate`, and renews on the anchor. Changed on 5 October with `anchor` set to 20 October, the same plan is charged €15 for 5 to 20 October with `prorate: true`, or the full €30 with `prorate: false`, and renews on 20 October.
+- A scheduled update (`applyImmediately: false`) keeps the trial. The change applies from the first paid cycle, when the trial ends.
+- A subscription whose `status` is `on_grace_period` still ends on the date it was given. An immediate update ends its trial without starting a paid cycle, and is not charged right away unless `invoiceImmediately` is `true`.
 
 <code-group sync="api">
 
