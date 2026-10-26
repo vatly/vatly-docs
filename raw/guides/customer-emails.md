@@ -117,7 +117,7 @@ Each order gets one receipt. The receipt links to the invoice in the customer po
 </tbody>
 </table>
 
-The upcoming renewal email goes out 7 days ahead for plans billed up to every 3 months, 14 days ahead for plans up to every 6 months, and 30 days ahead for longer plans. Monthly and shorter plans don't get one. If the renewal changes after the email went out, for example because you scheduled a plan change, the customer gets an updated email.
+The upcoming renewal email goes out 7 days ahead for plans billed up to every 3 months, 14 days ahead for plans up to every 6 months, and 30 days ahead for longer plans. Monthly and shorter plans don't get one. If the renewal changes after the email went out, for example because you scheduled a plan change, the customer gets an updated email. If the renewal date changes or the subscription is canceled or paused before the email goes out, Vatly doesn't send it. A changed date gets its own email.
 
 ## Payment methods
 
