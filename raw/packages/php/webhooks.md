@@ -42,7 +42,23 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
     </td>
     
     <td>
-      Order was canceled.
+      Order was canceled. <code>
+        object
+      </code>
+      
+       carries <code>
+        cancellationReason
+      </code>
+      
+      : <code>
+        payment_failure
+      </code>
+      
+       when payment recovery for the unpaid order was exhausted, otherwise <code>
+        null
+      </code>
+      
+      .
     </td>
   </tr>
   

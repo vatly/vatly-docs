@@ -53,7 +53,7 @@ Below you'll find all properties for the Vatly Order resource.
   <tr>
     <td>
       <code>
-        status
+        resource
       </code>
     </td>
     
@@ -64,16 +64,8 @@ Below you'll find all properties for the Vatly Order resource.
     </td>
     
     <td>
-      The status: <code>
-        pending
-      </code>
-      
-      , <code>
-        paid
-      </code>
-      
-      , or <code>
-        failed
+      Always <code>
+        order
       </code>
       
       .
@@ -89,73 +81,23 @@ Below you'll find all properties for the Vatly Order resource.
     
     <td>
       <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      The customer ID.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
-        checkoutId
-      </code>
-    </td>
-    
-    <td>
-      <code>
         string | null
       </code>
     </td>
     
     <td>
-      The checkout ID (for initial orders).
+      The customer ID, or <code>
+        null
+      </code>
+      
+       for orders with no associated customer.
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        subscriptionId
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string | null
-      </code>
-    </td>
-    
-    <td>
-      The subscription ID (for recurring orders).
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
-        amount
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        integer
-      </code>
-    </td>
-    
-    <td>
-      Total amount in cents.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
-        currency
+        status
       </code>
     </td>
     
@@ -166,25 +108,223 @@ Below you'll find all properties for the Vatly Order resource.
     </td>
     
     <td>
-      Three-letter ISO currency code.
+      The order status (see <a href="#order-statuses">
+        Order statuses
+      </a>
+      
+      ).
     </td>
   </tr>
   
   <tr>
     <td>
       <code>
-        taxAmount
+        cancellationReason
       </code>
     </td>
     
     <td>
       <code>
-        integer
+        string | null
       </code>
     </td>
     
     <td>
-      Tax amount in cents.
+      Why the order was canceled: <code>
+        payment_failure
+      </code>
+      
+       when payment recovery for this unpaid order was exhausted. <code>
+        null
+      </code>
+      
+       unless the status is <code>
+        canceled
+      </code>
+      
+      , and <code>
+        null
+      </code>
+      
+       for orders canceled before this field existed.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        total
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Total amount including taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subtotal
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Subtotal amount before taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        reversedSubtotal
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Amount of the captured payment returned to the customer, before taxes, via refund or chargeback (settled).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        refundableSubtotal
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Remaining amount that can still be refunded, before taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        taxSummary
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        TaxSummaryCollection
+      </code>
+    </td>
+    
+    <td>
+      Tax breakdown by rate.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        lines
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        array
+      </code>
+    </td>
+    
+    <td>
+      The order lines. Use <code>
+        $order->lines()
+      </code>
+      
+       for a collection of <code>
+        OrderLine
+      </code>
+      
+       objects.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        customerDetails
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Address
+      </code>
+    </td>
+    
+    <td>
+      Customer billing details.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        paymentMethod
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The payment method used, for example <code>
+        ideal
+      </code>
+      
+       or <code>
+        creditcard
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        invoiceNumber
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The invoice number, assigned after payment.
     </td>
   </tr>
   
@@ -227,24 +367,6 @@ Below you'll find all properties for the Vatly Order resource.
   <tr>
     <td>
       <code>
-        paidAt
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string | null
-      </code>
-    </td>
-    
-    <td>
-      When the order was paid (ISO 8601).
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
         createdAt
       </code>
     </td>
@@ -257,6 +379,28 @@ Below you'll find all properties for the Vatly Order resource.
     
     <td>
       Creation timestamp (ISO 8601).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        links
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        OrderLinks
+      </code>
+    </td>
+    
+    <td>
+      Links to this order, the customer (<code>
+        null
+      </code>
+      
+       for orders with no associated customer) and the customer invoice.
     </td>
   </tr>
 </tbody>
@@ -274,10 +418,14 @@ Retrieve an order by its ID.
 $order = $vatly->orders->get('order_abc123');
 
 echo $order->status;
-echo $order->amount / 100 . ' ' . $order->currency;
+echo $order->total->value . ' ' . $order->total->currency;
 
 if ($order->isPaid()) {
-    echo 'Paid at: ' . $order->paidAt;
+    echo 'Invoice: ' . $order->invoiceNumber;
+}
+
+if ($order->isCanceled()) {
+    echo 'Canceled because: ' . ($order->cancellationReason ?? 'unknown');
 }
 ```
 
@@ -312,6 +460,42 @@ Retrieve a paginated list of all orders.
   <tr>
     <td>
       <code>
+        startingAfter
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      A cursor for pagination: return the page after this order ID.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        endingBefore
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      A cursor for pagination: return the page before this order ID.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         limit
       </code>
     </td>
@@ -326,56 +510,18 @@ Retrieve a paginated list of all orders.
       The number of orders to return (default: 10, max: 100).
     </td>
   </tr>
-  
-  <tr>
-    <td>
-      <code>
-        startingAfter
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      A cursor for pagination.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
-        customerId
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      Filter by customer ID.
-    </td>
-  </tr>
 </tbody>
 </table>
 
 ```php
-$orders = $vatly->orders->list();
+$orders = $vatly->orders->page();
 
 foreach ($orders as $order) {
-    echo $order->id . ': ' . ($order->amount / 100) . ' ' . $order->currency;
+    echo $order->id . ': ' . $order->total->value . ' ' . $order->total->currency;
 }
 
-// Filter by customer
-$orders = $vatly->orders->list([
-    'customerId' => 'customer_abc123',
-]);
+// Pass the cursors and limit in order: startingAfter, endingBefore, limit
+$orders = $vatly->orders->page('order_abc123', null, 25);
 ```
 
 ---
@@ -399,12 +545,24 @@ $orders = $vatly->orders->list([
   <tr>
     <td>
       <code>
+        created
+      </code>
+    </td>
+    
+    <td>
+      Order has just been created
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         pending
       </code>
     </td>
     
     <td>
-      Order is awaiting payment
+      Payment is being processed
     </td>
   </tr>
   
@@ -423,16 +581,30 @@ $orders = $vatly->orders->list([
   <tr>
     <td>
       <code>
-        failed
+        canceled
       </code>
     </td>
     
     <td>
-      Payment failed
+      Order has been canceled
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        expired
+      </code>
+    </td>
+    
+    <td>
+      Order has expired
     </td>
   </tr>
 </tbody>
 </table>
+
+A failed payment does not change the order to a status of its own. You receive the `order.payment_failed` webhook while Vatly tries to recover the payment. If recovery is exhausted, the order is `canceled` with `cancellationReason: payment_failure`, and you receive `order.canceled`.
 
 ---
 
@@ -441,7 +613,13 @@ $orders = $vatly->orders->list([
 The Order object provides convenient helper methods.
 
 ```php
-$order->isPaid();      // true if status is 'paid'
+$order->isCreated();   // true if status is 'created'
 $order->isPending();   // true if status is 'pending'
-$order->isFailed();    // true if status is 'failed'
+$order->isPaid();      // true if status is 'paid'
+$order->isCanceled();  // true if status is 'canceled'
+$order->isExpired();   // true if status is 'expired'
+
+$order->isReversed();          // true if any of the payment was returned to the customer
+$order->isPartiallyReversed(); // true if some, but not all, of the payment was returned
+$order->isFullyReversed();     // true if the full payment was returned
 ```
