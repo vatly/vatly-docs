@@ -203,6 +203,44 @@ The order model contains all the information about your orders, including the or
   <tr>
     <td>
       <code>
+        cancellationReason
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      Why the order was canceled. <code>
+        null
+      </code>
+      
+       unless <code>
+        status
+      </code>
+      
+       is <code>
+        canceled
+      </code>
+      
+      , and <code>
+        null
+      </code>
+      
+       for orders canceled before this field existed. Currently <code>
+        payment_failure
+      </code>
+      
+       (payment recovery for this unpaid order was exhausted).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         invoiceNumber
       </code>
     </td>
@@ -826,6 +864,7 @@ $orders = $vatly->orders->page();
       "metadata": {},
       "paymentMethod": "ideal",
       "status": "paid",
+      "cancellationReason": null,
       "invoiceNumber": "INV-2024-0001",
       "total": {
         "value": "35.09",
@@ -1001,6 +1040,7 @@ $order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
   "metadata": {},
   "paymentMethod": "ideal",
   "status": "paid",
+  "cancellationReason": null,
   "invoiceNumber": "INV-2024-0001",
   "total": {
     "value": "35.09",

@@ -199,7 +199,11 @@ The `eventName` field identifies what happened. The available events are:
     </td>
     
     <td>
-      An order was canceled.
+      An order was canceled. When payment recovery for an unpaid order is exhausted, that order is canceled and carries <code>
+        cancellationReason: payment_failure
+      </code>
+      
+      .
     </td>
   </tr>
   
@@ -235,11 +239,15 @@ The `eventName` field identifies what happened. The available events are:
     </td>
     
     <td>
-      A payment for this order failed and Vatly's automated payment recovery (dunning) has started. Delivered once, when recovery begins, not on each retry. If recovery succeeds you receive <code>
+      A payment for this order failed and Vatly's automated payment recovery (dunning) now covers it. Delivered once per failed order, when the order enters recovery, not on each retry. Recovery runs per payment method: if another order on the same payment method fails while recovery is already running (an immediate upgrade charge during a renewal's recovery, say), it joins that recovery and you receive its own <code>
+        order.payment_failed
+      </code>
+      
+      . If recovery succeeds you receive <code>
         order.paid
       </code>
       
-       for the same order; if exhausted the related subscription is canceled. See <a href="#handling-failed-subscription-payments">
+       for each recovered order; if it is exhausted the related subscriptions are canceled. See <a href="#handling-failed-subscription-payments">
         Handling failed subscription payments
       </a>
       
@@ -745,13 +753,13 @@ When a subscription renewal payment fails, Vatly runs an automated **payment rec
 
 Here is what happens, and what you receive:
 
-1. The renewal payment fails and recovery begins. You receive a single `order.payment_failed` webhook for the renewal order (sent once, when recovery starts, not on each retry). The subscription's `status` stays `active` throughout recovery: it does **not** move to a "past due" state, and `on_grace_period` is never used for payment failure. That status means a *voluntary* cancellation that keeps access until the period ends.
+1. The renewal payment fails and recovery begins. You receive a single `order.payment_failed` webhook for the renewal order (sent once, when recovery starts, not on each retry). Recovery runs per payment method: if another order on the same payment method fails while it is running (an immediate upgrade charge, say), that order joins the recovery and you receive its own `order.payment_failed`. The subscription's `status` stays `active` throughout recovery: it does **not** move to a "past due" state, and `on_grace_period` is never used for payment failure. That status means a *voluntary* cancellation that keeps access until the period ends.
 2. Vatly attempts to recover the payment, and how it does so depends on why the charge failed:
 
   - **Soft decline** (e.g. insufficient funds, a temporary decline): the payment method is still valid, so Vatly automatically re-attempts the charge over a multi-week window, emailing the customer along the way.
   - **Hard decline** (e.g. an expired, canceled, or invalid payment method): retrying cannot succeed, so Vatly instead prompts the customer to supply a new payment method, on a shorter window.
 3. **If recovery succeeds**, the original renewal order is paid and you receive `order.paid` for that same order. Because the subscription was never interrupted, access simply continues. Nothing else is needed.
-4. **If recovery is exhausted** (the customer never resolves it), Vatly cancels the subscription: you receive `subscription.canceled_for_nonpayment` and the subscription `status` becomes `canceled` with `cancellationReason: payment_failure`.
+4. **If recovery is exhausted** (the customer never resolves it), Vatly cancels the subscription: you receive `subscription.canceled_for_nonpayment` and the subscription `status` becomes `canceled` with `cancellationReason: payment_failure`. Each order that is still unpaid is canceled too: you receive `order.canceled` for it, and the order `status` becomes `canceled` with `cancellationReason: payment_failure`.
 
 ### Recommended integration
 
