@@ -53,6 +53,28 @@ Below you'll find all properties for the Vatly Customer resource.
   <tr>
     <td>
       <code>
+        resource
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Always <code>
+        customer
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         email
       </code>
     </td>
@@ -137,6 +159,24 @@ Below you'll find all properties for the Vatly Customer resource.
     
     <td>
       Creation timestamp (ISO 8601).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        links
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        CustomerLinks
+      </code>
+    </td>
+    
+    <td>
+      Link to this customer.
     </td>
   </tr>
 </tbody>
@@ -399,6 +439,42 @@ Retrieve a paginated list of all your customers.
   <tr>
     <td>
       <code>
+        startingAfter
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      A cursor for pagination: return the page after this customer ID.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        endingBefore
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      A cursor for pagination: return the page before this customer ID.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         limit
       </code>
     </td>
@@ -413,39 +489,18 @@ Retrieve a paginated list of all your customers.
       The number of customers to return (default: 10, max: 100).
     </td>
   </tr>
-  
-  <tr>
-    <td>
-      <code>
-        startingAfter
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      A cursor for pagination. Returns results after this customer ID.
-    </td>
-  </tr>
 </tbody>
 </table>
 
 ```php
-$customers = $vatly->customers->list();
+$customers = $vatly->customers->page();
 
 foreach ($customers as $customer) {
     echo $customer->email;
 }
 
-// Pagination
-$customers = $vatly->customers->list([
-    'limit' => 25,
-    'startingAfter' => 'customer_last_id',
-]);
+// Pass the cursors and limit in order: startingAfter, endingBefore, limit
+$customers = $vatly->customers->page('customer_last_id', null, 25);
 ```
 
 ---

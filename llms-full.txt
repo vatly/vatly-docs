@@ -6181,7 +6181,7 @@ $checkout = $vatly->checkouts->create([
 ]);
 
 // Redirect customer to checkout
-header('Location: ' . $checkout->getCheckoutUrl());
+header('Location: ' . $checkout->links->checkoutUrl->href);
 ```
 
 ---
@@ -6324,11 +6324,13 @@ Below you'll find all properties for the Vatly Customer resource.
 | Name        | Type            | Description                                          |
 | ----------- | --------------- | ---------------------------------------------------- |
 | `id`        | `string`        | Unique identifier for the customer (`customer_...`). |
+| `resource`  | `string`        | Always `customer`.                                   |
 | `email`     | `string`        | Customer's email address.                            |
 | `name`      | `string | null` | Customer's name.                                     |
 | `testmode`  | `bool`          | Whether this is a test customer.                     |
 | `metadata`  | `array`         | Your custom metadata.                                |
 | `createdAt` | `string`        | Creation timestamp (ISO 8601).                       |
+| `links`     | `CustomerLinks` | Link to this customer.                               |
 
 ---
 
@@ -6426,23 +6428,21 @@ Retrieve a paginated list of all your customers.
 
 ### Optional attributes
 
-| Name            | Type      | Description                                                      |
-| --------------- | --------- | ---------------------------------------------------------------- |
-| `limit`         | `integer` | The number of customers to return (default: 10, max: 100).       |
-| `startingAfter` | `string`  | A cursor for pagination. Returns results after this customer ID. |
+| Name            | Type      | Description                                                       |
+| --------------- | --------- | ----------------------------------------------------------------- |
+| `startingAfter` | `string`  | A cursor for pagination: return the page after this customer ID.  |
+| `endingBefore`  | `string`  | A cursor for pagination: return the page before this customer ID. |
+| `limit`         | `integer` | The number of customers to return (default: 10, max: 100).        |
 
 ```php
-$customers = $vatly->customers->list();
+$customers = $vatly->customers->page();
 
 foreach ($customers as $customer) {
     echo $customer->email;
 }
 
-// Pagination
-$customers = $vatly->customers->list([
-    'limit' => 25,
-    'startingAfter' => 'customer_last_id',
-]);
+// Pass the cursors and limit in order: startingAfter, endingBefore, limit
+$customers = $vatly->customers->page('customer_last_id', null, 25);
 ```
 
 ---
@@ -6538,8 +6538,9 @@ Below you'll find all properties for the Vatly Checkout resource.
 | Name                  | Type            | Description                                                                                                                                                                                                                          |
 | --------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `id`                  | `string`        | Unique identifier for the checkout (`checkout_...`).                                                                                                                                                                                 |
+| `resource`            | `string`        | Always `checkout`.                                                                                                                                                                                                                   |
 | `status`              | `string`        | The status of the checkout: `created`, `paid`, `canceled`, `failed`, or `expired`.                                                                                                                                                   |
-| `merchantId`          | `string`        | Your merchant ID.                                                                                                                                                                                                                    |
+| `customerId`          | `string | null` | The customer ID, or `null` when the checkout has no associated customer yet.                                                                                                                                                         |
 | `orderId`             | `string | null` | Order ID (available after successful payment).                                                                                                                                                                                       |
 | `testmode`            | `bool`          | Whether this is a test checkout.                                                                                                                                                                                                     |
 | `redirectUrlSuccess`  | `string`        | Success redirect URL.                                                                                                                                                                                                                |
@@ -6548,6 +6549,7 @@ Below you'll find all properties for the Vatly Checkout resource.
 | `locale`              | `string | null` | The language the hosted checkout is presented in (`en`, `de`, `fr`, `nl`, `es`, `it`, `pt`, `pl`), echoed back as the folded language. `null` means none was specified and the checkout picks a language from the shopper's browser. |
 | `expiresAt`           | `string | null` | Expiration timestamp (ISO 8601).                                                                                                                                                                                                     |
 | `createdAt`           | `string`        | Creation timestamp (ISO 8601).                                                                                                                                                                                                       |
+| `links`               | `CheckoutLinks` | Links to this checkout, the hosted checkout page (`checkoutUrl`) and the order (`null` until there is one).                                                                                                                          |
 
 ---
 
@@ -6594,7 +6596,7 @@ $checkout = $vatly->checkouts->create([
 echo $checkout->locale; // 'de'
 
 // Redirect to hosted checkout
-$checkoutUrl = $checkout->getCheckoutUrl();
+$checkoutUrl = $checkout->links->checkoutUrl->href;
 ```
 
 If you want to provide your own idempotency key for this request, pass it in the optional second argument:
@@ -6670,7 +6672,7 @@ $checkout = $vatly->checkouts->get('checkout_abc123');
 
 echo $checkout->id;
 echo $checkout->status;
-echo $checkout->getCheckoutUrl();
+echo $checkout->links->checkoutUrl->href;
 
 if ($checkout->isPaid()) {
     $orderId = $checkout->orderId;
@@ -6687,24 +6689,22 @@ Retrieve a paginated list of all your checkouts.
 
 ### Optional attributes
 
-| Name            | Type      | Description                                                      |
-| --------------- | --------- | ---------------------------------------------------------------- |
-| `limit`         | `integer` | The number of checkouts to return (default: 10, max: 100).       |
-| `startingAfter` | `string`  | A cursor for pagination. Returns results after this checkout ID. |
+| Name            | Type      | Description                                                       |
+| --------------- | --------- | ----------------------------------------------------------------- |
+| `startingAfter` | `string`  | A cursor for pagination: return the page after this checkout ID.  |
+| `endingBefore`  | `string`  | A cursor for pagination: return the page before this checkout ID. |
+| `limit`         | `integer` | The number of checkouts to return (default: 10, max: 100).        |
 
 ```php
 // Get all checkouts (paginated)
-$checkouts = $vatly->checkouts->list();
+$checkouts = $vatly->checkouts->page();
 
 foreach ($checkouts as $checkout) {
     echo $checkout->id . ': ' . $checkout->status;
 }
 
-// Pagination
-$checkouts = $vatly->checkouts->list([
-    'limit' => 25,
-    'startingAfter' => 'checkout_last_id',
-]);
+// Pass the cursors and limit in order: startingAfter, endingBefore, limit
+$checkouts = $vatly->checkouts->page('checkout_last_id', null, 25);
 ```
 
 ---
@@ -6726,11 +6726,11 @@ $checkouts = $vatly->checkouts->list([
 The Checkout object provides convenient helper methods.
 
 ```php
-$checkout->isPaid();         // true if status is 'paid'
-$checkout->isCanceled();     // true if status is 'canceled'
-$checkout->isExpired();      // true if status is 'expired'
-$checkout->getCheckoutUrl(); // Hosted checkout page URL
-$checkout->getOrderId();     // Order ID (null if not paid)
+$checkout->isCreated();  // true if status is 'created'
+$checkout->isPaid();     // true if status is 'paid'
+$checkout->isCanceled(); // true if status is 'canceled'
+$checkout->isFailed();   // true if status is 'failed'
+$checkout->isExpired();  // true if status is 'expired'
 ```
 
 
@@ -6800,23 +6800,24 @@ Retrieve a paginated list of all subscriptions.
 
 ### Optional attributes
 
-| Name            | Type      | Description                                                    |
-| --------------- | --------- | -------------------------------------------------------------- |
-| `limit`         | `integer` | The number of subscriptions to return (default: 10, max: 100). |
-| `startingAfter` | `string`  | A cursor for pagination.                                       |
-| `customerId`    | `string`  | Filter by customer ID.                                         |
+| Name            | Type      | Description                                                           |
+| --------------- | --------- | --------------------------------------------------------------------- |
+| `startingAfter` | `string`  | A cursor for pagination: return the page after this subscription ID.  |
+| `endingBefore`  | `string`  | A cursor for pagination: return the page before this subscription ID. |
+| `limit`         | `integer` | The number of subscriptions to return (default: 10, max: 100).        |
 
 ```php
-$subscriptions = $vatly->subscriptions->list();
+$subscriptions = $vatly->subscriptions->page();
 
 foreach ($subscriptions as $subscription) {
     echo $subscription->id . ': ' . $subscription->status;
 }
 
-// Filter by customer
-$subscriptions = $vatly->subscriptions->list([
-    'customerId' => 'customer_abc123',
-]);
+// Pass the cursors and limit in order: startingAfter, endingBefore, limit
+$subscriptions = $vatly->subscriptions->page('subscription_last_id', null, 25);
+
+// One customer's subscriptions (GET /v1/customers/:customerId/subscriptions)
+$subscriptions = $vatly->customerSubscriptions->pageForCustomerId('customer_abc123');
 ```
 
 ---
@@ -7252,54 +7253,85 @@ Below you'll find all properties for the Vatly Refund resource.
 
 ### Properties
 
-| Name        | Type            | Description                                                  |
-| ----------- | --------------- | ------------------------------------------------------------ |
-| `id`        | `string`        | Unique identifier for the refund (`refund_...`).             |
-| `status`    | `string`        | The status: `pending`, `completed`, `failed`, or `canceled`. |
-| `orderId`   | `string`        | The order ID being refunded.                                 |
-| `amount`    | `integer`       | Refund amount in cents.                                      |
-| `currency`  | `string`        | Three-letter ISO currency code.                              |
-| `reason`    | `string | null` | Reason for the refund.                                       |
-| `testmode`  | `bool`          | Whether this is a test refund.                               |
-| `metadata`  | `array`         | Your custom metadata.                                        |
-| `createdAt` | `string`        | Creation timestamp (ISO 8601).                               |
+| Name              | Type                   | Description                                                                                     |
+| ----------------- | ---------------------- | ----------------------------------------------------------------------------------------------- |
+| `id`              | `string`               | Unique identifier for the refund (`refund_...`).                                                |
+| `resource`        | `string`               | Always `refund`.                                                                                |
+| `status`          | `string`               | The refund status (see [Refund statuses](https://docs.vatly.com/#refund-statuses)).             |
+| `customerId`      | `string`               | ID of the customer who receives the refund.                                                     |
+| `originalOrderId` | `string`               | The ID of the order being refunded.                                                             |
+| `orderId`         | `string | null`        | The credit note order ID, `null` until the refund is processed.                                 |
+| `total`           | `Money`                | Total amount including taxes.                                                                   |
+| `subtotal`        | `Money`                | Subtotal amount before taxes.                                                                   |
+| `taxSummary`      | `TaxSummaryCollection` | Tax breakdown by rate.                                                                          |
+| `lines`           | `array`                | The refund lines. Use `$refund->lines()` for a collection of `RefundLine` objects.              |
+| `testmode`        | `bool`                 | Whether this is a test refund.                                                                  |
+| `createdAt`       | `string`               | Creation timestamp (ISO 8601).                                                                  |
+| `links`           | `RefundLinks`          | Links to this refund, the original order and the credit note order (`null` until there is one). |
 
 ---
 
-## Create a refund
+## Create a partial refund
 
-`POST /v1/refunds`
+`POST /v1/orders/:orderId/refunds`
 
-Create a refund for an order.
+Refund part of an order, line by line.
 
 ### Required attributes
 
-| Name      | Type     | Description                    |
-| --------- | -------- | ------------------------------ |
-| `orderId` | `string` | The ID of the order to refund. |
+| Name    | Type    | Description                                                                                |
+| ------- | ------- | ------------------------------------------------------------------------------------------ |
+| `items` | `array` | The order lines to refund. See [Refund items](https://docs.vatly.com/#refund-items) below. |
 
 ### Optional attributes
 
-| Name     | Type      | Description                                            |
-| -------- | --------- | ------------------------------------------------------ |
-| `amount` | `integer` | Partial refund amount in cents (omit for full refund). |
-| `reason` | `string`  | Reason for the refund.                                 |
+| Name       | Type    | Description           |
+| ---------- | ------- | --------------------- |
+| `metadata` | `array` | Your custom metadata. |
+
+### Refund items
+
+| Name                        | Type            | Required | Description                                                                                                                                  |
+| --------------------------- | --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `itemId`                    | `string`        | Yes      | The ID of the order line to refund.                                                                                                          |
+| `amount`                    | `array`         | Yes      | Amount to refund for this line before taxes: `['value' => '10.00', 'currency' => 'EUR']`. Cannot exceed what is left to refund for the line. |
+| `description`               | `string | null` | No       | Custom description for this refund line.                                                                                                     |
+| `descriptionAdditionalLine` | `string | null` | No       | Additional description line.                                                                                                                 |
 
 ```php
-// Full refund
-$refund = $vatly->refunds->create([
-    'orderId' => 'order_abc123',
-    'reason' => 'Customer requested refund',
-]);
-
-// Partial refund
-$refund = $vatly->refunds->create([
-    'orderId' => 'order_abc123',
-    'amount' => 1000,  // Refund €10.00
+$refund = $vatly->orderRefunds->createForOrderId('order_abc123', [
+    'items' => [
+        [
+            'itemId' => 'order_item_abc123',
+            'amount' => ['value' => '10.00', 'currency' => 'EUR'],
+            'description' => 'Partial refund',
+        ],
+    ],
 ]);
 
 echo $refund->id;
 echo $refund->status;
+```
+
+---
+
+## Create a full refund
+
+`POST /v1/orders/:orderId/refunds/full`
+
+Refund everything that can still be refunded on an order.
+
+### Optional attributes
+
+| Name       | Type    | Description           |
+| ---------- | ------- | --------------------- |
+| `metadata` | `array` | Your custom metadata. |
+
+```php
+$refund = $vatly->orderRefunds->createFullRefundForOrderId('order_abc123', []);
+
+// Or from an order you already fetched
+$refund = $order->fullRefund([]);
 ```
 
 ---
@@ -7314,7 +7346,7 @@ Retrieve a refund by its ID.
 $refund = $vatly->refunds->get('refund_abc123');
 
 echo $refund->status;
-echo $refund->amount / 100 . ' ' . $refund->currency;
+echo $refund->total->value . ' ' . $refund->total->currency;
 ```
 
 ---
@@ -7327,41 +7359,62 @@ Retrieve a paginated list of all refunds.
 
 ### Optional attributes
 
-| Name            | Type      | Description                                              |
-| --------------- | --------- | -------------------------------------------------------- |
-| `limit`         | `integer` | The number of refunds to return (default: 10, max: 100). |
-| `startingAfter` | `string`  | A cursor for pagination.                                 |
+| Name            | Type      | Description                                                     |
+| --------------- | --------- | --------------------------------------------------------------- |
+| `startingAfter` | `string`  | A cursor for pagination: return the page after this refund ID.  |
+| `endingBefore`  | `string`  | A cursor for pagination: return the page before this refund ID. |
+| `limit`         | `integer` | The number of refunds to return (default: 10, max: 100).        |
 
 ```php
-$refunds = $vatly->refunds->list();
+$refunds = $vatly->refunds->page();
 
 foreach ($refunds as $refund) {
     echo $refund->id . ': ' . $refund->status;
 }
+
+// Pass the cursors and limit in order: startingAfter, endingBefore, limit
+$refunds = $vatly->refunds->page('refund_last_id', null, 25);
+
+// One order's refunds (GET /v1/orders/:orderId/refunds)
+$refunds = $vatly->orderRefunds->pageForOrderId('order_abc123');
+```
+
+---
+
+## Cancel a refund
+
+`DELETE /v1/orders/:orderId/refunds/:refundId`
+
+Cancel a refund that has not been processed yet. Once it is `processing`, cancellation is no longer possible.
+
+```php
+$vatly->orderRefunds->cancelRefundForOrderId('order_abc123', 'refund_abc123');
+
+// Or from a refund you already fetched
+$refund->cancel();
 ```
 
 ---
 
 ## Refund statuses
 
-| Status      | Description                   |
-| ----------- | ----------------------------- |
-| `pending`   | Refund is being processed     |
-| `completed` | Refund completed successfully |
-| `failed`    | Refund failed                 |
-| `canceled`  | Refund was canceled           |
+| Status       | Description                                                    |
+| ------------ | -------------------------------------------------------------- |
+| `pending`    | Refund is ready to be sent to the bank                         |
+| `queued`     | Refund is queued due to a lack of balance                      |
+| `processing` | Refund is being processed (cancellation is no longer possible) |
+| `refunded`   | Refund has been processed successfully                         |
+| `failed`     | Refund failed after processing                                 |
+| `canceled`   | Refund was canceled                                            |
 
----
-
-## Helper methods
-
-The Refund object provides convenient helper methods.
+The Refund object has no status helper methods. Compare `$refund->status` against the `Vatly\API\Types\RefundStatus` constants:
 
 ```php
-$refund->isPending();     // true if status is 'pending'
-$refund->isCompleted();   // true if status is 'completed'
-$refund->isFailed();      // true if status is 'failed'
-$refund->isCanceled();    // true if status is 'canceled'
+use Vatly\API\Types\RefundStatus;
+
+if ($refund->status === RefundStatus::REFUNDED) {
+    // The money is on its way back to the customer
+}
 ```
 
 
@@ -7550,18 +7603,23 @@ Below you'll find all properties for the Vatly Chargeback resource.
 
 ### Properties
 
-| Name               | Type            | Description                                                                      |
-| ------------------ | --------------- | -------------------------------------------------------------------------------- |
-| `id`               | `string`        | Unique identifier for the chargeback (`chargeback_...`).                         |
-| `resource`         | `string`        | Always `chargeback`.                                                             |
-| `merchantId`       | `string`        | The merchant ID.                                                                 |
-| `testmode`         | `bool`          | Whether this is a test chargeback.                                               |
-| `amount`           | `object`        | Chargeback amount (`value` and `currency`).                                      |
-| `settlementAmount` | `object`        | Amount deducted from settlement (may differ from `amount`).                      |
-| `reason`           | `string`        | Reason code for the dispute (e.g. `fraud`, `product_not_received`, `duplicate`). |
-| `originalOrderId`  | `string`        | The ID of the original order that was disputed.                                  |
-| `orderId`          | `string | null` | The credit note order ID (after processing).                                     |
-| `createdAt`        | `string`        | Creation timestamp (ISO 8601).                                                   |
+| Name               | Type                   | Description                                                                                         |
+| ------------------ | ---------------------- | --------------------------------------------------------------------------------------------------- |
+| `id`               | `string`               | Unique identifier for the chargeback (`chargeback_...`).                                            |
+| `resource`         | `string`               | Always `chargeback`.                                                                                |
+| `customerId`       | `string`               | ID of the customer who disputed the payment.                                                        |
+| `testmode`         | `bool`                 | Whether this is a test chargeback.                                                                  |
+| `status`           | `string`               | The dispute status (see [Chargeback statuses](https://docs.vatly.com/#chargeback-statuses)).        |
+| `amount`           | `Money`                | Amount of the chargeback.                                                                           |
+| `settlementAmount` | `Money`                | Amount deducted from settlement (may differ from `amount` due to currency conversion or fees).      |
+| `total`            | `Money`                | Total amount including taxes.                                                                       |
+| `subtotal`         | `Money`                | Subtotal amount before taxes.                                                                       |
+| `taxSummary`       | `TaxSummaryCollection` | Tax breakdown by rate.                                                                              |
+| `reason`           | `string`               | Reason code for the dispute (e.g. `fraud`, `product_not_received`, `duplicate`).                    |
+| `originalOrderId`  | `string`               | The ID of the original order that was disputed.                                                     |
+| `orderId`          | `string | null`        | The credit note order ID, `null` until the chargeback is processed.                                 |
+| `createdAt`        | `string`               | Creation timestamp (ISO 8601).                                                                      |
+| `links`            | `ChargebackLinks`      | Links to this chargeback, the original order and the credit note order (`null` until there is one). |
 
 ---
 
@@ -7589,18 +7647,36 @@ Retrieve a paginated list of all chargebacks.
 
 ### Optional attributes
 
-| Name            | Type      | Description                                                  |
-| --------------- | --------- | ------------------------------------------------------------ |
-| `limit`         | `integer` | The number of chargebacks to return (default: 10, max: 100). |
-| `startingAfter` | `string`  | A cursor for pagination.                                     |
+| Name            | Type      | Description                                                         |
+| --------------- | --------- | ------------------------------------------------------------------- |
+| `startingAfter` | `string`  | A cursor for pagination: return the page after this chargeback ID.  |
+| `endingBefore`  | `string`  | A cursor for pagination: return the page before this chargeback ID. |
+| `limit`         | `integer` | The number of chargebacks to return (default: 10, max: 100).        |
 
 ```php
-$chargebacks = $vatly->chargebacks->list();
+$chargebacks = $vatly->chargebacks->page();
 
 foreach ($chargebacks as $chargeback) {
     echo $chargeback->id . ': ' . $chargeback->reason;
 }
+
+// Pass the cursors and limit in order: startingAfter, endingBefore, limit
+$chargebacks = $vatly->chargebacks->page('chargeback_last_id', null, 25);
 ```
+
+---
+
+## Chargeback statuses
+
+| Status                   | Description                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------ |
+| `pending`                | Dispute received, awaiting action                                                    |
+| `requires_amount_review` | The disputed amount exceeds the original order, so completion is held pending review |
+| `accepted`               | The dispute was accepted                                                             |
+| `rejected`               | The dispute was rejected                                                             |
+| `evidence_submitted`     | Evidence submitted, awaiting a decision                                              |
+| `won`                    | Dispute resolved in the merchant's favor                                             |
+| `lost`                   | Dispute resolved in the customer's favor                                             |
 
 
 # Webhooks

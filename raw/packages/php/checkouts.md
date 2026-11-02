@@ -55,6 +55,28 @@ Below you'll find all properties for the Vatly Checkout resource.
   <tr>
     <td>
       <code>
+        resource
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Always <code>
+        checkout
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         status
       </code>
     </td>
@@ -93,18 +115,22 @@ Below you'll find all properties for the Vatly Checkout resource.
   <tr>
     <td>
       <code>
-        merchantId
+        customerId
       </code>
     </td>
     
     <td>
       <code>
-        string
+        string | null
       </code>
     </td>
     
     <td>
-      Your merchant ID.
+      The customer ID, or <code>
+        null
+      </code>
+      
+       when the checkout has no associated customer yet.
     </td>
   </tr>
   
@@ -285,6 +311,32 @@ Below you'll find all properties for the Vatly Checkout resource.
     
     <td>
       Creation timestamp (ISO 8601).
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        links
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        CheckoutLinks
+      </code>
+    </td>
+    
+    <td>
+      Links to this checkout, the hosted checkout page (<code>
+        checkoutUrl
+      </code>
+      
+      ) and the order (<code>
+        null
+      </code>
+      
+       until there is one).
     </td>
   </tr>
 </tbody>
@@ -531,7 +583,7 @@ $checkout = $vatly->checkouts->create([
 echo $checkout->locale; // 'de'
 
 // Redirect to hosted checkout
-$checkoutUrl = $checkout->getCheckoutUrl();
+$checkoutUrl = $checkout->links->checkoutUrl->href;
 ```
 
 If you want to provide your own idempotency key for this request, pass it in the optional second argument:
@@ -607,7 +659,7 @@ $checkout = $vatly->checkouts->get('checkout_abc123');
 
 echo $checkout->id;
 echo $checkout->status;
-echo $checkout->getCheckoutUrl();
+echo $checkout->links->checkoutUrl->href;
 
 if ($checkout->isPaid()) {
     $orderId = $checkout->orderId;
@@ -645,6 +697,42 @@ Retrieve a paginated list of all your checkouts.
   <tr>
     <td>
       <code>
+        startingAfter
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      A cursor for pagination: return the page after this checkout ID.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        endingBefore
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      A cursor for pagination: return the page before this checkout ID.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         limit
       </code>
     </td>
@@ -659,40 +747,19 @@ Retrieve a paginated list of all your checkouts.
       The number of checkouts to return (default: 10, max: 100).
     </td>
   </tr>
-  
-  <tr>
-    <td>
-      <code>
-        startingAfter
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      A cursor for pagination. Returns results after this checkout ID.
-    </td>
-  </tr>
 </tbody>
 </table>
 
 ```php
 // Get all checkouts (paginated)
-$checkouts = $vatly->checkouts->list();
+$checkouts = $vatly->checkouts->page();
 
 foreach ($checkouts as $checkout) {
     echo $checkout->id . ': ' . $checkout->status;
 }
 
-// Pagination
-$checkouts = $vatly->checkouts->list([
-    'limit' => 25,
-    'startingAfter' => 'checkout_last_id',
-]);
+// Pass the cursors and limit in order: startingAfter, endingBefore, limit
+$checkouts = $vatly->checkouts->page('checkout_last_id', null, 25);
 ```
 
 ---
@@ -782,9 +849,9 @@ $checkouts = $vatly->checkouts->list([
 The Checkout object provides convenient helper methods.
 
 ```php
-$checkout->isPaid();         // true if status is 'paid'
-$checkout->isCanceled();     // true if status is 'canceled'
-$checkout->isExpired();      // true if status is 'expired'
-$checkout->getCheckoutUrl(); // Hosted checkout page URL
-$checkout->getOrderId();     // Order ID (null if not paid)
+$checkout->isCreated();  // true if status is 'created'
+$checkout->isPaid();     // true if status is 'paid'
+$checkout->isCanceled(); // true if status is 'canceled'
+$checkout->isFailed();   // true if status is 'failed'
+$checkout->isExpired();  // true if status is 'expired'
 ```

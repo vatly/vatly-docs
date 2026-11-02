@@ -626,6 +626,42 @@ Retrieve a paginated list of all subscriptions.
   <tr>
     <td>
       <code>
+        startingAfter
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      A cursor for pagination: return the page after this subscription ID.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        endingBefore
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      A cursor for pagination: return the page before this subscription ID.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         limit
       </code>
     </td>
@@ -640,56 +676,21 @@ Retrieve a paginated list of all subscriptions.
       The number of subscriptions to return (default: 10, max: 100).
     </td>
   </tr>
-  
-  <tr>
-    <td>
-      <code>
-        startingAfter
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      A cursor for pagination.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <code>
-        customerId
-      </code>
-    </td>
-    
-    <td>
-      <code>
-        string
-      </code>
-    </td>
-    
-    <td>
-      Filter by customer ID.
-    </td>
-  </tr>
 </tbody>
 </table>
 
 ```php
-$subscriptions = $vatly->subscriptions->list();
+$subscriptions = $vatly->subscriptions->page();
 
 foreach ($subscriptions as $subscription) {
     echo $subscription->id . ': ' . $subscription->status;
 }
 
-// Filter by customer
-$subscriptions = $vatly->subscriptions->list([
-    'customerId' => 'customer_abc123',
-]);
+// Pass the cursors and limit in order: startingAfter, endingBefore, limit
+$subscriptions = $vatly->subscriptions->page('subscription_last_id', null, 25);
+
+// One customer's subscriptions (GET /v1/customers/:customerId/subscriptions)
+$subscriptions = $vatly->customerSubscriptions->pageForCustomerId('customer_abc123');
 ```
 
 ---
