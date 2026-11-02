@@ -278,9 +278,23 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
         order.canceled
       </code>
       
-       webhook is received — the local order status is mirrored to <code>
+       webhook is received. The local order status is mirrored to <code>
         canceled
       </code>
+      
+       and its <code>
+        cancellation_reason
+      </code>
+      
+       is stored (<code>
+        payment_failure
+      </code>
+      
+       when payment recovery for the unpaid order was exhausted, otherwise left <code>
+        null
+      </code>
+      
+      )
     </td>
   </tr>
   
