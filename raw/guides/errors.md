@@ -170,7 +170,7 @@ Here is a list of the different categories of status codes returned by the Vatly
     </td>
     
     <td>
-      Conflict - Idempotency mismatch, request still in progress, outcome unknown, or a concurrent write.
+      Conflict - Idempotency mismatch, request still in progress, outcome unknown, a concurrent write, or a refund of the same order already being created.
     </td>
   </tr>
   
