@@ -27,7 +27,7 @@ export default defineAppConfig({
     },
   },
   // Per-page OG image card style, read by app/components/OgImage/Docs.takumi.vue.
-  //  'vatly'   → solid Vatly-blue card matching vatlify's marketing/changelog OG
+  //  'vatly'   → solid Vatly-blue card matching Vatly's marketing/changelog OG
   //              template (the new default).
   //  'classic' → the previous dark-navy card. Flip this to revert everywhere;
   //              a redeploy regenerates all cards.
