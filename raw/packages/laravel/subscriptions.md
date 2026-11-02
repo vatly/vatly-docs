@@ -72,7 +72,7 @@ $user->subscription()->swapAndInvoice('subscription_plan_annual');
 
 ### Proration options
 
-`swap()` takes an optional `$options` array that is passed straight through to the Vatly API. Three flags control how the change is timed and billed:
+`swap()` takes an optional `$options` array that is passed straight through to the Vatly API. Four flags control how the change is timed and billed:
 
 <table>
 <thead>
@@ -132,7 +132,47 @@ $user->subscription()->swapAndInvoice('subscription_plan_annual');
     </td>
     
     <td>
-      Credit unused time on the old plan and charge remaining time on the new plan
+      <code>
+        true
+      </code>
+      
+       credits unused time on the old plan and charges remaining time on the new plan. <code>
+        false
+      </code>
+      
+       charges the full new price for the current cycle on top of what was already paid: it does <strong>
+        not
+      </strong>
+      
+       skip the charge. Ignored when <code>
+        prorationCharge
+      </code>
+      
+       is <code>
+        false
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        prorationCharge
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        true
+      </code>
+    </td>
+    
+    <td>
+      Whether an immediate change is charged at all. <code>
+        false
+      </code>
+      
+       applies the change now and charges nothing for it; the next renewal bills the new price, unless a change is already scheduled for that renewal: that change still applies
     </td>
   </tr>
   
@@ -187,7 +227,16 @@ $user->subscription()->swap('subscription_plan_annual', [
     'applyImmediately' => true,
     'invoiceImmediately' => true,
 ]);
+
+// Apply now without charging for the change (the plan must keep the same billing interval).
+// The next renewal bills the new price
+$user->subscription()->swap('subscription_plan_premium', [
+    'applyImmediately' => true,
+    'prorationCharge' => false,
+]);
 ```
+
+With `prorationCharge: false`, a downgrade gets no credit, and during a trial the trial keeps running and its end bills the new plan. Sending `invoiceImmediately: true`, `anchor`, `resetAnchor`, `trialUntil` or a plan with a different interval with it returns a `422`, so don't pass it to `swapAndInvoice()`.
 
 `swapAndInvoice()` is exactly `swap()` with `applyImmediately` and `invoiceImmediately` both forced to `true`.
 

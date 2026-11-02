@@ -813,11 +813,89 @@ subscriptionPlanId, quantity, or price is required.**
     </td>
     
     <td>
-      Prorate charges for the partial billing period (default <code>
+      How an immediate change is priced (default <code>
         true
       </code>
       
-      ).
+      ). <code>
+        true
+      </code>
+      
+       charges the new price for the time left on the cycle, minus a credit for the old price over that same time. <code>
+        false
+      </code>
+      
+       charges the full new price for the current cycle on top of what was already paid. <strong>
+        <code>
+          false
+        </code>
+        
+         does not skip the charge:
+      </strong>
+      
+       use <code>
+        prorationCharge
+      </code>
+      
+       for that. Ignored when <code>
+        prorationCharge
+      </code>
+      
+       is <code>
+        false
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        prorationCharge
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        bool
+      </code>
+    </td>
+    
+    <td>
+      Whether an immediate change is charged at all (default <code>
+        true
+      </code>
+      
+      ). With <code>
+        false
+      </code>
+      
+      , the change applies now and nothing is charged for it: a downgrade gets no credit. The next renewal bills the new price, unless a change is already scheduled for that renewal: that change still applies. During a trial, the trial keeps running and its end bills the new plan. Sending <code>
+        invoiceImmediately: true
+      </code>
+      
+      , <code>
+        anchor
+      </code>
+      
+      , <code>
+        resetAnchor
+      </code>
+      
+      , <code>
+        trialUntil
+      </code>
+      
+       or a plan with a different interval with <code>
+        false
+      </code>
+      
+       returns <code>
+        422
+      </code>
+      
+      .
     </td>
   </tr>
   
@@ -974,6 +1052,13 @@ $subscription = $vatly->subscriptions->update('subscription_123', [
     'subscriptionPlanId' => 'subscription_plan_Wt5mNvBxKw7YcZaEjLhR',
     'price' => ['value' => '99.99', 'currency' => 'EUR'],
     'applyImmediately' => true,
+]);
+
+// Switch plan now without charging for the change. The next renewal bills the new price.
+$subscription = $vatly->subscriptions->update('subscription_123', [
+    'subscriptionPlanId' => 'subscription_plan_Wt5mNvBxKw7YcZaEjLhR',
+    'applyImmediately' => true,
+    'prorationCharge' => false,
 ]);
 ```
 
