@@ -1445,7 +1445,97 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
     </td>
     
     <td>
-      Whether to prorate charges for the partial billing period. If true, the customer is credited for unused time on the old plan and charged for remaining time on the new plan. A prorated downgrade applied immediately is not accepted while time is left on the cycle (see below). Default: <code>
+      How an immediate change is priced. When <code>
+        true
+      </code>
+      
+      , the customer pays the new price for the time left on the cycle, minus a credit for the old price over that same time. A prorated downgrade applied immediately is not accepted while time is left on the cycle (see below). When <code>
+        false
+      </code>
+      
+      , the customer pays the full new price for the current cycle on top of what they already paid. <strong>
+        <code>
+          false
+        </code>
+        
+         does not skip the charge:
+      </strong>
+      
+       use <code>
+        prorationCharge: false
+      </code>
+      
+       for that. Ignored when <code>
+        prorationCharge
+      </code>
+      
+       is <code>
+        false
+      </code>
+      
+      . Default: <code>
+        true
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        prorationCharge
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        boolean
+      </code>
+    </td>
+    
+    <td>
+      Whether an immediate change is charged at all. When <code>
+        true
+      </code>
+      
+      , it is charged as set by <code>
+        prorate
+      </code>
+      
+       and <code>
+        invoiceImmediately
+      </code>
+      
+      . When <code>
+        false
+      </code>
+      
+      , the change applies now and nothing is charged for it: an upgrade costs nothing until the next renewal and a downgrade gets no credit. The next renewal bills the new price, unless a change is already scheduled for that renewal: that change still applies. With <code>
+        false
+      </code>
+      
+      , sending <code>
+        invoiceImmediately: true
+      </code>
+      
+      , <code>
+        anchor
+      </code>
+      
+      , <code>
+        resetAnchor
+      </code>
+      
+      , <code>
+        trialUntil
+      </code>
+      
+       or a plan with a different interval returns <code>
+        422
+      </code>
+      
+      , because each would start or bill a new cycle now. Default: <code>
         true
       </code>
       
@@ -1622,13 +1712,16 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
 - On an immediate prorated update (`applyImmediately: true`, `prorate: true`) that keeps the billing anchor, the customer pays the new price for the time left on the cycle, minus a credit for the old price over that same time.
 - A prorated downgrade, price decrease or seat reduction applied immediately is not accepted while time is left on the cycle. It would give a negative charge, and the difference is not refunded mid-cycle, so the request returns `422`.
 - **Recommended:** schedule the change for the next renewal (`applyImmediately: false`). The customer keeps their current plan until the cycle ends, and the lower price takes effect at renewal with no extra charge.
-- Only switch immediately without proration (`prorate: false`) if the customer must lose access to the higher plan right away. This charges the full price of the new plan for the current cycle, without crediting what was already paid. It is billed right away with `invoiceImmediately: true`, otherwise on the next renewal invoice.
+- To switch now with no credit and no charge, set `prorationCharge: false`. This also works for a downgrade while time is left on the cycle. The next renewal bills the new price, unless a change is already scheduled for that renewal: that change still applies.
+- `prorationCharge: false` changes what the customer has, never when they are billed. Sending `invoiceImmediately: true`, `anchor`, `resetAnchor`, `trialUntil` or a plan with a different interval with it returns `422`. To move to a plan with a different interval, schedule the change instead (`applyImmediately: false`).
+- Only switch immediately without proration (`prorate: false`) if the customer must lose access to the higher plan right away. This charges the full price of the new plan for the current cycle, without crediting what was already paid. It is billed right away with `invoiceImmediately: true`, otherwise on the next renewal invoice. `prorate: false` does not skip the charge: to apply a change without charging for it, use `prorationCharge: false`.
 
 **Updating during a trial:**
 
 - An immediate update (`applyImmediately: true`) during a trial ends the trial. The first paid cycle starts that day and is charged right away at the full new price, whatever `prorate` and `invoiceImmediately` are set to. The next renewal is one billing interval later, not at the original end of the trial. For example, a €30 monthly plan with a trial from 1 to 15 October that is changed on 5 October is charged €30 on 5 October and renews on 5 November.
 - With `anchor`, the first paid cycle runs to that date instead. It is charged right away, priced per `prorate`, and renews on the anchor. Changed on 5 October with `anchor` set to 20 October, the same plan is charged €15 for 5 to 20 October with `prorate: true`, or the full €30 with `prorate: false`, and renews on 20 October.
 - A scheduled update (`applyImmediately: false`) keeps the trial. The change applies from the first paid cycle, when the trial ends.
+- An immediate update with `prorationCharge: false` also keeps the trial. The change applies now, the trial end date stays, and the trial end bills the new plan.
 - A subscription whose `status` is `on_grace_period` still ends on the date it was given. An immediate update ends its trial without starting a paid cycle, and is not charged right away unless `invoiceImmediately` is `true`.
 
 <code-group sync="api">
@@ -1641,6 +1734,17 @@ curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjT
     "subscriptionPlanId": "subscription_plan_Wt5mNvBxKw7YcZaEjLhR",
     "prorate": true,
     "applyImmediately": true
+  }'
+```
+
+```bash [cURL (switch without a charge)]
+curl -X PATCH https://api.vatly.com/v1/subscriptions/subscription_Lp3mNvBxKw7RjTgYcZaE \
+  -H "Authorization: Bearer live_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "subscriptionPlanId": "subscription_plan_Wt5mNvBxKw7YcZaEjLhR",
+    "applyImmediately": true,
+    "prorationCharge": false
   }'
 ```
 
