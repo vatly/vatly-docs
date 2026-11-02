@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 
-const SRC = '/Users/sandervanhooft/vatly-docs/src/app';
+const SRC = 'src/app';
 
 // Navigation structure
 const guides = [
@@ -142,7 +142,7 @@ function processFile(slug, outPath) {
   console.log(`OK: ${slug} -> ${outPath}`);
 }
 
-const CONTENT = '/Users/sandervanhooft/vatly-docs-docus/content';
+const CONTENT = 'content';
 
 // Landing page
 const indexSrc = readFileSync(join(SRC, 'page.mdx'), 'utf8');

@@ -4,7 +4,7 @@
 // `postinstall` script in package.json so the docs theme renders Vatly branding.
 //
 // Two card styles, selected by `ogImageStyle` in app/app.config.ts:
-//   'vatly'   (default) — solid Vatly-blue card mirroring vatlify's marketing /
+//   'vatly'   (default) — solid Vatly-blue card mirroring Vatly's marketing /
 //                         changelog OG template.
 //   'classic'           — the previous dark-navy card, kept as a backup. Flip
 //                         the app.config value to revert everywhere.
@@ -45,7 +45,7 @@ const LOGO_PATH = 'M11.099 40.76 0 11.596h8.458l6.401 18.191 6.344-18.191h8.464L
 </script>
 
 <template>
-  <!-- 'vatly' (default): solid Vatly-blue card, mirroring vatlify's OG template -->
+  <!-- 'vatly' (default): solid Vatly-blue card, mirroring Vatly's OG template -->
   <div
     v-if="style !== 'classic'"
     class="w-full h-full flex flex-col justify-between bg-[#326bff] px-[80px] py-[72px]"
