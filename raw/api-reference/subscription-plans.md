@@ -196,7 +196,7 @@ The subscription plan model contains all the information about the subscription 
         inclusive
       </code>
       
-      , the B2C convention). Immutable after plan creation — create a new plan for the other mode. A checkout may not mix products with different <code>
+      , the B2C convention). Immutable after plan creation: create a new plan for the other mode. A checkout may not mix products with different <code>
         taxBehavior
       </code>
       
@@ -282,7 +282,7 @@ The subscription plan model contains all the information about the subscription 
         saas
       </code>
       
-       — an e-book is a one-time purchase, so sell it as a one-off product instead. Set when the plan is created.
+      : an e-book is a one-time purchase, so sell it as a one-off product instead. Set when the plan is created.
     </td>
   </tr>
   
@@ -647,11 +647,11 @@ $plans = $vatly->subscriptionPlans->page();
 
 Creates a new subscription plan for the authenticated merchant, in the testmode determined from the API token.
 
-A plan created with a `live_` token starts in `pending` status and must be approved by Vatly before it can be used in checkouts — the same review that applies to plans created in the dashboard. A plan created with a `test_` token is auto-approved (`active`) so you can trial checkout immediately.
+A plan created with a `live_` token starts in `pending` status and must be approved by Vatly before it can be used in checkouts, the same review that applies to plans created in the dashboard. A plan created with a `test_` token is auto-approved (`active`) so you can trial checkout immediately.
 
 **Constraints:**
 
-- `productType` must be `saas` — e-books are one-off purchases and cannot be sold on a recurring basis.
+- `productType` must be `saas`: e-books are one-off purchases and cannot be sold on a recurring basis.
 - The `day` interval is sandbox-only; live plans support `week`, `month`, and `year`.
 - `intervalCount` is bounded per unit: up to 365 days, 52 weeks, or 12 months. `year` always bills once per year (`intervalCount` is ignored).
 
@@ -689,7 +689,7 @@ A plan created with a `live_` token starts in `pending` status and must be appro
     </td>
     
     <td>
-      Display name of the plan (3–255 characters).
+      Display name of the plan (3 to 255 characters).
     </td>
   </tr>
   
@@ -867,7 +867,7 @@ A plan created with a `live_` token starts in `pending` status and must be appro
         exclusive
       </code>
       
-      . Immutable after plan creation — create a new plan for the other mode.
+      . Immutable after plan creation: create a new plan for the other mode.
     </td>
   </tr>
 </tbody>
@@ -1031,7 +1031,7 @@ $plan = $vatly->subscriptionPlans->get('subscription_plan_Bm7xNvPwKr3YjTgHcZaE')
 
 Submits an update to a live subscription plan. Because plans drive VAT-bearing recurring sales, the change is held as a pending update and reviewed by Vatly before it takes effect (`updateStatus` moves `pending` → `reviewing` → applied). In test mode the update is approved automatically.
 
-Each request is the **complete set of changes** relative to the current live plan, and must contain at least one field. Fields equal to the live value are ignored, and a request that nets to no change clears any pending update. A new request replaces the not-yet-reviewed one; while an update is being reviewed, further requests return `409`. Changing the interval on a plan that has ever been used by a subscription — active or not — also returns `409`. The price stays changeable.
+Each request is the **complete set of changes** relative to the current live plan, and must contain at least one field. Fields equal to the live value are ignored, and a request that nets to no change clears any pending update. A new request replaces the not-yet-reviewed one; while an update is being reviewed, further requests return `409`. Changing the interval on a plan that has ever been used by a subscription (active or not) also returns `409`. The price stays changeable.
 
 The submitted change is surfaced on the plan resource as `pendingUpdates` (only the fields that differ), with `updateStatus` tracking the review. Approval is signalled by the `subscription_plan.update_submitted`, `subscription_plan.update_approved`, and `subscription_plan.update_rejected` webhook events.
 
@@ -1111,7 +1111,7 @@ At least one field must be provided.
     </td>
     
     <td>
-      New display name of the plan (3–255 characters).
+      New display name of the plan (3 to 255 characters).
     </td>
   </tr>
   
@@ -1320,7 +1320,7 @@ Subscribers already on the plan are deliberately untouched: a subscription snaps
 
 Likewise a checkout created before the plan was archived snapshots its product data at creation time and can still be completed. Archiving applies to *new* checkouts only.
 
-Nothing is deleted — the plan remains readable by id, now carrying a non-null `archivedAt`. Repeating the request is a no-op that returns `204` and does not move `archivedAt`. Reverse it by [unarchiving the plan](#unarchive-a-subscription-plan).
+Nothing is deleted: the plan remains readable by id, now carrying a non-null `archivedAt`. Repeating the request is a no-op that returns `204` and does not move `archivedAt`. Reverse it by [unarchiving the plan](#unarchive-a-subscription-plan).
 
 ### URL parameters
 

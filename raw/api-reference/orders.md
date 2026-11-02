@@ -1104,7 +1104,7 @@ $order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
 
 `POST /v1/orders/:orderId/invoice-update-link`
 
-Creates a signed link that customers can use to update the invoice details for this order — billing address, VAT number, and company name. The link is valid for a limited time (typically 24 hours).
+Creates a signed link that customers can use to update the invoice details for this order: billing address, VAT number, and company name. The link is valid for a limited time (typically 24 hours).
 
 ### Parameters
 

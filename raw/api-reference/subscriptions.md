@@ -464,7 +464,7 @@ The subscription model contains all the information about recurring billing rela
         null
       </code>
       
-       during a cancellation grace period — it is only set once the subscription has fully ended.
+       during a cancellation grace period; it is only set once the subscription has fully ended.
     </td>
   </tr>
   
@@ -628,7 +628,7 @@ The subscription model contains all the information about recurring billing rela
         null
       </code>
       
-       if there is no scheduled renewal). Null when nothing is pending. This is the authoritative way to reconcile a pending change — always present on the resource, so you don't need to rely on the <code>
+       if there is no scheduled renewal). Null when nothing is pending. This is the authoritative way to reconcile a pending change: always present on the resource, so you don't need to rely on the <code>
         subscription.update_scheduled
       </code>
       
@@ -1389,7 +1389,7 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
     </td>
     
     <td>
-      The new total quantity for the subscription (e.g. number of seats). This sets the quantity to the given value — it is not added to the current quantity. Must be at least 1.
+      The new total quantity for the subscription (e.g. number of seats). This sets the quantity to the given value; it is not added to the current quantity. Must be at least 1.
     </td>
   </tr>
   
@@ -1607,7 +1607,7 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
         false
       </code>
       
-       (the default), the proration delta is parked on the current cycle and billed as a line on the next renewal invoice — the customer gets one invoice and one payment covering both. If the subscription is canceled before that renewal, the parked amount is waived, so a customer is never charged at the moment they cancel. <strong>
+       (the default), the proration delta is parked on the current cycle and billed as a line on the next renewal invoice: the customer gets one invoice and one payment covering both. If the subscription is canceled before that renewal, the parked amount is waived, so a customer is never charged at the moment they cancel. <strong>
         Set this to <code>
           true
         </code>
@@ -1667,7 +1667,7 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
     </td>
     
     <td>
-      Reset the billing anchor to "now" — the moment the update is processed becomes the new cycle anchor and future renewals align to it. Cannot be combined with <code>
+      Reset the billing anchor to "now": the moment the update is processed becomes the new cycle anchor and future renewals align to it. Cannot be combined with <code>
         anchor
       </code>
       
@@ -1705,9 +1705,9 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
 
 **Scheduling and proration behavior:**
 
-- With `applyImmediately: false` (the default), the change is scheduled for the next billing cycle and returned on the subscription's `scheduledUpdate`. Scheduled updates are applied at renewal — they are no longer silently discarded — and are cleared only if the subscription is canceled before that renewal.
+- With `applyImmediately: false` (the default), the change is scheduled for the next billing cycle and returned on the subscription's `scheduledUpdate`. Scheduled updates are applied at renewal (they are no longer silently discarded) and are cleared only if the subscription is canceled before that renewal.
 - A subscription whose `status` is `on_grace_period` has no next billing period. Scheduling an update for it returns `422`; resume the subscription first, or set `applyImmediately: true` to apply the change to the remaining period.
-- An immediate update on an `on_grace_period` subscription can change the plan, price, or quantity for the remaining period, but not when that period ends — `anchor`, `resetAnchor`, and switching to a plan with a different interval each return `422`, because each would move the already-communicated end date.
+- An immediate update on an `on_grace_period` subscription can change the plan, price, or quantity for the remaining period, but not when that period ends: `anchor`, `resetAnchor`, and switching to a plan with a different interval each return `422`, because each would move the already-communicated end date.
 - When `invoiceImmediately` is `false`, the proration delta is parked on the current cycle and billed on the next renewal invoice. If the subscription is canceled before that renewal, the parked charge is waived.
 - On an immediate prorated update (`applyImmediately: true`, `prorate: true`) that keeps the billing anchor, the customer pays the new price for the time left on the cycle, minus a credit for the old price over that same time.
 - A prorated downgrade, price decrease or seat reduction applied immediately is not accepted while time is left on the cycle. It would give a negative charge, and the difference is not refunded mid-cycle, so the request returns `422`.
@@ -1831,7 +1831,7 @@ $subscription = $vatly->subscriptions->update('subscription_Lp3mNvBxKw7RjTgYcZaE
 
 `POST /v1/subscriptions/:id/billing-update-link`
 
-Creates a signed link that the customer can use to update the billing details for this subscription — billing address, VAT number, and company name — via a hosted flow.
+Creates a signed link that the customer can use to update the billing details for this subscription (billing address, VAT number, and company name) via a hosted flow.
 
 ### Required attributes
 
@@ -1929,7 +1929,7 @@ Creates a signed link that the customer can use to update the billing details fo
         replaces
       </strong>
       
-       the subscription's stored billing details as the prefill, so send every field you want shown — empty strings give a blank form. Omit it, or send <code>
+       the subscription's stored billing details as the prefill, so send every field you want shown; empty strings give a blank form. Omit it, or send <code>
         null
       </code>
       
@@ -2001,7 +2001,7 @@ header('Location: ' . $response->href, true, 303);
 
 This endpoint allows you to cancel a subscription. By default, the subscription will remain active until the end of the current billing period (grace period), after which it will be fully canceled. Set `immediately=true` to cancel immediately.
 
-During the grace period the subscription's `status` is `on_grace_period` and `canceledAt` is set, while `endedAt` stays `null`. A grace-period cancellation can still be reversed with [Resume a subscription](#resume-a-subscription) until the period lapses. A subscription canceled with `immediately=true` (status `canceled`) cannot be reactivated — create a new subscription instead.
+During the grace period the subscription's `status` is `on_grace_period` and `canceledAt` is set, while `endedAt` stays `null`. A grace-period cancellation can still be reversed with [Resume a subscription](#resume-a-subscription) until the period lapses. A subscription canceled with `immediately=true` (status `canceled`) cannot be reactivated; create a new subscription instead.
 
 ### Optional query parameters
 
@@ -2081,7 +2081,7 @@ Resumes a subscription that was canceled **with a grace period**, while it is st
 **When this works:**
 
 - The subscription's `status` is `on_grace_period`.
-- `endedAt` stays `null` throughout the grace period — resumability is keyed off `status`, not `endedAt`.
+- `endedAt` stays `null` throughout the grace period; resumability is keyed off `status`, not `endedAt`.
 
 **Result:**
 

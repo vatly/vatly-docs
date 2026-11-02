@@ -10,17 +10,17 @@ Vatly provides test helper endpoints that let you simulate billing events withou
 
 <warning>
 
-In test mode, Vatly does **not** run real tax determination. Checkouts and orders created with a `test_` token use a **fixed, predefined set of tax rates** so results are predictable while you build your integration. **These rates are simulated for testing only — they are not guaranteed to match real, current statutory rates, and must never be relied upon for pricing decisions, accounting, invoicing, or tax compliance.** Switch to a `live_` token to get Vatly's real, jurisdiction-accurate tax determination.
+In test mode, Vatly does **not** run real tax determination. Checkouts and orders created with a `test_` token use a **fixed, predefined set of tax rates** so results are predictable while you build your integration. **These rates are simulated for testing only. They are not guaranteed to match real, current statutory rates, and must never be relied upon for pricing decisions, accounting, invoicing, or tax compliance.** Switch to a `live_` token to get Vatly's real, jurisdiction-accurate tax determination.
 
 </warning>
 
 ### How test-mode rates are applied
 
-The buyer's country determines a single fixed **standard** VAT rate from a built-in lookup. Any country without a specific entry is taxed at a flat **20%**. As an example of multi-rate handling, a Canada (`CA`) buyer also gets an additional 9.975% `QST` line. Only the standard rate is ever applied — there are no reduced or product-specific rates, and the lookup is not kept in sync with statutory changes.
+The buyer's country determines a single fixed **standard** VAT rate from a built-in lookup. Any country without a specific entry is taxed at a flat **20%**. As an example of multi-rate handling, a Canada (`CA`) buyer also gets an additional 9.975% `QST` line. Only the standard rate is ever applied: there are no reduced or product-specific rates, and the lookup is not kept in sync with statutory changes.
 
 ### Tax IDs and reverse charge in test mode
 
-Tax IDs are **not** checked against VIES or any real registry in test mode. A test tax ID is treated as **valid only when it starts with the buyer's uppercase country code** — for example `DE123456789` is valid for a German buyer, while `de123456789` or `FR123…` for a German buyer is not.
+Tax IDs are **not** checked against VIES or any real registry in test mode. A test tax ID is treated as **valid only when it starts with the buyer's uppercase country code**. For example, `DE123456789` is valid for a German buyer, while `de123456789` or `FR123…` for a German buyer is not.
 
 When a **valid** test tax ID is supplied and the buyer's country **differs** from the seller's, a **0% reverse charge** is applied (B2B cross-border). Otherwise the buyer's country standard rate applies.
 
@@ -28,7 +28,7 @@ When a **valid** test tax ID is supplied and the buyer's country **differs** fro
 
 Simulates a subscription renewal cycle, allowing you to test renewal billing flows, lifecycle events, and webhooks without waiting for the actual billing interval. The subscription must be active and have a scheduled next renewal.
 
-Like a live renewal, this runs **asynchronously**: the request is accepted immediately, the renewal runs from a queue a moment later, and the outcome arrives on your `order.paid` / `order.payment_failed` webhooks. The response therefore returns the subscription **before** the renewal — `renewedAt`, `renewedUntil`, and `nextRenewalAt` have not moved yet.
+Like a live renewal, this runs **asynchronously**: the request is accepted immediately, the renewal runs from a queue a moment later, and the outcome arrives on your `order.paid` / `order.payment_failed` webhooks. The response therefore returns the subscription **before** the renewal: `renewedAt`, `renewedUntil`, and `nextRenewalAt` have not moved yet.
 
 ### Request
 
@@ -74,7 +74,7 @@ Like a live renewal, this runs **asynchronously**: the request is accepted immed
 </tbody>
 </table>
 
-The request body is **optional**. Omit it to advance the billing cycle and leave the renewal payment pending — the endpoint's original behaviour. Provide it to force a specific renewal payment outcome so you can exercise your payment-recovery handling.
+The request body is **optional**. Omit it to advance the billing cycle and leave the renewal payment pending, the endpoint's original behaviour. Provide it to force a specific renewal payment outcome so you can exercise your payment-recovery handling.
 
 <table>
 <thead>
@@ -254,7 +254,7 @@ $vatly->testHelpers->fastForwardRenewal('subscription_Lp3mNvBxKw7RjTgYcZaE', [
 
 ### Response
 
-Returns the subscription **as it was before the renewal** — `renewedAt`, `renewedUntil`, and `nextRenewalAt` still hold their pre-renewal values because the renewal runs from the queue shortly after. Watch your webhooks for the actual outcome.
+Returns the subscription **as it was before the renewal**: `renewedAt`, `renewedUntil`, and `nextRenewalAt` still hold their pre-renewal values because the renewal runs from the queue shortly after. Watch your webhooks for the actual outcome.
 
 ```json
 {
@@ -309,7 +309,7 @@ Returns the subscription **as it was before the renewal** — `renewedAt`, `rene
 
 ## Simulate an order payment
 
-When a fast-forward (or its payment recovery) leaves a renewal payment pending, settle or decline it with the order payment simulation helper. It resolves a payment that is already awaiting an outcome **without** advancing the billing cycle — useful for driving an `order.paid` on a renewal, or exercising payment recovery with `paymentStatus: failed`.
+When a fast-forward (or its payment recovery) leaves a renewal payment pending, settle or decline it with the order payment simulation helper. It resolves a payment that is already awaiting an outcome **without** advancing the billing cycle, useful for driving an `order.paid` on a renewal, or exercising payment recovery with `paymentStatus: failed`.
 
 `POST /v1/test-helpers/orders/{orderId}/simulate-payment`
 
@@ -320,4 +320,4 @@ curl -X POST https://api.vatly.com/v1/test-helpers/orders/order_Hn5xWqVfKm8RjTgY
   -d '{"paymentStatus": "paid"}'
 ```
 
-Like fast-forward renewal, this is asynchronous — the response returns the order still awaiting payment, and the outcome arrives on your webhooks. See [Simulate an order payment](/api-reference/test-helpers#simulate-an-order-payment) in the API reference for the request body and full response.
+Like fast-forward renewal, this is asynchronous: the response returns the order still awaiting payment, and the outcome arrives on your webhooks. See [Simulate an order payment](/api-reference/test-helpers#simulate-an-order-payment) in the API reference for the request body and full response.

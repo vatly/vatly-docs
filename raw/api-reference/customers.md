@@ -102,7 +102,7 @@ Below you'll find all properties for the Vatly Customer API resource.
     </td>
     
     <td>
-      The customer's email address. Internationalized domains are stored and returned in their Punycode (ASCII) form per UTS #46 — e.g. <code>
+      The customer's email address. Internationalized domains are stored and returned in their Punycode (ASCII) form per UTS #46, e.g. <code>
         user@xn--mller-kva.de
       </code>
       
@@ -124,7 +124,7 @@ Below you'll find all properties for the Vatly Customer API resource.
     </td>
     
     <td>
-      The customer's display / account-holder name. An identity field used for communication (dunning emails, dashboard) — distinct from, and with no effect on, the billing name on invoices.
+      The customer's display / account-holder name. An identity field used for communication (dunning emails, dashboard), distinct from, and with no effect on, the billing name on invoices.
     </td>
   </tr>
   
@@ -196,7 +196,7 @@ Below you'll find all properties for the Vatly Customer API resource.
 
 This endpoint allows you to retrieve a paginated list of all your customers. By default, a maximum of ten customers are shown per page.
 
-Pass `email` to filter the list down to the customers holding an address — the way back to a customer id you no longer have.
+Pass `email` to filter the list down to the customers holding an address, the way back to a customer id you no longer have.
 
 ### Optional attributes
 
@@ -419,11 +419,11 @@ Customers are uniquely identified by email within a storefront and testmode, and
 </tbody>
 </table>
 
-A `200` response never modifies the customer — `name` and `metadata` in the request body are ignored for an existing customer. Use [`PATCH /v1/customers/:id`](#update-a-customer) to change one.
+A `200` response never modifies the customer: `name` and `metadata` in the request body are ignored for an existing customer. Use [`PATCH /v1/customers/:id`](#update-a-customer) to change one.
 
-A `201` can also complete a create that was interrupted before it finished, in which case the customer keeps the `id` and `createdAt` of that earlier attempt — so `createdAt` may predate the request. Treat it as when the customer came into being, not as when this call happened.
+A `201` can also complete a create that was interrupted before it finished, in which case the customer keeps the `id` and `createdAt` of that earlier attempt, so `createdAt` may predate the request. Treat it as when the customer came into being, not as when this call happened.
 
-Addresses are canonicalized before they are compared, so `User@MÜLLER.de` and `user@xn--mller-kva.de` are the same customer. Beyond that the comparison is exact — `büyer@example.com` is a different mailbox and gets its own customer.
+Addresses are canonicalized before they are compared, so `User@MÜLLER.de` and `user@xn--mller-kva.de` are the same customer. Beyond that the comparison is exact: `büyer@example.com` is a different mailbox and gets its own customer.
 
 ### Required attributes
 
@@ -616,7 +616,7 @@ $vatly->customers->get('customer_7kBmRtPvXw2NjLhYcZaE');
 
 `PATCH /v1/customers/:id`
 
-Updates a customer's identity fields. Only `name` and `email` may be changed here, and both are optional — send whichever you want to update.
+Updates a customer's identity fields. Only `name` and `email` may be changed here, and both are optional: send whichever you want to update.
 
 Billing-address details (company name, tax ID, street, city, country, etc.) are **not** supported by this endpoint and are ignored. Amend those through the [hosted billing-update flow](/api-reference/subscriptions#create-billing-update-link), which validates tax-relevant data centrally so invoices stay accurate.
 
@@ -725,7 +725,7 @@ $customer = $vatly->customers->update('customer_7kBmRtPvXw2NjLhYcZaE', [
 
 `POST /v1/customers/:customerId/portal-sessions`
 
-Creates a short-lived, single-use link that sends an authenticated customer straight to this API token's storefront in Vatly's hosted portal. The portal lets the customer view invoices and manage subscriptions for the storefront — opening invoice history, updating eligible payment methods, and canceling an active subscription. Customers with one-off purchases and no subscription can still use the portal for their invoice history. The session is locked to the customer, storefront, merchant, and live/test mode represented by the token; it never exposes a storefront picker or other stores associated with the same email address. For a merchant with multiple storefronts, each API token issues portal links for its own storefront.
+Creates a short-lived, single-use link that sends an authenticated customer straight to this API token's storefront in Vatly's hosted portal. The portal lets the customer view invoices and manage subscriptions for the storefront: opening invoice history, updating eligible payment methods, and canceling an active subscription. Customers with one-off purchases and no subscription can still use the portal for their invoice history. The session is locked to the customer, storefront, merchant, and live/test mode represented by the token; it never exposes a storefront picker or other stores associated with the same email address. For a merchant with multiple storefronts, each API token issues portal links for its own storefront.
 
 Redirect the customer's browser to `url`. The link expires after roughly 15 minutes by default and can be consumed once. If an idempotency key replays a response after its URL has already been used, request a replacement with a fresh key.
 

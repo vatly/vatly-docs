@@ -1,6 +1,6 @@
 # Webhook Endpoints
 
-> Register and manage the endpoints Vatly delivers webhook events to — create, list, update, and delete them programmatically.
+> Register and manage the endpoints Vatly delivers webhook events to: create, list, update, and delete them programmatically.
 
 ## The Webhook Endpoint API Resource
 
@@ -10,7 +10,7 @@ A storefront can have **up to five endpoints per mode** (test and live are separ
 
 <note>
 
-The signing **secret is write-only**: you supply it on creation (and may rotate it via update), but it is never returned in any response. Store the value you send — the API will not give it back.
+The signing **secret is write-only**: you supply it on creation (and may rotate it via update), but it is never returned in any response. Store the value you send. The API will not give it back.
 
 </note>
 
@@ -128,7 +128,7 @@ The signing **secret is write-only**: you supply it on creation (and may rotate 
     </td>
     
     <td>
-      The event names this endpoint is subscribed to. Only these are delivered. An empty list means the endpoint is dormant (no domain events) — though the <code>
+      The event names this endpoint is subscribed to. Only these are delivered. An empty list means the endpoint is dormant (no domain events), though the <code>
         webhook.setup
       </code>
       
@@ -343,9 +343,9 @@ $endpoints = $vatly->webhookEndpoints->page();
 
 Registers a webhook endpoint for the mode determined by the API token.
 
-You supply the signing `secret`; it is write-only and never returned, so keep the value you send — you use it to verify the `Vatly-Signature` HMAC on deliveries.
+You supply the signing `secret`; it is write-only and never returned, so keep the value you send: you use it to verify the `Vatly-Signature` HMAC on deliveries.
 
-Vatly sends a `webhook.setup` verification ping to the URL and validates its SSL certificate; if either fails the request is rejected with `422`. A storefront may register **up to five endpoints per mode**, and each URL must be unique within that storefront and mode — a duplicate URL or a sixth endpoint returns `422`.
+Vatly sends a `webhook.setup` verification ping to the URL and validates its SSL certificate; if either fails the request is rejected with `422`. A storefront may register **up to five endpoints per mode**, and each URL must be unique within that storefront and mode; a duplicate URL or a sixth endpoint returns `422`.
 
 `enabledEvents` is an explicit snapshot. If omitted, Vatly stores every event name available at registration time; events introduced later are **not** enabled automatically. Send `[]` for a dormant endpoint. The `webhook.setup` verification event is unconditional and cannot be selected.
 
@@ -409,7 +409,7 @@ Vatly sends a `webhook.setup` verification ping to the URL and validates its SSL
         Vatly-Signature
       </code>
       
-       HMAC on every delivery. You choose it (e.g. pinned from an environment variable). Write-only — the API never returns it.
+       HMAC on every delivery. You choose it (e.g. pinned from an environment variable). Write-only: the API never returns it.
     </td>
   </tr>
 </tbody>
@@ -659,7 +659,7 @@ Omitting `enabledEvents` preserves the current subscriptions; sending `[]` makes
     </td>
     
     <td>
-      New signing secret (at least 10 characters). Write-only — keep the value, as the API never returns it.
+      New signing secret (at least 10 characters). Write-only: keep the value, as the API never returns it.
     </td>
   </tr>
   

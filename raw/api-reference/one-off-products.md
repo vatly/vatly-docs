@@ -563,7 +563,7 @@ $products = $vatly->oneOffProducts->page();
 
 Creates a new one-off product for the authenticated merchant, in the testmode determined from the API token.
 
-A product created with a `live_` token starts in `pending` status and must be approved by Vatly before it can be used in checkouts — the same review that applies to products created in the dashboard. A product created with a `test_` token is auto-approved (`active`) so you can trial checkout immediately.
+A product created with a `live_` token starts in `pending` status and must be approved by Vatly before it can be used in checkouts, the same review that applies to products created in the dashboard. A product created with a `test_` token is auto-approved (`active`) so you can trial checkout immediately.
 
 ### Required attributes
 
@@ -599,7 +599,7 @@ A product created with a `live_` token starts in `pending` status and must be ap
     </td>
     
     <td>
-      Display name of the product (3–255 characters).
+      Display name of the product (3 to 255 characters).
     </td>
   </tr>
   
@@ -963,7 +963,7 @@ At least one attribute must be provided. `taxBehavior` is immutable and cannot b
     </td>
     
     <td>
-      New display name of the product (3–255 characters).
+      New display name of the product (3 to 255 characters).
     </td>
   </tr>
   
@@ -1108,9 +1108,9 @@ $product = $vatly->oneOffProducts->update('one_off_product_Vr8kQdFhSrG4Y3DnfsdqH
 
 Archives the product so it can no longer be sold. It is hidden from `GET /v1/one-off-products` (unless `includeArchived=true`) and refused by `POST /v1/checkouts`; existing orders and refunds are untouched.
 
-Archiving applies to *new* checkouts only. A checkout created before the product was archived snapshots its product data at creation time and can still be completed — the same window that applies when a product is rejected after a checkout was opened.
+Archiving applies to *new* checkouts only. A checkout created before the product was archived snapshots its product data at creation time and can still be completed, the same window that applies when a product is rejected after a checkout was opened.
 
-Nothing is deleted — the product remains readable by ID, now carrying a non-null `archivedAt`. Archiving is not queued behind Vatly's product review, and leaves any pending update in place. Repeating the request is a no-op that returns `204` and does not move `archivedAt`. Reverse it with `DELETE /v1/one-off-products/:oneOffProductId/archive`.
+Nothing is deleted: the product remains readable by ID, now carrying a non-null `archivedAt`. Archiving is not queued behind Vatly's product review, and leaves any pending update in place. Repeating the request is a no-op that returns `204` and does not move `archivedAt`. Reverse it with `DELETE /v1/one-off-products/:oneOffProductId/archive`.
 
 ### Parameters
 

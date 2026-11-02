@@ -6,7 +6,7 @@
 
 To register a new webhook, you need to have a URL in your app that Vatly can call. You can configure a new webhook from the Vatly dashboard under [Developers » Webhooks](https://my.vatly.com). Give your webhook a name, pick the [events](#event-types) you want to listen for, and add your URL.
 
-You can also manage endpoints programmatically with the [Webhook Endpoints API](/api-reference/webhook-endpoints) — handy for provisioning from CI / infrastructure-as-code or pointing an ephemeral preview environment at its own public URL. A storefront can register up to five endpoints per mode (test and live), each subscribing to its own set of events via `enabledEvents`, and you supply the signing secret when you register one.
+You can also manage endpoints programmatically with the [Webhook Endpoints API](/api-reference/webhook-endpoints), handy for provisioning from CI / infrastructure-as-code or pointing an ephemeral preview environment at its own public URL. A storefront can register up to five endpoints per mode (test and live), each subscribing to its own set of events via `enabledEvents`, and you supply the signing secret when you register one.
 
 Now, whenever something of interest happens in your app, a webhook is fired off by Vatly. In the next section, we'll look at how to consume webhooks.
 
@@ -18,7 +18,7 @@ For security reasons, your webhook URL needs to be HTTPS with a valid certificat
 
 ## Consuming webhooks
 
-Each delivery is an HTTP `POST` whose body is a `webhook_event` object — the same shape returned by the [Get webhook event](/api-reference/webhook-events) endpoint. Check `eventName` to see what happened, and use `entityType` / `entityId` (or the embedded `object` snapshot) to act on the affected resource. The envelope also carries a `reason` field — always present, but `null` for every event except `subscription.updated`, where it says what triggered the change (see [Event types](#event-types)).
+Each delivery is an HTTP `POST` whose body is a `webhook_event` object, the same shape returned by the [Get webhook event](/api-reference/webhook-events) endpoint. Check `eventName` to see what happened, and use `entityType` / `entityId` (or the embedded `object` snapshot) to act on the affected resource. The envelope also carries a `reason` field: always present, but `null` for every event except `subscription.updated`, where it says what triggered the change (see [Event types](#event-types)).
 
 ```json [Example delivery body]
 {
@@ -49,7 +49,7 @@ Each delivery is an HTTP `POST` whose body is a `webhook_event` object — the s
 
 <note>
 
-The body is the `webhook_event` object shown above (its fields are top-level — there is **no data wrapper**). For the full `WebhookDelivery` schema, see the [OpenAPI spec](https://docs.vatly.com/openapi.yaml).
+The body is the `webhook_event` object shown above (its fields are top-level; there is **no data wrapper**). For the full `WebhookDelivery` schema, see the [OpenAPI spec](https://docs.vatly.com/openapi.yaml).
 
 </note>
 
@@ -109,7 +109,7 @@ Every request also carries two headers you should use:
 
 <note>
 
-Respond with a `2xx` status as soon as you've stored the event. Vatly retries deliveries that don't return `2xx`, and the same event may arrive more than once — deduplicate on `Vatly-Event-Id` and do any heavy work asynchronously.
+Respond with a `2xx` status as soon as you've stored the event. Vatly retries deliveries that don't return `2xx`, and the same event may arrive more than once, so deduplicate on `Vatly-Event-Id` and do any heavy work asynchronously.
 
 </note>
 
@@ -235,7 +235,7 @@ The `eventName` field identifies what happened. The available events are:
     </td>
     
     <td>
-      A payment for this order failed and Vatly's automated payment recovery (dunning) has started. Delivered once, when recovery begins — not on each retry. If recovery succeeds you receive <code>
+      A payment for this order failed and Vatly's automated payment recovery (dunning) has started. Delivered once, when recovery begins, not on each retry. If recovery succeeds you receive <code>
         order.paid
       </code>
       
@@ -379,7 +379,7 @@ The `eventName` field identifies what happened. The available events are:
     </td>
     
     <td>
-      A subscription's billing details changed — in practice the mandate (payment method on file), e.g. a refreshed masked payment-method identifier.
+      A subscription's billing details changed, in practice the mandate (payment method on file), e.g. a refreshed masked payment-method identifier.
     </td>
   </tr>
   
@@ -399,7 +399,7 @@ The `eventName` field identifies what happened. The available events are:
         reason
       </code>
       
-       says which case it is — <code>
+       says which case it is: <code>
         updated_immediately
       </code>
       
@@ -683,13 +683,13 @@ The `eventName` field identifies what happened. The available events are:
 
 <note>
 
-**subscription.updated and the reason field.** This event fires for three distinct causes, told apart by the envelope's `reason`: `updated_immediately`, `updated_on_renewal`, or `renewed`. A renewal that also applies a scheduled change therefore emits **two** events — `subscription.updated` with `reason: updated_on_renewal` when the change takes effect, then `subscription.updated` with `reason: renewed` once the renewal is paid — each with its own stable `Vatly-Event-Id`. Test-mode renewals, including fast-forwarded ones, emit these too. New `reason` values may be added; treat an unknown one as a generic change and re-read the subscription from `object`.
+**subscription.updated and the reason field.** This event fires for three distinct causes, told apart by the envelope's `reason`: `updated_immediately`, `updated_on_renewal`, or `renewed`. A renewal that also applies a scheduled change therefore emits **two** events (`subscription.updated` with `reason: updated_on_renewal` when the change takes effect, then `subscription.updated` with `reason: renewed` once the renewal is paid), each with its own stable `Vatly-Event-Id`. Test-mode renewals, including fast-forwarded ones, emit these too. New `reason` values may be added; treat an unknown one as a generic change and re-read the subscription from `object`.
 
 </note>
 
 <note>
 
-**webhook.setup** is delivered when you register an endpoint (or change its URL) to confirm it's reachable. It arrives as a normal, signed delivery (`entityType: webhook`, `object` is the secret-free endpoint config), so there's nothing special to parse — just acknowledge it with a `2xx`. Unlike event deliveries, the setup call is a one-shot verification check: a non-`2xx` response fails endpoint registration and is **not** retried. It is also the one event that is never persisted, so it does not appear on the [Get webhook event](/api-reference/webhook-events) endpoint.
+**webhook.setup** is delivered when you register an endpoint (or change its URL) to confirm it's reachable. It arrives as a normal, signed delivery (`entityType: webhook`, `object` is the secret-free endpoint config), so there's nothing special to parse. Just acknowledge it with a `2xx`. Unlike event deliveries, the setup call is a one-shot verification check: a non-`2xx` response fails endpoint registration and is **not** retried. It is also the one event that is never persisted, so it does not appear on the [Get webhook event](/api-reference/webhook-events) endpoint.
 
 </note>
 
@@ -741,16 +741,16 @@ The `eventName` field identifies what happened. The available events are:
 
 ## Handling failed subscription payments
 
-When a subscription renewal payment fails, Vatly runs an automated **payment recovery** process (dunning) on your behalf. You never have to schedule your own retries — but you do decide when to restrict access.
+When a subscription renewal payment fails, Vatly runs an automated **payment recovery** process (dunning) on your behalf. You never have to schedule your own retries, but you do decide when to restrict access.
 
 Here is what happens, and what you receive:
 
-1. The renewal payment fails and recovery begins. You receive a single `order.payment_failed` webhook for the renewal order — sent once, when recovery starts, not on each retry. The subscription's `status` stays `active` throughout recovery: it does **not** move to a "past due" state, and `on_grace_period` is never used for payment failure — that status means a *voluntary* cancellation that keeps access until the period ends.
+1. The renewal payment fails and recovery begins. You receive a single `order.payment_failed` webhook for the renewal order (sent once, when recovery starts, not on each retry). The subscription's `status` stays `active` throughout recovery: it does **not** move to a "past due" state, and `on_grace_period` is never used for payment failure. That status means a *voluntary* cancellation that keeps access until the period ends.
 2. Vatly attempts to recover the payment, and how it does so depends on why the charge failed:
 
   - **Soft decline** (e.g. insufficient funds, a temporary decline): the payment method is still valid, so Vatly automatically re-attempts the charge over a multi-week window, emailing the customer along the way.
   - **Hard decline** (e.g. an expired, canceled, or invalid payment method): retrying cannot succeed, so Vatly instead prompts the customer to supply a new payment method, on a shorter window.
-3. **If recovery succeeds**, the original renewal order is paid and you receive `order.paid` for that same order. Because the subscription was never interrupted, access simply continues — nothing else is needed.
+3. **If recovery succeeds**, the original renewal order is paid and you receive `order.paid` for that same order. Because the subscription was never interrupted, access simply continues. Nothing else is needed.
 4. **If recovery is exhausted** (the customer never resolves it), Vatly cancels the subscription: you receive `subscription.canceled_for_nonpayment` and the subscription `status` becomes `canceled` with `cancellationReason: payment_failure`.
 
 ### Recommended integration
@@ -758,7 +758,7 @@ Here is what happens, and what you receive:
 Gate access on the events, not on a timer you keep in sync with ours:
 
 - On `order.payment_failed`: keep access on, and start your own grace period if your product has one.
-- On `order.paid` for the same order: recovery succeeded — clear that grace period.
+- On `order.paid` for the same order: recovery succeeded, so clear that grace period.
 - If your grace period elapses with no matching `order.paid`: restrict access on your side if you wish. Vatly's recovery keeps running underneath, so a later `order.paid` lets you restore access automatically.
 - On the subscription's cancellation: remove access permanently.
 
@@ -797,13 +797,13 @@ Vatly-Signature: t=<unix_seconds>,v1=<hex_hmac_sha256>
 ```
 
 - `t` is the Unix timestamp (in seconds) when the signature was generated.
-- `v1` is `HMAC-SHA256("{t}.{rawBody}", yourWebhookSecret)`, hex-encoded — the timestamp and a literal `.` prepended to the **exact raw request body**.
+- `v1` is `HMAC-SHA256("{t}.{rawBody}", yourWebhookSecret)`, hex-encoded (the timestamp and a literal `.` prepended to the **exact raw request body**).
 
 To verify a delivery:
 
 1. Parse `t` and `v1` out of the header.
-2. Reject the request if `t` is more than **300 seconds** (5 minutes) from your server's current time — this guards against replay.
-3. Recompute the HMAC over `"{t}.{rawBody}"` using your webhook secret and the **raw request body bytes** (not a re-serialized copy — re-encoding JSON changes the bytes and breaks the signature).
+2. Reject the request if `t` is more than **300 seconds** (5 minutes) from your server's current time. This guards against replay.
+3. Recompute the HMAC over `"{t}.{rawBody}"` using your webhook secret and the **raw request body bytes** (not a re-serialized copy; re-encoding JSON changes the bytes and breaks the signature).
 4. Compare your value against `v1` using a constant-time comparison.
 
 <note>
@@ -814,7 +814,7 @@ Future signature schemes will ship alongside `v1` (e.g. `t=…,v1=…,v2=…`). 
 
 <tip>
 
-If you use a Vatly SDK, signature verification is built in — for example PHP's `Vatly\API\Webhooks\Webhook::parse($rawBody, $signatureHeader, $secret)` or the Node SDK's `constructEvent()`. They parse the header, enforce the tolerance window, and verify the HMAC for you, throwing on failure.
+If you use a Vatly SDK, signature verification is built in, for example PHP's `Vatly\API\Webhooks\Webhook::parse($rawBody, $signatureHeader, $secret)` or the Node SDK's `constructEvent()`. They parse the header, enforce the tolerance window, and verify the HMAC for you, throwing on failure.
 
 </tip>
 

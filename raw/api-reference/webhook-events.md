@@ -4,7 +4,7 @@
 
 ## The webhook event model
 
-Webhook events let you inspect the exact payload Vatly generated for a domain event. This is the **persisted** event — the record returned by this endpoint. The `webhook.setup` verification call is a delivery-only handshake and is never persisted, so it does not appear here. For the full list of events and the live delivery envelope, see the [Webhooks guide](/guides/webhooks).
+Webhook events let you inspect the exact payload Vatly generated for a domain event. This is the **persisted** event, the record returned by this endpoint. The `webhook.setup` verification call is a delivery-only handshake and is never persisted, so it does not appear here. For the full list of events and the live delivery envelope, see the [Webhooks guide](/guides/webhooks).
 
 ### Properties
 

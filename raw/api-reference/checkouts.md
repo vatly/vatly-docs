@@ -106,7 +106,7 @@ Below you'll find all properties for the Vatly Checkout API resource.
         null
       </code>
       
-       until a customer is associated — for an anonymous checkout this happens when the buyer completes payment.
+       until a customer is associated. For an anonymous checkout this happens when the buyer completes payment.
     </td>
   </tr>
   
@@ -576,7 +576,7 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
         price
       </code>
       
-       (optional, EUR-only price override — see <a href="#custom-pricing">
+       (optional, EUR-only price override; see <a href="#custom-pricing">
         Custom pricing
       </a>
       
@@ -610,7 +610,7 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
         {CHECKOUT_ID}
       </code>
       
-       placeholder anywhere in the URL — Vatly substitutes it with this checkout's ID, so your return page can read the checkout ID without a server-side token store.
+       placeholder anywhere in the URL, and Vatly substitutes it with this checkout's ID, so your return page can read the checkout ID without a server-side token store.
     </td>
   </tr>
   
@@ -752,7 +752,7 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
         taxId
       </code>
       
-       is only a prefill — it is not registered until the buyer submits the checkout.
+       is only a prefill; it is not registered until the buyer submits the checkout.
     </td>
   </tr>
   
@@ -782,7 +782,7 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
         de_DE
       </code>
       
-      ) — all three fold to the language, so there are no region-specific variants. The language also carries through to the payment provider's own hosted page. Supported languages: <code>
+      ); all three fold to the language, so there are no region-specific variants. The language also carries through to the payment provider's own hosted page. Supported languages: <code>
         en
       </code>
       
@@ -899,9 +899,9 @@ header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
 
 ### Custom pricing
 
-Charge an amount that differs from the product's dashboard price by setting `price` on the item — a `Money` object whose `value` is a decimal string with exactly two decimals. **Currently only EUR is accepted**; any other currency returns a `422`. When the customer pays in another currency, the amount is converted from this EUR price at checkout — and for a subscription the converted amount and currency are then fixed, so renewals charge the same. The `id` still references a product you created in the dashboard; products cannot be created on the fly via the API. Omit `price` to use the product's configured price.
+Charge an amount that differs from the product's dashboard price by setting `price` on the item, a `Money` object whose `value` is a decimal string with exactly two decimals. **Currently only EUR is accepted**; any other currency returns a `422`. When the customer pays in another currency, the amount is converted from this EUR price at checkout, and for a subscription the converted amount and currency are then fixed, so renewals charge the same. The `id` still references a product you created in the dashboard; products cannot be created on the fly via the API. Omit `price` to use the product's configured price.
 
-For a **subscription plan**, a custom `price` is not a first-cycle discount — it becomes the subscription's recurring price and carries over to every renewal. This is how you give a cohort a permanent price (for example, a lower price for an early group of customers). If you'd prefer to track that cohort separately, create a dedicated subscription plan at the target price and check out against that instead — the recurring price is the same, but reporting stays cleaner.
+For a **subscription plan**, a custom `price` is not a first-cycle discount; it becomes the subscription's recurring price and carries over to every renewal. This is how you give a cohort a permanent price (for example, a lower price for an early group of customers). If you'd prefer to track that cohort separately, create a dedicated subscription plan at the target price and check out against that instead; the recurring price is the same, but reporting stays cleaner.
 
 <code-group sync="api">
 
@@ -940,17 +940,17 @@ $checkout = $vatly->checkouts->create([
 
 ### VAT and reverse charge
 
-As Merchant of Record, Vatly determines the applicable tax when the checkout is paid, based on the buyer's country and tax status — you don't calculate or configure rates yourself. For EU B2B, the buyer's VAT ID is validated against the EU's VIES registry as part of that determination: when a valid VAT ID is supplied and the buyer is in a different country from the supplier, the **reverse charge** applies (0% VAT) and the resulting order reflects it. Otherwise the buyer's country standard rate applies.
+As Merchant of Record, Vatly determines the applicable tax when the checkout is paid, based on the buyer's country and tax status. You don't calculate or configure rates yourself. For EU B2B, the buyer's VAT ID is validated against the EU's VIES registry as part of that determination: when a valid VAT ID is supplied and the buyer is in a different country from the supplier, the **reverse charge** applies (0% VAT) and the resulting order reflects it. Otherwise the buyer's country standard rate applies.
 
 <note>
 
-This describes **live mode**. In test mode VIES is not called and validity is simulated — see [Tax IDs and reverse charge in test mode](/guides/testing#tax-ids-and-reverse-charge-in-test-mode).
+This describes **live mode**. In test mode VIES is not called and validity is simulated; see [Tax IDs and reverse charge in test mode](/guides/testing#tax-ids-and-reverse-charge-in-test-mode).
 
 </note>
 
 <tip>
 
-The full request and response schema — every accepted field and its validation rules — is published in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml). Point your code generator or AI assistant at it when an example leaves a field ambiguous.
+The full request and response schema (every accepted field and its validation rules) is published in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml). Point your code generator or AI assistant at it when an example leaves a field ambiguous.
 
 </tip>
 
@@ -1010,7 +1010,7 @@ A few payment methods work in live mode but cannot be completed in test mode, be
 </tbody>
 </table>
 
-Every other method behaves identically in both modes. Test a checkout with any selectable method — `creditcard` and `ideal` cover the one-off and mandate flows — and the resulting orders, invoices and webhooks are the same ones live mode produces.
+Every other method behaves identically in both modes. Test a checkout with any selectable method (`creditcard` and `ideal` cover the one-off and mandate flows), and the resulting orders, invoices and webhooks are the same ones live mode produces.
 
 ---
 
