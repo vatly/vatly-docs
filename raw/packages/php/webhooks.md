@@ -78,7 +78,7 @@ The `eventName` field on a delivery identifies what happened. See [`Vatly\API\Ty
     </td>
     
     <td>
-      A payment failed and a dunning process was initiated for the order.
+      A payment failed and the order entered payment recovery (dunning); sent once per failed order.
     </td>
   </tr>
   
