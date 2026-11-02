@@ -93,7 +93,11 @@ export default defineNuxtConfig({
   },
 
   llms: {
-    enabled: false,
+    // nuxt-llms emits /llms.txt and /llms-full.txt only when it has a domain.
+    // Docus infers the site URL from host env vars (Vercel, Netlify, and the
+    // like), none of which the GitHub Pages build sets, so set it here or the
+    // files are skipped at prerender.
+    domain: 'https://docs.vatly.com',
   },
 
   content: {
