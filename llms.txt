@@ -1,0 +1,54 @@
+# Vatly Docs
+
+## Documentation Sets
+
+- [Vatly Docs](https://docs.vatly.com/llms-full.txt)
+
+## Docs
+
+- [Introduction](https://docs.vatly.com/raw/introduction.md)
+- [Quickstart](https://docs.vatly.com/raw/guides/quickstart.md): This guide will get you all set up and ready to use the Vatly API. We’ll cover how to get started an API client and how to make your first API request.
+- [Payouts & Settlement](https://docs.vatly.com/raw/guides/payouts.md): How and when your share of each payment reaches your Mollie account, and where to follow it in the dashboard.
+- [Customer Emails](https://docs.vatly.com/raw/guides/customer-emails.md): The billing emails Vatly sends to your customers as Merchant of Record, when each one is sent, and what you can configure.
+- [Selling Workflow](https://docs.vatly.com/raw/guides/selling-workflow.md): Follow the typical Vatly happy path from account setup to product delivery, and prepare for refunds and chargebacks.
+- [Vatly SDKs](https://docs.vatly.com/raw/guides/sdks.md): Vatly offers official SDKs to make integrating the API into your application quick and easy.
+- [Authentication](https://docs.vatly.com/raw/guides/authentication.md): In this guide, we'll look at how authentication works. Vatly uses API keys to authenticate your API requests.
+- [Pagination](https://docs.vatly.com/raw/guides/pagination.md): In this guide, we will look at how to work with paginated responses when querying the Vatly API
+- [Errors](https://docs.vatly.com/raw/guides/errors.md): This guide covers API error handling, including status codes and error types.
+- [Webhooks](https://docs.vatly.com/raw/guides/webhooks.md): In this guide, we will look at how to register and consume webhooks to integrate your app with Vatly.
+- [Idempotency](https://docs.vatly.com/raw/guides/idempotency.md): Learn how to use idempotency keys to safely retry API requests without creating duplicate resources.
+- [Testing](https://docs.vatly.com/raw/guides/testing.md): Use test helper endpoints to simulate billing events like subscription renewals in sandbox mode.
+- [Customers](https://docs.vatly.com/raw/api-reference/customers.md): On this page, we'll dive into the different customer endpoints you can use to manage your Vatly customers programmatically.
+- [Webhook Endpoints](https://docs.vatly.com/raw/api-reference/webhook-endpoints.md): Register and manage the endpoints Vatly delivers webhook events to: create, list, update, and delete them programmatically.
+- [Test helpers](https://docs.vatly.com/raw/api-reference/test-helpers.md): Simulate subscription renewals in test mode so you can verify recurring billing flows end to end.
+- [Checkouts](https://docs.vatly.com/raw/api-reference/checkouts.md): On this page, we'll dive into the different checkout endpoints you can use to manage your checkouts programmatically.
+- [One-off Products](https://docs.vatly.com/raw/api-reference/one-off-products.md): On this page, we'll dive into the different one-off product endpoints you can use to query your products programmatically.
+- [Subscriptions](https://docs.vatly.com/raw/api-reference/subscriptions.md): On this page, we'll dive into the different subscription endpoints you can use to manage subscriptions programmatically.
+- [Subscription Plans](https://docs.vatly.com/raw/api-reference/subscription-plans.md): On this page, we'll dive into the different subscription plan endpoints you can use to query your plans programmatically.
+- [Orders](https://docs.vatly.com/raw/api-reference/orders.md): On this page, we'll dive into the different order endpoints you can use to manage orders programmatically.
+- [Order Refunds](https://docs.vatly.com/raw/api-reference/refunds.md): On this page, we'll dive into the different order refund endpoints you can use to manage refunds programmatically.
+- [Refunds](https://docs.vatly.com/raw/api-reference/global-refunds.md): On this page, we'll dive into the global refund endpoints for managing refunds across your entire account.
+- [Chargebacks](https://docs.vatly.com/raw/api-reference/chargebacks.md): On this page, we'll dive into the different chargeback endpoints you can use to query chargebacks programmatically.
+- [Webhook Events](https://docs.vatly.com/raw/api-reference/webhook-events.md): Inspect individual webhook events and retrieve the full payload that was delivered by Vatly.
+- [Getting Started](https://docs.vatly.com/raw/packages/php/readme.md): Vatly PHP SDK - Getting Started
+- [Customers](https://docs.vatly.com/raw/packages/php/customers.md): Vatly PHP SDK - Customers
+- [Checkouts](https://docs.vatly.com/raw/packages/php/checkouts.md): Vatly PHP SDK - Checkouts
+- [Subscriptions](https://docs.vatly.com/raw/packages/php/subscriptions.md): Vatly PHP SDK - Subscriptions
+- [Subscription Plans](https://docs.vatly.com/raw/packages/php/subscriptionplans.md): Vatly PHP SDK - Subscription Plans
+- [Orders](https://docs.vatly.com/raw/packages/php/orders.md): Vatly PHP SDK - Orders
+- [Refunds](https://docs.vatly.com/raw/packages/php/refunds.md): Vatly PHP SDK - Refunds
+- [One-Off Products](https://docs.vatly.com/raw/packages/php/oneoffproducts.md): Vatly PHP SDK - One-Off Products
+- [Chargebacks](https://docs.vatly.com/raw/packages/php/chargebacks.md): Vatly PHP SDK - Chargebacks
+- [Webhooks](https://docs.vatly.com/raw/packages/php/webhooks.md): Vatly PHP SDK - Webhooks
+- [Webhook Endpoints](https://docs.vatly.com/raw/packages/php/webhookendpoints.md): Vatly PHP SDK - Webhook Endpoints
+- [Getting Started](https://docs.vatly.com/raw/packages/laravel/readme.md): Vatly Laravel Package - Getting Started
+- [Customers](https://docs.vatly.com/raw/packages/laravel/customers.md): Vatly Laravel Package - Customers
+- [Checkouts](https://docs.vatly.com/raw/packages/laravel/checkouts.md): Vatly Laravel Package - Checkouts
+- [Subscriptions](https://docs.vatly.com/raw/packages/laravel/subscriptions.md): Vatly Laravel Package - Subscriptions
+- [Orders](https://docs.vatly.com/raw/packages/laravel/orders.md): Vatly Laravel Package - Orders
+- [Webhooks](https://docs.vatly.com/raw/packages/laravel/webhooks.md): Vatly Laravel Package - Webhooks
+- [Vs Cashier (Stripe, Paddle) & Lemon Squeezy](https://docs.vatly.com/raw/packages/laravel/comparison.md): Vatly Laravel Package - Vs Cashier (Stripe, Paddle) & Lemon Squeezy
+- [Migrating from Cashier](https://docs.vatly.com/raw/packages/laravel/migrating-to-vatly.md): Vatly Laravel Package - Migrating from Cashier
+- [Configuration](https://docs.vatly.com/raw/packages/laravel/configuration.md): Vatly Laravel Package - Configuration
+- [](https://docs.vatly.com/raw/packages.md)
+- [Integrations](https://docs.vatly.com/raw/integrations.md)
