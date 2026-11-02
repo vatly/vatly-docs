@@ -471,6 +471,72 @@ Create a new hosted checkout for your customer.
   <tr>
     <td>
       <code>
+        billingAddress
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        array
+      </code>
+    </td>
+    
+    <td>
+      Editable prefill for the billing address fields on the hosted checkout (<code>
+        fullName
+      </code>
+      
+      , <code>
+        companyName
+      </code>
+      
+      , <code>
+        taxId
+      </code>
+      
+      , <code>
+        streetAndNumber
+      </code>
+      
+      , <code>
+        streetAdditional
+      </code>
+      
+      , <code>
+        city
+      </code>
+      
+      , <code>
+        region
+      </code>
+      
+      , <code>
+        postalCode
+      </code>
+      
+      , <code>
+        country
+      </code>
+      
+      , <code>
+        email
+      </code>
+      
+      ). A supplied <code>
+        country
+      </code>
+      
+       takes precedence over the shopper's IP address for determining their country. A supplied <code>
+        taxId
+      </code>
+      
+       is only a prefill, and is not registered until the buyer submits the checkout.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         metadata
       </code>
     </td>
