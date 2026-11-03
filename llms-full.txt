@@ -8445,6 +8445,26 @@ $checkout = $user->subscribe()
 
 Send a bare language code (`de`), a BCP 47 tag (`de-AT`), or a POSIX / ISO 15897 locale (`de_DE`) — whichever your stack already stores. All three fold to the language, so `de`, `de-AT` and `de_DE` are the same request; there are no region-specific variants. Leave `locale` unset to let Vatly fall back to the customer's browser language.
 
+## Prefill the billing address
+
+If you already know the customer's billing details, prefill them with `withBillingAddress()`. It is on both `checkout()` and `subscribe()`:
+
+```php
+$checkout = $user->subscribe()
+    ->toPlan('subscription_plan_monthly')
+    ->withBillingAddress([
+        'companyName' => 'Acme BV',
+        'streetAndNumber' => 'Damrak 1',
+        'postalCode' => '1012 LG',
+        'city' => 'Amsterdam',
+        'country' => 'NL',
+        'taxId' => 'NL123456789B01',
+    ])
+    ->create();
+```
+
+The accepted fields are `fullName`, `companyName`, `streetAndNumber`, `streetAdditional`, `postalCode`, `city`, `region`, `country` (ISO 3166-1 alpha-2) and `taxId`; send only the ones you have. The customer can still edit every field. A supplied `country` takes precedence over the customer's IP address for determining their country, and a `taxId` is only registered once the customer submits the checkout.
+
 ## How it works
 
 The checkout flow:
@@ -8526,6 +8546,9 @@ $user->subscription()->swap('subscription_plan_annual');
 
 // Swap and invoice immediately (applies now, charges the prorated delta now)
 $user->subscription()->swapAndInvoice('subscription_plan_annual');
+
+// Swap now without charging for the change (the next renewal bills the new price)
+$user->subscription()->swapWithoutCharge('subscription_plan_premium');
 ```
 
 ### Proration options
@@ -8557,9 +8580,11 @@ $user->subscription()->swap('subscription_plan_premium', [
 ]);
 ```
 
+Vatly only reads `prorationCharge` on an immediate change: without `applyImmediately: true`, the change is scheduled for the end of the period and nothing is charged now anyway. `swapWithoutCharge()` sets both for you.
+
 With `prorationCharge: false`, a downgrade gets no credit, and during a trial the trial keeps running and its end bills the new plan. Sending `invoiceImmediately: true`, `anchor`, `resetAnchor`, `trialUntil` or a plan with a different interval with it returns a `422`, so don't pass it to `swapAndInvoice()`.
 
-`swapAndInvoice()` is exactly `swap()` with `applyImmediately` and `invoiceImmediately` both forced to `true`.
+`swapAndInvoice()` is exactly `swap()` with `applyImmediately` and `invoiceImmediately` both forced to `true`. `swapWithoutCharge()` is exactly `swap()` with `applyImmediately` forced to `true` and `prorationCharge` forced to `false`.
 
 **When to charge immediately.** With the default `invoiceImmediately: false`, the customer gets one invoice and one payment covering both the renewal and the parked delta — and if they cancel before that renewal, the parked amount is waived (a customer is never charged at the moment they cancel). That default suits **monthly** billing, where the delta is collected within weeks. &#x2A;*Set `invoiceImmediately: true` on yearly and other long-interval plans:** an upgrade in month 2 of a yearly plan would otherwise not be billed until month 12 (and is waived entirely if the customer cancels in between), so the longer the interval the more the deferral costs you.
 
@@ -9567,6 +9592,7 @@ Mapping for the engineer or agent porting a flow. Vatly ids are prefixed —
 | In grace period?         | `subscription()->onGracePeriod()`                 | `->onGracePeriod()`              | `->onGracePeriod()`           | `vatlySubscription()->onGracePeriod()`                                                                                       |
 | Swap plan                | `subscription()->swap('price')`                   | `->swap('pri')`                  | `->swap('prod','variant')`    | `vatlySubscription()->swap('subscription_plan_…')`                                                                           |
 | Swap + invoice now       | `->swapAndInvoice('price')`                       | —                                | `->swapAndInvoice(...)`       | `vatlySubscription()->swapAndInvoice('subscription_plan_…')`                                                                 |
+| Swap now, no charge      | `->noProrate()->swap('price')`                    | `->noProrate()->swap('pri')`     | `->noProrate()->swap(...)`    | `vatlySubscription()->swapWithoutCharge('subscription_plan_…')`                                                              |
 | Cancel (grace)           | `subscription()->cancel()`                        | `->cancel()`                     | `->cancel()`                  | `vatlySubscription()->cancel()`                                                                                              |
 | Resume                   | `subscription()->resume()`                        | `->resume()`                     | `->resume()`                  | `vatlySubscription()->resume()`                                                                                              |
 | One-off purchase         | `checkout(['price'=>1])`                          | `checkout('pri_123')`            | `checkout('variant')`         | `vatlyCheckout()->create(items: [['id'=>'one_off_product_…','quantity'=>1]], redirectUrlSuccess: …, redirectUrlCanceled: …)` |

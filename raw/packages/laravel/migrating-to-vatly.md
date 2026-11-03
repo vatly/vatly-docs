@@ -923,6 +923,36 @@ Mapping for the engineer or agent porting a flow. Vatly ids are prefixed —
   
   <tr>
     <td>
+      Swap now, no charge
+    </td>
+    
+    <td>
+      <code>
+        ->noProrate()->swap('price')
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        ->noProrate()->swap('pri')
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        ->noProrate()->swap(...)
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        vatlySubscription()->swapWithoutCharge('subscription_plan_…')
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
       Cancel (grace)
     </td>
     
