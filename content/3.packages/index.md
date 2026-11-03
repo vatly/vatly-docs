@@ -9,7 +9,7 @@ Vatly provides official packages to integrate billing, subscriptions, and tax co
 | PHP 8.0+ | [vatly-api-php](/packages/php/readme) | `composer require vatly/vatly-api-php` |
 | Laravel 11+ | [vatly-laravel](/packages/laravel/readme) | `composer require vatly/vatly-laravel` |
 
-## Coming soon
+## Planned
 
 | Language / Framework | Package | Status |
 | --- | --- | --- |

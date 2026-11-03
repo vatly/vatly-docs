@@ -1,11 +1,7 @@
 <script setup lang="ts">
-const title = 'Vatly Developer Documentation'
-// No trailing period: nuxt-og-image derives the static OG filename from the
-// props, and on the homepage the description is the final path segment — a
-// trailing "." would make the filename end in "..png", which Nitro silently
-// skips writing (docs pages avoid this because a base64 page-path segment
-// follows their description).
-const description = 'Learn everything about the Vatly API and start selling worldwide'
+const title = 'Vatly docs'
+const tagline = 'Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.'
+const description = `${tagline} Guides, API reference and SDKs.`
 
 useSeo({
   title,
@@ -13,13 +9,28 @@ useSeo({
   type: 'website',
 })
 
+// The home title is already "Vatly docs", so drop the "%s - Vatly Docs"
+// suffix that every other page gets.
+useHead({ titleTemplate: null })
+
+useSeoMeta({
+  ogImageAlt: `${title}: ${tagline}`,
+  twitterImageAlt: `${title}: ${tagline}`,
+})
+
 // Give the homepage a per-page OG card via the same nuxt-og-image v6 / takumi
 // template as the docs pages (Docs.takumi.vue). Without this the homepage falls
 // back to the static og-image.jpg — a bare wordmark at a non-standard 2400x1120
 // ratio that social platforms crop awkwardly.
+//
+// No trailing period on the card description: nuxt-og-image derives the static
+// OG filename from the props, and on the homepage the description is the final
+// path segment — a trailing "." would make the filename end in "..png", which
+// Nitro silently skips writing (docs pages avoid this because a base64
+// page-path segment follows their description).
 defineOgImage('Docs', {
   title,
-  description,
+  description: tagline.replace(/\.$/, ''),
 })
 </script>
 
@@ -38,7 +49,7 @@ defineOgImage('Docs', {
             Developer Documentation
           </h1>
           <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400">
-            Sell digital products and subscriptions worldwide with Vatly. Built for European SaaS companies with hosted checkouts, subscription management, and full tax compliance.
+            Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.
           </p>
           <div class="mt-10 flex items-center justify-center gap-x-4">
             <NuxtLink
@@ -93,10 +104,10 @@ defineOgImage('Docs', {
         </p>
         <ol class="space-y-3 text-gray-600 dark:text-gray-400 list-decimal list-inside">
           <li>Create a new account at <NuxtLink to="https://my.vatly.com" class="text-[#326bff] dark:text-[#5993ff] hover:underline" target="_blank">vatly.com</NuxtLink>.</li>
-          <li>Grab your API keys from <strong class="text-gray-900 dark:text-white">Settings → API</strong>.</li>
+          <li>Grab your API keys from <strong class="text-gray-900 dark:text-white">Developers » API keys</strong>.</li>
           <li>Connect your Mollie account.</li>
           <li>Set up your products.</li>
-          <li>Integrate Vatly in your SaaS using one of our <NuxtLink to="/guides/sdks" class="text-[#326bff] dark:text-[#5993ff] hover:underline">SDKs</NuxtLink>.</li>
+          <li>Integrate Vatly in your app or site using one of our <NuxtLink to="/guides/sdks" class="text-[#326bff] dark:text-[#5993ff] hover:underline">SDKs</NuxtLink>.</li>
         </ol>
         <div class="mt-8 flex items-center gap-6">
           <NuxtLink
@@ -136,7 +147,7 @@ const features = [
     title: 'Orders and Invoices',
     icon: 'i-lucide-receipt',
     to: '/api-reference/orders',
-    description: 'Automatic EU VAT handling as a Merchant of Record. Invoices, tax calculation, and reporting handled for you.',
+    description: 'Vatly is the seller on every sale, so it calculates the tax, issues the invoices and takes care of EU VAT reporting.',
   },
   {
     title: 'Webhooks',
