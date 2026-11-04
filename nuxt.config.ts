@@ -4,7 +4,9 @@ export default defineNuxtConfig({
   // Static sitemap.xml in public/ folder - no module needed
 
   site: {
-    name: 'Vatly Docs',
+    // og:site_name and the JSON-LD publisher name. Page titles keep their
+    // "- Vatly Docs" suffix via app.config `seo.titleTemplate`.
+    name: 'Vatly',
     url: 'https://docs.vatly.com',
   },
 
@@ -49,6 +51,7 @@ export default defineNuxtConfig({
         { property: 'og:image', content: 'https://docs.vatly.com/og-image.jpg' },
         { property: 'og:image:width', content: '2400' },
         { property: 'og:image:height', content: '1120' },
+        { property: 'og:image:alt', content: 'Vatly' },
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:image', content: 'https://docs.vatly.com/og-image.jpg' },
       ],
@@ -98,6 +101,12 @@ export default defineNuxtConfig({
     // like), none of which the GitHub Pages build sets, so set it here or the
     // files are skipped at prerender.
     domain: 'https://docs.vatly.com',
+    title: 'Vatly Docs',
+    description: 'Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.',
+    full: {
+      title: 'Vatly Docs',
+      description: 'Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.',
+    },
   },
 
   content: {

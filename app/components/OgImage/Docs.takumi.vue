@@ -133,7 +133,7 @@ const LOGO_PATH = 'M11.099 40.76 0 11.596h8.458l6.401 18.191 6.344-18.191h8.464L
     <!-- Footer: domain + positioning -->
     <div class="flex items-center justify-between">
       <span class="text-[#475569] text-[20px]">docs.vatly.com</span>
-      <span class="text-[#326bff] text-[18px] font-medium">Merchant of Record for European SaaS</span>
+      <span class="text-[#326bff] text-[18px] font-medium">Merchant of Record for European software and digital products</span>
     </div>
   </div>
 </template>

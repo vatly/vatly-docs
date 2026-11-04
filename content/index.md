@@ -1,6 +1,6 @@
 ---
-title: "Vatly API Documentation"
-description: "Learn everything about the Vatly API and start selling worldwide."
+title: "Vatly Developer Documentation"
+description: "Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled. Guides, API reference and SDKs."
 navigation: false
 ---
 
@@ -24,7 +24,7 @@ actions:
 Vatly API Documentation
 
 #description
-Sell digital products and subscriptions worldwide with Vatly. Built for European SaaS companies with hosted checkouts, subscription management, and full tax compliance.
+Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.
 ::
 
 ::card-group
@@ -52,7 +52,7 @@ Sell digital products and subscriptions worldwide with Vatly. Built for European
   icon: i-heroicons-shield-check
   to: /api-reference/orders
   ---
-  Automatic EU VAT handling as a Merchant of Record. Invoices, tax calculation, and reporting handled for you.
+  Vatly is the seller on every sale, so it calculates the tax, issues the invoices and takes care of EU VAT reporting.
   ::
 
   ::card
@@ -73,7 +73,7 @@ Getting started with Vatly is easy!
 2. Grab your API keys from **Developers » API keys**.
 3. Connect your Mollie account.
 4. Set up your products.
-5. Integrate Vatly in your SaaS or landing page using one of our [SDKs](/guides/sdks).
+5. Integrate Vatly in your app or landing page using one of our [SDKs](/guides/sdks).
 6. Follow the [selling workflow guide](/guides/selling-workflow) to connect products, checkouts, webhooks, and fulfillment.
 
 [Read the quickstart guide](/guides/quickstart)

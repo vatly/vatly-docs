@@ -51,6 +51,11 @@ watch(() => navigation?.value, () => {
   headline.value = findPageHeadline(navigation?.value, page.value?.path) || headline.value
 })
 
+useSeoMeta({
+  ogImageAlt: `${title}: Vatly Docs`,
+  twitterImageAlt: `${title}: Vatly Docs`,
+})
+
 defineOgImage('Docs', {
   headline: headline.value,
   title: title?.slice(0, 60),
