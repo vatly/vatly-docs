@@ -1,5 +1,5 @@
 ---
-title: "Vatly docs"
+title: "Vatly Developer Documentation"
 description: "Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled. Guides, API reference and SDKs."
 navigation: false
 ---

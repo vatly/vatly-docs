@@ -101,10 +101,10 @@ export default defineNuxtConfig({
     // like), none of which the GitHub Pages build sets, so set it here or the
     // files are skipped at prerender.
     domain: 'https://docs.vatly.com',
-    title: 'Vatly docs',
+    title: 'Vatly Docs',
     description: 'Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.',
     full: {
-      title: 'Vatly docs',
+      title: 'Vatly Docs',
       description: 'Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.',
     },
   },

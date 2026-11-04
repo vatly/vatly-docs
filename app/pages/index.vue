@@ -1,5 +1,8 @@
 <script setup lang="ts">
-const title = 'Vatly docs'
+const title = 'Vatly Developer Documentation'
+// The OG card keeps the short name: it reads better at card size, and
+// og:title already carries the full one.
+const cardTitle = 'Vatly Docs'
 const tagline = 'Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.'
 const description = `${tagline} Guides, API reference and SDKs.`
 
@@ -9,7 +12,7 @@ useSeo({
   type: 'website',
 })
 
-// The home title is already "Vatly docs", so drop the "%s - Vatly Docs"
+// The home title already names the site, so drop the "%s - Vatly Docs"
 // suffix that every other page gets.
 useHead({ titleTemplate: null })
 
@@ -29,7 +32,7 @@ useSeoMeta({
 // Nitro silently skips writing (docs pages avoid this because a base64
 // page-path segment follows their description).
 defineOgImage('Docs', {
-  title,
+  title: cardTitle,
   description: tagline.replace(/\.$/, ''),
 })
 </script>

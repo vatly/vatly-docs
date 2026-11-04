@@ -52,8 +52,8 @@ watch(() => navigation?.value, () => {
 })
 
 useSeoMeta({
-  ogImageAlt: `${title}: Vatly docs`,
-  twitterImageAlt: `${title}: Vatly docs`,
+  ogImageAlt: `${title}: Vatly Docs`,
+  twitterImageAlt: `${title}: Vatly Docs`,
 })
 
 defineOgImage('Docs', {
