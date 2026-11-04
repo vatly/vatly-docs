@@ -62,7 +62,7 @@ For installation and usage examples, see the [Laravel Vatly docs](/packages/lara
     </td>
     
     <td>
-      Coming soon
+      Planned
     </td>
   </tr>
   
@@ -72,7 +72,7 @@ For installation and usage examples, see the [Laravel Vatly docs](/packages/lara
     </td>
     
     <td>
-      Coming soon
+      Planned
     </td>
   </tr>
   
@@ -82,7 +82,7 @@ For installation and usage examples, see the [Laravel Vatly docs](/packages/lara
     </td>
     
     <td>
-      Coming soon
+      Planned
     </td>
   </tr>
 </tbody>

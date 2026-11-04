@@ -1,6 +1,6 @@
 # Quickstart
 
-> This guide will get you all set up and ready to use the Vatly API. We’ll cover how to get started an API client and how to make your first API request.
+> This guide will get you all set up and ready to use the Vatly API. We’ll cover how to set up an API client and how to make your first API request.
 
 <note>
 

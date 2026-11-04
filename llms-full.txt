@@ -1,8 +1,6 @@
 # Introduction
 
-> Vatly is the Merchant of Record for European SaaS companies, enabling you to sell worldwide through a single API.
-
-Vatly takes care of the hard parts of selling software globally (tax compliance, billing, invoicing) so you can focus on building your product. Handle subscriptions, one-off payments, and global tax compliance through a single API.
+Vatly is the Merchant of Record for European software and digital products. It becomes the legal seller on every sale and handles payments, tax and compliance, so you just ship. Sell subscriptions and one-off products through a single API.
 
 ::card-group
   :::card
@@ -49,6 +47,14 @@ Vatly takes care of the hard parts of selling software globally (tax compliance,
 3. Connect your Mollie account.
 4. Set up your products.
 5. Integrate Vatly using one of our [packages](https://docs.vatly.com/packages).
+
+## Going live
+
+Test mode works from the start, so you can build and test your integration right away. Your live keys work once Vatly has approved you and Mollie has verified your business.
+
+- **Product review.** Vatly is the seller on every sale, so it reviews every product before it goes on sale. A review typically takes one to two business days, and you get an email whether or not the product is approved.
+- **Mollie verification.** Mollie verifies your business on your own connected Mollie account. Connect the account you already have, or open one in the same flow.
+- **Payouts.** Your earnings go to your own Mollie account after a 7-day hold that covers refunds and disputes. See [Payouts & Settlement](https://docs.vatly.com/guides/payouts).
 
 ## Next steps
 
@@ -432,9 +438,9 @@ For installation and usage examples, see the [Laravel Vatly docs](https://docs.v
 | --------------------------------------------------------- | ----------------- |
 | [PHP](https://docs.vatly.com/packages/php/readme)         | Available (alpha) |
 | [Laravel](https://docs.vatly.com/packages/laravel/readme) | Available (alpha) |
-| JavaScript / Node.js                                      | Coming soon       |
-| Python                                                    | Coming soon       |
-| Ruby                                                      | Coming soon       |
+| JavaScript / Node.js                                      | Planned           |
+| Python                                                    | Planned           |
+| Ruby                                                      | Planned           |
 
 In the meantime, you can use the [REST API directly](https://docs.vatly.com/guides/authentication) with any HTTP client in any language.
 
@@ -9700,7 +9706,7 @@ Vatly provides official packages to integrate billing, subscriptions, and tax co
 | PHP 8.0+             | [vatly-api-php](https://docs.vatly.com/packages/php/readme)     | `composer require vatly/vatly-api-php` |
 | Laravel 11+          | [vatly-laravel](https://docs.vatly.com/packages/laravel/readme) | `composer require vatly/vatly-laravel` |
 
-## Coming soon
+## Planned
 
 | Language / Framework | Package      | Status  |
 | -------------------- | ------------ | ------- |

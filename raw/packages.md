@@ -64,7 +64,7 @@ Vatly provides official packages to integrate billing, subscriptions, and tax co
 </tbody>
 </table>
 
-## Coming soon
+## Planned
 
 <table>
 <thead>

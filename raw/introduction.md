@@ -1,10 +1,8 @@
 # Introduction
 
-> 
+> Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.
 
-> Vatly is the Merchant of Record for European SaaS companies, enabling you to sell worldwide through a single API.
-
-Vatly takes care of the hard parts of selling software globally (tax compliance, billing, invoicing) so you can focus on building your product. Handle subscriptions, one-off payments, and global tax compliance through a single API.
+Vatly is the Merchant of Record for European software and digital products. It becomes the legal seller on every sale and handles payments, tax and compliance, so you just ship. Sell subscriptions and one-off products through a single API.
 
 <card-group>
 <card icon="i-heroicons:shopping-cart" title="Hosted Checkouts" to="/api-reference/checkouts">
@@ -39,6 +37,14 @@ Real-time event notifications for checkouts, orders, subscriptions, refunds, and
 3. Connect your Mollie account.
 4. Set up your products.
 5. Integrate Vatly using one of our [packages](/packages).
+
+## Going live
+
+Test mode works from the start, so you can build and test your integration right away. Your live keys work once Vatly has approved you and Mollie has verified your business.
+
+- **Product review.** Vatly is the seller on every sale, so it reviews every product before it goes on sale. A review typically takes one to two business days, and you get an email whether or not the product is approved.
+- **Mollie verification.** Mollie verifies your business on your own connected Mollie account. Connect the account you already have, or open one in the same flow.
+- **Payouts.** Your earnings go to your own Mollie account after a 7-day hold that covers refunds and disputes. See [Payouts & Settlement](/guides/payouts).
 
 ## Next steps
 
