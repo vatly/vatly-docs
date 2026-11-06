@@ -112,19 +112,20 @@ defineOgImage('Docs', {
           <li>Set up your products.</li>
           <li>Integrate Vatly in your app or site using one of our <NuxtLink to="/guides/sdks" class="text-[#326bff] dark:text-[#5993ff] hover:underline">SDKs</NuxtLink>.</li>
         </ol>
-        <div class="mt-8 flex items-center gap-6">
+        <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
           <NuxtLink
             to="/guides/quickstart"
-            class="text-[#326bff] dark:text-[#5993ff] font-medium hover:underline"
+            class="inline-flex items-center rounded-lg bg-[#326bff] px-5 py-2.5 font-medium text-white shadow-sm transition-colors hover:bg-[#1f55e0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#326bff] focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-[#5993ff] dark:focus-visible:ring-offset-gray-950"
           >
             Read the quickstart guide →
           </NuxtLink>
           <a
             href="https://docs.vatly.com/openapi.yaml"
             download
-            class="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            class="inline-flex items-center gap-1.5 rounded font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#326bff] dark:focus-visible:ring-[#5993ff]"
           >
-            OpenAPI spec ↓
+            <UIcon name="i-lucide-download" class="h-4 w-4" aria-hidden="true" />
+            OpenAPI spec (YAML)
           </a>
         </div>
       </div>
