@@ -119,8 +119,20 @@ export default defineNuxtConfig({
     },
   },
 
+  // Section folders have no page of their own, but breadcrumbs link to them.
+  // GitHub Pages can't send redirects, so these prerender to meta-refresh pages.
+  routeRules: {
+    '/guides': { redirect: { to: '/guides/quickstart', statusCode: 301 } },
+    '/api-reference': { redirect: { to: '/api-reference/customers', statusCode: 301 } },
+    '/packages/php': { redirect: { to: '/packages/php/readme', statusCode: 301 } },
+    '/packages/laravel': { redirect: { to: '/packages/laravel/readme', statusCode: 301 } },
+  },
+
   nitro: {
     preset: 'github-pages',
+    prerender: {
+      routes: ['/guides', '/api-reference', '/packages/php', '/packages/laravel'],
+    },
   },
 
   compatibilityDate: '2025-01-01',
