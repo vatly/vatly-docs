@@ -490,11 +490,23 @@ The order model contains all the information about your orders, including the or
         customer
       </code>
       
-      , and optionally <code>
+       (<code>
+        null
+      </code>
+      
+       for orders without a customer) and <code>
         customerInvoice
       </code>
       
-       links.
+      , the invoice in the customer portal (<code>
+        text/html
+      </code>
+      
+      ). On a refund or chargeback order, <code>
+        customerInvoice
+      </code>
+      
+       opens the credit note. The link is signed and expires after 72 hours; the customer can request a new one from the page.
     </td>
   </tr>
 </tbody>

@@ -406,11 +406,35 @@ Chargebacks are created automatically when a payment provider initiates a disput
         originalOrder
       </code>
       
-      , and optionally <code>
+      , <code>
         order
       </code>
       
-       (the credit note).
+       (the credit note order) and <code>
+        customerInvoice
+      </code>
+      
+       (the credit note in the customer portal, <code>
+        text/html
+      </code>
+      
+      ). <code>
+        order
+      </code>
+      
+       and <code>
+        customerInvoice
+      </code>
+      
+       are always present and are <code>
+        null
+      </code>
+      
+       until the chargeback is lost. The <code>
+        customerInvoice
+      </code>
+      
+       link is signed and expires after 72 hours; the customer can request a new one from the page.
     </td>
   </tr>
 </tbody>
@@ -569,6 +593,10 @@ $chargebacks = $vatly->chargebacks->page();
         "order": {
           "href": "https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP",
           "type": "application/json"
+        },
+        "customerInvoice": {
+          "href": "https://vatly.com/invoices/order_Rk5pQrSvWm8NjLhYbUcP",
+          "type": "text/html"
         }
       }
     }
@@ -701,6 +729,10 @@ $chargeback = $vatly->chargebacks->get('chargeback_Mn6xBtPvKw2RjTgYcZaE');
     "order": {
       "href": "https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP",
       "type": "application/json"
+    },
+    "customerInvoice": {
+      "href": "https://vatly.com/invoices/order_Rk5pQrSvWm8NjLhYbUcP",
+      "type": "text/html"
     }
   }
 }
@@ -879,6 +911,10 @@ $chargebacks = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->page()
         "order": {
           "href": "https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP",
           "type": "application/json"
+        },
+        "customerInvoice": {
+          "href": "https://vatly.com/invoices/order_Rk5pQrSvWm8NjLhYbUcP",
+          "type": "text/html"
         }
       }
     }
@@ -1029,6 +1065,10 @@ $chargeback = $vatly->orders->chargebacks('order_Fp2kQrSvWm8NjLhYbUcP')->get('ch
     "order": {
       "href": "https://api.vatly.com/v1/orders/order_Rk5pQrSvWm8NjLhYbUcP",
       "type": "application/json"
+    },
+    "customerInvoice": {
+      "href": "https://vatly.com/invoices/order_Rk5pQrSvWm8NjLhYbUcP",
+      "type": "text/html"
     }
   }
 }

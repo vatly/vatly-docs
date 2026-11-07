@@ -328,11 +328,35 @@ The refund model contains all the information about order refunds, including the
         originalOrder
       </code>
       
-      , and optionally <code>
+      , <code>
         order
       </code>
       
-       (the credit note).
+       (the credit note order) and <code>
+        customerInvoice
+      </code>
+      
+       (the credit note in the customer portal, <code>
+        text/html
+      </code>
+      
+      ). <code>
+        order
+      </code>
+      
+       and <code>
+        customerInvoice
+      </code>
+      
+       are always present and are <code>
+        null
+      </code>
+      
+       until the refund is processed. The <code>
+        customerInvoice
+      </code>
+      
+       link is signed and expires after 72 hours; the customer can request a new one from the page.
     </td>
   </tr>
 </tbody>
@@ -849,7 +873,8 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->create([
       "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
       "type": "application/json"
     },
-    "order": null
+    "order": null,
+    "customerInvoice": null
   }
 }
 ```
@@ -1033,7 +1058,8 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->full();
       "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
       "type": "application/json"
     },
-    "order": null
+    "order": null,
+    "customerInvoice": null
   }
 }
 ```
@@ -1231,7 +1257,8 @@ $refunds = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->page();
           "href": "https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP",
           "type": "application/json"
         },
-        "order": null
+        "order": null,
+        "customerInvoice": null
       }
     }
   ],
@@ -1405,6 +1432,10 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->get('refund_Xk9
     "order": {
       "href": "https://api.vatly.com/v1/orders/order_Bm7xNvPwKr3YjTgHcZaE",
       "type": "application/json"
+    },
+    "customerInvoice": {
+      "href": "https://vatly.com/invoices/order_Bm7xNvPwKr3YjTgHcZaE",
+      "type": "text/html"
     }
   }
 }
