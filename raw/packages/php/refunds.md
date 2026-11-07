@@ -282,11 +282,23 @@ Below you'll find all properties for the Vatly Refund resource.
     </td>
     
     <td>
-      Links to this refund, the original order and the credit note order (<code>
+      Links to this refund, the original order, the credit note order (<code>
         null
       </code>
       
-       until there is one).
+       until there is one) and <code>
+        customerInvoice
+      </code>
+      
+      , the customer-portal page of the refund's credit note (<code>
+        null
+      </code>
+      
+       until the refund is processed). The <code>
+        customerInvoice
+      </code>
+      
+       URL is signed and expires after 72 hours (the customer then sees a page to request a new link).
     </td>
   </tr>
 </tbody>

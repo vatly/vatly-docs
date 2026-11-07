@@ -400,7 +400,11 @@ Below you'll find all properties for the Vatly Order resource.
         null
       </code>
       
-       for orders with no associated customer) and the customer invoice.
+       for orders with no associated customer) and the customer invoice. The <code>
+        customerInvoice
+      </code>
+      
+       URL is signed and expires after 72 hours (the customer then sees a page to request a new link).
     </td>
   </tr>
 </tbody>
