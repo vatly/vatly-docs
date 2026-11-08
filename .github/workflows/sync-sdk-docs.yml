@@ -80,7 +80,7 @@ jobs:
         if: vars.SYNC_BETTER_AUTH_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-better-auth-docs')
         uses: actions/checkout@v4
         with:
-          repository: vatly/vatly-better-auth
+          repository: vatly/vatly-better-auth-js
           ref: main
           path: tmp/better-auth-repo
           sparse-checkout: docs
@@ -88,7 +88,7 @@ jobs:
 
       - name: Transform and copy Better Auth docs
         if: vars.SYNC_BETTER_AUTH_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-better-auth-docs')
-        run: node scripts/transform-js-docs.mjs tmp/better-auth-repo/docs content/3.packages/5.better-auth vatly/vatly-better-auth
+        run: node scripts/transform-js-docs.mjs tmp/better-auth-repo/docs content/3.packages/5.better-auth vatly/vatly-better-auth-js
 
       - name: Regenerate sitemap
         run: node scripts/generate-sitemap.mjs
