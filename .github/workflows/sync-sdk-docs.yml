@@ -2,7 +2,7 @@ name: Sync SDK Docs
 
 on:
   repository_dispatch:
-    types: [sync-sdk-docs, sync-laravel-docs]
+    types: [sync-sdk-docs, sync-laravel-docs, sync-js-docs, sync-fluent-js-docs, sync-better-auth-docs]
   workflow_dispatch: # manual trigger
 
 permissions:
@@ -45,6 +45,50 @@ jobs:
           mkdir -p tmp/laravel-docs
           cp tmp/laravel-repo/docs/*.md tmp/laravel-docs/ 2>/dev/null || true
           node scripts/transform-laravel-docs.mjs tmp/laravel-docs content/3.packages/2.laravel
+
+      # Opt-in only: unlike PHP, these packages must not publish docs before launch.
+      # Keep the guard here (not just in the sender), including for manual runs.
+      - name: Pull JavaScript SDK docs
+        if: vars.SYNC_JS_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-js-docs')
+        uses: actions/checkout@v4
+        with:
+          repository: vatly/vatly-api-js
+          ref: main
+          path: tmp/js-repo
+          sparse-checkout: docs
+          token: ${{ secrets.VATLY_DOCS_SOURCE_TOKEN || github.token }}
+
+      - name: Transform and copy JavaScript SDK docs
+        if: vars.SYNC_JS_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-js-docs')
+        run: node scripts/transform-js-docs.mjs tmp/js-repo/docs content/3.packages/3.javascript vatly/vatly-api-js
+
+      - name: Pull fluent JavaScript docs
+        if: vars.SYNC_FLUENT_JS_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-fluent-js-docs')
+        uses: actions/checkout@v4
+        with:
+          repository: vatly/vatly-fluent-js
+          ref: main
+          path: tmp/fluent-js-repo
+          sparse-checkout: docs
+          token: ${{ secrets.VATLY_DOCS_SOURCE_TOKEN || github.token }}
+
+      - name: Transform and copy fluent JavaScript docs
+        if: vars.SYNC_FLUENT_JS_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-fluent-js-docs')
+        run: node scripts/transform-js-docs.mjs tmp/fluent-js-repo/docs content/3.packages/4.fluent-js vatly/vatly-fluent-js
+
+      - name: Pull Better Auth docs
+        if: vars.SYNC_BETTER_AUTH_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-better-auth-docs')
+        uses: actions/checkout@v4
+        with:
+          repository: vatly/vatly-better-auth
+          ref: main
+          path: tmp/better-auth-repo
+          sparse-checkout: docs
+          token: ${{ secrets.VATLY_DOCS_SOURCE_TOKEN || github.token }}
+
+      - name: Transform and copy Better Auth docs
+        if: vars.SYNC_BETTER_AUTH_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-better-auth-docs')
+        run: node scripts/transform-js-docs.mjs tmp/better-auth-repo/docs content/3.packages/5.better-auth vatly/vatly-better-auth
 
       - name: Regenerate sitemap
         run: node scripts/generate-sitemap.mjs

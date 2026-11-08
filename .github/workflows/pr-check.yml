@@ -23,6 +23,9 @@ jobs:
       - name: Lint markdown
         run: npx markdownlint-cli2 'content/**/*.md'
 
+      - name: Test JavaScript docs transformation
+        run: node --test scripts/transform-js-docs.test.mjs
+
   build-and-check-links:
     runs-on: ubuntu-latest
     steps:
