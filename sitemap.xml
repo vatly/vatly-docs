@@ -69,4 +69,6 @@
   <url><loc>https://docs.vatly.com/packages/fluent-js/porting</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluent-js/testing</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/integrations</loc><priority>0.7</priority></url>
+  <url><loc>https://docs.vatly.com/integrations/lovable</loc><priority>0.8</priority></url>
+  <url><loc>https://docs.vatly.com/integrations/bolt</loc><priority>0.8</priority></url>
 </urlset>

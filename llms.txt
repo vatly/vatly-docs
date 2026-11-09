@@ -75,4 +75,6 @@
 - [Porting from PHP](https://docs.vatly.com/raw/packages/fluent-js/porting.md): Vatly JavaScript packages - Porting from PHP
 - [Testing](https://docs.vatly.com/raw/packages/fluent-js/testing.md): Vatly JavaScript packages - Testing
 - [Packages](https://docs.vatly.com/raw/packages.md): Official Vatly packages for PHP, Laravel, JavaScript and TypeScript. Find installation commands and SDK documentation.
-- [Integrations](https://docs.vatly.com/raw/integrations.md)
+- [Lovable payments with Vatly](https://docs.vatly.com/raw/integrations/lovable.md): Add Vatly as merchant of record to your Lovable app. Use server-side checkout, secure secrets, and signed webhooks with prompts for Lovable's AI agent.
+- [Bolt payments with Vatly](https://docs.vatly.com/raw/integrations/bolt.md): Use Vatly as merchant of record in Bolt.new apps. Add hosted checkout with Bolt Cloud or Supabase server functions, database secrets, and verified webhooks.
+- [Integrations](https://docs.vatly.com/raw/integrations.md): Use Vatly as merchant of record in AI-built apps. Connect Lovable or Bolt to hosted checkout, subscriptions, and verified webhooks.
