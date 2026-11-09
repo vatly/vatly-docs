@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+echo 'Preparing Node.js 22 and npm 11 (matching CI)'
+if [[ "$(node -p 'process.versions.node.split(".")[0]')" != 22 ]]; then
+  # The orb image provides a regular node binary, not an npm-managed symlink.
+  time npm install --global --prefix /usr/local --force node@22
+fi
+if [[ "$(npm --version)" != 11.* ]]; then
+  # Keep npm beside the orb's PATH entry, not under node's resolved symlink.
+  time npm install --global --prefix /usr/local npm@11
+fi
+node --version
+npm --version
+
+echo 'Installing locked dependencies and applying the branded OG template'
+time npm ci --no-audit --no-fund

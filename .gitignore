@@ -6,3 +6,4 @@ convert.mjs
 .output
 dist
 tmp/
+.amp/portals/*
