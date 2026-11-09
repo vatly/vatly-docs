@@ -46,17 +46,5 @@
   <url><loc>https://docs.vatly.com/packages/laravel/comparison</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/laravel/migrating-to-vatly</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/laravel/configuration</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/readme</loc><priority>0.7</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/customers</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/checkouts</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/subscriptions</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/subscriptionplans</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/orders</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/refunds</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/oneoffproducts</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/chargebacks</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/webhooks</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/javascript/api</loc><priority>0.6</priority></url>
-  <url><loc>https://docs.vatly.com/packages/fluent-js/readme</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/integrations</loc><priority>0.7</priority></url>
 </urlset>
