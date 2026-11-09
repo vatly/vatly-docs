@@ -11,23 +11,24 @@ Install the tested alpha pair:
 npm install --save-exact @getvatly/sdk@0.3.0-alpha.2 @getvatly/fluent@0.1.0-alpha.1
 ```
 
-## First checkout
+## Start a subscription
 
-Use a customer and product from the key's storefront and mode. Check that the
+Use a customer and plan from the key's storefront and mode. Check that the
 signed-in user owns the customer before calling this function:
 
 ```ts
 import { VatlyClient } from '@getvatly/sdk';
 import { Vatly } from '@getvatly/fluent';
 
-export async function startCheckout(apiKey: string, customerId: string, productId: string) {
+export async function startSubscription(apiKey: string, customerId: string, planId: string) {
   const vatly = new Vatly({
     api: new VatlyClient({ apiKey }),
     redirectUrlSuccess: 'https://app.example.com/billing/return',
     redirectUrlCanceled: 'https://app.example.com/billing/canceled',
   });
-  const checkout = await vatly.checkoutBuilder({ vatlyId: customerId })
-    .withItems([{ id: productId, quantity: 1 }])
+  const checkout = await vatly.subscribe({ vatlyId: customerId })
+    .toPlan(planId)
+    .withQuantity(1)
     .create();
   return checkout.getUrl(); // Redirect the customer's browser to this URL.
 }
@@ -35,6 +36,8 @@ export async function startCheckout(apiKey: string, customerId: string, productI
 
 Redirect to the returned URL. Use [webhooks](/packages/fluent-js/webhooks) to confirm payment,
 not the return page.
+
+For one-off purchases, use [`checkoutBuilder`](/packages/fluent-js/checkouts#one-off-or-mixed-purchases).
 
 ## Guides
 
@@ -156,18 +159,6 @@ not the return page.
     <td>
       <a href="/packages/fluent-js/testing">
         Testing
-      </a>
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      Map PHP APIs to TypeScript
-    </td>
-    
-    <td>
-      <a href="/packages/fluent-js/porting">
-        Porting
       </a>
     </td>
   </tr>
