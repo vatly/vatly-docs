@@ -63,6 +63,34 @@ const PACKAGE_REPOS: PackageRepo[] = [
       configuration: 'configuration.md',
     },
   },
+  {
+    prefix: '/packages/javascript',
+    url: 'https://github.com/vatly/vatly-api-js',
+    branch: 'main',
+    docsDir: 'docs',
+    files: {
+      readme: 'README.md',
+      api: 'API.md',
+      customers: 'Customers.md',
+      checkouts: 'Checkouts.md',
+      subscriptions: 'Subscriptions.md',
+      subscriptionplans: 'SubscriptionPlans.md',
+      orders: 'Orders.md',
+      refunds: 'Refunds.md',
+      oneoffproducts: 'OneOffProducts.md',
+      chargebacks: 'Chargebacks.md',
+      webhooks: 'Webhooks.md',
+    },
+  },
+  {
+    prefix: '/packages/fluent-js',
+    url: 'https://github.com/vatly/vatly-fluent-js',
+    branch: 'main',
+    docsDir: 'docs',
+    files: {
+      readme: 'README.md',
+    },
+  },
 ]
 
 export interface PageSource {

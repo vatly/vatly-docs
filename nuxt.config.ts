@@ -126,12 +126,14 @@ export default defineNuxtConfig({
     '/api-reference': { redirect: { to: '/api-reference/customers', statusCode: 301 } },
     '/packages/php': { redirect: { to: '/packages/php/readme', statusCode: 301 } },
     '/packages/laravel': { redirect: { to: '/packages/laravel/readme', statusCode: 301 } },
+    '/packages/javascript': { redirect: { to: '/packages/javascript/readme', statusCode: 301 } },
+    '/packages/fluent-js': { redirect: { to: '/packages/fluent-js/readme', statusCode: 301 } },
   },
 
   nitro: {
     preset: 'github-pages',
     prerender: {
-      routes: ['/guides', '/api-reference', '/packages/php', '/packages/laravel'],
+      routes: ['/guides', '/api-reference', '/packages/php', '/packages/laravel', '/packages/javascript', '/packages/fluent-js'],
     },
   },
 
