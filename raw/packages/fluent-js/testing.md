@@ -57,12 +57,7 @@ SDK-style `fastForwardRenewal`/`simulateOrderPayment`. These mutate account data
 Use them only with permission and disposable test resources, not existing
 subscriptions or orders just because the key is in test mode.
 
-## Run this package's checks
-
-```sh
-pnpm install --frozen-lockfile
-pnpm check
-```
+## Test your edge runtime
 
 For edge hosts, also run your app in the local edge runtime with its storage adapter.
 Node tests alone do not check edge compatibility.
