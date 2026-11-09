@@ -8,7 +8,7 @@
 
 Official TypeScript SDK for the Vatly Merchant of Record API. Handle checkouts, subscriptions, one-off payments, EU VAT compliance, and billing for your SaaS — on Node, Cloudflare Workers, Vercel Edge, Deno, and Bun.
 
-> **Looking for the exact field list?** These guides cover the common paths. The authoritative, machine-readable schema for every endpoint lives in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml) — point your AI assistant or codegen tooling at it when an example leaves a field ambiguous.
+For all endpoint fields and options, see the [API reference](https://docs.vatly.com/api-reference). The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.
 
 ## Installation
 

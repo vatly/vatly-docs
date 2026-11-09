@@ -4,7 +4,7 @@
 
 An order is the transaction record created when a checkout is paid. It carries the full tax breakdown needed to issue a compliant invoice — and it's where you create refunds and inspect chargebacks.
 
-> **Authoritative field reference.** This page covers the common cases. The complete, canonical schema lives in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml) (see the `Order`, `OrderLine`, `Refund`, `Chargeback`, and `Money` schemas). When in doubt, trust the spec.
+For all fields and options, see the [Orders API reference](https://docs.vatly.com/api-reference/orders). The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.
 
 ## The Order resource
 

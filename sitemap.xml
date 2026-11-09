@@ -58,5 +58,15 @@
   <url><loc>https://docs.vatly.com/packages/javascript/webhooks</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/javascript/api</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluent-js/readme</loc><priority>0.7</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/customers</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/checkouts</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/subscriptions</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/orders</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/webhooks</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/configuration</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/coreconcepts</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/customerportal</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/porting</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-js/testing</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/integrations</loc><priority>0.7</priority></url>
 </urlset>

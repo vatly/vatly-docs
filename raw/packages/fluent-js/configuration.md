@@ -1,0 +1,72 @@
+# Installation and configuration
+
+> Vatly JavaScript packages - Installation and configuration
+
+Fluent `0.1.0-alpha.1` requires SDK `0.3.0-alpha.2`. Pin both during alpha:
+
+```sh
+npm install --save-exact @getvatly/sdk@0.3.0-alpha.2 @getvatly/fluent@0.1.0-alpha.1
+```
+
+Use Node 20+ or a runtime with Fetch and Web Crypto. The packages ship ESM,
+CommonJS, and TypeScript declarations. Keep them on the server: never put an API
+key or webhook secret in browser code or a `NEXT_PUBLIC_*` environment variable.
+
+## Create the billing service
+
+Read `VATLY_API_KEY` from your server's secret store and pass it to this factory.
+Use `VATLY_WEBHOOK_SECRET` when wiring a webhook receiver. These are different
+credentials; the signing secret belongs to a webhook endpoint, not the API key.
+
+```ts
+import { VatlyClient } from '@getvatly/sdk';
+import { Vatly, type Wiring } from '@getvatly/fluent';
+
+export function createBilling(
+  apiKey: string,
+  drivers: Omit<Wiring, 'api' | 'redirectUrlSuccess' | 'redirectUrlCanceled'> = {},
+) {
+  return new Vatly({
+    ...drivers,
+    api: new VatlyClient({ apiKey, timeoutMs: 15_000, maxRetries: 2 }),
+    redirectUrlSuccess: 'https://app.example.com/billing/return',
+    redirectUrlCanceled: 'https://app.example.com/billing/canceled',
+  });
+}
+```
+
+`test_` keys select test mode; `live_` keys select real billing. Both use the same
+API URL. IDs and bindings must belong to the key's storefront and mode. API-only
+usage needs only `api` and redirect URLs. Add [storage drivers](/packages/fluent-js/coreconcepts)
+when using bindings, local subscription updates, or webhook persistence. Missing
+drivers fail when the relevant feature is used, not at construction.
+
+`vatly.api` is the SDK itself. Use it for pagination, catalogue management, webhook
+endpoints, or any operation without a Fluent convenience method.
+
+## Handle errors and retries
+
+```ts
+import { VatlyValidationError } from '@getvatly/sdk';
+import { FluentError, type Vatly } from '@getvatly/fluent';
+
+export async function renameCustomer(vatly: Vatly, customerId: string, name: string) {
+  try {
+    return await vatly.customer(customerId).update({ name });
+  } catch (error) {
+    if (error instanceof VatlyValidationError) {
+      return { validationErrors: error.errors };
+    }
+    if (error instanceof FluentError) throw error; // Fix local input or wiring.
+    throw error; // Preserve SDK status, details, and cause for your error handler.
+  }
+}
+```
+
+Fluent preserves SDK errors; it does not wrap them in PHP-style API exceptions.
+For mutation retries, reuse the same SDK `idempotencyKey` for the same logical
+operation. Do not retry a timeout with a new key: the first request may have succeeded.
+
+Continue with [core concepts](/packages/fluent-js/coreconcepts) or [checkouts](/packages/fluent-js/checkouts).
+For HTTP options and field details, see the [API reference](https://docs.vatly.com/api-reference)
+and [errors guide](https://docs.vatly.com/guides/errors).

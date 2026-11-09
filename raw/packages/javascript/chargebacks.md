@@ -4,7 +4,7 @@
 
 A chargeback is a payment dispute raised by the cardholder's bank against an order. Vatly records it (and any later reversal) so you can suspend access and reconcile the reversed VAT.
 
-> **Authoritative field reference.** This page covers the common cases. The complete, canonical schema lives in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml) (see the `Chargeback`, `TaxSummaryItem`, and `Money` schemas). When in doubt, trust the spec.
+For all fields and options, see the [Chargebacks API reference](https://docs.vatly.com/api-reference/chargebacks). The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.
 
 ## The Chargeback resource
 

@@ -64,5 +64,15 @@
 - [Chargebacks](https://docs.vatly.com/raw/packages/javascript/chargebacks.md): Vatly JavaScript packages - Chargebacks
 - [Webhooks](https://docs.vatly.com/raw/packages/javascript/webhooks.md): Vatly JavaScript packages - Webhooks
 - [Getting Started](https://docs.vatly.com/raw/packages/fluent-js/readme.md): Vatly JavaScript packages - Getting Started
+- [Customers and bindings](https://docs.vatly.com/raw/packages/fluent-js/customers.md): Vatly JavaScript packages - Customers and bindings
+- [Checkouts](https://docs.vatly.com/raw/packages/fluent-js/checkouts.md): Vatly JavaScript packages - Checkouts
+- [Subscriptions](https://docs.vatly.com/raw/packages/fluent-js/subscriptions.md): Vatly JavaScript packages - Subscriptions
+- [Orders and invoices](https://docs.vatly.com/raw/packages/fluent-js/orders.md): Vatly JavaScript packages - Orders and invoices
+- [Webhooks](https://docs.vatly.com/raw/packages/fluent-js/webhooks.md): Vatly JavaScript packages - Webhooks
+- [Installation and configuration](https://docs.vatly.com/raw/packages/fluent-js/configuration.md): Vatly JavaScript packages - Installation and configuration
+- [Core concepts and storage](https://docs.vatly.com/raw/packages/fluent-js/coreconcepts.md): Vatly JavaScript packages - Core concepts and storage
+- [Customer portal](https://docs.vatly.com/raw/packages/fluent-js/customerportal.md): Vatly JavaScript packages - Customer portal
+- [Porting from PHP](https://docs.vatly.com/raw/packages/fluent-js/porting.md): Vatly JavaScript packages - Porting from PHP
+- [Testing](https://docs.vatly.com/raw/packages/fluent-js/testing.md): Vatly JavaScript packages - Testing
 - [Packages](https://docs.vatly.com/raw/packages.md): Official Vatly packages for PHP, Laravel, JavaScript and TypeScript. Find installation commands and SDK documentation.
 - [Integrations](https://docs.vatly.com/raw/integrations.md)

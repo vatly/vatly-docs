@@ -4,7 +4,7 @@
 
 A refund returns funds to a customer for an order. Refunds are **created** against an order (see [Orders](/packages/javascript/orders#refunds-on-an-order)); the top-level `refunds` resource lets you list and retrieve them across all orders.
 
-> **Authoritative field reference.** This page covers the common cases. The complete, canonical schema lives in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml) (see the `Refund`, `RefundItem`, and `Money` schemas). When in doubt, trust the spec.
+For all fields and options, see the [Refunds API reference](https://docs.vatly.com/api-reference/global-refunds) and [creating order refunds](https://docs.vatly.com/api-reference/refunds). The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.
 
 ## The Refund resource
 

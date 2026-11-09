@@ -5,7 +5,7 @@
 One-off products are single-purchase items (no recurring billing). They can be
 created, updated, archived, and unarchived through the API.
 
-> **Authoritative field reference.** This page covers the common cases. The complete, canonical schema lives in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml) (see the `OneOffProduct` schema). When in doubt, trust the spec.
+For all fields and options, see the [One-off Products API reference](https://docs.vatly.com/api-reference/one-off-products). The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.
 
 ## The One-Off Product resource
 

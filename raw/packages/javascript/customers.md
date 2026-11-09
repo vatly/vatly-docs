@@ -4,7 +4,7 @@
 
 Customers represent the end users who purchase products through Vatly.
 
-> **Authoritative field reference.** This page covers the common cases. The complete, canonical schema lives in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml) (see the `Customer` and `CreateCustomerRequest` schemas). When in doubt, trust the spec.
+For all fields and options, see the [Customers API reference](https://docs.vatly.com/api-reference/customers). The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.
 
 ## The Customer resource
 

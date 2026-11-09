@@ -4,7 +4,7 @@
 
 Vatly sends webhooks to notify your application when events happen — an order being paid, a refund completing, a subscription being canceled. Every delivery is HMAC-signed; the SDK verifies the signature and hands you a typed event.
 
-> **Authoritative field reference.** The canonical webhook envelope and per-event `object` schemas live in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml) (see `WebhookDelivery`, `WebhookEvent`, and the resource schemas). When in doubt, trust the spec.
+For event fields and endpoint options, see the [Webhook Events](https://docs.vatly.com/api-reference/webhook-events) and [Webhook Endpoints](https://docs.vatly.com/api-reference/webhook-endpoints) API references. The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.
 
 ## Webhook events
 
@@ -544,7 +544,7 @@ When you register a webhook endpoint (or change its URL), Vatly sends a signed
 `webhook.setup` call to confirm the endpoint is reachable. It's delivered as a
 normal webhook — same envelope, same signature, same `Vatly-Event-Id` header —
 so there's nothing special to parse: verify it and return a `2xx`. Its `object`
-is the (secret-free) [`Webhook`](https://docs.vatly.com/openapi.yaml) endpoint
+is the (secret-free) [webhook endpoint](https://docs.vatly.com/api-reference/webhook-endpoints)
 config and `links` is omitted (it's not a persisted event).
 
 ## Signature scheme

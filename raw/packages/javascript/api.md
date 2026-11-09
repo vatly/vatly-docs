@@ -3,8 +3,9 @@
 > Vatly JavaScript packages - SDK operation reference
 
 Import `VatlyClient` from `@getvatly/sdk`. All paths below are relative to `/v1`.
-Every method takes optional `RequestOptions` last. Bodies and results are generated
-from the [production contract](https://github.com/vatly/vatly-api-js/blob/main/openapi.yaml); server-side validation still applies.
+Every method takes optional `RequestOptions` last. For field details, see the
+[API reference](https://docs.vatly.com/api-reference); the [OpenAPI spec](https://docs.vatly.com/openapi.yaml)
+is also available for tooling. Bodies and results use generated types; server-side validation still applies.
 Types, `components`, `paths`, and `operations` are exported from the package root.
 
 <table>
