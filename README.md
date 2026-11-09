@@ -63,27 +63,27 @@ WordPress plugin have no docs notifier and are not imported by this workflow.
 The PHP transformers mirror markdown pages, rewrite links and GitHub alerts,
 and preserve existing frontmatter.
 
-### JavaScript sources (opt-in, disabled by default)
+### JavaScript sources
 
-| Source | Event | Destination | Enabling repository variable |
+| Source | Event | Destination | Publication |
 | --- | --- | --- | --- |
-| `vatly/vatly-api-js` (`@getvatly/sdk`) | `sync-js-docs` | `content/3.packages/3.javascript` | `SYNC_JS_DOCS` |
-| `vatly/vatly-fluent-js` (`@getvatly/fluent`) | `sync-fluent-js-docs` | `content/3.packages/4.fluent-js` | `SYNC_FLUENT_JS_DOCS` |
-| `vatly/vatly-better-auth` (`@getvatly/better-auth`) | `sync-better-auth-docs` | `content/3.packages/5.better-auth` | `SYNC_BETTER_AUTH_DOCS` |
+| `vatly/vatly-api-js` (`@getvatly/sdk`) | `sync-js-docs` | `content/3.packages/3.javascript` | Automatic |
+| `vatly/vatly-fluent-js` (`@getvatly/fluent`) | `sync-fluent-js-docs` | `content/3.packages/4.fluent-js` | Automatic |
+| `vatly/vatly-better-auth-js` (`@getvatly/better-auth`) | `sync-better-auth-docs` | `content/3.packages/5.better-auth` | Requires `SYNC_BETTER_AUTH_DOCS=true` |
 
 JS senders mirror the PHP API sender: **Notify Docs**, `notify-docs.yml`, push
-to `main`, `docs/**`, dispatch action v4, same dispatch secret. The receiver
-requires the relevant Actions **repository variable in vatly-docs** to equal
-the literal string `true`, even on manual runs. Leave these variables absent
-until each package is released and its docs are approved for public viewing.
-No JS pages or navigation entries are checked in before activation. Once
-enabled, imports track `main`, not releases, just like PHP.
+to `main`, `docs/**`, dispatch action v4, same dispatch secret. Every sync run
+refreshes PHP, Laravel, JavaScript SDK and fluent JavaScript docs from `main`,
+without a release or variable gate. `SYNC_JS_DOCS` and `SYNC_FLUENT_JS_DOCS`
+are no longer used. Better Auth remains opt-in: its Actions **repository variable
+in vatly-docs**, `SYNC_BETTER_AUTH_DOCS`, must equal literal `true`, including
+on manual runs. Leave it absent or false until that package is released.
 
 To launch a package's docs:
 
 1. Add flat `docs/*.md` in the package repo (start with `docs/README.md`).
-   Fluent JS does not have this directory yet. The transformer rejects missing
-   or empty docs before deleting any previous pages. It handles sibling links
+   The transformer rejects missing or empty docs before deleting any previous
+   pages. It handles sibling links
    with anchors, source/assets links, GitHub alerts, and frontmatter. README
    becomes `/packages/<destination-name>/readme`, matching PHP, not an index.
 2. Configure `VATLY_DOCS_DISPATCH_TOKEN` as an Actions secret in **each source
@@ -96,11 +96,10 @@ To launch a package's docs:
    Public sources need no checkout secret; the workflow falls back to
    `github.token`. The receiver's existing built-in `GITHUB_TOKEN` with
    `contents: write` handles commits and deployment. No npm token is involved.
-4. Set only that package's enabling variable to `true` in **vatly-docs** and
-   manually run **Sync SDK Docs** for the initial import; subsequent `docs/**`
-   pushes dispatch automatically. Manual runs import all enabled JS packages.
-   Turning the switch off stops future imports; it does not remove already
-   published pages.
+4. Manually run **Sync SDK Docs** for an initial import; subsequent `docs/**`
+   pushes dispatch automatically. Only Better Auth needs an enabling variable:
+   set `SYNC_BETTER_AUTH_DOCS=true` in **vatly-docs** after release. Turning
+   that switch off stops future imports; it does not remove published pages.
 
 The original personal JS repository URLs now redirect to the canonical Vatly
 repositories above; the SDK's actual destination is `vatly/vatly-api-js`.
