@@ -1,6 +1,6 @@
 # Vatly SDKs
 
-> Vatly offers official SDKs to make integrating the API into your application quick and easy.
+> Install the official Vatly SDKs for PHP, Laravel, JavaScript and TypeScript, including the fluent billing package.
 
 ## PHP SDK
 
@@ -13,6 +13,28 @@ For installation, usage examples, and the full list of available resources, see 
 The Vatly Laravel package was inspired by Laravel Cashier and provides a fluent way of integrating Vatly into your application.
 
 For installation and usage examples, see the [Laravel Vatly docs](/packages/laravel/readme).
+
+## JavaScript / TypeScript SDK
+
+The official JavaScript / TypeScript SDK, [`@getvatly/sdk`](https://www.npmjs.com/package/@getvatly/sdk), provides a typed client for the Vatly API on Node.js and edge runtimes.
+
+```bash
+npm install @getvatly/sdk@alpha
+```
+
+For installation, usage examples, and the full list of available resources, see the [JavaScript / TypeScript SDK docs](/packages/javascript/readme). The source is available on [GitHub](https://github.com/vatly/vatly-api-js).
+
+## Fluent JavaScript / TypeScript
+
+The framework-agnostic fluent package, [`@getvatly/fluent`](https://www.npmjs.com/package/@getvatly/fluent), builds on `@getvatly/sdk` with checkout builders, customer and subscription handles, and webhook processing.
+
+```bash
+npm install @getvatly/sdk@alpha @getvatly/fluent@alpha
+```
+
+For installation and usage examples, see the [fluent JavaScript / TypeScript docs](/packages/fluent-js/readme). The source is available on [GitHub](https://github.com/vatly/vatly-fluent-js).
+
+The JavaScript / TypeScript packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha.
 
 ---
 
@@ -58,11 +80,25 @@ For installation and usage examples, see the [Laravel Vatly docs](/packages/lara
   
   <tr>
     <td>
-      JavaScript / Node.js
+      <a href="/packages/javascript/readme">
+        JavaScript / TypeScript
+      </a>
     </td>
     
     <td>
-      Planned
+      Available (alpha)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <a href="/packages/fluent-js/readme">
+        Fluent JavaScript / TypeScript
+      </a>
+    </td>
+    
+    <td>
+      Available (alpha)
     </td>
   </tr>
   

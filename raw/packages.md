@@ -1,6 +1,6 @@
-# 
+# Packages
 
-> 
+> Official Vatly packages for PHP, Laravel, JavaScript and TypeScript. Find installation commands and SDK documentation.
 
 > Official Vatly packages for your language or framework.
 
@@ -61,8 +61,62 @@ Vatly provides official packages to integrate billing, subscriptions, and tax co
       </code>
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      JavaScript / TypeScript
+    </td>
+    
+    <td>
+      <a href="https://www.npmjs.com/package/@getvatly/sdk" rel="nofollow">
+        @getvatly/sdk
+      </a>
+      
+       · <a href="/packages/javascript/readme">
+        Docs
+      </a>
+      
+       · <a href="https://github.com/vatly/vatly-api-js" rel="nofollow">
+        GitHub
+      </a>
+    </td>
+    
+    <td>
+      <code>
+        npm install @getvatly/sdk@alpha
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      JavaScript / TypeScript (fluent)
+    </td>
+    
+    <td>
+      <a href="https://www.npmjs.com/package/@getvatly/fluent" rel="nofollow">
+        @getvatly/fluent
+      </a>
+      
+       · <a href="/packages/fluent-js/readme">
+        Docs
+      </a>
+      
+       · <a href="https://github.com/vatly/vatly-fluent-js" rel="nofollow">
+        GitHub
+      </a>
+    </td>
+    
+    <td>
+      <code>
+        npm install @getvatly/fluent@alpha
+      </code>
+    </td>
+  </tr>
 </tbody>
 </table>
+
+The JavaScript / TypeScript packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha.
 
 ## Planned
 
@@ -84,20 +138,6 @@ Vatly provides official packages to integrate billing, subscriptions, and tax co
 </thead>
 
 <tbody>
-  <tr>
-    <td>
-      JavaScript / Node.js
-    </td>
-    
-    <td>
-      vatly-js
-    </td>
-    
-    <td>
-      Planned
-    </td>
-  </tr>
-  
   <tr>
     <td>
       Python

@@ -13,7 +13,7 @@
 - [Payouts & Settlement](https://docs.vatly.com/raw/guides/payouts.md): How and when your share of each payment reaches your Mollie account, and where to follow it in the dashboard.
 - [Customer Emails](https://docs.vatly.com/raw/guides/customer-emails.md): The billing emails Vatly sends to your customers as Merchant of Record, when each one is sent, and what you can configure.
 - [Selling Workflow](https://docs.vatly.com/raw/guides/selling-workflow.md): Follow the typical Vatly happy path from account setup to product delivery, and prepare for refunds and chargebacks.
-- [Vatly SDKs](https://docs.vatly.com/raw/guides/sdks.md): Vatly offers official SDKs to make integrating the API into your application quick and easy.
+- [Vatly SDKs](https://docs.vatly.com/raw/guides/sdks.md): Install the official Vatly SDKs for PHP, Laravel, JavaScript and TypeScript, including the fluent billing package.
 - [Authentication](https://docs.vatly.com/raw/guides/authentication.md): In this guide, we'll look at how authentication works. Vatly uses API keys to authenticate your API requests.
 - [Pagination](https://docs.vatly.com/raw/guides/pagination.md): In this guide, we will look at how to work with paginated responses when querying the Vatly API
 - [Errors](https://docs.vatly.com/raw/guides/errors.md): This guide covers API error handling, including status codes and error types.
@@ -52,5 +52,17 @@
 - [Vs Cashier (Stripe, Paddle) & Lemon Squeezy](https://docs.vatly.com/raw/packages/laravel/comparison.md): Vatly Laravel Package - Vs Cashier (Stripe, Paddle) & Lemon Squeezy
 - [Migrating from Cashier](https://docs.vatly.com/raw/packages/laravel/migrating-to-vatly.md): Vatly Laravel Package - Migrating from Cashier
 - [Configuration](https://docs.vatly.com/raw/packages/laravel/configuration.md): Vatly Laravel Package - Configuration
-- [](https://docs.vatly.com/raw/packages.md)
+- [Getting Started](https://docs.vatly.com/raw/packages/javascript/readme.md): Vatly JavaScript packages - Getting Started
+- [Customers](https://docs.vatly.com/raw/packages/javascript/customers.md): Vatly JavaScript packages - Customers
+- [SDK operation reference](https://docs.vatly.com/raw/packages/javascript/api.md): Vatly JavaScript packages - SDK operation reference
+- [Checkouts](https://docs.vatly.com/raw/packages/javascript/checkouts.md): Vatly JavaScript packages - Checkouts
+- [Subscriptions](https://docs.vatly.com/raw/packages/javascript/subscriptions.md): Vatly JavaScript packages - Subscriptions
+- [Subscription Plans](https://docs.vatly.com/raw/packages/javascript/subscriptionplans.md): Vatly JavaScript packages - Subscription Plans
+- [Orders](https://docs.vatly.com/raw/packages/javascript/orders.md): Vatly JavaScript packages - Orders
+- [Refunds](https://docs.vatly.com/raw/packages/javascript/refunds.md): Vatly JavaScript packages - Refunds
+- [One-Off Products](https://docs.vatly.com/raw/packages/javascript/oneoffproducts.md): Vatly JavaScript packages - One-Off Products
+- [Chargebacks](https://docs.vatly.com/raw/packages/javascript/chargebacks.md): Vatly JavaScript packages - Chargebacks
+- [Webhooks](https://docs.vatly.com/raw/packages/javascript/webhooks.md): Vatly JavaScript packages - Webhooks
+- [Getting Started](https://docs.vatly.com/raw/packages/fluent-js/readme.md): Vatly JavaScript packages - Getting Started
+- [Packages](https://docs.vatly.com/raw/packages.md): Official Vatly packages for PHP, Laravel, JavaScript and TypeScript. Find installation commands and SDK documentation.
 - [Integrations](https://docs.vatly.com/raw/integrations.md)
