@@ -4,38 +4,17 @@
 
 > **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
 
-`@getvatly/fluent` adds checkout builders, customer bindings, subscription and
-order handles, and webhook processing to `@getvatly/sdk`. Your application owns
-authentication, database tables, and background jobs. No framework or ORM is required.
-
-These guides target **Fluent 0.1.0-alpha.1 with SDK 0.3.0-alpha.2**:
+Create checkouts and manage billing with `@getvatly/fluent` on your server.
+Install the tested alpha pair:
 
 ```sh
 npm install --save-exact @getvatly/sdk@0.3.0-alpha.2 @getvatly/fluent@0.1.0-alpha.1
 ```
 
-## Start here
-
-1. [Installation and configuration](/packages/fluent-js/configuration): server-only setup, API keys,
-redirects, errors, and runtime support.
-2. [Core concepts and storage](/packages/fluent-js/coreconcepts): billables, bindings, repositories,
-and adapting your existing tables.
-3. [Customers and bindings](/packages/fluent-js/customers): create or link a customer to your user.
-4. [Checkouts](/packages/fluent-js/checkouts): one-off purchases, subscriptions, trials, and retries.
-5. [Webhooks](/packages/fluent-js/webhooks): verify deliveries and commit billing changes safely.
-
-## Manage billing
-
-- [Subscriptions](/packages/fluent-js/subscriptions): swap, cancel, resume, and update billing.
-- [Customer portal](/packages/fluent-js/customerportal): issue a single-use portal link for a user.
-- [Orders and invoices](/packages/fluent-js/orders): invoice links, order lines, refunds, and money.
-- [Testing](/packages/fluent-js/testing): isolated tests, test-mode checkouts, and webhook delivery.
-- [Porting from PHP](/packages/fluent-js/porting): map PHP concepts to the TypeScript API.
-
 ## First checkout
 
-Run this on your server with a customer and product from the same storefront and
-API-key mode. Authenticate the caller and authorize their customer before using it.
+Use a customer and product from the key's storefront and mode. Check that the
+signed-in user owns the customer before calling this function:
 
 ```ts
 import { VatlyClient } from '@getvatly/sdk';
@@ -54,9 +33,146 @@ export async function startCheckout(apiKey: string, customerId: string, productI
 }
 ```
 
-A return-page visit is not payment confirmation. Use verified webhooks to grant
-access, record payment, and update subscriptions. API-only checkout creation needs
-no local repositories; webhook persistence does.
+Redirect to the returned URL. Use [webhooks](/packages/fluent-js/webhooks) to confirm payment,
+not the return page.
+
+## Guides
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Task
+    </th>
+    
+    <th>
+      Guide
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      Set keys, redirects, and error handling
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/configuration">
+        Configuration
+      </a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Connect your database
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/coreconcepts">
+        Core concepts and storage
+      </a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Link customers to your users
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/customers">
+        Customers and bindings
+      </a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Sell products or start subscriptions
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/checkouts">
+        Checkouts
+      </a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Swap, cancel, resume, or update billing
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/subscriptions">
+        Subscriptions
+      </a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Open invoice history and billing controls
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/customerportal">
+        Customer portal
+      </a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Verify and process events
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/webhooks">
+        Webhooks
+      </a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Read invoices, lines, and reversals
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/orders">
+        Orders
+      </a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Test your integration
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/testing">
+        Testing
+      </a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Map PHP APIs to TypeScript
+    </td>
+    
+    <td>
+      <a href="/packages/fluent-js/porting">
+        Porting
+      </a>
+    </td>
+  </tr>
+</tbody>
+</table>
 
 For field details, see the [API reference](https://docs.vatly.com/api-reference).
 The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.

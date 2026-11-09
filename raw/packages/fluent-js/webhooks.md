@@ -2,14 +2,9 @@
 
 > Vatly JavaScript packages - Webhooks
 
-Use webhooks to record payments and subscription changes. A checkout success
-redirect is not payment confirmation. Vatly signs the delivery's original bytes;
-Fluent verifies them before calling any storage driver or reaction.
-
-## Receive a delivery
-
-Pass in configured [storage drivers](/packages/fluent-js/coreconcepts). This Fetch-compatible
-handler also fits a Next.js Route Handler's `POST` function.
+Record payments and subscription changes from signed webhooks, not checkout
+redirects. Pass a configured `Vatly` to this Fetch handler, or export the returned
+function as a Next.js Route Handler's `POST`:
 
 ```ts
 import { VatlyInvalidSignatureError } from '@getvatly/sdk';
@@ -31,37 +26,33 @@ export function webhookRoute(vatly: Vatly) {
 }
 ```
 
-Set `webhookSecret` to the endpoint's signing secret, `webhookCalls` to your
-transactional implementation, and the repositories you want updated. Keep this
-route exempt from browser-session authentication while retaining signature checks.
-Do not JSON-parse and reserialize the request first. If your framework provides
-raw bytes instead, call `processor.handle(rawBody, signatureHeader)`.
+Set `webhookSecret`, `webhookCalls`, and the repositories you want updated in
+[configuration](/packages/fluent-js/configuration). This route needs no browser session; signatures
+authenticate deliveries. Pass the original unread request, not reserialized JSON.
+For raw bytes, use `processor.handle(rawBody, signatureHeader)`.
 
-The SDK checks `Vatly-Signature` HMAC and timestamp. For rotation, pass an array
-of accepted secrets through `webhookSecret`. Keep a bounded verification tolerance;
-disabling timestamp checks is not a replay-prevention strategy.
+The SDK checks `Vatly-Signature` HMAC and timestamp before touching storage.
+Keep timestamp checks enabled. To rotate secrets, set `webhookSecret` to an array
+of accepted secrets.
 
 ## Idempotency and one transaction
 
-Implement `WebhookCalls.process(event, work)` with these steps in **one database
-transaction shared by every wired driver**:
+Implement `WebhookCalls.process(event, work)` in one transaction shared by all
+[storage drivers](/packages/fluent-js/coreconcepts#webhook-storage):
 
-1. Serialize concurrent processing of the signed `event.id`, using a unique key
-or lock. If that ID was already committed, return false without running work.
-2. Retain the verified envelope, including unknown events, for audit and triage.
-3. Await `work()`: it applies built-in reactions, additional reactions, and dispatch.
+1. Lock or claim the signed `event.id`. If already committed, return false.
+2. Retain the verified envelope, including unknown events.
+3. Await `work()` to run reactions and dispatch.
 4. Mark the ID processed and commit resource changes, bindings, audit, and outbox
-records together. Return true. Roll back everything if any step fails.
+together. Return true. Roll back everything on failure.
 
-Do not commit a deduplication row before the work: a later failure would cause all
-retries to be discarded. Use the **signed** `event.id`, not the unsigned
-`Vatly-Event-Id` correlation header. A timestamp check alone does not deduplicate.
-Scope keys and rows by tenant/storefront and mode.
+Never commit the deduplication row before the work; a failure would lose the retry.
+Use signed `event.id`, not the unsigned `Vatly-Event-Id` header. Scope keys and rows
+by tenant, storefront, and mode. Timestamp checks alone do not deduplicate.
 
-Implement `events.dispatch` as durable outbox writes in that transaction. Send
-email, provision external services, or make other network calls from a worker
-after commit, not from inside a webhook reaction. Delivery order is not guaranteed;
-reconcile conflicting or out-of-order snapshots with the API.
+Write to an outbox in `events.dispatch`. Send email and make network calls from a
+worker after commit. Deliveries can arrive out of order; reconcile conflicting
+snapshots with the API.
 
 ## What Fluent persists
 
@@ -231,10 +222,9 @@ reconcile conflicting or out-of-order snapshots with the API.
 </tbody>
 </table>
 
-No follow-up API GET is required for these reactions: the signed resource snapshot
-supplies the data. A missing optional repository skips that write, not dispatch.
-Null billing-event mandates do not clear an existing local mandate; explicit
-subscription `sync()` reconciles an actual removal.
+Reactions use the signed snapshot without an API GET. Missing repositories skip
+writes, not dispatch. Null billing-event mandates leave the local mandate unchanged;
+subscription `sync()` reconciles removal.
 
 ## Application events and extensions
 
@@ -248,15 +238,14 @@ export function billingEvents(
 }
 ```
 
-The event union includes SDK deliveries and the two `local.*_created` events.
-Check `event.known` before switching on `eventName`. Future signed event names
-have `known: false` and `object: unknown`; retain them, skip built-in writes, and
-route them through deduplication, custom reactions, and dispatch for triage.
-Types do not runtime-validate every resource field.
+Check `event.known` before switching on `eventName`. The union includes SDK
+deliveries and the two local-created events above. Unknown signed events have
+`known: false` and `object: unknown`; retain and dispatch them without built-in
+writes. Types do not validate resource fields at runtime.
 
-`additionalWebhookReactions` accepts `{ supports(event), handle(event) }` objects.
-They run after built-ins and before dispatch and must obey the same transaction
-and outbox rules. A thrown error rolls back processing and allows retry.
+`additionalWebhookReactions` takes `{ supports(event), handle(event) }` objects.
+They run after built-ins and before dispatch, in the same transaction. Throw to
+roll back and allow retry.
 
 For event fields, see [Webhook Events](https://docs.vatly.com/api-reference/webhook-events).
 Register endpoints using [Webhook Endpoints](https://docs.vatly.com/api-reference/webhook-endpoints);

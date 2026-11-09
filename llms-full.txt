@@ -10807,38 +10807,17 @@ const event = await vatly.webhookEvents.get("webhook_event_abc123");
 
 > **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
 
-`@getvatly/fluent` adds checkout builders, customer bindings, subscription and
-order handles, and webhook processing to `@getvatly/sdk`. Your application owns
-authentication, database tables, and background jobs. No framework or ORM is required.
-
-These guides target &#x2A;*Fluent `0.1.0-alpha.1` with SDK `0.3.0-alpha.2`**:
+Create checkouts and manage billing with `@getvatly/fluent` on your server.
+Install the tested alpha pair:
 
 ```sh
 npm install --save-exact @getvatly/sdk@0.3.0-alpha.2 @getvatly/fluent@0.1.0-alpha.1
 ```
 
-## Start here
-
-1. [Installation and configuration](https://docs.vatly.com/packages/fluent-js/configuration): server-only setup, API keys,
-   redirects, errors, and runtime support.
-2. [Core concepts and storage](https://docs.vatly.com/packages/fluent-js/coreconcepts): billables, bindings, repositories,
-   and adapting your existing tables.
-3. [Customers and bindings](https://docs.vatly.com/packages/fluent-js/customers): create or link a customer to your user.
-4. [Checkouts](https://docs.vatly.com/packages/fluent-js/checkouts): one-off purchases, subscriptions, trials, and retries.
-5. [Webhooks](https://docs.vatly.com/packages/fluent-js/webhooks): verify deliveries and commit billing changes safely.
-
-## Manage billing
-
-- [Subscriptions](https://docs.vatly.com/packages/fluent-js/subscriptions): swap, cancel, resume, and update billing.
-- [Customer portal](https://docs.vatly.com/packages/fluent-js/customerportal): issue a single-use portal link for a user.
-- [Orders and invoices](https://docs.vatly.com/packages/fluent-js/orders): invoice links, order lines, refunds, and money.
-- [Testing](https://docs.vatly.com/packages/fluent-js/testing): isolated tests, test-mode checkouts, and webhook delivery.
-- [Porting from PHP](https://docs.vatly.com/packages/fluent-js/porting): map PHP concepts to the TypeScript API.
-
 ## First checkout
 
-Run this on your server with a customer and product from the same storefront and
-API-key mode. Authenticate the caller and authorize their customer before using it.
+Use a customer and product from the key's storefront and mode. Check that the
+signed-in user owns the customer before calling this function:
 
 ```ts
 import { VatlyClient } from '@getvatly/sdk';
@@ -10857,9 +10836,23 @@ export async function startCheckout(apiKey: string, customerId: string, productI
 }
 ```
 
-A return-page visit is not payment confirmation. Use verified webhooks to grant
-access, record payment, and update subscriptions. API-only checkout creation needs
-no local repositories; webhook persistence does.
+Redirect to the returned URL. Use [webhooks](https://docs.vatly.com/packages/fluent-js/webhooks) to confirm payment,
+not the return page.
+
+## Guides
+
+| Task                                      | Guide                                                                               |
+| ----------------------------------------- | ----------------------------------------------------------------------------------- |
+| Set keys, redirects, and error handling   | [Configuration](https://docs.vatly.com/packages/fluent-js/configuration)            |
+| Connect your database                     | [Core concepts and storage](https://docs.vatly.com/packages/fluent-js/coreconcepts) |
+| Link customers to your users              | [Customers and bindings](https://docs.vatly.com/packages/fluent-js/customers)       |
+| Sell products or start subscriptions      | [Checkouts](https://docs.vatly.com/packages/fluent-js/checkouts)                    |
+| Swap, cancel, resume, or update billing   | [Subscriptions](https://docs.vatly.com/packages/fluent-js/subscriptions)            |
+| Open invoice history and billing controls | [Customer portal](https://docs.vatly.com/packages/fluent-js/customerportal)         |
+| Verify and process events                 | [Webhooks](https://docs.vatly.com/packages/fluent-js/webhooks)                      |
+| Read invoices, lines, and reversals       | [Orders](https://docs.vatly.com/packages/fluent-js/orders)                          |
+| Test your integration                     | [Testing](https://docs.vatly.com/packages/fluent-js/testing)                        |
+| Map PHP APIs to TypeScript                | [Porting](https://docs.vatly.com/packages/fluent-js/porting)                        |
 
 For field details, see the [API reference](https://docs.vatly.com/api-reference){rel="&#x22;nofollow&#x22;"}.
 The [OpenAPI spec](https://docs.vatly.com/openapi.yaml){rel="&#x22;nofollow&#x22;"} is also available for tooling.
@@ -10867,8 +10860,8 @@ The [OpenAPI spec](https://docs.vatly.com/openapi.yaml){rel="&#x22;nofollow&#x22
 
 # Customers and bindings
 
-Bind your authenticated user or organization to a Vatly customer before starting
-a checkout. These examples assume [configured binding storage](https://docs.vatly.com/packages/fluent-js/coreconcepts).
+Find or create a Vatly customer for your signed-in user. Wire
+[binding storage](https://docs.vatly.com/packages/fluent-js/coreconcepts#billables-and-bindings) first.
 
 ## Create and bind
 
@@ -10888,15 +10881,12 @@ export async function customerFor(vatly: Vatly, hostId: string, email: string) {
 ```
 
 `createFor` rejects an already-bound host. The API may return an existing customer
-for an email rather than creating one; Fluent still checks the binding before
-attaching it. Concurrent requests need database uniqueness constraints. A binding
-failure cannot roll back remote customer creation: reconcile the customer before
-retrying instead of repeatedly creating identities.
+for the email; Fluent checks the binding before attaching it. A binding failure
+cannot undo remote creation. Reconcile the customer before retrying.
 
-For a Vatly customer you already verified belongs to the user, call
-`vatly.customers.attribute(vatlyId, hostId)`. To create without a host owner, use
-`createUnattributed(profile, extra?, requestOptions?)`; it still needs `bindings`
-to record the returned ID.
+To link a verified existing customer, use `vatly.customers.attribute(vatlyId, hostId)`.
+To create without a host owner, use `createUnattributed(profile, extra?, requestOptions?)`;
+it still needs `bindings` to record the ID.
 
 ## Read and update identity
 
@@ -10917,19 +10907,18 @@ export async function matchingCustomers(vatly: Vatly, email: string) {
 }
 ```
 
-Handles fetch lazily and cache per handle. `model()` returns the SDK customer;
-`name()` and `email()` read that model. Email matching is server-side and traverses
-cursor pages. `findOneByEmail` returns the first match or null, not a uniqueness
-guarantee or proof of ownership. Updating identity does not change invoice addresses;
-use the [billing-update flow](https://docs.vatly.com/packages/fluent-js/subscriptions#update-billing-details).
+Handles fetch lazily and cache per handle. `model()`, `name()`, and `email()` read
+that cache; `sync()` refreshes it. Email lookup searches all cursor pages on the
+server. `findOneByEmail` returns the first match or null, not proof of ownership.
+Identity updates do not change invoice addresses; use the
+[billing-update flow](https://docs.vatly.com/packages/fluent-js/subscriptions#update-billing-details).
 
 ## Returning from checkout
 
 `customerIdFromCheckout(checkoutId)` returns an ID or null for a missing customer
 or 404; other API errors propagate. `claimCustomerFromCheckout(checkoutId, hostId)`
-binds that customer, but only call it **after** your host verifies checkout ownership.
-A checkout ID in the return URL is not proof. Signed payment webhooks, not the return
-page, determine payment status.
+binds that customer. Verify checkout ownership before calling it: an ID in a return
+URL is not proof. See [payment confirmation](https://docs.vatly.com/packages/fluent-js/webhooks).
 
 See [customer portal](https://docs.vatly.com/packages/fluent-js/customerportal) for portal links and the
 [Customers API reference](https://docs.vatly.com/api-reference/customers){rel="&#x22;nofollow&#x22;"} for field details.
@@ -10938,8 +10927,6 @@ See [customer portal](https://docs.vatly.com/packages/fluent-js/customerportal) 
 # Checkouts
 
 Create a hosted payment page, then redirect the customer to `checkout.getUrl()`.
-Use a customer already authorized for the caller. API-only builders need no local
-storage, but creating/binding that customer and processing webhooks may need it.
 
 ## One-off or mixed purchases
 
@@ -10958,10 +10945,9 @@ export async function buyProduct(
 }
 ```
 
-Configure success and cancellation redirect URLs on `Vatly` or override them
-with `withRedirectUrlSuccess(url)` and `withRedirectUrlCanceled(url)`. Both are
-required. Product IDs, plan IDs, customer IDs, and keys must share mode/storefront.
-Use `withItems` for mixed carts; it appends the supplied items.
+Set both redirect URLs in [configuration](https://docs.vatly.com/packages/fluent-js/configuration), or use
+`withRedirectUrlSuccess(url)` and `withRedirectUrlCanceled(url)` on the builder.
+`withItems` appends items and supports mixed carts.
 
 ## Subscription checkout
 
@@ -10979,46 +10965,38 @@ export async function startSubscription(
 }
 ```
 
-`subscribe` returns a builder, not a subscription and not a network request.
-`create()` creates a checkout; payment and subscription events arrive later.
-`withTrialEndsAt(date)` is an alternative to days: it rounds up to whole days.
-Quantity and trial days must be positive safe integers. Omit trial methods for
-no trial. The subscription builder uses its single plan item; use the general
-checkout builder rather than `withItems` on a subscription builder for mixed carts.
+`subscribe` makes no request until `create()`, which creates a checkout, not a
+subscription. The subscription builder uses one plan; use `checkoutBuilder` for
+mixed carts. Quantity and trial days must be positive safe integers. Omit trial
+methods for no trial, or use `withTrialEndsAt(date)` to round up to whole days.
 
-## Payloads, retries, and authorization
+## Payloads and retries
 
-Builders are mutable, per-purchase objects. `payload(overrides?)` returns a detached
-request snapshot without making a call. `create(overrides?, requestOptions?)` returns
-the full SDK checkout with `getUrl()`. Direct `vatly.api.checkouts.create()` returns
-a plain resource; read `links.checkoutUrl.href` there.
+Use a new builder per purchase. `payload(overrides?)` returns a detached request
+snapshot without calling the API. `create(overrides?, requestOptions?)` returns the
+SDK checkout plus `getUrl()`. On plain SDK checkouts, read `links.checkoutUrl.href`.
 
-Each create is a new mutation unless you reuse a stable idempotency key for the
-same purchase. Persist the purchase ID/key before calling the API. Reuse it after
-network failures; generate a new one for a new purchase. Avoid user-supplied
-unvalidated overrides for price, product, customer, or redirect fields.
+Persist the purchase ID before calling `create()`. Reuse its idempotency key on
+retries; use a new key for a new purchase. Validate customer, product, price, and
+redirect overrides on the server rather than passing browser input through.
 
-`inTestmode()` and `inLiveMode()` assert that the SDK key matches the requested
-mode; they do not change it. An email-only profile does not create a customer.
-Use [customer bindings](https://docs.vatly.com/packages/fluent-js/customers) first, or omit the profile for an anonymous
-checkout where supported by the API.
+`inTestmode()` and `inLiveMode()` check the API key's mode; they do not change it.
+For a known customer, [create or bind them first](https://docs.vatly.com/packages/fluent-js/customers) and authorize their
+ID. An email-only profile does not create a customer. Omit the profile for an
+anonymous checkout where the API supports it.
 
-Persist your checkout ID for correlation. Grant access only after
-[verified webhooks](https://docs.vatly.com/packages/fluent-js/webhooks), not because the user visits your success page.
+Save the checkout ID. Confirm payment through [webhooks](https://docs.vatly.com/packages/fluent-js/webhooks), not the return page.
 For product and checkout fields, see the [Checkouts API reference](https://docs.vatly.com/api-reference/checkouts){rel="&#x22;nofollow&#x22;"}
 and [Subscription Plans](https://docs.vatly.com/api-reference/subscription-plans){rel="&#x22;nofollow&#x22;"}.
 
 
 # Subscriptions
 
-Start a subscription through a [checkout](https://docs.vatly.com/packages/fluent-js/checkouts). To manage one locally,
-pass a `LocalSubscription` from your host repository to `vatly.subscription(record)`.
-Wire the same `subscriptions` repository into `Vatly`; swap, resume, and sync write
-through it. Authorize the record against the signed-in customer before every action.
+Change an existing subscription with `vatly.subscription(localRecord)`. Load and
+authorize the record from your [repository](https://docs.vatly.com/packages/fluent-js/coreconcepts); wire that repository
+into `Vatly` so swap, resume, and sync can save changes.
 
 ## Change plan or quantity
-
-These are separate actions; invoke the one that matches your billing policy.
 
 ```ts
 import type { LocalSubscription, Vatly } from '@getvatly/fluent';
@@ -11036,16 +11014,18 @@ export async function changeWithoutCharge(vatly: Vatly, local: LocalSubscription
 }
 ```
 
-`swap(planId, body?, requestOptions?)` forwards the SDK update options. Without
-`applyImmediately`, the API's scheduled-change behavior applies. `swapAndInvoice`
-forces `applyImmediately: true` and `invoiceImmediately: true`;
-`swapWithoutCharge` forces `applyImmediately: true` and `prorationCharge: false`.
-Read the API's proration rules before choosing a policy.
+Choose one action:
 
-The handle updates local plan and quantity from the returned resource, not from
-the request. A scheduled swap therefore leaves the current local plan unchanged.
-`scheduledUpdate()` reads the pending change from the API; `hasScheduledUpdate()`
-returns whether one exists. Other plan properties stay on the SDK resource.
+| Method                                 | Options sent to the API                                                 |
+| -------------------------------------- | ----------------------------------------------------------------------- |
+| `swap(planId, body?, requestOptions?)` | Your update options; without `applyImmediately`, changes are scheduled. |
+| `swapAndInvoice(...)`                  | Forces `applyImmediately: true`, `invoiceImmediately: true`.            |
+| `swapWithoutCharge(...)`               | Forces `applyImmediately: true`, `prorationCharge: false`.              |
+
+Local plan and quantity follow the API response. A scheduled swap leaves the
+current plan unchanged. `scheduledUpdate()` fetches the pending change;
+`hasScheduledUpdate()` checks whether one exists. See the API reference below
+for proration rules.
 
 ## Cancel and resume
 
@@ -11065,16 +11045,14 @@ export async function resume(vatly: Vatly, local: LocalSubscription) {
 }
 ```
 
-Use `cancel()` for the API's default cancellation timing. Cancellation does not
-speculatively set local `endsAt`; verified cancellation webhooks update it. Resume
-uses the API response and clears local `endsAt`. API eligibility still applies.
-`cancellationReason()` fetches the remote reason. `sync()` fetches the resource,
-persists it, and derives `endsAt` from `endedAt ?? canceledAt` for reconciliation.
+`cancel()` uses the API's default timing; `{ immediately: true }` cancels now.
+Cancellation waits for [webhooks](https://docs.vatly.com/packages/fluent-js/webhooks) to set local `endsAt`. Resume clears
+it after the API succeeds. `cancellationReason()` fetches the remote reason.
 
-`model()` is the handle's local record, not an implicit API fetch. `state()` derives
-`active`, `valid`, `recurring`, `cancelled`, `onGracePeriod`, and `ended` from `endsAt`
-using PHP-compatible rules. These are not a substitute for Vatly's `status`:
-for example, a paused remote subscription is not represented by those predicates.
+`model()` returns the local record. `sync()` fetches and saves the API resource,
+setting `endsAt` to `endedAt ?? canceledAt`. `state()` derives `active`, `valid`,
+`recurring`, `cancelled`, `onGracePeriod`, and `ended` from `endsAt`. Check Vatly's
+`status` separately for states such as paused.
 
 ## Update billing details
 
@@ -11089,10 +11067,10 @@ export async function billingUpdateUrl(vatly: Vatly, local: LocalSubscription) {
 }
 ```
 
-Redirect the customer to the returned URL. It is an on-demand hosted flow, not a
-direct write of invoice-address fields. Both redirect URLs are required, either
-here or in global wiring. Do not log or persist the returned billing URL.
-Handle `subscription.billing_updated` to reconcile local payment details.
+Redirect to the returned URL; do not log or persist it. This hosted flow updates
+billing details, rather than writing address fields directly. Both redirects are
+required here or in [configuration](https://docs.vatly.com/packages/fluent-js/configuration). Process
+`subscription.billing_updated` to update local payment details.
 
 For all options, eligibility, and fields, see the
 [Subscriptions API reference](https://docs.vatly.com/api-reference/subscriptions){rel="&#x22;nofollow&#x22;"}.
@@ -11100,9 +11078,7 @@ For all options, eligibility, and fields, see the
 
 # Orders and invoices
 
-An order records a purchase and its tax breakdown. Use a verified `order.paid`
-event to persist it or trigger fulfillment, not a checkout return-page visit.
-Authorize the order's customer before showing an invoice or allowing any mutation.
+Fetch an order's invoice link, lines, and totals after checking the caller owns it.
 
 ## Read the order and invoice
 
@@ -11122,15 +11098,13 @@ export async function invoice(vatly: Vatly, orderId: string) {
 }
 ```
 
-The order handle fetches from the API lazily and caches per handle. `sync()`
-refreshes it. `invoiceUrl()` returns a URL or null when the invoice link is absent.
-`lines()` returns full SDK order lines; it does not require a separate line repository.
-`vatly.order(id)` does not require local order storage for these API reads.
+The handle fetches once and caches the API resource. `sync()` refreshes it.
+`invoiceUrl()` returns null if no link exists. These reads need no local order or
+line repository. Use [webhooks](https://docs.vatly.com/packages/fluent-js/webhooks) to persist payments and fulfill orders.
 
 ## Money and reversals
 
-Money values stay decimal strings with their currency; do not use floating-point
-arithmetic for totals. SDK `toMinorUnits` returns a `bigint` for integer-unit math.
+Use `toMinorUnits` for bigint arithmetic; keep the currency with the amount.
 
 ```ts
 import { toMinorUnits } from '@getvatly/sdk';
@@ -11149,16 +11123,14 @@ export async function reversalSummary(vatly: Vatly, orderId: string) {
 }
 ```
 
-Serialize bigints explicitly (for example, as strings) before returning JSON.
-`isReversed()` includes partial reversals. These predicates read the live API
-snapshot, not the optional local lists. A paid order remains paid after a reversal;
-Fluent does not invent a refunded order status.
+Money uses decimal strings, not floats. Convert bigints to strings before returning
+JSON. Reversal predicates read the cached API resource, not local reversal lists.
+`isReversed()` includes partial reversals. A paid order stays paid after a reversal.
 
 `order.refunds()` and `order.chargebacks()` read your wired reversal repositories.
-They return an empty list if the respective driver is absent, not a remote API
-query. To create a refund or list remote reversals, use the SDK through
-`vatly.api.orders` and `vatly.api.refunds`; use [webhooks](https://docs.vatly.com/packages/fluent-js/webhooks) to persist
-resulting changes. Reconcile API state before retrying any ambiguous refund request.
+Without a driver they return an empty list. Use `vatly.api.orders` and
+`vatly.api.refunds` to create refunds or query remote reversals. Check API state
+before retrying a refund whose outcome is unknown.
 
 For fields and refund rules, see [Orders](https://docs.vatly.com/api-reference/orders){rel="&#x22;nofollow&#x22;"},
 [Order Refunds](https://docs.vatly.com/api-reference/refunds){rel="&#x22;nofollow&#x22;"}, and
@@ -11167,14 +11139,9 @@ For fields and refund rules, see [Orders](https://docs.vatly.com/api-reference/o
 
 # Webhooks
 
-Use webhooks to record payments and subscription changes. A checkout success
-redirect is not payment confirmation. Vatly signs the delivery's original bytes;
-Fluent verifies them before calling any storage driver or reaction.
-
-## Receive a delivery
-
-Pass in configured [storage drivers](https://docs.vatly.com/packages/fluent-js/coreconcepts). This Fetch-compatible
-handler also fits a Next.js Route Handler's `POST` function.
+Record payments and subscription changes from signed webhooks, not checkout
+redirects. Pass a configured `Vatly` to this Fetch handler, or export the returned
+function as a Next.js Route Handler's `POST`:
 
 ```ts
 import { VatlyInvalidSignatureError } from '@getvatly/sdk';
@@ -11196,37 +11163,33 @@ export function webhookRoute(vatly: Vatly) {
 }
 ```
 
-Set `webhookSecret` to the endpoint's signing secret, `webhookCalls` to your
-transactional implementation, and the repositories you want updated. Keep this
-route exempt from browser-session authentication while retaining signature checks.
-Do not JSON-parse and reserialize the request first. If your framework provides
-raw bytes instead, call `processor.handle(rawBody, signatureHeader)`.
+Set `webhookSecret`, `webhookCalls`, and the repositories you want updated in
+[configuration](https://docs.vatly.com/packages/fluent-js/configuration). This route needs no browser session; signatures
+authenticate deliveries. Pass the original unread request, not reserialized JSON.
+For raw bytes, use `processor.handle(rawBody, signatureHeader)`.
 
-The SDK checks `Vatly-Signature` HMAC and timestamp. For rotation, pass an array
-of accepted secrets through `webhookSecret`. Keep a bounded verification tolerance;
-disabling timestamp checks is not a replay-prevention strategy.
+The SDK checks `Vatly-Signature` HMAC and timestamp before touching storage.
+Keep timestamp checks enabled. To rotate secrets, set `webhookSecret` to an array
+of accepted secrets.
 
 ## Idempotency and one transaction
 
-Implement `WebhookCalls.process(event, work)` with these steps in **one database
-transaction shared by every wired driver**:
+Implement `WebhookCalls.process(event, work)` in one transaction shared by all
+[storage drivers](https://docs.vatly.com/packages/fluent-js/coreconcepts#webhook-storage):
 
-1. Serialize concurrent processing of the signed `event.id`, using a unique key
-   or lock. If that ID was already committed, return false without running work.
-2. Retain the verified envelope, including unknown events, for audit and triage.
-3. Await `work()`: it applies built-in reactions, additional reactions, and dispatch.
+1. Lock or claim the signed `event.id`. If already committed, return false.
+2. Retain the verified envelope, including unknown events.
+3. Await `work()` to run reactions and dispatch.
 4. Mark the ID processed and commit resource changes, bindings, audit, and outbox
-   records together. Return true. Roll back everything if any step fails.
+   together. Return true. Roll back everything on failure.
 
-Do not commit a deduplication row before the work: a later failure would cause all
-retries to be discarded. Use the **signed** `event.id`, not the unsigned
-`Vatly-Event-Id` correlation header. A timestamp check alone does not deduplicate.
-Scope keys and rows by tenant/storefront and mode.
+Never commit the deduplication row before the work; a failure would lose the retry.
+Use signed `event.id`, not the unsigned `Vatly-Event-Id` header. Scope keys and rows
+by tenant, storefront, and mode. Timestamp checks alone do not deduplicate.
 
-Implement `events.dispatch` as durable outbox writes in that transaction. Send
-email, provision external services, or make other network calls from a worker
-after commit, not from inside a webhook reaction. Delivery order is not guaranteed;
-reconcile conflicting or out-of-order snapshots with the API.
+Write to an outbox in `events.dispatch`. Send email and make network calls from a
+worker after commit. Deliveries can arrive out of order; reconcile conflicting
+snapshots with the API.
 
 ## What Fluent persists
 
@@ -11242,10 +11205,9 @@ reconcile conflicting or out-of-order snapshots with the API.
 | `order.chargeback_received`, `order.chargeback_reversed`             | Upsert a chargeback if `chargebacks` is wired.                                                            |
 | Scheduled subscription updates, catalogue, checkout, `webhook.setup` | Dispatch only; no built-in resource write.                                                                |
 
-No follow-up API GET is required for these reactions: the signed resource snapshot
-supplies the data. A missing optional repository skips that write, not dispatch.
-Null billing-event mandates do not clear an existing local mandate; explicit
-subscription `sync()` reconciles an actual removal.
+Reactions use the signed snapshot without an API GET. Missing repositories skip
+writes, not dispatch. Null billing-event mandates leave the local mandate unchanged;
+subscription `sync()` reconciles removal.
 
 ## Application events and extensions
 
@@ -11259,15 +11221,14 @@ export function billingEvents(
 }
 ```
 
-The event union includes SDK deliveries and the two `local.*_created` events.
-Check `event.known` before switching on `eventName`. Future signed event names
-have `known: false` and `object: unknown`; retain them, skip built-in writes, and
-route them through deduplication, custom reactions, and dispatch for triage.
-Types do not runtime-validate every resource field.
+Check `event.known` before switching on `eventName`. The union includes SDK
+deliveries and the two local-created events above. Unknown signed events have
+`known: false` and `object: unknown`; retain and dispatch them without built-in
+writes. Types do not validate resource fields at runtime.
 
-`additionalWebhookReactions` accepts `{ supports(event), handle(event) }` objects.
-They run after built-ins and before dispatch and must obey the same transaction
-and outbox rules. A thrown error rolls back processing and allows retry.
+`additionalWebhookReactions` takes `{ supports(event), handle(event) }` objects.
+They run after built-ins and before dispatch, in the same transaction. Throw to
+roll back and allow retry.
 
 For event fields, see [Webhook Events](https://docs.vatly.com/api-reference/webhook-events){rel="&#x22;nofollow&#x22;"}.
 Register endpoints using [Webhook Endpoints](https://docs.vatly.com/api-reference/webhook-endpoints){rel="&#x22;nofollow&#x22;"};
@@ -11282,15 +11243,13 @@ Fluent `0.1.0-alpha.1` requires SDK `0.3.0-alpha.2`. Pin both during alpha:
 npm install --save-exact @getvatly/sdk@0.3.0-alpha.2 @getvatly/fluent@0.1.0-alpha.1
 ```
 
-Use Node 20+ or a runtime with Fetch and Web Crypto. The packages ship ESM,
-CommonJS, and TypeScript declarations. Keep them on the server: never put an API
-key or webhook secret in browser code or a `NEXT_PUBLIC_*` environment variable.
+Use Node 20+ or a runtime with Fetch and Web Crypto. ESM, CommonJS, and TypeScript
+declarations are included. Keep keys and secrets on the server, never in browser
+code or `NEXT_PUBLIC_*` variables.
 
 ## Create the billing service
 
-Read `VATLY_API_KEY` from your server's secret store and pass it to this factory.
-Use `VATLY_WEBHOOK_SECRET` when wiring a webhook receiver. These are different
-credentials; the signing secret belongs to a webhook endpoint, not the API key.
+Pass your server's `VATLY_API_KEY` to this factory:
 
 ```ts
 import { VatlyClient } from '@getvatly/sdk';
@@ -11309,14 +11268,16 @@ export function createBilling(
 }
 ```
 
-`test_` keys select test mode; `live_` keys select real billing. Both use the same
-API URL. IDs and bindings must belong to the key's storefront and mode. API-only
-usage needs only `api` and redirect URLs. Add [storage drivers](https://docs.vatly.com/packages/fluent-js/coreconcepts)
-when using bindings, local subscription updates, or webhook persistence. Missing
-drivers fail when the relevant feature is used, not at construction.
+`test_` keys select test mode; `live_` keys charge real money. Both use the same
+API URL. All IDs and bindings must match the key's storefront and mode.
 
-`vatly.api` is the SDK itself. Use it for pagination, catalogue management, webhook
-endpoints, or any operation without a Fluent convenience method.
+Checkout creation needs only `api` and redirect URLs. Add [storage drivers](https://docs.vatly.com/packages/fluent-js/coreconcepts)
+for bindings, local subscription updates, and webhook persistence. Missing drivers
+fail when used. For webhooks, also set `webhookSecret` from `VATLY_WEBHOOK_SECRET`,
+the endpoint's signing secret—not the API key.
+
+Use `vatly.api` for SDK operations without a Fluent helper, including catalogue
+management, pagination, and webhook endpoints.
 
 ## Handle errors and retries
 
@@ -11337,44 +11298,18 @@ export async function renameCustomer(vatly: Vatly, customerId: string, name: str
 }
 ```
 
-Fluent preserves SDK errors; it does not wrap them in PHP-style API exceptions.
-For mutation retries, reuse the same SDK `idempotencyKey` for the same logical
-operation. Do not retry a timeout with a new key: the first request may have succeeded.
+SDK errors pass through unchanged. `FluentError` reports local input or wiring
+errors. Reuse an `idempotencyKey` when retrying the same mutation: a timeout does
+not mean it failed. See [checkout retries](https://docs.vatly.com/packages/fluent-js/checkouts#payloads-and-retries).
 
-Continue with [core concepts](https://docs.vatly.com/packages/fluent-js/coreconcepts) or [checkouts](https://docs.vatly.com/packages/fluent-js/checkouts).
 For HTTP options and field details, see the [API reference](https://docs.vatly.com/api-reference){rel="&#x22;nofollow&#x22;"}
 and [errors guide](https://docs.vatly.com/guides/errors){rel="&#x22;nofollow&#x22;"}.
 
 
 # Core concepts and storage
 
-Fluent coordinates Vatly API calls with your application's data. It does not
-create tables, authenticate users, schedule jobs, or provide a global database.
-
-## Billables are your users or accounts
-
-There is no TypeScript `Billable` model or mixin. Keep your own user, team, or
-organization as the billable. A `CustomerProfile` supplies `vatlyId`, `email`,
-and optional `name` to the appropriate operation. Builders use `vatlyId`; they
-do **not** create a customer from an email. Create or bind a customer first.
-
-Your billable ID (`hostId`) and Vatly's customer ID (`vatlyId`) are different.
-Never accept either from a browser without checking the signed-in user's access.
-
-## Choose the contracts you need
-
-| Wiring                   | Purpose                                                               |
-| ------------------------ | --------------------------------------------------------------------- |
-| `api`                    | Required SDK client; used for every remote operation.                 |
-| `bindings`               | Maps host IDs to Vatly customer IDs; records anonymous customers.     |
-| `subscriptions`          | Reads/writes `LocalSubscription`, including local `endsAt`.           |
-| `orders`                 | Reads/writes `Stored<Order>`.                                         |
-| `refunds`, `chargebacks` | Optional reversal repositories with order/customer lists.             |
-| `webhookCalls`           | Atomic signed-event retention, deduplication, and execution.          |
-| `events`                 | Optional dispatcher; persist outbox work inside the same transaction. |
-
-Contracts accept synchronous or asynchronous implementations, except
-`webhookCalls.process`, which returns a promise. No particular ORM is required.
+Connect Fluent to your existing tables through storage drivers. Your application
+owns the database, authentication, and jobs; Fluent supplies the contracts.
 
 ```ts
 import type { Order } from '@getvatly/sdk';
@@ -11390,50 +11325,54 @@ export function storageDrivers(
 
 ## Repository behavior
 
-Implement `findByVatlyId(id)`, `store(data)`, and `update(id, partial)` against
-your database. `Stored<T>` is the full SDK resource plus `hostCustomerId`, which
-may be null for an unattributed customer. `LocalSubscription` also has `endsAt`.
+`Stored<T>` adds `hostCustomerId` to the SDK resource. It is null for an unattributed
+customer. `LocalSubscription` also adds `endsAt`.
 
-- Enforce unique Vatly resource IDs, scoped by tenant/storefront and mode.
-- On partial updates, omitted/`undefined` means unchanged; `null` explicitly clears
-  a nullable field. Do not translate all missing fields into nulls.
-- `store` returns the saved record, or null if you deliberately decline to persist
-  it. A null return skips the corresponding local-created event.
-- `update` returns the updated record; it is not a fire-and-forget write.
-- `ReversalRepository` adds `listForOrder(id)` and `listForCustomer(id)`.
+| Method                | Return value                                                                             |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| `findByVatlyId(id)`   | Record or null.                                                                          |
+| `store(data)`         | Saved record, or null to decline storage and skip the local-created event.               |
+| `update(id, partial)` | Updated record. Omitted/`undefined` fields stay unchanged; null clears a nullable field. |
 
-If your host already has tables, adapt those tables rather than creating parallel
-ones. `store` can locate a pending host record using trusted checkout metadata,
-attach the Vatly ID, and return the resulting SDK-shaped record. Metadata is a
-correlation aid, not an authorization token. Enforce ownership in your application.
+Enforce unique Vatly IDs per tenant, storefront, and mode. Adapt existing tables
+rather than duplicating them. `store` can match a pending host record using
+checkout metadata and attach its Vatly ID. Metadata helps match records; it does
+not authorize access.
 
-## Binding behavior
+`refunds` and `chargebacks` use `ReversalRepository`, which adds `listForOrder(id)`
+and `listForCustomer(id)`. Contracts accept sync or async implementations, except
+`webhookCalls.process`, which returns a promise.
 
-Implement all four `CustomerBindings` methods:
+## Billables and bindings
 
-- `bind(vatlyId, hostId)` atomically associates the two IDs.
-- `record(vatlyId)` records an unattributed customer without clearing an existing binding.
-- `vatlyCustomerIdFor(hostId)` and `hostCustomerIdFor(vatlyId)` return an ID or null.
+Keep your user, team, or organization as the billable; there is no `Billable` mixin.
+`CustomerProfile` carries `vatlyId`, `email`, and optional `name`. Your application's
+ID (`hostId`) is separate from Vatly's customer ID (`vatlyId`). Authorize both.
 
-Enforce uniqueness on **both sides** in the database. Fluent's pre-checks do not
-replace concurrency-safe constraints. Do not silently reassign an existing binding.
-Keep test and live bindings separate.
+| `CustomerBindings` method    | Behavior                                                              |
+| ---------------------------- | --------------------------------------------------------------------- |
+| `bind(vatlyId, hostId)`      | Associate IDs atomically; enforce uniqueness on both sides.           |
+| `record(vatlyId)`            | Record an unattributed customer without clearing an existing binding. |
+| `vatlyCustomerIdFor(hostId)` | Return the Vatly ID or null.                                          |
+| `hostCustomerIdFor(vatlyId)` | Return the host ID or null.                                           |
 
-## Transactions belong to the host
+Do not silently reassign bindings. Keep test and live data separate. See
+[customers](https://docs.vatly.com/packages/fluent-js/customers) for creation and lookup examples.
 
-All webhook repositories, bindings, audit records, and outbox writes must join the
-transaction started by `webhookCalls.process(event, work)`. A global transaction
-variable shared between concurrent requests is not safe. Use your database's
-transaction context or request-scoped drivers. See [webhooks](https://docs.vatly.com/packages/fluent-js/webhooks) for the
-deduplication algorithm and reaction matrix.
+## Webhook storage
+
+Wire `webhookCalls` for deduplication and audit retention, and `events` for outbox
+writes. They must share a transaction with repositories and bindings. Use your
+database's transaction context or request-scoped drivers, not a global variable
+shared by concurrent requests. The [webhook transaction steps](https://docs.vatly.com/packages/fluent-js/webhooks#idempotency-and-one-transaction)
+define what must commit or roll back together.
 
 For remote resource fields, use the [API reference](https://docs.vatly.com/api-reference){rel="&#x22;nofollow&#x22;"}.
 
 
 # Customer portal
 
-Issue a portal session from an authenticated server route. Look up the Vatly
-customer from your own user binding; do not take a raw customer ID from the browser.
+Send a signed-in customer to their invoices and subscription controls:
 
 ```ts
 import type { Vatly } from '@getvatly/fluent';
@@ -11448,20 +11387,18 @@ export async function portalUrl(vatly: Vatly, authenticatedHostId: string) {
 }
 ```
 
-Redirect the customer's browser to that URL and use `Cache-Control: no-store`
-on your route's response. The session is a short-lived, single-use credential;
-never log it, cache it, or store it in the user's record. If a consumed link is
-replayed through an idempotency key, request a new session with a fresh key.
+Look up the customer through [bindings](https://docs.vatly.com/packages/fluent-js/customers); do not accept a customer ID
+from the browser. Redirect to the returned URL with `Cache-Control: no-store`.
+It is a short-lived, single-use credential: never log, cache, or persist it. If an
+idempotent retry returns a consumed link, request another with a fresh key.
 
-The portal lets eligible customers view invoices and manage subscriptions in
-the API key's storefront and mode. A one-off buyer can use invoice history too.
-Customers need an eligible issued invoice; a subscription alone does not grant
-access. The API returns 404 for an ineligible customer. Handle that case by showing
-your own billing page instead of repeatedly requesting sessions.
+An eligible issued invoice is required; a subscription alone is not enough.
+One-off buyers can view invoice history too. On an eligibility 404, show your
+billing page instead of retrying.
 
-The `returnUrl` is an HTTPS return link, not an automatic redirect. Portal sessions
-are scoped to the customer and storefront; they do not expose a storefront picker.
-To update subscription billing directly, see [subscriptions](https://docs.vatly.com/packages/fluent-js/subscriptions#update-billing-details).
+The portal stays in the key's storefront and mode, with no storefront picker.
+`returnUrl` is an HTTPS return link, not an automatic redirect. For a direct
+billing-details flow, see [subscriptions](https://docs.vatly.com/packages/fluent-js/subscriptions#update-billing-details).
 
 For eligibility and response fields, see
 [Create a customer portal session](https://docs.vatly.com/api-reference/customers#create-a-customer-portal-session){rel="&#x22;nofollow&#x22;"}.
@@ -11469,31 +11406,7 @@ For eligibility and response fields, see
 
 # Porting from PHP
 
-This guide describes &#x2A;*TypeScript Fluent `0.1.0-alpha.1`**, not every feature added
-to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revision
-`db211e0cf8505017fcd2eea056628db2f19f5c8b`; the repository's
-[porting record](https://github.com/vatly/vatly-fluent-js/blob/main/PORTING.md){rel="&#x22;nofollow&#x22;"} explains the original scope.
-
-## Map concepts, not syntax
-
-| PHP concept                                 | TypeScript equivalent                                                |
-| ------------------------------------------- | -------------------------------------------------------------------- |
-| Configuration, container, API-only factory  | `new Vatly({ api: new VatlyClient(...), ...drivers })`               |
-| Billable model/trait                        | Your own user/account plus `CustomerProfile` and bindings.           |
-| Customer binding repository                 | `CustomerBindings` with unique IDs on both sides.                    |
-| Checkout/subscription builder               | `checkoutBuilder(profile)` / `subscribe(profile).toPlan(id)`.        |
-| Resource wrappers and getters               | SDK resource properties, or a handle's `model()`.                    |
-| Subscription state helpers                  | `handle.state()` derived from local `endsAt`.                        |
-| Repository interfaces and store/update DTOs | Structural `Repository<T>`, `Stored<T>`, and partial updates.        |
-| Dedicated event classes                     | Discriminated `DomainEvent` union; check `known` then `eventName`.   |
-| FakeVatly                                   | Inject the SDK `fetch` for tests.                                    |
-| API exception wrapper                       | SDK errors propagate unchanged; local validation uses `FluentError`. |
-
-All remote and driver operations may be asynchronous. Await handle methods and
-storage results. SDK resources remain plain typed data; they are not active-record
-objects with implicit persistence. No Laravel, ORM, or PHP container is required.
-
-## Subscription checkout
+Replace PHP's billable action with a builder on a configured `Vatly` instance:
 
 ```ts
 import type { Vatly } from '@getvatly/fluent';
@@ -11507,44 +11420,39 @@ export async function subscribe(vatly: Vatly, customerId: string, planId: string
 }
 ```
 
-`subscribe` follows the billable action's naming but creates a checkout, not an
-immediate local subscription. `withItems` belongs on the general checkout builder
-for mixed carts. PHP convenience aliases are not copied where the SDK already
-owns the operation; use `vatly.api` as the escape hatch.
+Await remote calls and driver results. Resources are plain data, not active-record
+models. Use `vatly.api` for SDK operations without Fluent helpers.
 
-## Data and event differences
+## PHP to TypeScript
 
-- Money stays SDK `{ value, currency }` data, not integer-cents persistence DTOs.
-  Use `toMinorUnits` for bigint math and preserve currency alongside the amount.
-- `undefined` means no update; explicit null clears nullable fields. Do not copy
-  PHP nullable-update conventions blindly.
-- Store full resource IDs and fields, including `testmode`, metadata, order lines,
-  and tax information. `subscriptionPlanId` is not renamed to a PHP `planId` alias.
-- Checkout results from builders add `getUrl()`; SDK checkout results do not.
-- `local.order_created` and `local.subscription_created` are the two host-created
-  event names. Repositories may decline a store with null, which skips that event.
-- Unknown signed deliveries have `known: false`; retain them for triage. No typed
-  event constructor should cause the original envelope to be discarded.
-- Webhook processing requires host-owned atomic deduplication, repository writes,
-  audit retention, and outbox dispatch in one transaction. Do not port a recorder
-  that commits before reactions run.
+| PHP concept                    | TypeScript equivalent                                                                                                                                                 |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Configuration/container        | `new Vatly({ api: new VatlyClient(...), ...drivers })`                                                                                                                |
+| Billable model/trait           | Your user/account plus `CustomerProfile` and [bindings](https://docs.vatly.com/packages/fluent-js/coreconcepts#billables-and-bindings).                               |
+| Checkout/subscription builder  | [Checkouts](https://docs.vatly.com/packages/fluent-js/checkouts): `checkoutBuilder(profile)` / `subscribe(profile).toPlan(id)`.                                       |
+| Resource getters               | SDK properties or `handle.model()`.                                                                                                                                   |
+| Subscription state helpers     | [Subscriptions](https://docs.vatly.com/packages/fluent-js/subscriptions): `handle.state()` from local `endsAt`.                                                       |
+| Repository interfaces and DTOs | [Storage contracts](https://docs.vatly.com/packages/fluent-js/coreconcepts): `Repository<T>`, `Stored<T>`, partial updates.                                           |
+| Event classes                  | [Webhooks](https://docs.vatly.com/packages/fluent-js/webhooks): `DomainEvent`; check `known`, then `eventName`.                                                       |
+| FakeVatly                      | [Testing](https://docs.vatly.com/packages/fluent-js/testing): inject SDK `fetch`.                                                                                     |
+| API exception wrapper          | [Configuration](https://docs.vatly.com/packages/fluent-js/configuration#handle-errors-and-retries): SDK errors pass through; `FluentError` covers local input/wiring. |
 
-For adapting existing tables, see [core concepts](https://docs.vatly.com/packages/fluent-js/coreconcepts); for the
-event-to-repository matrix, see [webhooks](https://docs.vatly.com/packages/fluent-js/webhooks). Use the
+Keep full SDK fields, including `testmode`, metadata, lines, and tax data. Use
+`subscriptionPlanId`, not a PHP `planId` alias. Money stays `{ value, currency }`;
+see [money and reversals](https://docs.vatly.com/packages/fluent-js/orders#money-and-reversals) for bigint conversion.
+Follow the linked storage and webhook contracts rather than copying PHP update
+or audit behavior: null/omitted fields and transaction boundaries differ.
+
+This documents Fluent `0.1.0-alpha.1`, ported from PHP revision
+`db211e0cf8505017fcd2eea056628db2f19f5c8b`, not later PHP additions.
+The [porting record](https://github.com/vatly/vatly-fluent-js/blob/main/PORTING.md){rel="&#x22;nofollow&#x22;"} lists the original scope. Use the
 [API reference](https://docs.vatly.com/api-reference){rel="&#x22;nofollow&#x22;"} for remote field details;
 the [OpenAPI spec](https://docs.vatly.com/openapi.yaml){rel="&#x22;nofollow&#x22;"} is also available for tooling.
 
 
 # Testing
 
-Use isolated tests for your application and driver contracts, then a test-mode
-account for hosted checkout and real webhook delivery. A passing mocked test
-does not establish live API or payment-provider behavior.
-
-## An isolated API call
-
-Inject the SDK's `fetch` rather than maintaining a second fake billing API.
-This executable example uses no credentials and makes no network request:
+Test API calls without a network by injecting the SDK's `fetch`:
 
 ```ts
 import { VatlyClient } from '@getvatly/sdk';
@@ -11569,44 +11477,35 @@ export async function testCheckoutLookup() {
 }
 ```
 
-That minimal response tests only the lookup; use full resource fixtures when
-testing other behavior. SDK types are not runtime validation of your fixture.
+This fixture tests only customer lookup. Use full resource fixtures for other
+operations; SDK types do not validate them at runtime.
 
 ## Test your storage boundary
 
-Exercise database uniqueness for customer bindings and Vatly IDs, both modes,
-partial updates that omit fields versus explicitly clear them, and a `store`
-that deliberately returns null. For webhook processing, test:
+Check the [storage contracts](https://docs.vatly.com/packages/fluent-js/coreconcepts): uniqueness under concurrency,
+test/live separation, omitted versus null updates, and a declined `store`.
 
-- Valid, invalid, stale, and rotated signatures over the original bytes.
-- Concurrent copies of one signed event: exactly one committed processing run.
-- Failure midway through a reaction: no partial rows, audit marker, or outbox;
-  a retry must complete successfully.
-- Unknown signed event names: retained and dispatched without built-in writes.
-- Out-of-order subscription/order snapshots and reconciliation policy.
-
-Use an independent HMAC signer in tests, not the verification function under test
-to derive the expected signature. Keep production timestamp checks enabled.
+For [webhooks](https://docs.vatly.com/packages/fluent-js/webhooks), test valid, invalid, stale, and rotated signatures
+using an independent HMAC signer. Concurrent copies must commit once. A failed
+reaction must roll back rows, audit markers, and outbox work, then succeed on retry.
+Also test unknown events and out-of-order snapshots. Keep timestamp checks enabled.
 
 ## Live test-mode workflow
 
-1. Use a real `test_` key in `VATLY_API_KEY`, with customers and catalogue IDs
-   from that same storefront/mode. Test keys do not create real charges.
-2. Run your server locally. Expose only its webhook route with an HTTPS tunnel,
-   register that public URL as a webhook endpoint, and store its signing secret
-   as `VATLY_WEBHOOK_SECRET`. A Vatly server cannot call your localhost directly.
-3. Create a checkout and pay through the hosted test flow. Retain checkout/order
-   IDs and inspect verified `checkout.paid` and `order.paid` deliveries.
-4. Confirm duplicate delivery is harmless and failed work stays retryable. Do not
-   infer payment from a redirect alone. Delete or disable temporary endpoints
-   before closing a tunnel; keep a record of test resources you create.
+1. Set `VATLY_API_KEY` to a real `test_` key. Use customer and catalogue IDs from
+   its storefront and mode. Test keys do not create real charges.
+2. Expose your local webhook route through an HTTPS tunnel. Register the public
+   URL and save its signing secret as `VATLY_WEBHOOK_SECRET`.
+3. Pay through a [hosted checkout](https://docs.vatly.com/packages/fluent-js/checkouts). Save the checkout/order IDs and
+   confirm signed `checkout.paid` and `order.paid` deliveries.
+4. Check duplicate and failed deliveries. Delete or disable temporary endpoints
+   before closing the tunnel; record any resources you create.
 
 `vatly.testHelpers()` exposes `advanceRenewal`, `forceRenewalPaid`,
 `forceRenewalFailed`, `forceOrderPaymentPaid`, `forceOrderPaymentFailed`, and the
-SDK-style `fastForwardRenewal`/`simulateOrderPayment`. &#x2A;*These mutate account data.**
-Use only with explicit permission and disposable test resources, never existing
-subscriptions/orders just because a key is in test mode. Mode assertions on a
-checkout builder do not turn a live key into a test key.
+SDK-style `fastForwardRenewal`/`simulateOrderPayment`. These mutate account data.
+Use them only with permission and disposable test resources, not existing
+subscriptions or orders just because the key is in test mode.
 
 ## Run this package's checks
 
@@ -11615,9 +11514,8 @@ pnpm install --frozen-lockfile
 pnpm check
 ```
 
-The suite checks the public Fluent API through the installed SDK. For an edge host,
-run your application in its local edge runtime too; Node tests alone do not establish
-edge compatibility. Verify Fetch/Web Crypto and your storage adapter's runtime support.
+For edge hosts, also run your app in the local edge runtime with its storage adapter.
+Node tests alone do not check edge compatibility.
 
 See the [testing guide](https://docs.vatly.com/guides/testing){rel="&#x22;nofollow&#x22;"} and
 [Test Helpers API reference](https://docs.vatly.com/api-reference/test-helpers){rel="&#x22;nofollow&#x22;"}.

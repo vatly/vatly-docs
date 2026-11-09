@@ -2,12 +2,24 @@
 
 > Vatly JavaScript packages - Porting from PHP
 
-This guide describes **TypeScript Fluent 0.1.0-alpha.1**, not every feature added
-to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revision
-`db211e0cf8505017fcd2eea056628db2f19f5c8b`; the repository's
-[porting record](https://github.com/vatly/vatly-fluent-js/blob/main/PORTING.md) explains the original scope.
+Replace PHP's billable action with a builder on a configured `Vatly` instance:
 
-## Map concepts, not syntax
+```ts
+import type { Vatly } from '@getvatly/fluent';
+
+export async function subscribe(vatly: Vatly, customerId: string, planId: string) {
+  const checkout = await vatly.subscribe({ vatlyId: customerId })
+    .toPlan(planId)
+    .withQuantity(1)
+    .create();
+  return checkout.getUrl();
+}
+```
+
+Await remote calls and driver results. Resources are plain data, not active-record
+models. Use `vatly.api` for SDK operations without Fluent helpers.
+
+## PHP to TypeScript
 
 <table>
 <thead>
@@ -25,7 +37,7 @@ to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revisio
 <tbody>
   <tr>
     <td>
-      Configuration, container, API-only factory
+      Configuration/container
     </td>
     
     <td>
@@ -41,25 +53,15 @@ to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revisio
     </td>
     
     <td>
-      Your own user/account plus <code>
+      Your user/account plus <code>
         CustomerProfile
       </code>
       
-       and bindings.
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      Customer binding repository
-    </td>
-    
-    <td>
-      <code>
-        CustomerBindings
-      </code>
+       and <a href="/packages/fluent-js/coreconcepts#billables-and-bindings">
+        bindings
+      </a>
       
-       with unique IDs on both sides.
+      .
     </td>
   </tr>
   
@@ -69,7 +71,11 @@ to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revisio
     </td>
     
     <td>
-      <code>
+      <a href="/packages/fluent-js/checkouts">
+        Checkouts
+      </a>
+      
+      : <code>
         checkoutBuilder(profile)
       </code>
       
@@ -83,12 +89,12 @@ to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revisio
   
   <tr>
     <td>
-      Resource wrappers and getters
+      Resource getters
     </td>
     
     <td>
-      SDK resource properties, or a handle's <code>
-        model()
+      SDK properties or <code>
+        handle.model()
       </code>
       
       .
@@ -101,11 +107,15 @@ to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revisio
     </td>
     
     <td>
-      <code>
+      <a href="/packages/fluent-js/subscriptions">
+        Subscriptions
+      </a>
+      
+      : <code>
         handle.state()
       </code>
       
-       derived from local <code>
+       from local <code>
         endsAt
       </code>
       
@@ -115,11 +125,15 @@ to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revisio
   
   <tr>
     <td>
-      Repository interfaces and store/update DTOs
+      Repository interfaces and DTOs
     </td>
     
     <td>
-      Structural <code>
+      <a href="/packages/fluent-js/coreconcepts">
+        Storage contracts
+      </a>
+      
+      : <code>
         Repository<T>
       </code>
       
@@ -127,25 +141,29 @@ to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revisio
         Stored<T>
       </code>
       
-      , and partial updates.
+      , partial updates.
     </td>
   </tr>
   
   <tr>
     <td>
-      Dedicated event classes
+      Event classes
     </td>
     
     <td>
-      Discriminated <code>
+      <a href="/packages/fluent-js/webhooks">
+        Webhooks
+      </a>
+      
+      : <code>
         DomainEvent
       </code>
       
-       union; check <code>
+      ; check <code>
         known
       </code>
       
-       then <code>
+      , then <code>
         eventName
       </code>
       
@@ -159,11 +177,15 @@ to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revisio
     </td>
     
     <td>
-      Inject the SDK <code>
+      <a href="/packages/fluent-js/testing">
+        Testing
+      </a>
+      
+      : inject SDK <code>
         fetch
       </code>
       
-       for tests.
+      .
     </td>
   </tr>
   
@@ -173,57 +195,28 @@ to newer PHP releases. The initial port follows `vatly/vatly-fluent-php` revisio
     </td>
     
     <td>
-      SDK errors propagate unchanged; local validation uses <code>
+      <a href="/packages/fluent-js/configuration#handle-errors-and-retries">
+        Configuration
+      </a>
+      
+      : SDK errors pass through; <code>
         FluentError
       </code>
       
-      .
+       covers local input/wiring.
     </td>
   </tr>
 </tbody>
 </table>
 
-All remote and driver operations may be asynchronous. Await handle methods and
-storage results. SDK resources remain plain typed data; they are not active-record
-objects with implicit persistence. No Laravel, ORM, or PHP container is required.
+Keep full SDK fields, including `testmode`, metadata, lines, and tax data. Use
+`subscriptionPlanId`, not a PHP `planId` alias. Money stays `{ value, currency }`;
+see [money and reversals](/packages/fluent-js/orders#money-and-reversals) for bigint conversion.
+Follow the linked storage and webhook contracts rather than copying PHP update
+or audit behavior: null/omitted fields and transaction boundaries differ.
 
-## Subscription checkout
-
-```ts
-import type { Vatly } from '@getvatly/fluent';
-
-export async function subscribe(vatly: Vatly, customerId: string, planId: string) {
-  const checkout = await vatly.subscribe({ vatlyId: customerId })
-    .toPlan(planId)
-    .withQuantity(1)
-    .create();
-  return checkout.getUrl();
-}
-```
-
-`subscribe` follows the billable action's naming but creates a checkout, not an
-immediate local subscription. `withItems` belongs on the general checkout builder
-for mixed carts. PHP convenience aliases are not copied where the SDK already
-owns the operation; use `vatly.api` as the escape hatch.
-
-## Data and event differences
-
-- Money stays SDK `{ value, currency }` data, not integer-cents persistence DTOs.
-Use `toMinorUnits` for bigint math and preserve currency alongside the amount.
-- `undefined` means no update; explicit null clears nullable fields. Do not copy
-PHP nullable-update conventions blindly.
-- Store full resource IDs and fields, including `testmode`, metadata, order lines,
-and tax information. `subscriptionPlanId` is not renamed to a PHP `planId` alias.
-- Checkout results from builders add `getUrl()`; SDK checkout results do not.
-- `local.order_created` and `local.subscription_created` are the two host-created
-event names. Repositories may decline a store with null, which skips that event.
-- Unknown signed deliveries have `known: false`; retain them for triage. No typed
-event constructor should cause the original envelope to be discarded.
-- Webhook processing requires host-owned atomic deduplication, repository writes,
-audit retention, and outbox dispatch in one transaction. Do not port a recorder
-that commits before reactions run.
-
-For adapting existing tables, see [core concepts](/packages/fluent-js/coreconcepts); for the
-event-to-repository matrix, see [webhooks](/packages/fluent-js/webhooks). Use the
+This documents Fluent `0.1.0-alpha.1`, ported from PHP revision
+`db211e0cf8505017fcd2eea056628db2f19f5c8b`, not later PHP additions.
+The [porting record](https://github.com/vatly/vatly-fluent-js/blob/main/PORTING.md) lists the original scope. Use the
 [API reference](https://docs.vatly.com/api-reference) for remote field details;
 the [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.

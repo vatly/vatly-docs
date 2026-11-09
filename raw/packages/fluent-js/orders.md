@@ -2,9 +2,7 @@
 
 > Vatly JavaScript packages - Orders and invoices
 
-An order records a purchase and its tax breakdown. Use a verified `order.paid`
-event to persist it or trigger fulfillment, not a checkout return-page visit.
-Authorize the order's customer before showing an invoice or allowing any mutation.
+Fetch an order's invoice link, lines, and totals after checking the caller owns it.
 
 ## Read the order and invoice
 
@@ -24,15 +22,13 @@ export async function invoice(vatly: Vatly, orderId: string) {
 }
 ```
 
-The order handle fetches from the API lazily and caches per handle. `sync()`
-refreshes it. `invoiceUrl()` returns a URL or null when the invoice link is absent.
-`lines()` returns full SDK order lines; it does not require a separate line repository.
-`vatly.order(id)` does not require local order storage for these API reads.
+The handle fetches once and caches the API resource. `sync()` refreshes it.
+`invoiceUrl()` returns null if no link exists. These reads need no local order or
+line repository. Use [webhooks](/packages/fluent-js/webhooks) to persist payments and fulfill orders.
 
 ## Money and reversals
 
-Money values stay decimal strings with their currency; do not use floating-point
-arithmetic for totals. SDK `toMinorUnits` returns a `bigint` for integer-unit math.
+Use `toMinorUnits` for bigint arithmetic; keep the currency with the amount.
 
 ```ts
 import { toMinorUnits } from '@getvatly/sdk';
@@ -51,16 +47,14 @@ export async function reversalSummary(vatly: Vatly, orderId: string) {
 }
 ```
 
-Serialize bigints explicitly (for example, as strings) before returning JSON.
-`isReversed()` includes partial reversals. These predicates read the live API
-snapshot, not the optional local lists. A paid order remains paid after a reversal;
-Fluent does not invent a refunded order status.
+Money uses decimal strings, not floats. Convert bigints to strings before returning
+JSON. Reversal predicates read the cached API resource, not local reversal lists.
+`isReversed()` includes partial reversals. A paid order stays paid after a reversal.
 
 `order.refunds()` and `order.chargebacks()` read your wired reversal repositories.
-They return an empty list if the respective driver is absent, not a remote API
-query. To create a refund or list remote reversals, use the SDK through
-`vatly.api.orders` and `vatly.api.refunds`; use [webhooks](/packages/fluent-js/webhooks) to persist
-resulting changes. Reconcile API state before retrying any ambiguous refund request.
+Without a driver they return an empty list. Use `vatly.api.orders` and
+`vatly.api.refunds` to create refunds or query remote reversals. Check API state
+before retrying a refund whose outcome is unknown.
 
 For fields and refund rules, see [Orders](https://docs.vatly.com/api-reference/orders),
 [Order Refunds](https://docs.vatly.com/api-reference/refunds), and
