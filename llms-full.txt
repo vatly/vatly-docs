@@ -2,6 +2,8 @@
 
 Vatly is the Merchant of Record for European software and digital products. It becomes the legal seller on every sale and handles payments, tax and compliance, so you just ship. Sell subscriptions and one-off products through a single API.
 
+To understand what adopting Vatly involves, start with [Build your own integration](https://docs.vatly.com/guides/build-your-own-integration). Using a specific platform? Find [Lovable payments with Vatly](https://docs.vatly.com/integrations/lovable) and [Bolt payments with Vatly](https://docs.vatly.com/integrations/bolt) under **Integrations**, with platform-specific setup and agent prompts.
+
 ::card-group
   :::card
   ---
@@ -58,6 +60,7 @@ Test mode works from the start, so you can build and test your integration right
 
 ## Next steps
 
+- [Build your own integration](https://docs.vatly.com/guides/build-your-own-integration): plan what your app needs and brief your developer or agent
 - [Quickstart guide](https://docs.vatly.com/guides/quickstart): make your first API call
 - [Authentication](https://docs.vatly.com/guides/authentication): learn how API keys work
 - [API Reference](https://docs.vatly.com/api-reference/customers): explore all endpoints
@@ -75,6 +78,8 @@ API key from your dashboard. You find it under
 
 .
 ::
+
+This Quickstart covers your first authenticated API request. To understand the full integration before implementing it, start with [Build your own integration](https://docs.vatly.com/guides/build-your-own-integration). For platform-specific setup, see [Integrations](https://docs.vatly.com/integrations), including Lovable and Bolt.
 
 ## Choose your client
 
@@ -249,7 +254,83 @@ You can't turn off these emails. Most of them are required for Vatly to bill you
 Additional email branding is on the [roadmap](https://roadmap.vatly.com/projects/2-merchant-ui/items/26-email-co-branding){rel="&#x22;nofollow&#x22;"}. Vote for it to let us know it matters to you.
 
 
+# Build your own integration
+
+You do not need to build a payment form or your own tax and invoicing workflow to sell with Vatly. Vatly is the merchant of record for European software and digital products: it acts as the legal seller and provides hosted checkout. Your app delivers the product and controls access.
+
+This guide helps you decide what to connect before writing code or asking an agent to implement it. Whether a developer or an AI agent does the work, the responsibilities are the same.
+
+## Choose your starting point
+
+- **Using Lovable or Bolt?** Follow the [Lovable](https://docs.vatly.com/integrations/lovable) or [Bolt](https://docs.vatly.com/integrations/bolt) guide for the setup in your platform and a ready-to-use agent prompt. Find platform-specific instructions under [Integrations](https://docs.vatly.com/integrations).
+- **Connecting your own app?** Continue below to plan the integration and choose the right implementation documentation.
+- **Ready to make an API request?** The [Quickstart](https://docs.vatly.com/guides/quickstart) covers your first authenticated call. It is a technical first step, not a complete payment integration.
+
+## What Vatly handles, and what stays in your app
+
+| Vatly handles                                                                | Your app handles                                                                  |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Being the legal seller, including tax and customer invoicing for Vatly sales | Your software or digital product, customer accounts, and support for your product |
+| The hosted checkout and payment flow                                         | Your pricing UI and the decision about which products a customer can buy          |
+| Billing events, including payments and subscription changes                  | Delivering downloads, activating licenses, or granting and updating access        |
+| A hosted customer portal for eligible customers                              | Authenticating the customer and opening their portal session securely             |
+
+Portal access requires an issued invoice. See the [customer portal documentation](https://docs.vatly.com/packages/fluent-js/customerportal). Your existing login and database can remain in place; adding Vatly does not require replacing them.
+
+## What a purchase looks like
+
+1. A customer chooses a product or plan in your app.
+2. Your backend checks what that customer can buy and asks Vatly to create a checkout. The API key stays on your server.
+3. Your app sends the customer to Vatly's hosted checkout to pay, then shows a return page in your app.
+4. Vatly sends a signed notification, called a webhook, to your backend. Your app verifies it before recording the purchase and delivering access.
+5. For subscriptions, your app keeps access in step with renewals, cancellations, and other billing changes. Refunds and disputes also need an access policy.
+
+The return page is not proof of payment. A customer may close the checkout tab or visit the return URL directly; delivery must depend on the verified billing result, not that browser visit. The [Selling Workflow](https://docs.vatly.com/guides/selling-workflow) walks through the sale lifecycle in more detail.
+
+## Prepare a test integration
+
+[Create a Vatly account](https://my.vatly.com){rel="&#x22;nofollow&#x22;"}, get a `test_` key under **Developers » API keys**, and create a test product under **Manage Products**. Choose a one-off product for a single purchase or a subscription plan for recurring access. Keep the key, products, and customers in the same storefront and mode.
+
+Your app needs a deployed backend that can call Vatly privately, receive HTTPS webhooks, and store billing state. A frontend-only site needs a backend or server functions for these tasks. Store API keys and webhook signing secrets in that backend's secret manager—not browser code, frontend environment variables, or agent chat.
+
+Test mode is available before going live. Your first milestone is one complete test purchase that grants the right customer access, not a finished billing dashboard.
+
+## Choose your tools
+
+For app-level billing, start with a fluent package rather than assembling every flow from low-level API calls:
+
+- **JavaScript / TypeScript:** [`@getvatly/fluent`](https://docs.vatly.com/packages/fluent-js/readme) builds on `@getvatly/sdk` with checkout and subscription builders, customer bindings, and webhook processing. Follow [configuration](https://docs.vatly.com/packages/fluent-js/configuration) for compatible versions and runtime requirements.
+- **PHP:** [`vatly/vatly-fluent-php`](https://github.com/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} provides higher-level billing flows. The [Laravel package](https://docs.vatly.com/packages/laravel/readme) wires fluent for Laravel.
+- **Direct API access:** Use the matching [SDK](https://docs.vatly.com/packages) when you only need the API client, or the [HTTP API](https://docs.vatly.com/api-reference) from another server-side language. The [Python SDK](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"} is alpha and not yet published on PyPI; follow its repository's installation instructions.
+
+The JavaScript packages and PHP fluent are **alpha**. Follow each package's installation guidance, pin compatible versions, and review upgrades. Fluent packages provide building blocks, not your app's access policy or a database integration that configures itself: your developer or agent must wire the required storage drivers and authorization checks.
+
+## Hand off a clear brief
+
+Give your developer or agent the decisions that belong to your business:
+
+- Which products or plans you will sell, and what each purchase unlocks.
+- Which existing login, database, and deployed backend to use.
+- Where customers should return after completing or canceling checkout.
+- How access should change after a renewal, cancellation, refund, or dispute.
+
+Ask them to follow the chosen package's checkout and webhook documentation, and to show you the deployed checkout flow and webhook URL. Secrets should be entered through the host's secure secret form, never included in the brief. Agents can use the [documentation index](https://docs.vatly.com/llms.txt){rel="&#x22;nofollow&#x22;"}, [API reference](https://docs.vatly.com/api-reference), and [OpenAPI specification](https://docs.vatly.com/openapi.yaml){rel="&#x22;nofollow&#x22;"} to check implementation details.
+
+## Know when you are ready to sell
+
+Before switching to live credentials, review the integration as a customer:
+
+- A completed test purchase grants the right access; a canceled checkout or a visit to the return URL alone does not.
+- Customers cannot buy on another user's account or grant themselves access through the browser.
+- Repeated webhook deliveries do not fulfill a purchase twice, invalid signatures are rejected, and failed processing can retry.
+- Subscription and post-payment changes follow the access policy you chose.
+
+Your implementer can use the [webhook guide](https://docs.vatly.com/guides/webhooks), [test-mode guide](https://docs.vatly.com/guides/testing), and package-specific tests for these checks. Live selling also requires [Vatly approval, product review, and Mollie verification](https://docs.vatly.com/introduction#going-live). A working test integration is not a guarantee of a go-live date.
+
+
 # Selling Workflow
+
+Planning your integration? Start with [Build your own integration](https://docs.vatly.com/guides/build-your-own-integration) for responsibilities, implementation choices, and a brief for your developer or agent. This page follows the sale itself, from setup through delivery and post-payment events.
 
 ## The typical Vatly flow
 
@@ -11500,11 +11581,34 @@ Not using one of these languages? You can use the [REST API directly](https://do
 
 # Lovable payments with Vatly
 
-Use Vatly as the **merchant of record for your Lovable app** when selling software, digital products, or SaaS subscriptions. Vatly is the merchant of record for European software and digital products, acting as the legal seller and handling payments, tax, and compliance. Lovable builds your app's checkout button and backend; Vatly provides the hosted checkout and billing API.
+Use Vatly as the **merchant of record for your Lovable app** to sell software, digital products, or SaaS subscriptions without building your own tax and invoicing workflow. Vatly is the merchant of record for European software and digital products: it becomes the legal seller, while you build and deliver the product.
 
-This is a custom API integration using Vatly's existing JavaScript SDK, not a native Lovable payment connector or an endorsement by Lovable. You do not need a Vatly-specific change to Lovable or Vatly to follow this approach.
+**[Get a test API key](https://my.vatly.com){rel="&#x22;nofollow&#x22;"} · [Copy the Lovable agent prompt](https://docs.vatly.com/#prompt-lovable-to-build-the-integration)**
+
+This is a custom API integration using Vatly's existing JavaScript packages, not a native Lovable payment connector or an endorsement by Lovable. You do not need a Vatly-specific change to Lovable or Vatly to follow this approach.
+
+## Why use a merchant of record instead of plain Stripe?
+
+Lovable can add a payment integration, but accepting a card payment is not the same as handing over the seller's responsibilities. With a standard payment-processing integration, your business remains the seller and must arrange tax compliance and invoicing. For a broader comparison, see [Vatly vs Stripe](https://vatly.com/vs/stripe){rel="&#x22;nofollow&#x22;"}.
+
+With Vatly, the [tax and invoicing for Vatly sales are Vatly's responsibility](https://vatly.com/){rel="&#x22;nofollow&#x22;"}: calculating and collecting EU VAT and applicable sales tax, handling registrations, filing and remitting tax, and issuing customer invoices. You still own your app, access control, and fulfillment. The difference is who takes on the legal seller's tax work, not just which checkout button you use.
+
+## Why Vatly fits a Lovable app
+
+- **Europe-first.** Vatly is based in the Netherlands and built for European software and digital product businesses selling internationally, with [European payment methods through Mollie](https://vatly.com/mollie-merchant-of-record){rel="&#x22;nofollow&#x22;"}.
+- **Software billing, including AI apps.** Sell an AI app's subscription or a one-off digital product through the same [checkout API](https://docs.vatly.com/api-reference/checkouts). You do not need a payment integration specific to the model or AI service your app uses.
+- **Multi-line orders.** A checkout can include multiple products and quantities, for example a subscription plan and a one-off digital download, with [order lines and tax information](https://docs.vatly.com/api-reference/orders) available to your backend.
+- **Hosted checkout and customer portal.** Redirect customers to checkout instead of building a payment form. The [hosted portal](https://docs.vatly.com/packages/fluent-js/customerportal) provides invoice history and subscription controls for eligible customers; portal access requires an issued invoice.
+
+## Start with a test checkout
+
+**[Create your Vatly account](https://my.vatly.com){rel="&#x22;nofollow&#x22;"}, get a test API key under Developers » API keys, and [copy the Lovable agent prompt](https://docs.vatly.com/#prompt-lovable-to-build-the-integration).** Create a test product under **Manage Products**, then let Lovable connect a checkout button to your existing backend using the prompt below. Enter the key only in Lovable's secure secret form, never in chat.
+
+Test mode works from the start. Your first milestone is a hosted test checkout followed by a verified webhook that updates access in your app, not a complete billing UI built from scratch. Live sales require [Vatly approval, product review, and Mollie verification](https://docs.vatly.com/introduction#going-live). Product review typically takes one to two business days; that is not a guarantee of your integration or go-live date.
 
 ## Choose the right server code for your Lovable project
+
+You keep your existing app, customer login, and database. Lovable adds a checkout action that sends customers to Vatly's hosted payment page, plus a background receiver for billing updates. After a verified payment, your app grants the purchased access. You do not need to build a card-entry form. For the responsibilities behind this flow, see [Build your own integration](https://docs.vatly.com/guides/build-your-own-integration).
 
 Lovable's [current stack documentation](https://docs.lovable.dev/introduction/faq){rel="&#x22;nofollow&#x22;"} distinguishes two kinds of app:
 
@@ -11521,11 +11625,13 @@ The [built-in backend](https://docs.lovable.dev/features/cloud){rel="&#x22;nofol
 
 Lovable offers [built-in payments](https://docs.lovable.dev/features/payments){rel="&#x22;nofollow&#x22;"} and other payment integrations. If you want **Vatly** to be the merchant of record, explicitly request a **direct Vatly API integration**. Do not ask only to "add payments": the agent could choose a different provider.
 
-Lovable also supports [custom API connectors](https://docs.lovable.dev/integrations/any-api){rel="&#x22;nofollow&#x22;"}. This guide uses direct server-side SDK calls so your app owns checkout authorization, raw-body webhook verification, and fulfillment. It does not use Lovable's built-in payments setup or ask you to connect a Stripe account for Vatly.
+Lovable also supports [custom API connectors](https://docs.lovable.dev/integrations/any-api){rel="&#x22;nofollow&#x22;"}. This guide uses server-side Vatly packages so your app owns checkout authorization, webhook verification, and fulfillment. It does not use Lovable's built-in payments setup or ask you to connect a Stripe account for Vatly.
+
+The prompt below starts your agent with [`@getvatly/fluent`](https://docs.vatly.com/packages/fluent-js/readme), the higher-level JavaScript billing package. It provides building blocks for checkout, subscriptions, and webhook processing; your agent connects those to your database and access rules. The [general integration guide](https://docs.vatly.com/guides/build-your-own-integration#choose-your-tools) explains the alternatives, while the package docs own implementation examples.
 
 ## Set up the account and secrets
 
-Follow [Prepare your Vatly account](https://docs.vatly.com/integrations#prepare-your-vatly-account), starting with a test key and product. The JavaScript packages `@getvatly/sdk` and optional `@getvatly/fluent` are **alpha**; pin exact versions because alpha updates may break compatibility.
+Follow the [Quickstart](https://docs.vatly.com/guides/quickstart), starting with a test key and product. Both `@getvatly/fluent` and its underlying `@getvatly/sdk` are **alpha**; use the compatible, exact versions in [fluent installation and configuration](https://docs.vatly.com/packages/fluent-js/configuration), because alpha updates may break compatibility.
 
 When Lovable prompts for `VATLY_API_KEY`, use the secure **Add secret** form, not the chat. Manage project secrets under **More » Settings » Secrets**. If your app uses an external Supabase project, Lovable's **Manage secrets** opens the Supabase dashboard; store the secret in that project's Edge Function settings. See [Lovable secrets](https://docs.lovable.dev/features/secrets){rel="&#x22;nofollow&#x22;"}.
 
@@ -11546,33 +11652,38 @@ Lovable Cloud or connected Supabase backend. Do not migrate the backend.
 Tell me which files and deployed routes will contain server-only code.
 
 Read these sources before writing code:
-https://docs.vatly.com/integrations
-https://docs.vatly.com/packages/javascript/readme
-https://docs.vatly.com/packages/javascript/checkouts
-https://docs.vatly.com/packages/javascript/webhooks
+https://docs.vatly.com/guides/build-your-own-integration
 https://docs.vatly.com/packages/fluent-js/readme
+https://docs.vatly.com/packages/fluent-js/configuration
+https://docs.vatly.com/packages/fluent-js/checkouts
+https://docs.vatly.com/packages/fluent-js/webhooks
+https://docs.vatly.com/packages/fluent-js/coreconcepts
+https://docs.vatly.com/guides/webhooks
 https://docs.vatly.com/api-reference
 https://docs.vatly.com/openapi.yaml
 
-Use @getvatly/sdk at the exact alpha version in the integration recipe.
-For Deno Edge Functions, use its pinned npm: import. Both JS packages are
-alpha: do not install an unpinned latest release or invent SDK methods.
+Start with @getvatly/fluent and its required @getvatly/sdk dependency.
+Pin the compatible alpha versions documented in configuration and check
+the deployed runtime; use pinned npm: imports for Deno. Use the underlying
+SDK when a fluent helper is missing or the deployed runtime requires a
+different approach, and explain the reason. Wire the documented storage
+drivers to our database; do not assume adapters are included.
 Ask me for a test-mode Vatly product ID and fixed success/canceled URLs.
 Ask for VATLY_API_KEY and VATLY_WEBHOOK_SECRET through the secret form,
 never chat. Never put either value in VITE_ variables or browser code.
 
 Authenticate checkout requests, load or create the signed-in user's Vatly
 customer on the server, and store the mapping in the database. Restrict
-products and quantities server-side. Create the checkout using
-vatly.checkouts.create and return checkout.links.checkoutUrl.href as
-checkoutUrl. Redirect the browser there. Do not unlock access on return.
+products and quantities server-side. Use the documented fluent checkout
+or subscription builder and return only the hosted checkout URL to the
+browser. Redirect there. Do not unlock access on return.
 
 Make only the webhook route public without user JWT/session requirements.
-Verify the untouched Request with constructWebhookEventFromRequest from
-@getvatly/sdk/webhooks and the webhook secret before any writes. Reject bad
-signatures. Acknowledge verified webhook.setup. Persist a durable event inbox
-with a unique verified event.id and retryable processing; apply fulfillment
-and deduplication atomically. Configure database access policies so users
+Follow fluent's webhook guide: verify the untouched request with the
+endpoint secret before writes, validate the envelope, and wire transactional
+webhook storage. Reject bad signatures and acknowledge verified webhook.setup.
+Use the verified event.id for deduplication; commit processing and database
+changes atomically, with retries on failure. Configure access policies so users
 cannot write their own billing/access state. Follow Vatly's actual event
 names and envelope, and handle subscription cancellation and renewals.
 
@@ -11583,25 +11694,49 @@ Report what you tested and what still needs my setup; do not claim live
 payments work without a completed test-mode checkout and verified delivery.
 ```
 
-The [shared checkout and webhook recipe](https://docs.vatly.com/integrations#create-a-checkout-with-the-javascript-sdk) contains the SDK code and security requirements. If Lovable generates a Supabase function with JWT verification enabled for the webhook, ask it to allow external requests **only on that function**, while keeping Vatly signature verification mandatory. The checkout function must still require your user's authentication.
+Use the JavaScript packages in Lovable's managed server functions. A separately hosted backend can use [another package or the HTTP API](https://docs.vatly.com/guides/build-your-own-integration#choose-your-tools). If Lovable generates a Supabase function with JWT verification enabled for the webhook, ask it to allow external requests **only on that function**, while keeping Vatly signature verification mandatory. The checkout function must still require your user's authentication.
 
 ## Review the result in Lovable
 
 - Ask the agent to identify the server-only SDK imports and show that the browser calls your backend, not `api.vatly.com` with your API key.
 - In an older Vite app, confirm it deployed an Edge Function, not just a frontend helper. In a TanStack Start app, confirm the webhook is a deployed HTTP route, not a server function that only the UI can invoke.
 - Confirm the return page stays pending until the database reflects a verified payment event, and database policies prevent clients from granting themselves access.
-- Run the [test checklist](https://docs.vatly.com/integrations#test-before-publishing). Register the deployed webhook URL in Vatly, not the editor preview URL. Do not replace the test key with a live key until [onboarding](https://docs.vatly.com/introduction#going-live) is complete.
+- Test unsigned, tampered, and stale webhooks, duplicate deliveries, and a database failure. Confirm retries cannot grant access twice. Follow [fluent testing](https://docs.vatly.com/packages/fluent-js/testing) and the [test-mode guide](https://docs.vatly.com/guides/testing).
+- Register the deployed webhook URL in Vatly, not the editor preview URL. Do not replace the test key with a live key until [onboarding](https://docs.vatly.com/introduction#going-live) is complete.
 
 Building in Bolt instead? See [Bolt payments with Vatly](https://docs.vatly.com/integrations/bolt).
 
 
 # Bolt payments with Vatly
 
-Add **Vatly payments to your Bolt.new app** to sell software, digital products, or subscriptions with a merchant of record. Vatly is the merchant of record for European software and digital products, acting as the legal seller and handling payments, tax, and compliance. Your Bolt app calls Vatly from its backend and redirects customers to Vatly's hosted checkout.
+Add **Vatly payments to your Bolt.new app** without turning a generated checkout into a tax and invoicing project. Vatly is the merchant of record for European software and digital products: it acts as the legal seller for your software, digital downloads, or subscriptions, while your Bolt app handles the product and customer access.
+
+**[Sign up and get a test key](https://my.vatly.com){rel="&#x22;nofollow&#x22;"} · [Copy the Bolt integration prompt](https://docs.vatly.com/#prompt-bolt-to-add-checkout-and-webhooks)**
 
 This is a custom API integration, not a native Bolt connector or an endorsement by Bolt. It uses Vatly's existing API and JavaScript packages; no platform changes are required on Vatly's side.
 
+## A payment integration is not a merchant of record
+
+Bolt's Stripe integration can generate checkout and webhook code. With a standard payment-processing integration, though, your business is still the seller: you must arrange tax compliance and customer invoicing alongside the integration. The distinction is between processing a payment and taking on the seller's responsibilities. See [Vatly vs Stripe](https://vatly.com/vs/stripe){rel="&#x22;nofollow&#x22;"} for the broader comparison.
+
+Vatly takes on the latter for Vatly sales. It handles [EU VAT, applicable sales tax, registrations, returns, remittance, and customer invoices](https://vatly.com/){rel="&#x22;nofollow&#x22;"}. That leaves Bolt's server functions responsible for a smaller integration: create checkout, verify billing events, and update your app's access state. Your product logic and fulfillment remain yours.
+
+## What Vatly gives your Bolt app
+
+- **A European merchant of record.** Vatly is based in the Netherlands and focuses on European software and digital products, with [Mollie-powered European payment methods](https://vatly.com/mollie-merchant-of-record){rel="&#x22;nofollow&#x22;"} for international sales.
+- **A fit for AI and software products.** Sell access to an AI tool or SaaS app as a subscription, or sell a one-off license or digital download. Use Vatly's existing API rather than building a billing system around your frontend framework.
+- **One checkout, multiple order lines.** Pass products and quantities to the [checkout API](https://docs.vatly.com/api-reference/checkouts), then use the resulting [order lines](https://docs.vatly.com/api-reference/orders) to fulfill a purchase containing more than one item.
+- **Hosted billing screens.** Vatly provides the checkout and a [customer portal](https://docs.vatly.com/packages/fluent-js/customerportal) for invoices and subscription management. Portal access requires an issued invoice; you still authenticate the user and create the portal session on your server.
+
+## Get your first test payment working
+
+**[Sign up for Vatly](https://my.vatly.com){rel="&#x22;nofollow&#x22;"}, get a test API key under Developers » API keys, and [copy the Bolt integration prompt](https://docs.vatly.com/#prompt-bolt-to-add-checkout-and-webhooks).** Add a test product in **Manage Products**. Bolt can then build the server functions and checkout button against your existing Bolt Database or Supabase backend; you do not need to switch database providers to use Vatly.
+
+Start in test mode as soon as your account is ready, with credentials stored in database **Secrets**. Verify a complete test checkout and webhook before considering the integration ready. Going live also depends on [Vatly approval, product review, and Mollie business verification](https://docs.vatly.com/introduction#going-live). Product review typically takes one to two business days, but neither that nor generated code guarantees a launch date.
+
 ## Identify your Bolt backend first
+
+Your customers keep using your Bolt app. A checkout button sends them to Vatly's hosted payment page, and a background billing update tells your app when to grant access. You keep the product UI, login, and database; Vatly handles checkout, tax, and invoicing. See [Build your own integration](https://docs.vatly.com/guides/build-your-own-integration) for the overall responsibilities before asking the agent to make changes.
 
 Bolt supports [JavaScript frontend frameworks and Node.js backends](https://support.bolt.new/reference/supported-technologies){rel="&#x22;nofollow&#x22;"}, rather than requiring one frontend framework. Inspect `package.json` and the deployed backend instead of assuming every app is a React + Vite app or that a Node process in the editor is deployed as a production server.
 
@@ -11615,24 +11750,26 @@ You can also use an existing Supabase project with its database, authentication,
 | Connected Supabase project        | Supabase Edge Functions and the existing auth/database integration.                                                                    |
 | Separately hosted Node.js backend | Private server routes and that host's runtime secrets. Confirm the routes actually deploy; a browser-only static host cannot run them. |
 
-This guide focuses on Bolt Cloud and Supabase. The [shared SDK recipe](https://docs.vatly.com/integrations) also works in a separately deployed server with Fetch and Web Crypto.
+This guide focuses on Bolt Cloud and Supabase. For a separately hosted backend, choose a [package or direct HTTP integration](https://docs.vatly.com/guides/build-your-own-integration#choose-your-tools) that fits its runtime.
 
 ## Use Vatly, not Bolt's Stripe integration
 
 Bolt's [built-in Stripe integration](https://support.bolt.new/integrations/stripe){rel="&#x22;nofollow&#x22;"} imports Stripe products and generates checkout and webhook code. Those conveniences apply to Stripe, **not to a custom Vatly integration**. Do not paste a Vatly key into the Stripe setup or reuse Stripe event names, signatures, or test cards.
 
-Tell the agent to use Vatly explicitly. Create your products in Vatly, create checkouts with `@getvatly/sdk`, and register your webhook URL in Vatly yourself. Your app remains responsible for authorizing checkout requests and updating access from verified Vatly events.
+Tell the agent to use Vatly explicitly. Create your products in Vatly, create checkouts on your server, and register your webhook URL in Vatly yourself. Your app remains responsible for authorizing checkout requests and updating access from verified Vatly events.
+
+The prompt below starts your agent with [`@getvatly/fluent`](https://docs.vatly.com/packages/fluent-js/readme), the higher-level JavaScript billing package. Your agent connects its checkout and webhook building blocks to your existing database and access rules; it is not a ready-made Bolt Database or Supabase adapter. For other approaches, see [Choose your tools](https://docs.vatly.com/guides/build-your-own-integration#choose-your-tools). Implementation examples live in the package docs.
 
 ## Configure the database and secrets
 
-1. Follow [Prepare your Vatly account](https://docs.vatly.com/integrations#prepare-your-vatly-account) to get a test key and product ID.
+1. Follow the [Quickstart](https://docs.vatly.com/guides/quickstart) to get a test key and product ID.
 2. Ensure your Bolt project has a connected database. Bolt's server functions and secrets require one; if none exists, ask the agent to add it before building the payment functions.
 3. Open the **database icon » Secrets** and add `VATLY_API_KEY` using your Vatly `test_` key. Add `VATLY_WEBHOOK_SECRET` with the signing secret configured for your Vatly webhook endpoint. Bolt can also prompt you to add these securely. See [Bolt secrets](https://support.bolt.new/bolt-cloud/database/secrets){rel="&#x22;nofollow&#x22;"}.
 4. Use **database icon » Server Functions** to inspect the generated functions and their logs. Never log the keys or full billing payloads while debugging.
 
 Secrets are available to server functions, not browser code. Do not put Vatly credentials in Bolt's project `.env`, `VITE_*` variables, frontend components, or agent chat. With a separately hosted backend, configure equivalent private runtime secrets on that host.
 
-The JavaScript SDK `@getvatly/sdk` and optional higher-level `@getvatly/fluent` are **alpha**. Pin exact versions and review breaking changes before upgrading.
+Both `@getvatly/fluent` and its underlying `@getvatly/sdk` are **alpha**. Use the compatible, exact versions in [fluent installation and configuration](https://docs.vatly.com/packages/fluent-js/configuration) and review breaking changes before upgrading.
 
 ## Prompt Bolt to add checkout and webhooks
 
@@ -11650,16 +11787,22 @@ checkout creation and a separate public Vatly webhook receiver, not a
 browser-only helper or a Node server that only runs in the editor.
 
 Read:
-https://docs.vatly.com/integrations
-https://docs.vatly.com/packages/javascript/readme
-https://docs.vatly.com/packages/javascript/checkouts
-https://docs.vatly.com/packages/javascript/webhooks
+https://docs.vatly.com/guides/build-your-own-integration
 https://docs.vatly.com/packages/fluent-js/readme
+https://docs.vatly.com/packages/fluent-js/configuration
+https://docs.vatly.com/packages/fluent-js/checkouts
+https://docs.vatly.com/packages/fluent-js/webhooks
+https://docs.vatly.com/packages/fluent-js/coreconcepts
+https://docs.vatly.com/guides/webhooks
 https://docs.vatly.com/api-reference
 https://docs.vatly.com/openapi.yaml
 
-Use @getvatly/sdk pinned to the exact alpha version in that recipe, using
-the pinned npm: import in Deno. Both JS packages are alpha. Ask me to add
+Start with @getvatly/fluent and its required @getvatly/sdk dependency.
+Pin the compatible alpha versions documented in configuration and check
+the deployed runtime; use pinned npm: imports for Deno. Use the underlying
+SDK when a fluent helper is missing or the deployed runtime requires a
+different approach, and explain the reason. Wire the documented storage
+drivers to our database; do not assume adapters are included. Ask me to add
 VATLY_API_KEY and VATLY_WEBHOOK_SECRET via database Secrets, never in chat
 or .env. Keep SDK imports and credentials exclusively in server functions.
 Ask me for a test-mode product ID and fixed success/canceled return URLs.
@@ -11667,19 +11810,19 @@ Ask me for a test-mode product ID and fixed success/canceled return URLs.
 Require authentication for checkout creation. Load or create the Vatly
 customer for the signed-in user and keep a server-owned database mapping.
 Never accept an arbitrary customer ID, price, or redirect URL from the UI.
-Allowlist products and validate quantities server-side. Call
-vatly.checkouts.create; return checkout.links.checkoutUrl.href as
-checkoutUrl so the browser can redirect. Add CORS handling restricted to
+Allowlist products and validate quantities server-side. Use the documented
+fluent checkout or subscription builder; return only its hosted checkout
+URL so the browser can redirect. Add CORS handling restricted to
 my app's origins where functions are cross-origin. A return URL visit must
 never grant access.
 
 The webhook function must accept Vatly without a user JWT, while checkout
-creation stays authenticated. Verify the raw Request before parsing JSON
-with constructWebhookEventFromRequest from @getvatly/sdk/webhooks and the
-stored signing secret. Reject invalid signatures and acknowledge verified
-webhook.setup. Use the signed event.id as a unique database key, store a
-durable inbox before acknowledging, and make fulfillment and deduplication
-transactional with retries. Protect billing tables from client writes.
+creation stays authenticated. Follow fluent's webhook guide: verify the
+untouched request with the endpoint secret before writes, validate the
+envelope, and wire transactional webhook storage. Reject invalid signatures
+and acknowledge verified webhook.setup. Use the signed event.id for
+deduplication, commit processing and database changes atomically, and retry
+on failure. Protect billing tables from client writes.
 Implement Vatly event names and top-level object payloads, including the
 subscription lifecycle when selling subscriptions, not data.object.
 
@@ -11690,7 +11833,7 @@ storage failure retries, and a completed test checkout. Distinguish tested
 behavior from configuration or deployment work I still need to do.
 ```
 
-Use the [checkout code](https://docs.vatly.com/integrations#create-a-checkout-with-the-javascript-sdk) and [webhook verification recipe](https://docs.vatly.com/integrations#verify-webhooks-before-granting-access) as the implementation contract. For Supabase Edge Functions, Vatly's webhook route needs JWT verification disabled for that function only: Vatly's signature, not a user's session, authenticates deliveries.
+Use the JavaScript packages in Bolt's managed server functions. A separately hosted backend can use [another package or the HTTP API](https://docs.vatly.com/guides/build-your-own-integration#choose-your-tools). For Supabase Edge Functions, Vatly's webhook route needs JWT verification disabled for that function only: Vatly's signature, not a user's session, authenticates deliveries.
 
 ## Debug a deployed Bolt integration
 
@@ -11702,119 +11845,30 @@ Use the [checkout code](https://docs.vatly.com/integrations#create-a-checkout-wi
 | Webhook reports an invalid signature               | Confirm the matching endpoint secret and verify the raw body before any JSON parsing. Use Vatly's verifier, not Stripe's.                                                                             |
 | User pays but access stays pending                 | Inspect Server Functions logs and the durable inbox. Check event subscriptions, test/live mode, customer mapping, and failed database transactions. Do not bypass verification to make access appear. |
 
-Run the [test checklist](https://docs.vatly.com/integrations#test-before-publishing) before publishing for customers, and complete [Vatly onboarding](https://docs.vatly.com/introduction#going-live) before switching to live credentials.
+Follow [fluent testing](https://docs.vatly.com/packages/fluent-js/testing) and the [test-mode guide](https://docs.vatly.com/guides/testing) before publishing for customers. Confirm unsigned, tampered, and stale webhooks are rejected, concurrent duplicates cannot fulfill twice, and storage failures can retry. Complete [Vatly onboarding](https://docs.vatly.com/introduction#going-live) before switching to live credentials.
 
 Building in Lovable instead? See [Lovable payments with Vatly](https://docs.vatly.com/integrations/lovable).
 
 
 # Integrations
 
-Vatly works with apps built using AI app builders through its existing API and JavaScript packages. Vatly is the merchant of record: the legal seller that handles payments, tax, and compliance for your software or digital products. Your app creates a hosted checkout and uses verified webhooks to deliver the purchase.
+Connect Vatly to the tools and platforms you use to build your app. Vatly is the merchant of record for European software and digital products, handling tax and customer invoicing while your app delivers the product.
 
-These are custom API integrations, not native Lovable or Bolt connectors. No Vatly-side platform changes are required.
+[]{#choose-your-builder}
 
-## Choose your builder
+## Find your platform
 
-| Builder  | Start here                                                                                                                                                                   |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Lovable  | [Lovable payments with Vatly](https://docs.vatly.com/integrations/lovable): TanStack Start server functions, older React + Vite apps, and Lovable Cloud or Supabase secrets. |
-| Bolt.new | [Bolt payments with Vatly](https://docs.vatly.com/integrations/bolt): Bolt Cloud server functions, database secrets, and existing Supabase projects.                         |
+| Platform                                               | How to get started                                                                                                           |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| [Lovable](https://docs.vatly.com/integrations/lovable) | Understand how Vatly fits your Lovable app, prepare the account and secrets, and give Lovable's agent the integration brief. |
+| [Bolt.new](https://docs.vatly.com/integrations/bolt)   | Connect Vatly to your existing Bolt app and backend, then have the agent build and test your checkout and billing flow.      |
 
-The builder pages explain where the code runs and include prompts to paste into the agent. The shared recipe below defines the checkout and webhook contract for either builder, or another app with a server-side JavaScript runtime.
+The Lovable and Bolt guides describe custom integrations using Vatly's existing packages and API. They are not native payment connectors or endorsements by those platforms.
 
-## Prepare your Vatly account
+[]{#choose-your-integration-approach}[]{#create-a-checkout-with-the-javascript-sdk}[]{#create-a-checkout}[]{#prepare-your-vatly-account}[]{#keep-credentials-on-the-server}[]{#verify-webhooks-before-granting-access}[]{#before-you-connect}[]{#test-before-publishing}[]{#documentation-for-your-agent}
 
-1. Create an account at [Vatly](https://my.vatly.com){rel="&#x22;nofollow&#x22;"} and get a `test_` API key under **Developers » API keys**.
-2. Create a product under **Manage Products**. Use a `one_off_product_…` ID for a single purchase or a `subscription_plan_…` ID for recurring access.
-3. Keep the key and all product and customer IDs in the same storefront and mode.
-4. Choose your app's success and canceled URLs. Keep these in server configuration, not in browser-supplied request data.
+## Connecting another app?
 
-Test mode is available before going live. Live selling also requires Vatly approval, product review, and verification of your connected Mollie account. See [Going live](https://docs.vatly.com/introduction#going-live) and the [selling workflow](https://docs.vatly.com/guides/selling-workflow).
+Start with [Build your own integration](https://docs.vatly.com/guides/build-your-own-integration) to understand what Vatly handles, what your app needs, and what to ask your developer or agent to build. It also helps you choose a fluent package, SDK, or direct API approach.
 
-## Keep credentials on the server
-
-Store `VATLY_API_KEY` in your backend's secret manager. Store a separate `VATLY_WEBHOOK_SECRET` there for the webhook endpoint. Never put either value in browser code, chat prompts, local storage, a committed file, or a frontend environment variable such as `VITE_*` or `NEXT_PUBLIC_*`.
-
-The browser calls **your app's backend**; only that backend calls Vatly. Never import the Vatly client into a frontend component. Return only the checkout URL and any non-sensitive identifiers your UI needs, not API credentials or full customer records. Keep database service-role credentials server-side too.
-
-## Create a checkout with the JavaScript SDK
-
-Both [`@getvatly/sdk`](https://docs.vatly.com/packages/javascript/readme) and the optional [`@getvatly/fluent`](https://docs.vatly.com/packages/fluent-js/readme) are **alpha**. Releases may break compatibility. Pin exact versions and review upgrades. This recipe uses the published SDK alpha:
-
-```bash
-npm install --save-exact @getvatly/sdk@0.3.0-alpha.2
-```
-
-For a Deno Edge Function, use `npm:@getvatly/sdk@0.3.0-alpha.2` as the import specifier instead. The SDK uses platform Fetch and Web Crypto and supports Node 20+, Deno, and edge runtimes.
-
-This is server-only checkout logic, not an unauthenticated HTTP endpoint. Your route must authenticate the user and load their Vatly customer ID from a server-owned mapping first. Create that customer if needed using the [Customers SDK](https://docs.vatly.com/packages/javascript/customers), then save the association. Never trust a customer ID supplied by the browser.
-
-```ts
-import { VatlyClient } from '@getvatly/sdk';
-
-export async function createCheckout(apiKey: string, customerId: string) {
-  const vatly = new VatlyClient({ apiKey });
-  const checkout = await vatly.checkouts.create({
-    customerId,
-    products: [{ id: 'subscription_plan_REPLACE_ME', quantity: 1 }],
-    redirectUrlSuccess: 'https://app.example.com/billing/return',
-    redirectUrlCanceled: 'https://app.example.com/billing/canceled',
-  });
-  return { checkoutUrl: checkout.links.checkoutUrl.href };
-}
-```
-
-Replace the product ID and URLs with your own server-controlled values. Read the API key from the server runtime: for example, `process.env.VATLY_API_KEY` on Node or `Deno.env.get('VATLY_API_KEY')` in a Supabase Edge Function. Fail configuration checks if it is absent; never fall back to a browser value.
-
-Your authenticated route calls this function with the secret and the current user's customer ID. If the UI offers several plans, accept an app-level plan name and map it to an allowed Vatly product ID on the server. Validate quantities, rate-limit checkout creation, and protect cookie-authenticated routes against CSRF. For cross-origin Edge Function calls, allow only your app's origins and handle CORS preflight.
-
-After the backend returns `{ checkoutUrl }`, the browser navigates to that URL. Vatly hosts the payment form; your app does not collect card details. A success redirect is **not proof of payment**. The return page should show a pending state until your backend confirms payment.
-
-See [SDK checkouts](https://docs.vatly.com/packages/javascript/checkouts), [fluent checkouts](https://docs.vatly.com/packages/fluent-js/checkouts), and the [Checkouts API](https://docs.vatly.com/api-reference/checkouts) for the complete options.
-
-## Verify webhooks before granting access
-
-Deploy a public HTTPS webhook endpoint and register it in **Developers » Webhooks** in the [Vatly dashboard](https://my.vatly.com){rel="&#x22;nofollow&#x22;"}, or through the [Webhook Endpoints API](https://docs.vatly.com/api-reference/webhook-endpoints). Configure a signing secret and store the matching value as `VATLY_WEBHOOK_SECRET` in your backend. This is not your API key.
-
-Vatly does not send your app's user session or Supabase JWT. Allow external requests to **this webhook endpoint only**, without disabling authentication on checkout creation or other routes. For Supabase Edge Functions, configure the webhook function to accept requests without JWT verification; Vatly signature verification replaces user authentication on that endpoint.
-
-Use the SDK's Fetch Request helper at the start of your server handler:
-
-```ts
-import { constructWebhookEventFromRequest } from '@getvatly/sdk/webhooks';
-
-// Inside the webhook handler, before request.json() or any body parser:
-const event = await constructWebhookEventFromRequest(request, webhookSecret);
-// Only now use event.id, event.eventName, and event.object.
-```
-
-For Deno, import from `npm:@getvatly/sdk@0.3.0-alpha.2/webhooks`. Supply `webhookSecret` from the server's `VATLY_WEBHOOK_SECRET` secret. The helper reads the exact raw body and `Vatly-Signature` header, verifies HMAC-SHA256, and enforces a 300-second timestamp tolerance. Catch verification failures and return `400` without changing data. Do not parse or re-serialize the body before verification.
-
-Verification is only the first part of the handler. Ask your agent to implement durable processing:
-
-1. Verify every request, including `webhook.setup`. Acknowledge a verified setup event with `2xx` so endpoint registration succeeds.
-2. Use the &#x2A;*verified `event.id`** as a unique database key. `Vatly-Event-Id` is useful for logs, but the header itself is not signed. Deliveries may repeat or arrive concurrently.
-3. Store the event and its processing state durably before returning `2xx`. Either apply business changes and mark the event processed in one transaction, or use a durable inbox with a retrying worker. Return a non-`2xx` if storage fails. Acknowledge already-processed duplicates without repeating fulfillment.
-4. Associate the signed resource's customer ID with your server-owned user mapping. For a one-off purchase, fulfill on `order.paid`. For subscriptions, handle `subscription.started`, renewals, and cancellation events according to your access policy. Reconcile current subscription state when delivery order could affect access; do not let a late event restore canceled access.
-5. Keep unknown events for triage rather than silently discarding them. With the SDK's typed helper, check `event.known` before narrowing `event.object` by event name. Do not expose webhook payloads or billing writes to browser clients; apply database access policies.
-
-Subscribe explicitly to the events your app handles, including refunds and chargebacks where they affect access. The signed event envelope uses top-level `eventName`, `entityId`, and `object` fields, **not a Stripe-style `data.object` wrapper**. See [JavaScript webhook handling](https://docs.vatly.com/packages/javascript/webhooks), [fluent webhooks](https://docs.vatly.com/packages/fluent-js/webhooks), and the [webhook guide](https://docs.vatly.com/guides/webhooks) for event names and billing behavior.
-
-## Test before publishing
-
-- Use a `test_` key and test-mode products and customers throughout. Follow [Testing](https://docs.vatly.com/guides/testing), not another provider's test-card instructions.
-- Confirm an unauthenticated caller cannot create a checkout and one user cannot buy for another user's Vatly customer.
-- Check that no Vatly key appears in browser bundles, network requests, logs, or your repository.
-- Complete a test checkout and confirm a verified event updates the right user's access. Visiting the success URL directly must not grant access.
-- Send an unsigned, tampered, or stale webhook: it must be rejected without writes. Replay a valid event and send concurrent duplicates: fulfillment must happen once.
-- Test cancellation, a failed payment, and a database failure during delivery. Confirm failed processing can retry and a verified `webhook.setup` succeeds.
-- Before going live, configure live secrets, live product/customer mappings, and a live-mode webhook endpoint. Recheck the deployed HTTPS URL after changing hosts; a preview URL is not a permanent webhook address.
-
-## Documentation for your agent
-
-Give the builder these public sources instead of asking it to guess an integration:
-
-- [JavaScript SDK](https://docs.vatly.com/packages/javascript/readme) and [operation reference](https://docs.vatly.com/packages/javascript/api)
-- [Fluent JavaScript package](https://docs.vatly.com/packages/fluent-js/readme) for higher-level billing and storage bindings
-- [API reference](https://docs.vatly.com/api-reference){rel="&#x22;nofollow&#x22;"} and [OpenAPI specification](https://docs.vatly.com/openapi.yaml){rel="&#x22;nofollow&#x22;"}
-- [Agent-friendly documentation index](https://docs.vatly.com/llms.txt){rel="&#x22;nofollow&#x22;"} and [full documentation](https://docs.vatly.com/llms-full.txt){rel="&#x22;nofollow&#x22;"}
+If you are ready for your first API request, follow the [Quickstart](https://docs.vatly.com/guides/quickstart). Implementation examples live in the [package docs](https://docs.vatly.com/packages), with exact endpoint and field details in the [API reference](https://docs.vatly.com/api-reference).

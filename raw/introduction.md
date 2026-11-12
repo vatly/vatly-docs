@@ -4,6 +4,8 @@
 
 Vatly is the Merchant of Record for European software and digital products. It becomes the legal seller on every sale and handles payments, tax and compliance, so you just ship. Sell subscriptions and one-off products through a single API.
 
+To understand what adopting Vatly involves, start with [Build your own integration](/guides/build-your-own-integration). Using a specific platform? Find [Lovable payments with Vatly](/integrations/lovable) and [Bolt payments with Vatly](/integrations/bolt) under **Integrations**, with platform-specific setup and agent prompts.
+
 <card-group>
 <card icon="i-heroicons:shopping-cart" title="Hosted Checkouts" to="/api-reference/checkouts">
 
@@ -48,6 +50,7 @@ Test mode works from the start, so you can build and test your integration right
 
 ## Next steps
 
+- [Build your own integration](/guides/build-your-own-integration): plan what your app needs and brief your developer or agent
 - [Quickstart guide](/guides/quickstart): make your first API call
 - [Authentication](/guides/authentication): learn how API keys work
 - [API Reference](/api-reference/customers): explore all endpoints

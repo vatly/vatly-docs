@@ -9,6 +9,8 @@ API key from your dashboard. You find it under [Developers » API keys](https://
 
 </note>
 
+This Quickstart covers your first authenticated API request. To understand the full integration before implementing it, start with [Build your own integration](/guides/build-your-own-integration). For platform-specific setup, see [Integrations](/integrations), including Lovable and Bolt.
+
 ## Choose your client
 
 Before making your first API request, you need to pick which API client you will use. In addition to good ol' cURL HTTP requests, Vatly offers clients for JavaScript, Python, and PHP. In the following example, you can see how to install each client.

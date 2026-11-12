@@ -12,6 +12,7 @@
 - [Quickstart](https://docs.vatly.com/raw/guides/quickstart.md): This guide will get you all set up and ready to use the Vatly API. We’ll cover how to set up an API client and how to make your first API request.
 - [Payouts & Settlement](https://docs.vatly.com/raw/guides/payouts.md): How and when your share of each payment reaches your Mollie account, and where to follow it in the dashboard.
 - [Customer Emails](https://docs.vatly.com/raw/guides/customer-emails.md): The billing emails Vatly sends to your customers as Merchant of Record, when each one is sent, and what you can configure.
+- [Build your own integration](https://docs.vatly.com/raw/guides/build-your-own-integration.md): Understand what adopting Vatly involves: responsibilities, checkout and fulfillment, choosing an integration path, and preparing your developer or AI agent.
 - [Selling Workflow](https://docs.vatly.com/raw/guides/selling-workflow.md): Follow the typical Vatly happy path from account setup to product delivery, and prepare for refunds and chargebacks.
 - [Vatly SDKs](https://docs.vatly.com/raw/guides/sdks.md): Install the official Vatly SDKs for PHP, Laravel, JavaScript and TypeScript, including the fluent billing package.
 - [Authentication](https://docs.vatly.com/raw/guides/authentication.md): In this guide, we'll look at how authentication works. Vatly uses API keys to authenticate your API requests.
@@ -74,6 +75,6 @@
 - [Customer portal](https://docs.vatly.com/raw/packages/fluent-js/customerportal.md): Vatly JavaScript packages - Customer portal
 - [Testing](https://docs.vatly.com/raw/packages/fluent-js/testing.md): Vatly JavaScript packages - Testing
 - [Packages](https://docs.vatly.com/raw/packages.md): Official Vatly packages for PHP, Laravel, JavaScript and TypeScript. Find installation commands and SDK documentation.
-- [Lovable payments with Vatly](https://docs.vatly.com/raw/integrations/lovable.md): Add Vatly as merchant of record to your Lovable app. Use server-side checkout, secure secrets, and signed webhooks with prompts for Lovable's AI agent.
-- [Bolt payments with Vatly](https://docs.vatly.com/raw/integrations/bolt.md): Use Vatly as merchant of record in Bolt.new apps. Add hosted checkout with Bolt Cloud or Supabase server functions, database secrets, and verified webhooks.
-- [Integrations](https://docs.vatly.com/raw/integrations.md): Use Vatly as merchant of record in AI-built apps. Connect Lovable or Bolt to hosted checkout, subscriptions, and verified webhooks.
+- [Lovable payments with Vatly](https://docs.vatly.com/raw/integrations/lovable.md): Sell European software and digital products from Lovable with Vatly handling tax and invoicing. Start with a test API key and a copy-paste integration prompt.
+- [Bolt payments with Vatly](https://docs.vatly.com/raw/integrations/bolt.md): Add Vatly payments to Bolt.new for European software and digital products. Offload tax and invoicing, get a test API key, and prompt Bolt to wire up checkout.
+- [Integrations](https://docs.vatly.com/raw/integrations.md): Find platform-specific guides for using Vatly as merchant of record. Connect your Lovable or Bolt app and take the next step toward your first test purchase.

@@ -1,12 +1,35 @@
 # Bolt payments with Vatly
 
-> Use Vatly as merchant of record in Bolt.new apps. Add hosted checkout with Bolt Cloud or Supabase server functions, database secrets, and verified webhooks.
+> Add Vatly payments to Bolt.new for European software and digital products. Offload tax and invoicing, get a test API key, and prompt Bolt to wire up checkout.
 
-Add **Vatly payments to your Bolt.new app** to sell software, digital products, or subscriptions with a merchant of record. Vatly is the merchant of record for European software and digital products, acting as the legal seller and handling payments, tax, and compliance. Your Bolt app calls Vatly from its backend and redirects customers to Vatly's hosted checkout.
+Add **Vatly payments to your Bolt.new app** without turning a generated checkout into a tax and invoicing project. Vatly is the merchant of record for European software and digital products: it acts as the legal seller for your software, digital downloads, or subscriptions, while your Bolt app handles the product and customer access.
+
+**Sign up and get a test key · Copy the Bolt integration prompt**
 
 This is a custom API integration, not a native Bolt connector or an endorsement by Bolt. It uses Vatly's existing API and JavaScript packages; no platform changes are required on Vatly's side.
 
+## A payment integration is not a merchant of record
+
+Bolt's Stripe integration can generate checkout and webhook code. With a standard payment-processing integration, though, your business is still the seller: you must arrange tax compliance and customer invoicing alongside the integration. The distinction is between processing a payment and taking on the seller's responsibilities. See [Vatly vs Stripe](https://vatly.com/vs/stripe) for the broader comparison.
+
+Vatly takes on the latter for Vatly sales. It handles [EU VAT, applicable sales tax, registrations, returns, remittance, and customer invoices](https://vatly.com/). That leaves Bolt's server functions responsible for a smaller integration: create checkout, verify billing events, and update your app's access state. Your product logic and fulfillment remain yours.
+
+## What Vatly gives your Bolt app
+
+- **A European merchant of record.** Vatly is based in the Netherlands and focuses on European software and digital products, with [Mollie-powered European payment methods](https://vatly.com/mollie-merchant-of-record) for international sales.
+- **A fit for AI and software products.** Sell access to an AI tool or SaaS app as a subscription, or sell a one-off license or digital download. Use Vatly's existing API rather than building a billing system around your frontend framework.
+- **One checkout, multiple order lines.** Pass products and quantities to the [checkout API](/api-reference/checkouts), then use the resulting [order lines](/api-reference/orders) to fulfill a purchase containing more than one item.
+- **Hosted billing screens.** Vatly provides the checkout and a [customer portal](/packages/fluent-js/customerportal) for invoices and subscription management. Portal access requires an issued invoice; you still authenticate the user and create the portal session on your server.
+
+## Get your first test payment working
+
+**Sign up for Vatly, get a test API key under Developers » API keys, and copy the Bolt integration prompt.** Add a test product in **Manage Products**. Bolt can then build the server functions and checkout button against your existing Bolt Database or Supabase backend; you do not need to switch database providers to use Vatly.
+
+Start in test mode as soon as your account is ready, with credentials stored in database **Secrets**. Verify a complete test checkout and webhook before considering the integration ready. Going live also depends on [Vatly approval, product review, and Mollie business verification](/introduction#going-live). Product review typically takes one to two business days, but neither that nor generated code guarantees a launch date.
+
 ## Identify your Bolt backend first
+
+Your customers keep using your Bolt app. A checkout button sends them to Vatly's hosted payment page, and a background billing update tells your app when to grant access. You keep the product UI, login, and database; Vatly handles checkout, tax, and invoicing. See [Build your own integration](/guides/build-your-own-integration) for the overall responsibilities before asking the agent to make changes.
 
 Bolt supports [JavaScript frontend frameworks and Node.js backends](https://support.bolt.new/reference/supported-technologies), rather than requiring one frontend framework. Inspect `package.json` and the deployed backend instead of assuming every app is a React + Vite app or that a Node process in the editor is deployed as a production server.
 
@@ -60,24 +83,26 @@ You can also use an existing Supabase project with its database, authentication,
 </tbody>
 </table>
 
-This guide focuses on Bolt Cloud and Supabase. The [shared SDK recipe](/integrations) also works in a separately deployed server with Fetch and Web Crypto.
+This guide focuses on Bolt Cloud and Supabase. For a separately hosted backend, choose a [package or direct HTTP integration](/guides/build-your-own-integration#choose-your-tools) that fits its runtime.
 
 ## Use Vatly, not Bolt's Stripe integration
 
 Bolt's [built-in Stripe integration](https://support.bolt.new/integrations/stripe) imports Stripe products and generates checkout and webhook code. Those conveniences apply to Stripe, **not to a custom Vatly integration**. Do not paste a Vatly key into the Stripe setup or reuse Stripe event names, signatures, or test cards.
 
-Tell the agent to use Vatly explicitly. Create your products in Vatly, create checkouts with `@getvatly/sdk`, and register your webhook URL in Vatly yourself. Your app remains responsible for authorizing checkout requests and updating access from verified Vatly events.
+Tell the agent to use Vatly explicitly. Create your products in Vatly, create checkouts on your server, and register your webhook URL in Vatly yourself. Your app remains responsible for authorizing checkout requests and updating access from verified Vatly events.
+
+The prompt below starts your agent with [`@getvatly/fluent`](/packages/fluent-js/readme), the higher-level JavaScript billing package. Your agent connects its checkout and webhook building blocks to your existing database and access rules; it is not a ready-made Bolt Database or Supabase adapter. For other approaches, see [Choose your tools](/guides/build-your-own-integration#choose-your-tools). Implementation examples live in the package docs.
 
 ## Configure the database and secrets
 
-1. Follow [Prepare your Vatly account](/integrations#prepare-your-vatly-account) to get a test key and product ID.
+1. Follow the [Quickstart](/guides/quickstart) to get a test key and product ID.
 2. Ensure your Bolt project has a connected database. Bolt's server functions and secrets require one; if none exists, ask the agent to add it before building the payment functions.
 3. Open the **database icon » Secrets** and add `VATLY_API_KEY` using your Vatly `test_` key. Add `VATLY_WEBHOOK_SECRET` with the signing secret configured for your Vatly webhook endpoint. Bolt can also prompt you to add these securely. See [Bolt secrets](https://support.bolt.new/bolt-cloud/database/secrets).
 4. Use **database icon » Server Functions** to inspect the generated functions and their logs. Never log the keys or full billing payloads while debugging.
 
 Secrets are available to server functions, not browser code. Do not put Vatly credentials in Bolt's project `.env`, `VITE_*` variables, frontend components, or agent chat. With a separately hosted backend, configure equivalent private runtime secrets on that host.
 
-The JavaScript SDK `@getvatly/sdk` and optional higher-level `@getvatly/fluent` are **alpha**. Pin exact versions and review breaking changes before upgrading.
+Both `@getvatly/fluent` and its underlying `@getvatly/sdk` are **alpha**. Use the compatible, exact versions in [fluent installation and configuration](/packages/fluent-js/configuration) and review breaking changes before upgrading.
 
 ## Prompt Bolt to add checkout and webhooks
 
@@ -95,16 +120,22 @@ checkout creation and a separate public Vatly webhook receiver, not a
 browser-only helper or a Node server that only runs in the editor.
 
 Read:
-https://docs.vatly.com/integrations
-https://docs.vatly.com/packages/javascript/readme
-https://docs.vatly.com/packages/javascript/checkouts
-https://docs.vatly.com/packages/javascript/webhooks
+https://docs.vatly.com/guides/build-your-own-integration
 https://docs.vatly.com/packages/fluent-js/readme
+https://docs.vatly.com/packages/fluent-js/configuration
+https://docs.vatly.com/packages/fluent-js/checkouts
+https://docs.vatly.com/packages/fluent-js/webhooks
+https://docs.vatly.com/packages/fluent-js/coreconcepts
+https://docs.vatly.com/guides/webhooks
 https://docs.vatly.com/api-reference
 https://docs.vatly.com/openapi.yaml
 
-Use @getvatly/sdk pinned to the exact alpha version in that recipe, using
-the pinned npm: import in Deno. Both JS packages are alpha. Ask me to add
+Start with @getvatly/fluent and its required @getvatly/sdk dependency.
+Pin the compatible alpha versions documented in configuration and check
+the deployed runtime; use pinned npm: imports for Deno. Use the underlying
+SDK when a fluent helper is missing or the deployed runtime requires a
+different approach, and explain the reason. Wire the documented storage
+drivers to our database; do not assume adapters are included. Ask me to add
 VATLY_API_KEY and VATLY_WEBHOOK_SECRET via database Secrets, never in chat
 or .env. Keep SDK imports and credentials exclusively in server functions.
 Ask me for a test-mode product ID and fixed success/canceled return URLs.
@@ -112,19 +143,19 @@ Ask me for a test-mode product ID and fixed success/canceled return URLs.
 Require authentication for checkout creation. Load or create the Vatly
 customer for the signed-in user and keep a server-owned database mapping.
 Never accept an arbitrary customer ID, price, or redirect URL from the UI.
-Allowlist products and validate quantities server-side. Call
-vatly.checkouts.create; return checkout.links.checkoutUrl.href as
-checkoutUrl so the browser can redirect. Add CORS handling restricted to
+Allowlist products and validate quantities server-side. Use the documented
+fluent checkout or subscription builder; return only its hosted checkout
+URL so the browser can redirect. Add CORS handling restricted to
 my app's origins where functions are cross-origin. A return URL visit must
 never grant access.
 
 The webhook function must accept Vatly without a user JWT, while checkout
-creation stays authenticated. Verify the raw Request before parsing JSON
-with constructWebhookEventFromRequest from @getvatly/sdk/webhooks and the
-stored signing secret. Reject invalid signatures and acknowledge verified
-webhook.setup. Use the signed event.id as a unique database key, store a
-durable inbox before acknowledging, and make fulfillment and deduplication
-transactional with retries. Protect billing tables from client writes.
+creation stays authenticated. Follow fluent's webhook guide: verify the
+untouched request with the endpoint secret before writes, validate the
+envelope, and wire transactional webhook storage. Reject invalid signatures
+and acknowledge verified webhook.setup. Use the signed event.id for
+deduplication, commit processing and database changes atomically, and retry
+on failure. Protect billing tables from client writes.
 Implement Vatly event names and top-level object payloads, including the
 subscription lifecycle when selling subscriptions, not data.object.
 
@@ -135,7 +166,7 @@ storage failure retries, and a completed test checkout. Distinguish tested
 behavior from configuration or deployment work I still need to do.
 ```
 
-Use the [checkout code](/integrations#create-a-checkout-with-the-javascript-sdk) and [webhook verification recipe](/integrations#verify-webhooks-before-granting-access) as the implementation contract. For Supabase Edge Functions, Vatly's webhook route needs JWT verification disabled for that function only: Vatly's signature, not a user's session, authenticates deliveries.
+Use the JavaScript packages in Bolt's managed server functions. A separately hosted backend can use [another package or the HTTP API](/guides/build-your-own-integration#choose-your-tools). For Supabase Edge Functions, Vatly's webhook route needs JWT verification disabled for that function only: Vatly's signature, not a user's session, authenticates deliveries.
 
 ## Debug a deployed Bolt integration
 
@@ -209,6 +240,6 @@ Use the [checkout code](/integrations#create-a-checkout-with-the-javascript-sdk)
 </tbody>
 </table>
 
-Run the [test checklist](/integrations#test-before-publishing) before publishing for customers, and complete [Vatly onboarding](/introduction#going-live) before switching to live credentials.
+Follow [fluent testing](/packages/fluent-js/testing) and the [test-mode guide](/guides/testing) before publishing for customers. Confirm unsigned, tampered, and stale webhooks are rejected, concurrent duplicates cannot fulfill twice, and storage failures can retry. Complete [Vatly onboarding](/introduction#going-live) before switching to live credentials.
 
 Building in Lovable instead? See [Lovable payments with Vatly](/integrations/lovable).
