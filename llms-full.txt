@@ -854,15 +854,45 @@ Respond with a
 
 `2xx`
 
- status as soon as you've stored the event. Vatly retries deliveries that don't return 
-
-`2xx`
-
-, and the same event may arrive more than once, so deduplicate on 
+ status as soon as you've stored the event, and do any heavy work asynchronously. The same event may arrive more than once, so deduplicate on 
 
 `Vatly-Event-Id`
 
- and do any heavy work asynchronously.
+. See 
+
+[Delivery and retries](https://docs.vatly.com/#delivery-and-retries)
+
+ for how failed deliveries are handled.
+::
+
+## Delivery and retries
+
+A delivery counts as **successful** only when your endpoint returns a `2xx` status. &#x2A;*Anything else is a failed delivery:** a non-`2xx` status, a connection Vatly can't establish, or a response that doesn't arrive before Vatly's delivery timeout. Vatly retries a failed delivery with backoff, so a transient problem on your side (a deploy, a brief outage, a slow dependency) recovers on its own once your endpoint is healthy again.
+
+Every retry carries the &#x2A;*same `Vatly-Event-Id`** and a &#x2A;*fresh `Vatly-Signature`**. So deduplicate on the event ID (a retried delivery is the same event, not a new one) and verify the signature on every attempt independently.
+
+The exact timeout and retry cadence, how long Vatly waits for a response, how many attempts it makes, and over what total window, are operational details Vatly tunes over time, so they aren't pinned here. Integrate against the behavior rather than specific numbers: trust the retries, deduplicate on `Vatly-Event-Id`, and your integration keeps working if those values change.
+
+::tip
+**Don't race the timeout by doing your work before you answer.**
+
+ If you run heavy processing before returning 
+
+`2xx`
+
+, a slow run can blow past the timeout, Vatly counts the delivery as failed, and you get a retry for work you already did. Acknowledge first: store the event (or enqueue its 
+
+`Vatly-Event-Id`
+
+), return 
+
+`2xx`
+
+ right away (aim for within a second or two), then do the real work asynchronously. A fast acknowledgement stays comfortably inside any timeout no matter how heavy the downstream work is, and because retries deduplicate on 
+
+`Vatly-Event-Id`
+
+, a crash between acknowledging and processing is safe to recover from.
 ::
 
 ## Event types
@@ -890,7 +920,7 @@ The `eventName` field identifies what happened. The available events are:
 | `subscription.cancellation_grace_period_completed` | The grace period after a cancellation ended.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `subscription.resumed`                             | A canceled subscription was resumed during its grace period.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `subscription.billing_updated`                     | A subscription's billing details changed, in practice the mandate (payment method on file), e.g. a refreshed masked payment-method identifier.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `subscription.updated`                             | A subscription changed. Fires on an immediate change, when a scheduled change takes effect at renewal, and when a renewal payment is confirmed. `object` is the subscription after the change; the envelope's `reason` says which case it is: `updated_immediately` (a plan, price, interval, or quantity change took effect now), `updated_on_renewal` (a scheduled change took effect at renewal, before the renewal is paid), or `renewed` (a renewal payment was confirmed, so `renewedAt` / `renewedUntil` moved). See the note below.                                                                                                                                                     |
+| `subscription.updated`                             | A subscription changed. Fires on an immediate change, when a scheduled change takes effect at renewal, and when a renewal payment is confirmed. `object` is the subscription after the change; the envelope's `reason` says which case it is: `updated_immediately` (a plan, price, interval, or quantity change took effect now), `updated_on_renewal` (a scheduled change took effect at renewal, before the renewal is paid), or `renewed` (a renewal payment was confirmed, so `renewedAt` / `renewedUntil` moved). See the [payload details](https://docs.vatly.com/#payload-details-for-specific-events) below.                                                                           |
 | `subscription.update_scheduled`                    | A plan, price, or quantity change was scheduled to take effect at the next billing cycle. `object` is the subscription as it is *today*; the target values are carried in `object.scheduledUpdate`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `one_off_product.update_submitted`                 | An update to a one-off product was submitted and is awaiting review. `object` is the one-off product, with the requested changes in `object.pendingUpdates` and `object.updateStatus: pending`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `one_off_product.update_approved`                  | A submitted one-off product update was approved and is now live. `object` is the one-off product with the new values applied and `object.pendingUpdates: null`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -902,227 +932,19 @@ The `eventName` field identifies what happened. The available events are:
 | `subscription_plan.update_rejected`                | A submitted subscription plan update was rejected. `object` is the unchanged subscription plan with `object.pendingUpdates: null`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `subscription_plan.archived`                       | A subscription plan was archived and closed to new business. `object` is the subscription plan with a non-null `object.archivedAt`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | `subscription_plan.unarchived`                     | An archived subscription plan was re-opened to new business. `object` is the subscription plan with `object.archivedAt: null`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `webhook.setup`                                    | A verification call Vatly sends when you register a webhook endpoint or change its URL. See the note below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `webhook.setup`                                    | A verification call Vatly sends when you register a webhook endpoint or change its URL. See the [payload details](https://docs.vatly.com/#payload-details-for-specific-events) below.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
-::note
-**`object` is the affected resource, keyed by its own `resource` field**
+### Payload details for specific events
 
- (
+A few events put extra structure in the payload worth calling out.
 
-`order`
+**`object` is the affected resource,** keyed by its own `resource` field (`order`, `chargeback`, `refund`, `subscription`, `checkout`, `one_off_product`, `subscription_plan`, or `webhook`). For chargeback events this differs from `entityType`: `order.chargeback_received` and `order.chargeback_reversed` carry `entityType: order` (the order the chargeback belongs to), but the `object` itself is a Chargeback.
 
-, 
+**`subscription.update_scheduled`** carries the subscription's *current* state in `object`, plus the future target values in `object.scheduledUpdate` (`subscriptionPlanId`, `name`, `description`, `basePrice`, `quantity`, `interval`, `intervalCount`, `effectiveAt`). The same `scheduledUpdate` object is also returned on the subscription resource by the REST API, so you can reconcile a pending change at any time without relying on this once-delivered event. When that scheduled change takes effect at renewal, Vatly sends `subscription.updated` with `reason: updated_on_renewal`; an immediate change instead arrives as `subscription.updated` with `reason: updated_immediately`. In both cases the delivered `object` already reflects the new values and has no pending `scheduledUpdate`.
 
-`chargeback`
+**`subscription.updated` and the `reason` field.** This event fires for three distinct causes, told apart by the envelope's `reason`: `updated_immediately`, `updated_on_renewal`, or `renewed`. A renewal that also applies a scheduled change therefore emits *two* events (`subscription.updated` with `reason: updated_on_renewal` when the change takes effect, then `subscription.updated` with `reason: renewed` once the renewal is paid), each with its own stable `Vatly-Event-Id`. Test-mode renewals, including fast-forwarded ones, emit these too. New `reason` values may be added; treat an unknown one as a generic change and re-read the subscription from `object`.
 
-, 
-
-`refund`
-
-, 
-
-`subscription`
-
-, 
-
-`checkout`
-
-, 
-
-`one_off_product`
-
-, 
-
-`subscription_plan`
-
-, or 
-
-`webhook`
-
-). For chargeback events this differs from 
-
-`entityType`
-
-: 
-
-`order.chargeback_received`
-
- / 
-
-`order.chargeback_reversed`
-
- carry 
-
-`entityType: order`
-
- (the order the chargeback belongs to) but the 
-
-`object`
-
- is a Chargeback.
-::
-
-::note
-**`subscription.update_scheduled`**
-
- carries the subscription's 
-
-**current**
-
- state in 
-
-`object`
-
-, plus the future target values in 
-
-`object.scheduledUpdate`
-
- (
-
-`subscriptionPlanId`
-
-, 
-
-`name`
-
-, 
-
-`description`
-
-, 
-
-`basePrice`
-
-, 
-
-`quantity`
-
-, 
-
-`interval`
-
-, 
-
-`intervalCount`
-
-, 
-
-`effectiveAt`
-
-). The same 
-
-`scheduledUpdate`
-
- object is also returned on the subscription resource by the REST API, so you can reconcile a pending change at any time without relying on this once-delivered event. When that scheduled change takes effect at renewal, Vatly sends 
-
-`subscription.updated`
-
- with 
-
-`reason: updated_on_renewal`
-
-; an immediate change instead arrives as 
-
-`subscription.updated`
-
- with 
-
-`reason: updated_immediately`
-
-. In both cases the delivered 
-
-`object`
-
- already reflects the new values and has no pending 
-
-`scheduledUpdate`
-
-.
-::
-
-::note
-**`subscription.updated` and the `reason` field.**
-
- This event fires for three distinct causes, told apart by the envelope's 
-
-`reason`
-
-: 
-
-`updated_immediately`
-
-, 
-
-`updated_on_renewal`
-
-, or 
-
-`renewed`
-
-. A renewal that also applies a scheduled change therefore emits 
-
-**two**
-
- events (
-
-`subscription.updated`
-
- with 
-
-`reason: updated_on_renewal`
-
- when the change takes effect, then 
-
-`subscription.updated`
-
- with 
-
-`reason: renewed`
-
- once the renewal is paid), each with its own stable 
-
-`Vatly-Event-Id`
-
-. Test-mode renewals, including fast-forwarded ones, emit these too. New 
-
-`reason`
-
- values may be added; treat an unknown one as a generic change and re-read the subscription from 
-
-`object`
-
-.
-::
-
-::note
-**`webhook.setup`**
-
- is delivered when you register an endpoint (or change its URL) to confirm it's reachable. It arrives as a normal, signed delivery (
-
-`entityType: webhook`
-
-, 
-
-`object`
-
- is the secret-free endpoint config), so there's nothing special to parse. Just acknowledge it with a 
-
-`2xx`
-
-. Unlike event deliveries, the setup call is a one-shot verification check: a non-
-
-`2xx`
-
- response fails endpoint registration and is 
-
-**not**
-
- retried. It is also the one event that is never persisted, so it does not appear on the 
-
-[Get webhook event](https://docs.vatly.com/api-reference/webhook-events)
-
- endpoint.
-::
+**`webhook.setup`** is delivered when you register an endpoint (or change its URL) to confirm it's reachable. It arrives as a normal, signed delivery (`entityType: webhook`, `object` is the secret-free endpoint config), so there's nothing special to parse: just acknowledge it with a `2xx`. Unlike event deliveries, this call is a one-shot verification check and is **not** retried (see [Delivery and retries](https://docs.vatly.com/#delivery-and-retries)), so a non-`2xx` response fails endpoint registration. It is also the one event that is never persisted, so it does not appear on the [Get webhook event](https://docs.vatly.com/api-reference/webhook-events) endpoint.
 
 ### Example: `subscription.started`
 
