@@ -1,6 +1,6 @@
 # Webhooks
 
-> Vatly Python SDK - Webhooks
+> Use signed webhooks to learn about payments and subscription changes.
 
 Use signed webhooks to learn about payments and subscription changes. Verify the
 exact request bytes before parsing or changing anything. Register delivery URLs

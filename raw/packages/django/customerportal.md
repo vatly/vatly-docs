@@ -1,6 +1,6 @@
 # Open the customer portal
 
-> Vatly Django - Open the customer portal
+> The portal lets buyers manage billing, invoices and subscriptions in Vatly.
 
 The portal lets buyers manage billing, invoices and subscriptions in Vatly.
 Bind a known customer from trusted provisioning code before opening it.

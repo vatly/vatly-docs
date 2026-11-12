@@ -1,6 +1,6 @@
 # Testing
 
-> Vatly PHP Fluent - Testing
+> Test your application's checkout decisions without making a request to Vatly.
 
 Test your application's checkout decisions without making a request to Vatly. Inject `FakeVatly` where your application expects `Vatly`, then call your real checkout handler with it.
 

@@ -1,6 +1,6 @@
 # Move from JS or PHP
 
-> Vatly Python Fluent - Move from JS or PHP
+> Python Fluent keeps the same billing concepts, with snake_case methods and async I/O.
 
 Python Fluent keeps the same billing concepts, with snake_case methods and async
 I/O. Compose an existing `AsyncVatlyClient`; no framework container is installed.

@@ -1,6 +1,6 @@
-# Getting started
+# PHP Fluent
 
-> Vatly PHP Fluent - Getting started
+> Sell a download, start a subscription, and keep your app's billing records in step with Vatly.
 
 Sell a download, start a subscription, and keep your app's billing records in step with Vatly.
 Vatly is the European Merchant of Record for AI, software and digital products.

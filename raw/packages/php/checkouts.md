@@ -1,6 +1,6 @@
 # Checkouts
 
-> Vatly PHP SDK - Checkouts
+> Checkouts create hosted payment pages for your customers.
 
 Checkouts create hosted payment pages for your customers. When a checkout completes successfully, an Order is created.
 

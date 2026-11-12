@@ -1,6 +1,6 @@
 # Install Vatly Django
 
-> Vatly Django - Install Vatly Django
+> Start with a normal Django project, including its auth, sessions, messages and CSRF configuration.
 
 Start with a normal Django project, including its auth, sessions, messages and
 CSRF configuration. Install the pinned alpha:

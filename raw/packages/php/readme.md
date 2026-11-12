@@ -1,6 +1,6 @@
-# Getting Started
+# PHP SDK
 
-> Vatly PHP SDK - Getting Started
+> Official PHP SDK for the Vatly API.
 
 ![Vatly API client for PHP](https://raw.githubusercontent.com/Vatly/vatly-api-php/main/art/banner.png)
 

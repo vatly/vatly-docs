@@ -1,6 +1,6 @@
 # Subscriptions
 
-> Vatly Python SDK - Subscriptions
+> A paid checkout containing a subscription plan starts recurring billing.
 
 A paid checkout containing a subscription plan starts recurring billing. There is
 no direct `subscriptions.create()`. Read and manage the resulting subscription ID

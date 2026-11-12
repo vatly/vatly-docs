@@ -1,6 +1,6 @@
 # Process signed webhooks
 
-> Vatly Python Fluent - Process signed webhooks
+> Fluent verifies a delivery, updates local snapshots and dispatches events through your storage driver.
 
 Fluent verifies a delivery, updates local snapshots and dispatches events through
 your storage driver. Your framework route supplies the raw bytes and signature.

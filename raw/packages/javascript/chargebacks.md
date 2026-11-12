@@ -1,6 +1,6 @@
 # Chargebacks
 
-> Vatly JavaScript packages - Chargebacks
+> A chargeback is a payment dispute raised by the cardholder's bank against an order.
 
 A chargeback is a payment dispute raised by the cardholder's bank against an order. Vatly records it (and any later reversal) so you can suspend access and reconcile the reversed VAT.
 

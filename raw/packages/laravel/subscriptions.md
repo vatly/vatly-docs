@@ -1,6 +1,6 @@
 # Subscriptions
 
-> Vatly Laravel Package - Subscriptions
+> Vatly Laravel provides a full subscription lifecycle: creating, checking, swapping plans, canceling, and syncing with the Vatly API.
 
 Vatly Laravel provides a full subscription lifecycle: creating, checking, swapping plans, canceling, and syncing with the Vatly API.
 

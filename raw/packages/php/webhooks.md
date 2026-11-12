@@ -1,6 +1,6 @@
 # Webhooks
 
-> Vatly PHP SDK - Webhooks
+> Vatly sends webhooks to notify your application when events happen — for example, an order being paid, a refund completing, or a subscription being canceled.
 
 Vatly sends webhooks to notify your application when events happen — for example, an order being paid, a refund completing, or a subscription being canceled.
 

@@ -1,6 +1,6 @@
 # Orders
 
-> Vatly PHP Fluent - Orders
+> Show an invoice for a local order without rebuilding Vatly's invoice UI.
 
 Show an invoice for a local order without rebuilding Vatly's invoice UI. Here `$localOrder` implements `OrderInterface` and belongs to the signed-in account:
 

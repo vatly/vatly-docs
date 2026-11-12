@@ -1,6 +1,6 @@
 # Development and release
 
-> Vatly Python SDK - Development and release
+> 
 
 ## Sources
 

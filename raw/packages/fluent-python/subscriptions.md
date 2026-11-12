@@ -1,6 +1,6 @@
 # Manage subscriptions
 
-> Vatly Python Fluent - Manage subscriptions
+> Load a locally owned subscription, authorize its entity, then use a handle for plan changes or cancellation.
 
 Load a locally owned subscription, authorize its entity, then use a handle for
 plan changes or cancellation. Examples accept the configured `vatly` from

@@ -1,6 +1,6 @@
 # Webhooks
 
-> Vatly JavaScript packages - Webhooks
+> Record payments and subscription changes from signed webhooks, not checkout redirects.
 
 Record payments and subscription changes from signed webhooks, not checkout
 redirects. Pass a configured `Vatly` to this Fetch handler, or export the returned

@@ -1,6 +1,6 @@
 # Subscriptions
 
-> Vatly JavaScript packages - Subscriptions
+> Change an existing subscription with vatly.subscription(localRecord).
 
 Change an existing subscription with `vatly.subscription(localRecord)`. Load and
 authorize the record from your [repository](/packages/fluent-js/coreconcepts); wire that repository

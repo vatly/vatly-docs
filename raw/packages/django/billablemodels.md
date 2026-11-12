@@ -1,6 +1,6 @@
 # Choose a billable model
 
-> Vatly Django - Choose a billable model
+> A billable is the saved user, team or company your application has authorized to buy.
 
 A billable is the saved user, team or company your application has authorized to
 buy. Existing models can use `Billing()` without changing their inheritance.

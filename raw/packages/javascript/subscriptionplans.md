@@ -1,6 +1,6 @@
 # Subscription Plans
 
-> Vatly JavaScript packages - Subscription Plans
+> Subscription plans define recurring products, prices, and billing intervals.
 
 Subscription plans define recurring products, prices, and billing intervals.
 The API supports creation, updates, archive and unarchive.

@@ -1,6 +1,6 @@
 # Customer portal
 
-> Vatly JavaScript packages - Customer portal
+> Send a signed-in customer to their invoices and subscription controls.
 
 Send a signed-in customer to their invoices and subscription controls:
 

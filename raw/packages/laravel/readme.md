@@ -1,6 +1,6 @@
-# Getting Started
+# Laravel
 
-> Vatly Laravel Package - Getting Started
+> Vatly Laravel provides a Cashier-like integration for Vatly billing in your Laravel application.
 
 ![Vatly for Laravel](https://raw.githubusercontent.com/Vatly/vatly-laravel/main/art/banner.png)
 

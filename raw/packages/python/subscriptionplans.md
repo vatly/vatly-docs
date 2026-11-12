@@ -1,6 +1,6 @@
 # Subscription plans
 
-> Vatly Python SDK - Subscription plans
+> Plans define the recurring product, price and billing interval sold through a checkout.
 
 Plans define the recurring product, price and billing interval sold through a
 [checkout](/packages/python/checkouts). A plan is not a customer's subscription.

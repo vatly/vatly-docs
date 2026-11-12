@@ -1,6 +1,6 @@
 # Subscription Plans
 
-> Vatly PHP SDK - Subscription Plans
+> Subscription plans define recurring billing products.
 
 Subscription plans define recurring billing products. Create them in the Vatly dashboard or through the API, then use them in checkouts. Live plans are reviewed and approved by Vatly before they can be added to checkouts.
 

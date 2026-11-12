@@ -1,6 +1,6 @@
 # Test billing offline
 
-> Vatly Django - Test billing offline
+> Use Django's test database and httpx fixtures.
 
 Use Django's test database and httpx fixtures. Do not use a real Vatly key in unit
 tests. The snippets below are helpers for your pytest-django tests. Call them from

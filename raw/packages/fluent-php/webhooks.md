@@ -1,6 +1,6 @@
 # Webhooks
 
-> Vatly PHP Fluent - Webhooks
+> Keep local billing records current after checkout, renewals, and portal changes.
 
 Keep local billing records current after checkout, renewals, and portal changes. Read the raw request body and the `Vatly-Signature` header, then pass both unchanged to Fluent. This receiver function uses the fully wired instance from [Core concepts](/packages/fluent-php/coreconcepts):
 

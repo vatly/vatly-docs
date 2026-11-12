@@ -1,6 +1,6 @@
-# Vatly Fluent Python
+# Python Fluent
 
-> Vatly Python Fluent - Vatly Fluent Python
+> Build checkout, customer and subscription flows without tying billing to a web framework.
 
 Build checkout, customer and subscription flows without tying billing to a web
 framework. Fluent composes the async SDK and your storage driver. Vatly is the

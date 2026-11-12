@@ -1,6 +1,6 @@
 # Customers
 
-> Vatly PHP SDK - Customers
+> Customers represent your end users who purchase products through Vatly.
 
 Customers represent your end users who purchase products through Vatly.
 

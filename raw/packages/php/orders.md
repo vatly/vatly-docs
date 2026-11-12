@@ -1,6 +1,6 @@
 # Orders
 
-> Vatly PHP SDK - Orders
+> Orders are created automatically when a checkout completes successfully or when a subscription renews.
 
 Orders are created automatically when a checkout completes successfully or when a subscription renews.
 

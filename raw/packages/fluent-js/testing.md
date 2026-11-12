@@ -1,6 +1,6 @@
 # Testing
 
-> Vatly JavaScript packages - Testing
+> Test API calls without a network by injecting the SDK's fetch.
 
 Test API calls without a network by injecting the SDK's `fetch`:
 

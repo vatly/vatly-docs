@@ -1,6 +1,6 @@
 # Store ownership safely
 
-> Vatly Python Fluent - Store ownership safely
+> Your application decides which user, team or organization owns a purchase.
 
 Your application decides which user, team or organization owns a purchase. Fluent
 stores that decision as an `EntityRef` on your checkout record. A customer binding

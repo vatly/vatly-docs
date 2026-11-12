@@ -1,6 +1,6 @@
 # Orders
 
-> Vatly Python SDK - Orders
+> Orders contain purchased lines, tax and financial totals.
 
 Orders contain purchased lines, tax and financial totals. Read an order after its
 checkout has an `order_id`. Keep exact decimal amounts for accounting.

@@ -1,6 +1,6 @@
-# Getting Started
+# JavaScript SDK
 
-> Vatly JavaScript packages - Getting Started
+> Official TypeScript SDK for Vatly, the European Merchant of Record for AI, software and digital products.
 
 ![Vatly SDK for JavaScript & TypeScript](https://raw.githubusercontent.com/vatly/vatly-api-js/main/art/banner.png)
 

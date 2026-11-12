@@ -1,6 +1,6 @@
 # Checkouts
 
-> Vatly JavaScript packages - Checkouts
+> Create a hosted payment page, then redirect the customer to checkout.getUrl().
 
 Create a hosted payment page, then redirect the customer to `checkout.getUrl()`.
 

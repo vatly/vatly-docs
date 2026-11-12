@@ -1,6 +1,6 @@
 # Inspect billing in admin
 
-> Vatly Django - Inspect billing in admin
+> When django.contrib.admin and vatly_django are installed, billing models register automatically.
 
 When `django.contrib.admin` and `vatly_django` are installed, billing models register
 automatically. No separate `admin.py` setup is needed. Mount Django's standard admin:

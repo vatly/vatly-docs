@@ -1,6 +1,6 @@
 # Webhook Endpoints
 
-> Vatly PHP SDK - Webhook Endpoints
+> A webhook endpoint is the HTTPS URL Vatly POSTs event deliveries to — registered from code (or infrastructure-as-code) rather than the dashboard.
 
 A webhook endpoint is the HTTPS URL Vatly POSTs event deliveries to — registered
 from code (or infrastructure-as-code) rather than the dashboard. A storefront can

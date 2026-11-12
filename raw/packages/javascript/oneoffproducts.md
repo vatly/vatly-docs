@@ -1,6 +1,6 @@
 # One-Off Products
 
-> Vatly JavaScript packages - One-Off Products
+> One-off products are single-purchase items (no recurring billing).
 
 One-off products are single-purchase items (no recurring billing). They can be
 created, updated, archived, and unarchived through the API.

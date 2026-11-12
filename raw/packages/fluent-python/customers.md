@@ -1,6 +1,6 @@
 # Create and find customers
 
-> Vatly Python Fluent - Create and find customers
+> Bind a host user to a Vatly billing identity once, then reuse it.
 
 Bind a host user to a Vatly billing identity once, then reuse it. Bindings require
 the configured storage driver; examples accept `vatly` from [Configuration](/packages/fluent-python/configuration).

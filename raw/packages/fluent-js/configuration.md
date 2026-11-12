@@ -1,6 +1,6 @@
 # Installation and configuration
 
-> Vatly JavaScript packages - Installation and configuration
+> Fluent 0.1.0-alpha.1 requires SDK 0.3.0-alpha.2.
 
 Fluent `0.1.0-alpha.1` requires SDK `0.3.0-alpha.2`. Pin both during alpha:
 

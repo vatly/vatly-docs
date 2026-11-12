@@ -1,6 +1,6 @@
 # Customers
 
-> Vatly JavaScript packages - Customers
+> Customers represent the end users who purchase products through Vatly.
 
 Customers represent the end users who purchase products through Vatly.
 

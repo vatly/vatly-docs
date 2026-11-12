@@ -1,6 +1,6 @@
 # Subscriptions
 
-> Vatly PHP Fluent - Subscriptions
+> Change a subscription using a local record that implements SubscriptionInterface.
 
 Change a subscription using a local record that implements `SubscriptionInterface`. These examples assume `$vatly` has your subscription repository wired and `$localSubscription` belongs to the signed-in account.
 

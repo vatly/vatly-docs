@@ -1,6 +1,6 @@
 # Customers
 
-> Vatly PHP Fluent - Customers
+> Create a Vatly customer for the account that pays, then save the link to your own ID.
 
 Create a Vatly customer for the account that pays, then save the link to your own ID. Here `$vatly` has a `CustomerBindingRepository` wired in, and `user_42` is an authenticated account in your app:
 

@@ -1,6 +1,6 @@
 # One-Off Products
 
-> Vatly PHP SDK - One-Off Products
+> One-off products are single-purchase items (not recurring subscriptions).
 
 One-off products are single-purchase items (not recurring subscriptions). Create them in the Vatly dashboard or through the API, then use them in checkouts. Live products are reviewed and approved by Vatly before they can be added to checkouts.
 

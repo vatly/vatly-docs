@@ -1,6 +1,6 @@
 # Receive signed webhooks
 
-> Vatly Django - Receive signed webhooks
+> Mount the billing URLs and register the public HTTPS /billing/webhook/ URL in Vatly.
 
 Mount the [billing URLs](/packages/django/installation) and register the public HTTPS
 `/billing/webhook/` URL in Vatly. Set `VATLY_WEBHOOK_SECRET` to that endpoint's

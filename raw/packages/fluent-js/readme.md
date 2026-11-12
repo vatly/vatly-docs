@@ -1,6 +1,6 @@
-# Getting Started
+# JavaScript Fluent
 
-> Vatly JavaScript packages - Getting Started
+> Create checkouts and manage billing with @getvatly/fluent on your server.
 
 > **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
 

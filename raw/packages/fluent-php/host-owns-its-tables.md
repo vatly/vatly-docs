@@ -1,6 +1,6 @@
 # Host tables
 
-> Vatly PHP Fluent - Host tables
+> Reuse an application's existing orders instead of creating parallel Fluent tables.
 
 Reuse an application's existing orders instead of creating parallel Fluent tables. Wrap its record in `OrderInterface`, then let your repository confirm that record when the payment webhook arrives.
 

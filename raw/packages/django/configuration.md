@@ -1,6 +1,6 @@
 # Configure billing
 
-> Vatly Django - Configure billing
+> Keep keys on the server.
 
 Keep keys on the server. `test_` and `live_` select mode on the same API host.
 Add these values to your project's settings after [installation](/packages/django/installation).

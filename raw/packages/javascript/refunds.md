@@ -1,6 +1,6 @@
 # Refunds
 
-> Vatly JavaScript packages - Refunds
+> A refund returns funds to a customer for an order.
 
 A refund returns funds to a customer for an order. Refunds are **created** against an order (see [Orders](/packages/javascript/orders#refunds-on-an-order)); the top-level `refunds` resource lets you list and retrieve them across all orders.
 

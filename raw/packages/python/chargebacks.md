@@ -1,6 +1,6 @@
 # Chargebacks
 
-> Vatly Python SDK - Chargebacks
+> Read payment disputes and retain their financial snapshots for accounting.
 
 Read payment disputes and retain their financial snapshots for accounting.
 Chargeback methods are read-only. Examples accept the client from [setup](/packages/python/readme).

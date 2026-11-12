@@ -1,6 +1,6 @@
 # Development, support and release
 
-> Vatly Django - Development, support and release
+> Python 3.10–3.14; Django 5.2 LTS, 6.0 and 6.1 within their Python compatibility ranges.
 
 Python 3.10–3.14; Django 5.2 LTS, 6.0 and 6.1 within their Python compatibility ranges.
 CI runs representative supported combinations plus PostgreSQL 17 concurrent delivery.

@@ -1,6 +1,6 @@
 # Customers
 
-> Vatly Python SDK - Customers
+> Keep a Vatly customer ID alongside your own user or company.
 
 Keep a Vatly customer ID alongside your own user or company. Customers hold billing
 identity; a shared email or customer ID is not proof that someone owns an order.

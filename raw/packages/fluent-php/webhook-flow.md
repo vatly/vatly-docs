@@ -1,6 +1,6 @@
 # Event flow
 
-> Vatly PHP Fluent - Event flow
+> Choose the event that matches your task.
 
 Choose the event that matches your task. To listen for a paid order, implement your event dispatcher and register it in `Wiring`. This small adapter forwards typed events to an application callback:
 

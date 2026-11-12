@@ -1,6 +1,6 @@
 # Customer portal
 
-> Vatly PHP Fluent - Customer portal
+> Let a customer manage billing on Vatly's hosted portal instead of building those screens yourself.
 
 Let a customer manage billing on Vatly's hosted portal instead of building those screens yourself. This works in API-only mode. Pass an authorized customer ID, never an unchecked ID from a query string:
 

@@ -1,6 +1,6 @@
 # Read orders and reversals
 
-> Vatly Python Fluent - Read orders and reversals
+> Use an order handle to read purchased lines, an invoice link and exact reversal amounts.
 
 Use an order handle to read purchased lines, an invoice link and exact reversal
 amounts. Authorize the order in your application first. Examples accept the

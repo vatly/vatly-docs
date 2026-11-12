@@ -1,6 +1,6 @@
 # Create hosted checkouts
 
-> Vatly Python Fluent - Create hosted checkouts
+> Build a cart, then call create() to make the API request.
 
 Build a cart, then call `create()` to make the API request. The result is a full
 SDK Checkout with Fluent's `get_url()` convenience. Pass the configured

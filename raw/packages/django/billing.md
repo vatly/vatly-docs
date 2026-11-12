@@ -1,6 +1,6 @@
 # Manage owned subscriptions
 
-> Vatly Django - Manage owned subscriptions
+> Use the facade with a saved, authorized billable.
 
 Use the facade with a saved, authorized billable. It checks local ownership before
 subscription mutations. A raw Vatly customer ID is never enough to authorize one.

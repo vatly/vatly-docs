@@ -1,6 +1,6 @@
 # Test without real payments
 
-> Vatly Python Fluent - Test without real payments
+> Use httpx's MockTransport with the real published SDK and Fluent.
 
 Use httpx's MockTransport with the real published SDK and Fluent. The following
 example needs no API key or network connection and validates the outgoing cart.

@@ -1,6 +1,6 @@
 # Customers and bindings
 
-> Vatly JavaScript packages - Customers and bindings
+> Find or create a Vatly customer for your signed-in user.
 
 Find or create a Vatly customer for your signed-in user. Wire
 [binding storage](/packages/fluent-js/coreconcepts#billables-and-bindings) first.

@@ -1,6 +1,6 @@
 # Configuration
 
-> Vatly PHP Fluent - Configuration
+> Install Fluent on your server with PHP 8.1 or newer and Composer.
 
 Install Fluent on your server with PHP 8.1 or newer and Composer. Keep API keys out of browser code and source control.
 

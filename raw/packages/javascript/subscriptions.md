@@ -1,6 +1,6 @@
 # Subscriptions
 
-> Vatly JavaScript packages - Subscriptions
+> Subscriptions are recurring billing relationships.
 
 Subscriptions are recurring billing relationships. They renew automatically according to their plan's interval until canceled.
 

@@ -1,6 +1,6 @@
-# Vatly Django
+# Django
 
-> Vatly Django - Vatly Django
+> Add hosted checkout, customer billing and signed webhook persistence to Django.
 
 Add hosted checkout, customer billing and signed webhook persistence to Django.
 Vatly is the European merchant of record for AI, software and digital products.

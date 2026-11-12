@@ -1,6 +1,6 @@
 # Start a checkout
 
-> Vatly Django - Start a checkout
+> Configure a book offer in settings, then POST to the built-in checkout route as an authenticated user.
 
 Configure a `book` offer in [settings](/packages/django/configuration), then POST to the built-in
 checkout route as an authenticated user. The view accepts an idempotency key, not

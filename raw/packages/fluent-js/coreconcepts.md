@@ -1,6 +1,6 @@
 # Core concepts and storage
 
-> Vatly JavaScript packages - Core concepts and storage
+> Connect Fluent to your existing tables through storage drivers.
 
 Connect Fluent to your existing tables through storage drivers. Your application
 owns the database, authentication, and jobs; Fluent supplies the contracts.

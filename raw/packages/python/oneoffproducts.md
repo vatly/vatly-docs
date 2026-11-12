@@ -1,6 +1,6 @@
 # One-off products
 
-> Vatly Python SDK - One-off products
+> Sell a digital product once rather than on a recurring schedule.
 
 Sell a digital product once rather than on a recurring schedule. Create it in the
 catalog, then pass its ID to a [checkout](/packages/python/checkouts).

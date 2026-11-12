@@ -1,6 +1,6 @@
 # Refunds
 
-> Vatly Python SDK - Refunds
+> Refunds reverse some or all of an order.
 
 Refunds reverse some or all of an order. Create them through `client.orders`, not
 `client.refunds`. The top-level refunds resource is for reads.

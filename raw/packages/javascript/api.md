@@ -1,6 +1,6 @@
 # SDK operation reference
 
-> Vatly JavaScript packages - SDK operation reference
+> Import VatlyClient from @getvatly/sdk.
 
 Import `VatlyClient` from `@getvatly/sdk`. All paths below are relative to `/v1`.
 Every method takes optional `RequestOptions` last. For field details, see the

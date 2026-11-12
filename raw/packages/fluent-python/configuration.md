@@ -1,6 +1,6 @@
 # Configure Fluent
 
-> Vatly Python Fluent - Configure Fluent
+> Keep the SDK client open for your application or worker lifespan.
 
 Keep the SDK client open for your application or worker lifespan. Fluent reuses
 it; the caller remains responsible for closing it. See [installation](/packages/fluent-python/readme).

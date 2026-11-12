@@ -1,6 +1,6 @@
 # Webhooks
 
-> Vatly JavaScript packages - Webhooks
+> Vatly sends webhooks to notify your application when events happen — an order being paid, a refund completing, a subscription being canceled.
 
 Vatly sends webhooks to notify your application when events happen — an order being paid, a refund completing, a subscription being canceled. Every delivery is HMAC-signed; the SDK verifies the signature and hands you a typed event.
 

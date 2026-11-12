@@ -1,6 +1,6 @@
 # Configuration and errors
 
-> Vatly Python SDK - Configuration and errors
+> Use one client per application task or worker lifetime and close it with with or async with.
 
 Use one client per application task or worker lifetime and close it with `with`
 or `async with`. Both clients accept `VATLY_API_KEY` or an explicit server-side key.

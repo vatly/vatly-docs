@@ -1,6 +1,6 @@
 # Webhook endpoints
 
-> Vatly Python SDK - Webhook endpoints
+> Endpoints tell Vatly where to send events.
 
 Endpoints tell Vatly where to send events. Configure these from trusted server-side
 administration, not from a buyer's request. Examples accept the client from

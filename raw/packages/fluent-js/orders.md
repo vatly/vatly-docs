@@ -1,6 +1,6 @@
 # Orders and invoices
 
-> Vatly JavaScript packages - Orders and invoices
+> Fetch an order's invoice link, lines, and totals after checking the caller owns it.
 
 Fetch an order's invoice link, lines, and totals after checking the caller owns it.
 

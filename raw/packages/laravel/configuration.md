@@ -1,6 +1,6 @@
 # Configuration
 
-> Vatly Laravel Package - Configuration
+> Vatly Laravel needs your API credentials, webhook secret, and default redirect URLs.
 
 Vatly Laravel needs your API credentials, webhook secret, and default redirect URLs.
 

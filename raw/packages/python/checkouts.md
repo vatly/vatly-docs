@@ -1,6 +1,6 @@
 # Checkouts
 
-> Vatly Python SDK - Checkouts
+> Create a hosted payment page and redirect your buyer to it.
 
 Create a hosted payment page and redirect your buyer to it. A checkout can contain
 one-off products, subscription plans, or both. Use IDs from your own product catalog.

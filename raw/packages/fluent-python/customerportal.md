@@ -1,6 +1,6 @@
 # Open the customer portal
 
-> Vatly Python Fluent - Open the customer portal
+> Send an authenticated buyer to Vatly's hosted portal to manage subscriptions, invoices and billing details.
 
 Send an authenticated buyer to Vatly's hosted portal to manage subscriptions,
 invoices and billing details. Create a new session for each visit.

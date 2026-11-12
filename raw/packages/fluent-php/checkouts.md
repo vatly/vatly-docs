@@ -1,6 +1,6 @@
 # Checkouts
 
-> Vatly PHP Fluent - Checkouts
+> Create a hosted payment page, then redirect the browser to its URL.
 
 Create a hosted payment page, then redirect the browser to its URL. These examples use a configured `$vatly` and a customer your signed-in user is allowed to use.
 

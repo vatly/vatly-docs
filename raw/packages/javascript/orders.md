@@ -1,6 +1,6 @@
 # Orders
 
-> Vatly JavaScript packages - Orders
+> Orders record checkout purchases and subscription renewals, including pending payments.
 
 Orders record checkout purchases and subscription renewals, including pending payments. They carry invoice links and tax breakdowns, and let you create refunds and inspect chargebacks.
 

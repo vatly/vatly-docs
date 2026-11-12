@@ -1,6 +1,6 @@
-# Vatly Python SDK
+# Python SDK
 
-> Vatly Python SDK - Vatly Python SDK
+> Use this SDK for typed API calls from Python 3.10+.
 
 Vatly is the European merchant of record for AI, software and digital products.
 Use this SDK for typed API calls from Python 3.10+. For a storage-backed billing

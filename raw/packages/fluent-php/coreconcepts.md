@@ -1,6 +1,6 @@
 # Core concepts
 
-> Vatly PHP Fluent - Core concepts
+> Connect Fluent to your database without replacing your models.
 
 Connect Fluent to your database without replacing your models. Build a driver by implementing the storage contracts, then pass those implementations to `Wiring`:
 

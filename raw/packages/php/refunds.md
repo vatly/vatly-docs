@@ -1,6 +1,6 @@
 # Refunds
 
-> Vatly PHP SDK - Refunds
+> Refunds allow you to return money to your customers for orders.
 
 Refunds allow you to return money to your customers for orders.
 

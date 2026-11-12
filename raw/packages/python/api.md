@@ -1,6 +1,6 @@
 # API reference
 
-> Vatly Python SDK - API reference
+> Generated from openapi.yaml.
 
 Generated from `openapi.yaml`. Sync and async clients expose the same methods.
 Pass a Pydantic request/params model or a wire-format dictionary. All methods accept keyword-only `options=RequestOptions(...)`.
