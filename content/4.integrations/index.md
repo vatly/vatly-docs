@@ -22,6 +22,8 @@ Lovable and Bolt generate JavaScript/TypeScript apps and server code, so use the
 
 ## Prepare your Vatly account
 
+New to Vatly? Follow the [Quickstart](/guides/quickstart) for the basic account and API setup.
+
 1. Create an account at [Vatly](https://my.vatly.com) and get a `test_` API key under **Developers » API keys**.
 2. Create a product under **Manage Products**. Use a `one_off_product_…` ID for a single purchase or a `subscription_plan_…` ID for recurring access.
 3. Keep the key and all product and customer IDs in the same storefront and mode.
