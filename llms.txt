@@ -44,7 +44,7 @@
 - [Chargebacks](https://docs.vatly.com/raw/packages/php/chargebacks.md): Vatly PHP SDK - Chargebacks
 - [Webhooks](https://docs.vatly.com/raw/packages/php/webhooks.md): Vatly PHP SDK - Webhooks
 - [Webhook Endpoints](https://docs.vatly.com/raw/packages/php/webhookendpoints.md): Vatly PHP SDK - Webhook Endpoints
-- [Adapting to your framework](https://docs.vatly.com/raw/packages/fluent-php/recipes/host-owns-its-tables.md): Vatly PHP Fluent - Adapting to your framework
+- [Adapting to your framework](https://docs.vatly.com/raw/packages/fluent-php/host-owns-its-tables.md): Vatly PHP Fluent - Adapting to your framework
 - [Webhook event flow](https://docs.vatly.com/raw/packages/fluent-php/webhook-flow.md): Vatly PHP Fluent - Webhook event flow
 - [Getting Started](https://docs.vatly.com/raw/packages/laravel/readme.md): Vatly Laravel Package - Getting Started
 - [Customers](https://docs.vatly.com/raw/packages/laravel/customers.md): Vatly Laravel Package - Customers
