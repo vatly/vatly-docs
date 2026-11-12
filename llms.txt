@@ -44,8 +44,18 @@
 - [Chargebacks](https://docs.vatly.com/raw/packages/php/chargebacks.md): Vatly PHP SDK - Chargebacks
 - [Webhooks](https://docs.vatly.com/raw/packages/php/webhooks.md): Vatly PHP SDK - Webhooks
 - [Webhook Endpoints](https://docs.vatly.com/raw/packages/php/webhookendpoints.md): Vatly PHP SDK - Webhook Endpoints
-- [Adapting to your framework](https://docs.vatly.com/raw/packages/fluent-php/host-owns-its-tables.md): Vatly PHP Fluent - Adapting to your framework
-- [Webhook event flow](https://docs.vatly.com/raw/packages/fluent-php/webhook-flow.md): Vatly PHP Fluent - Webhook event flow
+- [Getting started](https://docs.vatly.com/raw/packages/fluent-php/readme.md): Vatly PHP Fluent - Getting started
+- [Customers](https://docs.vatly.com/raw/packages/fluent-php/customers.md): Vatly PHP Fluent - Customers
+- [Checkouts](https://docs.vatly.com/raw/packages/fluent-php/checkouts.md): Vatly PHP Fluent - Checkouts
+- [Subscriptions](https://docs.vatly.com/raw/packages/fluent-php/subscriptions.md): Vatly PHP Fluent - Subscriptions
+- [Orders](https://docs.vatly.com/raw/packages/fluent-php/orders.md): Vatly PHP Fluent - Orders
+- [Webhooks](https://docs.vatly.com/raw/packages/fluent-php/webhooks.md): Vatly PHP Fluent - Webhooks
+- [Configuration](https://docs.vatly.com/raw/packages/fluent-php/configuration.md): Vatly PHP Fluent - Configuration
+- [Core concepts](https://docs.vatly.com/raw/packages/fluent-php/coreconcepts.md): Vatly PHP Fluent - Core concepts
+- [Customer portal](https://docs.vatly.com/raw/packages/fluent-php/customerportal.md): Vatly PHP Fluent - Customer portal
+- [Host tables](https://docs.vatly.com/raw/packages/fluent-php/host-owns-its-tables.md): Vatly PHP Fluent - Host tables
+- [Testing](https://docs.vatly.com/raw/packages/fluent-php/testing.md): Vatly PHP Fluent - Testing
+- [Event flow](https://docs.vatly.com/raw/packages/fluent-php/webhook-flow.md): Vatly PHP Fluent - Event flow
 - [Getting Started](https://docs.vatly.com/raw/packages/laravel/readme.md): Vatly Laravel Package - Getting Started
 - [Customers](https://docs.vatly.com/raw/packages/laravel/customers.md): Vatly Laravel Package - Customers
 - [Checkouts](https://docs.vatly.com/raw/packages/laravel/checkouts.md): Vatly Laravel Package - Checkouts
@@ -76,7 +86,7 @@
 - [Core concepts and storage](https://docs.vatly.com/raw/packages/fluent-js/coreconcepts.md): Vatly JavaScript packages - Core concepts and storage
 - [Customer portal](https://docs.vatly.com/raw/packages/fluent-js/customerportal.md): Vatly JavaScript packages - Customer portal
 - [Testing](https://docs.vatly.com/raw/packages/fluent-js/testing.md): Vatly JavaScript packages - Testing
-- [Getting started](https://docs.vatly.com/raw/packages/python/readme.md): Vatly Python SDK - Getting started
+- [Vatly Python SDK](https://docs.vatly.com/raw/packages/python/readme.md): Vatly Python SDK - Vatly Python SDK
 - [Customers](https://docs.vatly.com/raw/packages/python/customers.md): Vatly Python SDK - Customers
 - [API reference](https://docs.vatly.com/raw/packages/python/api.md): Vatly Python SDK - API reference
 - [Checkouts](https://docs.vatly.com/raw/packages/python/checkouts.md): Vatly Python SDK - Checkouts
@@ -87,23 +97,31 @@
 - [One-off products](https://docs.vatly.com/raw/packages/python/oneoffproducts.md): Vatly Python SDK - One-off products
 - [Chargebacks](https://docs.vatly.com/raw/packages/python/chargebacks.md): Vatly Python SDK - Chargebacks
 - [Webhooks](https://docs.vatly.com/raw/packages/python/webhooks.md): Vatly Python SDK - Webhooks
+- [Configuration and errors](https://docs.vatly.com/raw/packages/python/configuration.md): Vatly Python SDK - Configuration and errors
 - [Development and release](https://docs.vatly.com/raw/packages/python/development.md): Vatly Python SDK - Development and release
-- [Getting started](https://docs.vatly.com/raw/packages/fluent-python/readme.md): Vatly Python Fluent - Getting started
-- [Customers](https://docs.vatly.com/raw/packages/fluent-python/customers.md): Vatly Python Fluent - Customers
-- [Checkouts](https://docs.vatly.com/raw/packages/fluent-python/checkouts.md): Vatly Python Fluent - Checkouts
-- [Subscriptions](https://docs.vatly.com/raw/packages/fluent-python/subscriptions.md): Vatly Python Fluent - Subscriptions
-- [Orders and reversals](https://docs.vatly.com/raw/packages/fluent-python/orders.md): Vatly Python Fluent - Orders and reversals
-- [Transactional webhooks](https://docs.vatly.com/raw/packages/fluent-python/webhooks.md): Vatly Python Fluent - Transactional webhooks
-- [Configuration and lifecycle](https://docs.vatly.com/raw/packages/fluent-python/configuration.md): Vatly Python Fluent - Configuration and lifecycle
-- [Driver contracts and ownership](https://docs.vatly.com/raw/packages/fluent-python/coreconcepts.md): Vatly Python Fluent - Driver contracts and ownership
-- [Customer portal](https://docs.vatly.com/raw/packages/fluent-python/customerportal.md): Vatly Python Fluent - Customer portal
-- [Porting notes](https://docs.vatly.com/raw/packages/fluent-python/porting.md): Vatly Python Fluent - Porting notes
-- [Testing](https://docs.vatly.com/raw/packages/fluent-python/testing.md): Vatly Python Fluent - Testing
-- [Vatly Django guides](https://docs.vatly.com/raw/packages/django/readme.md): Vatly Django - Vatly Django guides
-- [Webhooks, storage and outbox](https://docs.vatly.com/raw/packages/django/webhooks.md): Vatly Django - Webhooks, storage and outbox
-- [Billable operations](https://docs.vatly.com/raw/packages/django/billing.md): Vatly Django - Billable operations
-- [Configuration](https://docs.vatly.com/raw/packages/django/configuration.md): Vatly Django - Configuration
+- [Webhook endpoints](https://docs.vatly.com/raw/packages/python/webhookendpoints.md): Vatly Python SDK - Webhook endpoints
+- [Vatly Fluent Python](https://docs.vatly.com/raw/packages/fluent-python/readme.md): Vatly Python Fluent - Vatly Fluent Python
+- [Create and find customers](https://docs.vatly.com/raw/packages/fluent-python/customers.md): Vatly Python Fluent - Create and find customers
+- [Create hosted checkouts](https://docs.vatly.com/raw/packages/fluent-python/checkouts.md): Vatly Python Fluent - Create hosted checkouts
+- [Manage subscriptions](https://docs.vatly.com/raw/packages/fluent-python/subscriptions.md): Vatly Python Fluent - Manage subscriptions
+- [Read orders and reversals](https://docs.vatly.com/raw/packages/fluent-python/orders.md): Vatly Python Fluent - Read orders and reversals
+- [Process signed webhooks](https://docs.vatly.com/raw/packages/fluent-python/webhooks.md): Vatly Python Fluent - Process signed webhooks
+- [Configure Fluent](https://docs.vatly.com/raw/packages/fluent-python/configuration.md): Vatly Python Fluent - Configure Fluent
+- [Store ownership safely](https://docs.vatly.com/raw/packages/fluent-python/coreconcepts.md): Vatly Python Fluent - Store ownership safely
+- [Open the customer portal](https://docs.vatly.com/raw/packages/fluent-python/customerportal.md): Vatly Python Fluent - Open the customer portal
+- [Move from JS or PHP](https://docs.vatly.com/raw/packages/fluent-python/porting.md): Vatly Python Fluent - Move from JS or PHP
+- [Test without real payments](https://docs.vatly.com/raw/packages/fluent-python/testing.md): Vatly Python Fluent - Test without real payments
+- [Vatly Django](https://docs.vatly.com/raw/packages/django/readme.md): Vatly Django - Vatly Django
+- [Receive signed webhooks](https://docs.vatly.com/raw/packages/django/webhooks.md): Vatly Django - Receive signed webhooks
+- [Inspect billing in admin](https://docs.vatly.com/raw/packages/django/admin.md): Vatly Django - Inspect billing in admin
+- [Choose a billable model](https://docs.vatly.com/raw/packages/django/billablemodels.md): Vatly Django - Choose a billable model
+- [Manage owned subscriptions](https://docs.vatly.com/raw/packages/django/billing.md): Vatly Django - Manage owned subscriptions
+- [Start a checkout](https://docs.vatly.com/raw/packages/django/checkout.md): Vatly Django - Start a checkout
+- [Configure billing](https://docs.vatly.com/raw/packages/django/configuration.md): Vatly Django - Configure billing
+- [Open the customer portal](https://docs.vatly.com/raw/packages/django/customerportal.md): Vatly Django - Open the customer portal
 - [Development, support and release](https://docs.vatly.com/raw/packages/django/development.md): Vatly Django - Development, support and release
+- [Install Vatly Django](https://docs.vatly.com/raw/packages/django/installation.md): Vatly Django - Install Vatly Django
+- [Test billing offline](https://docs.vatly.com/raw/packages/django/testing.md): Vatly Django - Test billing offline
 - [Packages](https://docs.vatly.com/raw/packages.md): Official Vatly SDKs and fluent packages for PHP, Laravel, JavaScript, Python and Django. Installation, package registries and documentation.
 - [Lovable payments with Vatly](https://docs.vatly.com/raw/integrations/lovable.md): Sell European software and digital products from Lovable with Vatly handling tax and invoicing. Start with a test API key and a copy-paste integration prompt.
 - [Bolt payments with Vatly](https://docs.vatly.com/raw/integrations/bolt.md): Add Vatly payments to Bolt.new for European software and digital products. Offload tax and invoicing, get a test API key, and prompt Bolt to wire up checkout.

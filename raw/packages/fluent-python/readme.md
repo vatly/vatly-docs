@@ -1,12 +1,57 @@
-# Getting started
+# Vatly Fluent Python
 
-> Vatly Python Fluent - Getting started
+> Vatly Python Fluent - Vatly Fluent Python
 
-> **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
+Build checkout, customer and subscription flows without tying billing to a web
+framework. Fluent composes the async SDK and your storage driver. Vatly is the
+European merchant of record for AI, software and digital products.
 
-Use Fluent for a billing integration; use the raw SDK for direct API calls. Fluent
-depends on `vatly-api-python==0.1.0a2` and Python 3.10+. Follow the [quick start](https://github.com/vatly/vatly-fluent-python/blob/main/README.md)
-for your first hosted checkout, then add storage for signed events and ownership.
+**Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
+
+## Install and create a checkout
+
+```bash
+python -m pip install vatly-fluent-python==0.1.0a2
+```
+
+Python 3.10+ is required. This installs `vatly-api-python==0.1.0a2` too. Set
+`VATLY_API_KEY` on the server, then run this async function with your event loop.
+
+```python
+from vatly import AsyncVatlyClient, RequestOptions
+from vatly_fluent import Vatly, Wiring
+
+
+async def example():
+    async with AsyncVatlyClient() as api:
+        vatly = Vatly(
+            Wiring(
+                api=api,
+                redirect_url_success="https://app.example.com/billing/success",
+                redirect_url_canceled="https://app.example.com/billing/canceled",
+            )
+        )
+        checkout = (
+            await vatly.checkout_builder()
+            .with_items(
+                [
+                    {"id": "one_off_product_example", "quantity": 1},
+                ]
+            )
+            .create(options=RequestOptions(idempotency_key="purchase:42"))
+        )
+        return checkout.get_url()
+```
+
+Replace the product ID and persist the purchase key before making the request.
+Redirect the buyer to the URL. This minimal example does not store ownership or
+process webhooks; add [storage](/packages/fluent-python/coreconcepts) before granting product access.
+
+## Build your integration
+
+Functions in these guides accept the configured `vatly` instance from
+[Configuration](/packages/fluent-python/configuration). Await them inside your application's async
+lifespan. IDs and billable entities must be authorized by your application.
 
 <table>
 <thead>
@@ -16,7 +61,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </th>
     
     <th>
-      Responsibility
+      Task
     </th>
   </tr>
 </thead>
@@ -30,7 +75,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      Keys, lifecycle, dependency bootstrap, release
+      Wire the SDK, redirects and storage
     </td>
   </tr>
   
@@ -42,7 +87,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      Driver contracts, entities, scope and transactions
+      Implement drivers and preserve ownership
     </td>
   </tr>
   
@@ -54,7 +99,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      One-off/mixed/subscription builders and retries
+      Sell a cart or a subscription
     </td>
   </tr>
   
@@ -66,7 +111,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      Billing identity and immutable bindings
+      Create, bind and look up billing identities
     </td>
   </tr>
   
@@ -78,7 +123,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      Short-lived hosted portal sessions
+      Send a buyer to hosted account management
     </td>
   </tr>
   
@@ -90,7 +135,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      Swaps, cancellation, state, reconciliation
+      Change plans, cancel, resume and reconcile
     </td>
   </tr>
   
@@ -102,7 +147,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      Lines, money and reversals
+      Read invoices, lines and reversals
     </td>
   </tr>
   
@@ -114,7 +159,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      Signed snapshots, atomic processing and outbox
+      Persist signed events once in a transaction
     </td>
   </tr>
   
@@ -126,7 +171,7 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      SQLite example, mock transport and local checks
+      Run a checkout without network access
     </td>
   </tr>
   
@@ -138,12 +183,12 @@ for your first hosted checkout, then add storage for signed events and ownership
     </td>
     
     <td>
-      Source provenance and intentional differences
+      Map JS/PHP concepts to Python
     </td>
   </tr>
 </tbody>
 </table>
 
-Pushes to `main` affecting `docs/**` notify `vatly/vatly-docs`, which imports
-these guides automatically. The notifier requires the Actions secret
-`VATLY_DOCS_DISPATCH_TOKEN` with Contents: write access to `vatly/vatly-docs`.
+[API reference](https://docs.vatly.com/api-reference) documents the underlying
+requests. These examples are executed with published `0.1.0a2` packages and local
+fixtures; no real payments or account changes occur in documentation tests.

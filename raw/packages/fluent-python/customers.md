@@ -1,23 +1,168 @@
-# Customers
+# Create and find customers
 
-> Vatly Python Fluent - Customers
+> Vatly Python Fluent - Create and find customers
 
-Use `customers.create_for(host_id, CustomerProfile(email=..., name=...))` with
-bindings, or `create_unattributed(profile)` to record billing identity without a
-host binding. `attribute(vatly_id, host_id)` checks both sides and delegates atomic
-uniqueness to the driver. It never reassigns identities. Reuse an explicit
-idempotency key when retrying creation after a local binding failure.
+Bind a host user to a Vatly billing identity once, then reuse it. Bindings require
+the configured storage driver; examples accept `vatly` from [Configuration](/packages/fluent-python/configuration).
 
-Look up by `find_by_host_customer_id`, `find_by_vatly_customer_id`,
-`find_one_by_email`, or iterate `find_by_email`. Email is storefront/mode scoped,
-not a global customer key. All host/customer IDs require server authorization.
+## Create a customer for a host user
 
-`vatly.customer(id)` memoizes its full SDK resource via `await handle.model()`.
-`name`, `email` and `identity` share the cache; `sync()` refreshes it and `update`
-refreshes from the mutation response. Updating name/email changes communication
-identity, not invoice billing details. Use the hosted portal/billing flows instead.
+```python
+from vatly import RequestOptions
+from vatly_fluent import CustomerProfile, Vatly
 
-`customer_id_from_checkout(id)` returns billing identity only.
-`claim_customer_from_checkout(id, host_id)` requires host-verified checkout ownership
-and only binds the customer; neither method assigns order/subscription entitlements.
-Resource ownership follows the host's checkout records, never customerId.
+
+async def example(vatly: Vatly):
+    return await vatly.customers.create_for(
+        "user-42",
+        CustomerProfile(email="buyer@example.com", name="Alex"),
+        options=RequestOptions(idempotency_key="signup:user-42"),
+    )
+```
+
+`create_for` rejects an already-bound host. To reuse an existing customer, authorize
+its ID then call `await vatly.customers.attribute(customer_id, host_id)` instead.
+Conflicting bindings fail rather than silently moving customers between users.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Profile field
+    </th>
+    
+    <th>
+      Meaning
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        vatly_id
+      </code>
+    </td>
+    
+    <td>
+      Existing authorized customer, used by checkout builders
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        email
+      </code>
+    </td>
+    
+    <td>
+      Required when creating a new customer
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        name
+      </code>
+    </td>
+    
+    <td>
+      Optional communication name
+    </td>
+  </tr>
+</tbody>
+</table>
+
+An email-only checkout profile does not create a customer. Explicitly create it
+first if you need a durable binding. Bindings do not assign order ownership.
+
+## Look up and refresh identity
+
+```python
+from vatly_fluent import Vatly
+
+
+async def example(vatly: Vatly):
+    found = await vatly.customers.find_one_by_email("buyer@example.com")
+    handle = vatly.customer("customer_example")
+    identity = await handle.identity()
+    await handle.update({"name": "Alex Morgan"})
+    await handle.sync()
+    return found, identity, await handle.email()
+```
+
+`model()`, `name()`, `email()` and `identity()` share a cached snapshot. `sync()`
+and `update()` refresh it. Name/email are not invoice address fields; use the
+[portal](/packages/fluent-python/customerportal) for hosted billing management.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Lookup
+    </th>
+    
+    <th>
+      Return
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        find_by_host_customer_id
+      </code>
+    </td>
+    
+    <td>
+      Customer or None
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        find_by_vatly_customer_id
+      </code>
+    </td>
+    
+    <td>
+      Customer, or the SDK's not-found error
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        find_by_email
+      </code>
+    </td>
+    
+    <td>
+      Async iterator of matching customers
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        find_one_by_email
+      </code>
+    </td>
+    
+    <td>
+      First match or None, not a global identity assertion
+    </td>
+  </tr>
+</tbody>
+</table>
+
+`claim_customer_from_checkout` is only for an already host-authorized checkout;
+it binds billing identity, not entitlements. Never accept arbitrary buyer-supplied IDs.
+
+[Customer API reference](https://docs.vatly.com/api-reference/customers)

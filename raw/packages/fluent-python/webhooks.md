@@ -1,19 +1,99 @@
-# Transactional webhooks
+# Process signed webhooks
 
-> Vatly Python Fluent - Transactional webhooks
+> Vatly Python Fluent - Process signed webhooks
 
-Call `await vatly.webhook_processor().handle(raw_bytes, signature_header)` in your
-framework route. Signature/HMAC freshness checks happen before storage, using the
-SDK. Missing/invalid signatures raise `VatlyInvalidSignatureError`. Keep the default
-300-second tolerance; arrays of secrets support rotation. Unknown signed events
-are retained and dispatched, not applied to known repositories.
+Fluent verifies a delivery, updates local snapshots and dispatches events through
+your storage driver. Your framework route supplies the raw bytes and signature.
+Use the `vatly` instance wired in [Configuration](/packages/fluent-python/configuration).
 
-Implement `WebhookCalls.process(event, work)` in **one transaction** shared by all
-drivers. Lock/claim the signed event.id, skip committed duplicates, retain the
-envelope, await work, mark processed and commit. Roll back every write on failure
-so delivery retries can finish. Concurrency requires DB uniqueness/locking, not a
-check-then-insert in memory. Scope every key by tenant/storefront/mode. An unsigned
-Vatly-Event-Id header is not a dedup authority. Mode mismatches fail before storage.
+```python
+from vatly_fluent import Vatly
+
+
+async def example(vatly: Vatly, raw_body: bytes, signature: str):
+    processed = await vatly.webhook_processor().handle(raw_body, signature)
+    return "processed" if processed else "duplicate"
+```
+
+Respond 2xx after commit, including for a committed duplicate. Invalid signatures
+raise `VatlyInvalidSignatureError`; return 400. Let processing/storage failures
+return 5xx so Vatly retries. Do not parse and re-encode the body before verification.
+
+## Make delivery atomic
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Driver responsibility
+    </th>
+    
+    <th>
+      Required behavior
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        webhook_calls.process(event, work)
+      </code>
+    </td>
+    
+    <td>
+      Claim signed <code>
+        event.id
+      </code>
+      
+      ; run <code>
+        work
+      </code>
+      
+      ; commit all writes together
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Repositories and checkout links
+    </td>
+    
+    <td>
+      Participate in that same transaction
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        events.dispatch(event)
+      </code>
+    </td>
+    
+    <td>
+      Write an outbox entry, not a network side effect
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Failure or concurrent duplicate
+    </td>
+    
+    <td>
+      Roll back on failure; enforce DB uniqueness/locking
+    </td>
+  </tr>
+</tbody>
+</table>
+
+The signature's default clock tolerance is 300 seconds; secret sequences support
+rotation. Deduplicate the **signed** ID, not an unsigned event-ID header. Scope all
+claims by tenant/storefront/mode. Unknown signed events remain retained/dispatched.
+
+## Know what the built-in reactions do
 
 <table>
 <thead>
@@ -23,7 +103,7 @@ Vatly-Event-Id header is not a dedup authority. Mode mismatches fail before stor
     </th>
     
     <th>
-      Built-in behavior
+      Local effect
     </th>
   </tr>
 </thead>
@@ -31,105 +111,96 @@ Vatly-Event-Id header is not a dedup authority. Mode mismatches fail before stor
 <tbody>
   <tr>
     <td>
-      subscription.started
+      <code>
+        subscription.started
+      </code>
     </td>
     
     <td>
-      Upsert; newly saved row emits local.subscription_created
+      Upsert; first save emits <code>
+        local.subscription_created
+      </code>
     </td>
   </tr>
   
   <tr>
     <td>
-      subscription.updated / billing_updated
+      Subscription update/billing/resume/cancel events
     </td>
     
     <td>
-      Update existing resource; null mandate preserves local value
+      Update an existing snapshot and lifecycle expiry
     </td>
   </tr>
   
   <tr>
     <td>
-      subscription.resumed
+      <code>
+        order.paid
+      </code>
+      
+      , <code>
+        order.payment_failed
+      </code>
     </td>
     
     <td>
-      Update existing row; clear ends_at
+      Upsert order snapshot; first paid save emits <code>
+        local.order_created
+      </code>
     </td>
   </tr>
   
   <tr>
     <td>
-      cancellation / grace-period completion
+      <code>
+        order.canceled
+      </code>
     </td>
     
     <td>
-      Update existing row and ends_at
+      Update an existing order
     </td>
   </tr>
   
   <tr>
     <td>
-      order.paid / payment_failed
+      Refund/chargeback events
     </td>
     
     <td>
-      Upsert signed snapshot; new paid row emits local.order_created
+      Upsert optional reversal repositories
     </td>
   </tr>
   
   <tr>
     <td>
-      order.canceled
+      <code>
+        checkout.paid
+      </code>
     </td>
     
     <td>
-      Update existing snapshot only
+      Link through a host-owned checkout record
     </td>
   </tr>
   
   <tr>
     <td>
-      refund.* / order.chargeback_*
+      Other/unknown events
     </td>
     
     <td>
-      Optional reversal upsert
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      checkout.paid
-    </td>
-    
-    <td>
-      Link own checkout record to order; link subscription IDs from an already stored order
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      scheduled updates / products / setup / unknown
-    </td>
-    
-    <td>
-      Dispatch without built-in resource writes
+      Dispatch without an invented resource write
     </td>
   </tr>
 </tbody>
 </table>
 
-Missing repositories skip persistence, not dispatch. Local-created events fire
-only when a row is first saved, not on every payment status transition. Custom
-`additional_webhook_reactions` run after built-ins and before final dispatch,
-inside the same transaction. Write transactional outbox rows in `events.dispatch`,
-then send external effects after commit. Throw on processing failure; respond 5xx,
-not 2xx, so Vatly retries. A duplicate committed event may respond 200.
+Reactions make no implicit API reads. Customer bindings never determine ownership.
+Created events can precede eventual ownership linkage; outbox consumers must read
+current persisted ownership before acting. Dispatch external effects after commit
+with idempotent consumer keys. Deduplication is not event ordering: reconcile stale
+or conflicting snapshots explicitly. See [subscription recovery](/packages/fluent-python/subscriptions).
 
-No implicit API reads occur. All six checkout/order/subscription delivery orders
-are tested to converge using host records and stored snapshots. Missing snapshots,
-AUTH_REQUEST trials and legacy plan references need explicit reconciliation jobs.
-Delayed stale events can still overwrite newer snapshots: dedup is not ordering;
-reconcile conflicts with the API. Never infer ownership from customerId or metadata.
+[API reference](https://docs.vatly.com/api-reference) · [Endpoint API reference](https://docs.vatly.com/api-reference/webhook-endpoints)

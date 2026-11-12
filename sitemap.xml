@@ -38,7 +38,17 @@
   <url><loc>https://docs.vatly.com/packages/php/chargebacks</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/php/webhooks</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/php/webhookendpoints</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/readme</loc><priority>0.7</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/customers</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/checkouts</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/subscriptions</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/orders</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/webhooks</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/configuration</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/coreconcepts</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/customerportal</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluent-php/host-owns-its-tables</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-php/testing</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluent-php/webhook-flow</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/laravel/readme</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/packages/laravel/customers</loc><priority>0.6</priority></url>
@@ -81,7 +91,9 @@
   <url><loc>https://docs.vatly.com/packages/python/chargebacks</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/python/webhooks</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/python/api</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/python/configuration</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/python/development</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/python/webhookendpoints</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluent-python/readme</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluent-python/customers</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluent-python/checkouts</loc><priority>0.6</priority></url>
@@ -95,9 +107,15 @@
   <url><loc>https://docs.vatly.com/packages/fluent-python/testing</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/django/readme</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/packages/django/webhooks</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/django/admin</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/django/billablemodels</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/django/billing</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/django/checkout</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/django/configuration</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/django/customerportal</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/django/development</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/django/installation</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/django/testing</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/integrations</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/integrations/lovable</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/integrations/bolt</loc><priority>0.8</priority></url>

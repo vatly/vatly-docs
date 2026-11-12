@@ -1,0 +1,106 @@
+# Test billing offline
+
+> Vatly Django - Test billing offline
+
+Use Django's test database and httpx fixtures. Do not use a real Vatly key in unit
+tests. The snippets below are helpers for your pytest-django tests. Call them from
+a test marked `@pytest.mark.django_db(transaction=True)` with your project configured.
+
+## Read a customer with MockTransport
+
+```python
+import httpx
+from asgiref.sync import async_to_sync
+from vatly import AsyncVatlyClient
+from vatly_fluent import Vatly, Wiring
+
+
+def example():
+    def respond(request):
+        assert request.url.path == "/v1/customers/customer_example"
+        return httpx.Response(
+            200,
+            json={
+                "id": "customer_example",
+                "resource": "customer",
+                "testmode": True,
+                "email": "buyer@example.com",
+                "name": "Alex",
+                "metadata": {},
+                "createdAt": "2026-01-01T00:00:00Z",
+                "links": {
+                    "self": {
+                        "href": "https://api.vatly.com/v1/customers/customer_example",
+                        "type": "application/json",
+                    }
+                },
+            },
+        )
+
+    async def read_customer():
+        async with AsyncVatlyClient(
+            "test_" + "x" * 20, transport=httpx.MockTransport(respond)
+        ) as api:
+            vatly = Vatly(Wiring(api, "https://app.example.com/ok", "https://app.example.com/no"))
+            return await vatly.customer("customer_example").email()
+
+    assert async_to_sync(read_customer)() == "buyer@example.com"
+```
+
+This tests the async stack from synchronous Django code. To test your own checkout
+view, inject a MockTransport-backed AsyncVatlyClient into your billing test and
+assert its request products, idempotency key, redirect and local Checkout record.
+
+## Send the same signed event twice
+
+```python
+import hashlib
+import hmac
+import json
+import time
+from django.test import Client
+from django.test.utils import override_settings
+
+
+def example():
+    stamp = int(time.time())
+    secret = "offline-test-secret"
+    raw = json.dumps(
+        {
+            "id": "event_docs",
+            "resource": "webhook_event",
+            "eventName": "future.event",
+            "reason": None,
+            "entityType": "future",
+            "entityId": "future_1",
+            "object": {"id": "future_1"},
+            "createdAt": "2026-01-01T00:00:00Z",
+            "testmode": True,
+        }
+    ).encode()
+    digest = hmac.new(secret.encode(), str(stamp).encode() + b"." + raw, hashlib.sha256).hexdigest()
+    signature = f"t={stamp},v1={digest}"
+    client = Client()
+    with override_settings(VATLY_WEBHOOK_SECRET=secret):
+        first = client.post(
+            "/billing/webhook/",
+            raw,
+            content_type="application/json",
+            HTTP_VATLY_SIGNATURE=signature,
+        )
+        second = client.post(
+            "/billing/webhook/",
+            raw,
+            content_type="application/json",
+            HTTP_VATLY_SIGNATURE=signature,
+        )
+    assert first.content == b"processed"
+    assert second.content == b"duplicate"
+```
+
+Run with migrations applied in the test database and the billing URL prefix from
+[Installation](/packages/django/installation). Use a test API key and scope in test settings;
+this signed unknown event requires no remote API reads. Add tests for bad signatures,
+rollback, CSRF, unauthorized billables and concurrent duplicates on PostgreSQL.
+
+[Contributor checks](/packages/django/development) · [API reference](https://docs.vatly.com/api-reference)

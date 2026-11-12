@@ -1,6 +1,124 @@
-# Porting notes
+# Move from JS or PHP
 
-> Vatly Python Fluent - Porting notes
+> Vatly Python Fluent - Move from JS or PHP
 
-See [PORTING.md](https://github.com/vatly/vatly-fluent-python/blob/main/PORTING.md) for upstream commits, API mapping, deliberate
-Python differences, checkout/entity ownership, and subscription-linking compatibility.
+Python Fluent keeps the same billing concepts, with snake_case methods and async
+I/O. Compose an existing `AsyncVatlyClient`; no framework container is installed.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Concept
+    </th>
+    
+    <th>
+      Python
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      Checkout builder
+    </td>
+    
+    <td>
+      <code>
+        vatly.checkout_builder().with_items(...).create()
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Subscription checkout
+    </td>
+    
+    <td>
+      <code>
+        vatly.subscribe().to_plan(...).create()
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Billable/entity
+    </td>
+    
+    <td>
+      Host-authorized <code>
+        EntityRef(kind, id)
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Customer handle
+    </td>
+    
+    <td>
+      <code>
+        vatly.customer(id)
+      </code>
+      
+      ; await cache/network accessors
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Subscription handle
+    </td>
+    
+    <td>
+      <code>
+        vatly.subscription(LocalSubscription(...))
+      </code>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Resource fields
+    </td>
+    
+    <td>
+      Pydantic snake_case attributes; wire-key dictionaries for overrides
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Storage
+    </td>
+    
+    <td>
+      Async Protocol implementations supplied by the host
+    </td>
+  </tr>
+</tbody>
+</table>
+
+## Inspect a checkout before sending it
+
+```python
+from vatly_fluent import Vatly
+
+
+def example(vatly: Vatly):
+    builder = vatly.subscribe().to_plan("subscription_plan_example").with_quantity(2)
+    return builder.payload()
+```
+
+`payload()` is a detached dictionary and makes no network request. Use the same
+builder with `await builder.create()` to send it. PHP/JS method names are not
+aliases in Python. Cancellation returns no resource; resume refreshes a handle.
+
+See [Core concepts](/packages/fluent-python/coreconcepts) before porting a storage driver and
+[Subscriptions](/packages/fluent-python/subscriptions) for the initial-linkage/expiry limitations.
+[PORTING.md](https://github.com/vatly/vatly-fluent-python/blob/main/PORTING.md) records upstream source revisions and deliberate API
+differences. [API reference](https://docs.vatly.com/api-reference) defines wire fields.

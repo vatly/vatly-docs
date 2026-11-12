@@ -1,14 +1,90 @@
-# Customer portal
+# Open the customer portal
 
-> Vatly Python Fluent - Customer portal
+> Vatly Python Fluent - Open the customer portal
 
-After authorizing the customer ID, call
-`await vatly.customer(id).portal_session({"returnUrl": "https://app.example.com/billing"})`
-using the production API's request fields. An empty `{}` body is also supported.
-Redirect to `session.url`. It is short-lived/single-use; never log it or use it as
-a permanent account URL. Errors propagate from the SDK without wrapping.
+Send an authenticated buyer to Vatly's hosted portal to manage subscriptions,
+invoices and billing details. Create a new session for each visit.
 
-Do not accept arbitrary Vatly customer IDs from the browser. Look up the customer's
-binding for the authenticated billable and tenant/storefront/mode first.
-For subscription invoice-address updates, `subscription(local).update_billing()`
-returns a hosted URL with success/cancellation redirects.
+```python
+from vatly_fluent import FluentError, Vatly
+
+
+async def example(vatly: Vatly):
+    # The host authorizes user-42 before this lookup.
+    customer = await vatly.customers.find_by_host_customer_id("user-42")
+    if customer is None:
+        raise FluentError("No billing customer is bound to this user")
+    session = await vatly.customer(customer.id).portal_session(
+        {
+            "returnUrl": "https://app.example.com/account/billing",
+        }
+    )
+    return session.url
+```
+
+Pass the configured `vatly` from [Configuration](/packages/fluent-python/configuration). The key selects
+the storefront and mode; the portal does not show a storefront picker.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Field
+    </th>
+    
+    <th>
+      Meaning
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      Input <code>
+        returnUrl
+      </code>
+    </td>
+    
+    <td>
+      Optional HTTPS return link; <code>
+        {}
+      </code>
+      
+       omits it
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Response <code>
+        url
+      </code>
+    </td>
+    
+    <td>
+      Short-lived, single-use credential-bearing entry URL
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Response <code>
+        expires_at
+      </code>
+    </td>
+    
+    <td>
+      Expiry of that entry link
+    </td>
+  </tr>
+</tbody>
+</table>
+
+Redirect the browser to `session.url`. Do not log, cache, email as a permanent link,
+or expose a portal session for an unverified customer ID. SDK errors propagate.
+
+For one subscription's invoice-address change, use its
+`update_billing()` helper in [Subscriptions](/packages/fluent-python/subscriptions).
+
+[Portal API reference](https://docs.vatly.com/api-reference/customers)

@@ -1,16 +1,51 @@
-# Getting started
+# Vatly Python SDK
 
-> Vatly Python SDK - Getting started
+> Vatly Python SDK - Vatly Python SDK
 
-> **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
+Vatly is the European merchant of record for AI, software and digital products.
+Use this SDK for typed API calls from Python 3.10+. For a storage-backed billing
+integration, use Fluent Python or Vatly Django.
 
-Use `vatly-api-python==0.1.0a2`, imported as `vatly`. Requires Python 3.10+.
-Create `VatlyClient` inside `with`, or `AsyncVatlyClient` inside `async with`, to
-close the connection pool. Both accept an explicit API key or `VATLY_API_KEY`.
-Test and live modes use the same API host; keys select the mode.
+**Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
 
-See the [SDK README](https://github.com/vatly/vatly-api-python/blob/main/README.md) for runnable initialization, checkout,
-pagination, retries, configuration, errors and development commands.
+## Install and connect
+
+```bash
+python -m pip install vatly-api-python==0.1.0a2
+```
+
+Set `VATLY_API_KEY` in your server environment. Test and live keys use the same
+API host; the key selects the mode. Never put credentials in client-side code.
+
+```python
+from vatly import VatlyClient
+
+
+def example():
+    with VatlyClient() as client:
+        return client.customers.list({"limit": 10}).data
+```
+
+Resource-page functions accept that configured client. Copy a function, then call
+`example(client)` inside the `with` block. Replace example resource IDs with your
+own. Creation, updates, cancellations and refunds mutate the selected account.
+
+## Async applications
+
+```python
+from vatly import AsyncVatlyClient
+
+
+async def example():
+    async with AsyncVatlyClient() as client:
+        return [customer.id async for customer in client.customers.list_all({"limit": 25})]
+```
+
+Async resource methods use `await`; pagination uses `async for`. Both clients
+return Pydantic models. Python fields use snake_case; dictionary inputs use Vatly's
+camelCase wire keys. Unknown response fields are preserved.
+
+## Choose a guide
 
 <table>
 <thead>
@@ -20,7 +55,7 @@ pagination, retries, configuration, errors and development commands.
     </th>
     
     <th>
-      Purpose
+      What you can do
     </th>
   </tr>
 </thead>
@@ -28,25 +63,13 @@ pagination, retries, configuration, errors and development commands.
 <tbody>
   <tr>
     <td>
-      <a href="/packages/python/api">
-        API
+      <a href="/packages/python/configuration">
+        Configuration
       </a>
     </td>
     
     <td>
-      Every method, endpoint and response
-    </td>
-  </tr>
-  
-  <tr>
-    <td>
-      <a href="/packages/python/checkouts">
-        Checkouts
-      </a>
-    </td>
-    
-    <td>
-      Hosted payment pages
+      Set timeouts, retries and handle errors
     </td>
   </tr>
   
@@ -58,7 +81,19 @@ pagination, retries, configuration, errors and development commands.
     </td>
     
     <td>
-      Customer identity and portal sessions
+      Create/find customers and open their portal
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <a href="/packages/python/checkouts">
+        Checkouts
+      </a>
+    </td>
+    
+    <td>
+      Build a hosted one-off or recurring payment
     </td>
   </tr>
   
@@ -70,31 +105,31 @@ pagination, retries, configuration, errors and development commands.
     </td>
     
     <td>
-      Recurring billing
+      Change plans, cancel, resume and update billing
     </td>
   </tr>
   
   <tr>
     <td>
       <a href="/packages/python/subscriptionplans">
-        Subscription Plans
+        Subscription plans
       </a>
     </td>
     
     <td>
-      Subscription products
+      Manage recurring catalog products
     </td>
   </tr>
   
   <tr>
     <td>
       <a href="/packages/python/oneoffproducts">
-        One-Off Products
+        One-off products
       </a>
     </td>
     
     <td>
-      One-time products
+      Manage one-time catalog products
     </td>
   </tr>
   
@@ -106,7 +141,7 @@ pagination, retries, configuration, errors and development commands.
     </td>
     
     <td>
-      Transactions and nested financial operations
+      Read lines, totals and invoice links
     </td>
   </tr>
   
@@ -118,7 +153,7 @@ pagination, retries, configuration, errors and development commands.
     </td>
     
     <td>
-      Reversals
+      Refund an order and track reversals
     </td>
   </tr>
   
@@ -130,7 +165,7 @@ pagination, retries, configuration, errors and development commands.
     </td>
     
     <td>
-      Disputes
+      Read payment disputes
     </td>
   </tr>
   
@@ -142,7 +177,31 @@ pagination, retries, configuration, errors and development commands.
     </td>
     
     <td>
-      Signatures, events and endpoints
+      Verify raw signed deliveries
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <a href="/packages/python/webhookendpoints">
+        Webhook endpoints
+      </a>
+    </td>
+    
+    <td>
+      Register and manage receivers
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <a href="/packages/python/api">
+        API inventory
+      </a>
+    </td>
+    
+    <td>
+      Look up every method and endpoint
     </td>
   </tr>
   
@@ -154,8 +213,12 @@ pagination, retries, configuration, errors and development commands.
     </td>
     
     <td>
-      Spec/docs sync, setup, release
+      Contribute, regenerate models and run checks
     </td>
   </tr>
 </tbody>
 </table>
+
+[API reference](https://docs.vatly.com/api-reference) contains the complete request
+and response contracts. Examples in these guides are executed against published
+`0.1.0a2` packages with local HTTP fixtures; tests make no Vatly account changes.
