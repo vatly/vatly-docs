@@ -17,7 +17,16 @@ function packageNavigation(items: ContentNavigationLink[]): ContentNavigationLin
         configuration: 'Configuration',
         coreconcepts: 'Core concepts',
         development: 'Development',
-        comparison: 'Compare packages',
+        comparison: 'Comparison',
+        'migrating-to-vatly': 'Migrating to Vatly',
+        'host-owns-its-tables': 'Existing tables',
+        'webhook-flow': 'Webhook flow',
+        webhookendpoints: 'Webhook URLs',
+        api: 'API reference',
+        customers: 'Customers',
+        orders: 'Orders',
+        webhooks: 'Webhooks',
+        readme: 'Getting started',
       }
       const title = item.path.startsWith('/packages/') ? titles[item.path.split('/').pop() || ''] : undefined
       return title ? { ...item, title } : item
