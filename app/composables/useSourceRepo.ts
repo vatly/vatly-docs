@@ -91,6 +91,51 @@ const PACKAGE_REPOS: PackageRepo[] = [
       readme: 'README.md',
     },
   },
+  {
+    prefix: '/packages/fluent-php',
+    url: 'https://github.com/vatly/vatly-fluent-php',
+    branch: 'main',
+    docsDir: 'docs',
+    files: {
+      'webhook-flow': 'webhook-flow.md',
+      'host-owns-its-tables': 'recipes/host-owns-its-tables.md',
+    },
+  },
+  {
+    prefix: '/packages/python',
+    url: 'https://github.com/vatly/vatly-api-python',
+    branch: 'main',
+    docsDir: 'docs',
+    files: {
+      readme: 'README.md', api: 'API.md', customers: 'Customers.md',
+      checkouts: 'Checkouts.md', subscriptions: 'Subscriptions.md',
+      subscriptionplans: 'SubscriptionPlans.md', orders: 'Orders.md',
+      refunds: 'Refunds.md', oneoffproducts: 'OneOffProducts.md',
+      chargebacks: 'Chargebacks.md', webhooks: 'Webhooks.md', development: 'Development.md',
+    },
+  },
+  {
+    prefix: '/packages/fluent-python',
+    url: 'https://github.com/vatly/vatly-fluent-python',
+    branch: 'main',
+    docsDir: 'docs',
+    files: {
+      readme: 'README.md', checkouts: 'Checkouts.md', configuration: 'Configuration.md',
+      coreconcepts: 'CoreConcepts.md', customerportal: 'CustomerPortal.md',
+      customers: 'Customers.md', orders: 'Orders.md', porting: 'Porting.md',
+      subscriptions: 'Subscriptions.md', testing: 'Testing.md', webhooks: 'Webhooks.md',
+    },
+  },
+  {
+    prefix: '/packages/django',
+    url: 'https://github.com/vatly/vatly-django',
+    branch: 'main',
+    docsDir: 'docs',
+    files: {
+      readme: 'README.md', billing: 'Billing.md', configuration: 'Configuration.md',
+      development: 'Development.md', webhooks: 'Webhooks.md',
+    },
+  },
 ]
 
 export interface PageSource {

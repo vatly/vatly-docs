@@ -1,20 +1,20 @@
 #!/usr/bin/env node
-// Flat docs/*.md -> ordered Docus pages, shared by the three JS packages.
+// Package docs -> ordered Docus pages, shared by JS, Python and PHP Fluent.
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, rmSync } from 'node:fs'
 import { join, basename } from 'node:path'
 
-const [source, target, repository] = process.argv.slice(2)
+const [source, target, repository, label = 'Vatly JavaScript packages'] = process.argv.slice(2)
 if (!source || !target || !repository) {
   throw new Error('Usage: transform-js-docs.mjs SOURCE TARGET OWNER/REPO')
 }
-const files = readdirSync(source).filter(file => file.endsWith('.md')).sort()
+const files = readdirSync(source, { recursive: true }).filter(file => file.endsWith('.md')).sort()
 // Fail before removing old pages if a package has not added docs yet.
 if (!files.length) throw new Error(`No markdown docs found in ${source}`)
 
 const route = `/packages/${basename(target).replace(/^\d+\./, '')}`
 const order = ['README', 'Customers', 'Checkouts', 'Subscriptions', 'SubscriptionPlans',
   'Orders', 'Refunds', 'OneOffProducts', 'Chargebacks', 'Webhooks', 'API']
-const slug = file => basename(file, '.md').toLowerCase()
+const slug = file => file.replace(/\.md$/, '').toLowerCase()
 const pages = new Map(files.map(file => [file, `${route}/${slug(file)}`]))
 
 // Prepare every page before replacing the previous mirror.
@@ -27,10 +27,10 @@ const output = files.map(file => {
   transformed = transformed.replace(/(!?\[[^\]\n]*\])\(([^)]+)\)/g, (match, label, href) => {
     if (/^(?:[a-z]+:|#|\/\/)/i.test(href)) return match
     const [path, anchor = ''] = href.split('#')
-    const sibling = path.replace(/^(?:\.\/|\/docs\/)/, '')
+    const sibling = new URL(path, `https://docs.invalid/docs/${file}`).pathname.replace(/^\/docs\//, '')
     if (pages.has(sibling)) return `${label}(${pages.get(sibling)}${anchor ? `#${anchor}` : ''})`
     if (path.startsWith('/')) return match
-    const resolved = new URL(path, `https://github.com/${repository}/blob/main/docs/`).pathname
+    const resolved = new URL(path, `https://github.com/${repository}/blob/main/docs/${file}`).pathname
     const url = label.startsWith('!')
       ? `https://raw.githubusercontent.com${resolved.replace('/blob/', '/')}`
       : `https://github.com${resolved}`
@@ -44,13 +44,16 @@ const output = files.map(file => {
     },
   )
   if (!original.startsWith('---')) {
-    transformed = `---\ntitle: ${JSON.stringify(title)}\ndescription: ${JSON.stringify(`Vatly JavaScript packages - ${title}`)}\n---\n\n${transformed}`
+    transformed = `---\ntitle: ${JSON.stringify(title)}\ndescription: ${JSON.stringify(`${label} - ${title}`)}\n---\n\n${transformed}`
   }
   const position = order.indexOf(basename(file, '.md'))
   return [`${position < 0 ? 99 : position}.${slug(file)}.md`, transformed]
 })
 
 mkdirSync(target, { recursive: true })
-for (const file of readdirSync(target).filter(file => file.endsWith('.md'))) rmSync(join(target, file))
-for (const [file, content] of output) writeFileSync(join(target, file), content)
+for (const file of readdirSync(target, { recursive: true }).filter(file => file.endsWith('.md'))) rmSync(join(target, file))
+for (const [file, content] of output) {
+  mkdirSync(join(target, file, '..'), { recursive: true })
+  writeFileSync(join(target, file), content)
+}
 console.log(`Transformed ${output.length} files into ${target}`)

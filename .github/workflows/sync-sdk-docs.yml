@@ -2,7 +2,7 @@ name: Sync SDK Docs
 
 on:
   repository_dispatch:
-    types: [sync-sdk-docs, sync-laravel-docs, sync-js-docs, sync-fluent-js-docs, sync-better-auth-docs]
+    types: [sync-sdk-docs, sync-fluent-php-docs, sync-laravel-docs, sync-js-docs, sync-fluent-js-docs, sync-better-auth-docs, sync-python-docs, sync-fluent-python-docs, sync-django-docs]
   workflow_dispatch: # manual trigger
 
 permissions:
@@ -44,7 +44,18 @@ jobs:
         run: |
           mkdir -p tmp/laravel-docs
           cp tmp/laravel-repo/docs/*.md tmp/laravel-docs/ 2>/dev/null || true
-          node scripts/transform-laravel-docs.mjs tmp/laravel-docs content/3.packages/2.laravel
+          node scripts/transform-laravel-docs.mjs tmp/laravel-docs content/3.packages/3.laravel
+
+      - name: Pull PHP Fluent docs
+        uses: actions/checkout@v4
+        with:
+          repository: vatly/vatly-fluent-php
+          ref: main
+          path: tmp/fluent-php-repo
+          sparse-checkout: docs
+
+      - name: Transform and copy PHP Fluent docs
+        run: node scripts/transform-js-docs.mjs tmp/fluent-php-repo/docs content/3.packages/2.fluent-php vatly/vatly-fluent-php 'Vatly PHP Fluent'
 
       # Released JS packages track docs on main, just like the PHP packages.
       - name: Pull JavaScript SDK docs
@@ -57,7 +68,7 @@ jobs:
           token: ${{ secrets.VATLY_DOCS_SOURCE_TOKEN || github.token }}
 
       - name: Transform and copy JavaScript SDK docs
-        run: node scripts/transform-js-docs.mjs tmp/js-repo/docs content/3.packages/3.javascript vatly/vatly-api-js
+        run: node scripts/transform-js-docs.mjs tmp/js-repo/docs content/3.packages/4.javascript vatly/vatly-api-js
 
       - name: Pull fluent JavaScript docs
         uses: actions/checkout@v4
@@ -69,7 +80,41 @@ jobs:
           token: ${{ secrets.VATLY_DOCS_SOURCE_TOKEN || github.token }}
 
       - name: Transform and copy fluent JavaScript docs
-        run: node scripts/transform-js-docs.mjs tmp/fluent-js-repo/docs content/3.packages/4.fluent-js vatly/vatly-fluent-js
+        run: node scripts/transform-js-docs.mjs tmp/fluent-js-repo/docs content/3.packages/5.fluent-js vatly/vatly-fluent-js
+
+      # Public Python sources need no cross-repository checkout token.
+      - name: Pull Python SDK docs
+        uses: actions/checkout@v4
+        with:
+          repository: vatly/vatly-api-python
+          ref: main
+          path: tmp/python-repo
+          sparse-checkout: docs
+
+      - name: Transform and copy Python SDK docs
+        run: node scripts/transform-js-docs.mjs tmp/python-repo/docs content/3.packages/6.python vatly/vatly-api-python 'Vatly Python SDK'
+
+      - name: Pull Python Fluent docs
+        uses: actions/checkout@v4
+        with:
+          repository: vatly/vatly-fluent-python
+          ref: main
+          path: tmp/fluent-python-repo
+          sparse-checkout: docs
+
+      - name: Transform and copy Python Fluent docs
+        run: node scripts/transform-js-docs.mjs tmp/fluent-python-repo/docs content/3.packages/7.fluent-python vatly/vatly-fluent-python 'Vatly Python Fluent'
+
+      - name: Pull Django docs
+        uses: actions/checkout@v4
+        with:
+          repository: vatly/vatly-django
+          ref: main
+          path: tmp/django-repo
+          sparse-checkout: docs
+
+      - name: Transform and copy Django docs
+        run: node scripts/transform-js-docs.mjs tmp/django-repo/docs content/3.packages/8.django vatly/vatly-django 'Vatly Django'
 
       - name: Pull Better Auth docs
         if: vars.SYNC_BETTER_AUTH_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-better-auth-docs')
@@ -83,7 +128,7 @@ jobs:
 
       - name: Transform and copy Better Auth docs
         if: vars.SYNC_BETTER_AUTH_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-better-auth-docs')
-        run: node scripts/transform-js-docs.mjs tmp/better-auth-repo/docs content/3.packages/5.better-auth vatly/vatly-better-auth-js
+        run: node scripts/transform-js-docs.mjs tmp/better-auth-repo/docs content/3.packages/9.better-auth vatly/vatly-better-auth-js
 
       - name: Regenerate sitemap
         run: node scripts/generate-sitemap.mjs

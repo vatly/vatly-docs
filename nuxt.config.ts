@@ -128,12 +128,16 @@ export default defineNuxtConfig({
     '/packages/laravel': { redirect: { to: '/packages/laravel/readme', statusCode: 301 } },
     '/packages/javascript': { redirect: { to: '/packages/javascript/readme', statusCode: 301 } },
     '/packages/fluent-js': { redirect: { to: '/packages/fluent-js/readme', statusCode: 301 } },
+    '/packages/fluent-php': { redirect: { to: '/packages/fluent-php/webhook-flow', statusCode: 301 } },
+    '/packages/python': { redirect: { to: '/packages/python/readme', statusCode: 301 } },
+    '/packages/fluent-python': { redirect: { to: '/packages/fluent-python/readme', statusCode: 301 } },
+    '/packages/django': { redirect: { to: '/packages/django/readme', statusCode: 301 } },
   },
 
   nitro: {
     preset: 'github-pages',
     prerender: {
-      routes: ['/guides', '/api-reference', '/packages/php', '/packages/laravel', '/packages/javascript', '/packages/fluent-js'],
+      routes: ['/guides', '/api-reference', '/packages/php', '/packages/fluent-php', '/packages/laravel', '/packages/javascript', '/packages/fluent-js', '/packages/python', '/packages/fluent-python', '/packages/django'],
     },
   },
 
