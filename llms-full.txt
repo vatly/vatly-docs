@@ -256,7 +256,7 @@ Additional email branding is on the [roadmap](https://roadmap.vatly.com/projects
 
 # Build your own integration
 
-You do not need to build a payment form or your own tax and invoicing workflow to sell with Vatly. Vatly is the merchant of record for European software and digital products: it acts as the legal seller and provides hosted checkout. Your app delivers the product and controls access.
+You do not need to build a payment form or your own tax and invoicing workflow to sell with Vatly. Vatly is the European merchant of record for AI, software and digital products: it acts as the legal seller and provides hosted checkout. Your app delivers the product and controls access.
 
 This guide helps you decide what to connect before writing code or asking an agent to implement it. Whether a developer or an AI agent does the work, the responsibilities are the same.
 
@@ -300,10 +300,11 @@ Test mode is available before going live. Your first milestone is one complete t
 For app-level billing, start with a fluent package rather than assembling every flow from low-level API calls:
 
 - **JavaScript / TypeScript:** [`@getvatly/fluent`](https://docs.vatly.com/packages/fluent-js/readme) builds on `@getvatly/sdk` with checkout and subscription builders, customer bindings, and webhook processing. Follow [configuration](https://docs.vatly.com/packages/fluent-js/configuration) for compatible versions and runtime requirements.
-- **PHP:** [`vatly/vatly-fluent-php`](https://github.com/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} provides higher-level billing flows. The [Laravel package](https://docs.vatly.com/packages/laravel/readme) wires fluent for Laravel.
-- **Direct API access:** Use the matching [SDK](https://docs.vatly.com/packages) when you only need the API client, or the [HTTP API](https://docs.vatly.com/api-reference) from another server-side language. The [Python SDK](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"} is alpha and not yet published on PyPI; follow its repository's installation instructions.
+- **PHP:** [PHP Fluent](https://docs.vatly.com/packages/fluent-php/webhook-flow) provides higher-level billing flows. The [Laravel package](https://docs.vatly.com/packages/laravel/readme) wires fluent for Laravel.
+- **Python:** [Python Fluent](https://docs.vatly.com/packages/fluent-python/readme) provides async-first billing flows and storage contracts. The [Django package](https://docs.vatly.com/packages/django/readme) integrates fluent with Django's ORM and webhook handling. Both are available on PyPI.
+- **Direct API access:** Use the matching [SDK](https://docs.vatly.com/packages) when you only need the API client, or the [HTTP API](https://docs.vatly.com/api-reference) from another server-side language. The [Python SDK](https://docs.vatly.com/packages/python/readme) is available on PyPI as `vatly-api-python` (import `vatly`).
 
-The JavaScript packages and PHP fluent are **alpha**. Follow each package's installation guidance, pin compatible versions, and review upgrades. Fluent packages provide building blocks, not your app's access policy or a database integration that configures itself: your developer or agent must wire the required storage drivers and authorization checks.
+The JavaScript, Python, Django and PHP fluent packages are **alpha**. Every alpha release may include breaking changes. Pin exact versions during alpha. Follow each package's installation guidance and review upgrades. Fluent packages provide building blocks, not your app's access policy or a database integration that configures itself: your developer or agent must wire the required storage drivers and authorization checks.
 
 ## Hand off a clear brief
 
@@ -499,11 +500,23 @@ Vatly actively prevents and disputes chargebacks. If extra evidence is needed, V
 
 # Vatly SDKs
 
+Vatly is the European merchant of record for AI, software and digital products. Use a fluent package for app-level billing, or an SDK for direct API calls.
+
 ## PHP SDK
 
 The official PHP SDK is the primary way to interact with the Vatly API from your PHP application.
 
 For installation, usage examples, and the full list of available resources, see the [PHP SDK docs](https://docs.vatly.com/packages/php/readme).
+
+## PHP Fluent
+
+[`vatly/vatly-fluent-php`](https://packagist.org/packages/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} adds higher-level billing flows to the PHP SDK.
+
+```bash
+composer require vatly/vatly-fluent-php
+```
+
+Follow its [README](https://github.com/vatly/vatly-fluent-php#readme){rel="&#x22;nofollow&#x22;"} for setup. The synced docs currently cover [webhook flow](https://docs.vatly.com/packages/fluent-php/webhook-flow) and [adapting existing tables](https://docs.vatly.com/packages/fluent-php/recipes/host-owns-its-tables).
 
 ## Laravel
 
@@ -511,40 +524,73 @@ The Vatly Laravel package was inspired by Laravel Cashier and provides a fluent 
 
 For installation and usage examples, see the [Laravel Vatly docs](https://docs.vatly.com/packages/laravel/readme).
 
-## JavaScript / TypeScript SDK
+## JavaScript SDK
 
 The official JavaScript / TypeScript SDK, [`@getvatly/sdk`](https://www.npmjs.com/package/@getvatly/sdk){rel="&#x22;nofollow&#x22;"}, provides a typed client for the Vatly API on Node.js and edge runtimes.
 
 ```bash
-npm install @getvatly/sdk@alpha
+npm install @getvatly/sdk
 ```
 
 For installation, usage examples, and the full list of available resources, see the [JavaScript / TypeScript SDK docs](https://docs.vatly.com/packages/javascript/readme). The source is available on [GitHub](https://github.com/vatly/vatly-api-js){rel="&#x22;nofollow&#x22;"}.
 
-## Fluent JavaScript / TypeScript
+## JavaScript Fluent
 
 The framework-agnostic fluent package, [`@getvatly/fluent`](https://www.npmjs.com/package/@getvatly/fluent){rel="&#x22;nofollow&#x22;"}, builds on `@getvatly/sdk` with checkout builders, customer and subscription handles, and webhook processing.
 
 ```bash
-npm install @getvatly/sdk@alpha @getvatly/fluent@alpha
+npm install @getvatly/sdk @getvatly/fluent
 ```
 
 For installation and usage examples, see the [fluent JavaScript / TypeScript docs](https://docs.vatly.com/packages/fluent-js/readme). The source is available on [GitHub](https://github.com/vatly/vatly-fluent-js){rel="&#x22;nofollow&#x22;"}.
 
-The JavaScript / TypeScript packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha.
+## Python SDK
+
+[`vatly-api-python`](https://pypi.org/project/vatly-api-python/){rel="&#x22;nofollow&#x22;"} provides typed synchronous and asynchronous API clients for Python 3.10+. Import it as `vatly`.
+
+```bash
+pip install vatly-api-python
+```
+
+See the [Python SDK docs](https://docs.vatly.com/packages/python/readme) for initialization and API resources, or the source on [GitHub](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"}.
+
+## Python Fluent
+
+[`vatly-fluent-python`](https://pypi.org/project/vatly-fluent-python/){rel="&#x22;nofollow&#x22;"} builds on the Python SDK with async-first billing flows, checkout builders, subscriptions and transactional webhooks. Import it as `vatly_fluent`.
+
+```bash
+pip install vatly-fluent-python
+```
+
+See the [Python Fluent docs](https://docs.vatly.com/packages/fluent-python/readme) for storage contracts and configuration, or the source on [GitHub](https://github.com/vatly/vatly-fluent-python){rel="&#x22;nofollow&#x22;"}.
+
+## Django
+
+[`vatly-django`](https://pypi.org/project/vatly-django/){rel="&#x22;nofollow&#x22;"} integrates Python Fluent with Django, including ORM storage, billable operations and webhook handling. Import it as `vatly_django`.
+
+```bash
+pip install vatly-django
+```
+
+See the [Django docs](https://docs.vatly.com/packages/django/readme) for installation and settings, or the source on [GitHub](https://github.com/vatly/vatly-django){rel="&#x22;nofollow&#x22;"}. Like Laravel for PHP, Django is the framework integration; its reference lives under Packages.
+
+These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha. All three Python packages are released at `0.1.0a2`; for example, use `pip install vatly-django==0.1.0a2` to pin Django and its matching Python package dependencies.
 
 ---
 
 ## SDK availability
 
-| SDK                                                                                | Status            |
-| ---------------------------------------------------------------------------------- | ----------------- |
-| [PHP](https://docs.vatly.com/packages/php/readme)                                  | Available (alpha) |
-| [Laravel](https://docs.vatly.com/packages/laravel/readme)                          | Available (alpha) |
-| [JavaScript / TypeScript](https://docs.vatly.com/packages/javascript/readme)       | Available (alpha) |
-| [Fluent JavaScript / TypeScript](https://docs.vatly.com/packages/fluent-js/readme) | Available (alpha) |
-| Python                                                                             | Planned           |
-| Ruby                                                                               | Planned           |
+| SDK                                                                   | Status            |
+| --------------------------------------------------------------------- | ----------------- |
+| [PHP SDK](https://docs.vatly.com/packages/php/readme)                 | Available (alpha) |
+| [PHP Fluent](https://docs.vatly.com/packages/fluent-php/webhook-flow) | Available (alpha) |
+| [Laravel](https://docs.vatly.com/packages/laravel/readme)             | Available (alpha) |
+| [JavaScript SDK](https://docs.vatly.com/packages/javascript/readme)   | Available (alpha) |
+| [JavaScript Fluent](https://docs.vatly.com/packages/fluent-js/readme) | Available (alpha) |
+| [Python SDK](https://docs.vatly.com/packages/python/readme)           | Available (alpha) |
+| [Python Fluent](https://docs.vatly.com/packages/fluent-python/readme) | Available (alpha) |
+| [Django](https://docs.vatly.com/packages/django/readme)               | Available (alpha) |
+| Ruby                                                                  | Planned           |
 
 In the meantime, you can use the [REST API directly](https://docs.vatly.com/guides/authentication) with any HTTP client in any language.
 
@@ -8237,6 +8283,195 @@ $endpoint->delete();
 ```
 
 
+# Recipe: adapting fluent contracts to a host that already owns its tables
+
+The README's driver guide implicitly assumes you're modeling subscriptions/orders from scratch in your own schema. The other common case is the inverse: you're bolting onto an ecosystem plugin - **FluentCart, PMPro, MemberPress, Easy Digital Downloads, WooCommerce**, a Cashier-style Spark app - that **already owns** its `subscriptions`, `orders`, and `customers` tables. You don't want a parallel set of tables; you want fluent's contracts to read and write the host's existing ones.
+
+The v0.8 contract shape makes this clean (v0.5's `Billable` forced a host-model shape that was wrong for non-Laravel drivers). This recipe is the sanctioned pattern.
+
+> The README has a condensed version of steps 1–2 under [*"What if my host already has Order / Subscription tables?"*](https://github.com/vatly/vatly-fluent-php/blob/main/README.md#5-implement-the-three-repository-contracts){rel="&#x22;nofollow&#x22;"}. This page is the full walkthrough, including idempotency and renewal-vs-initial routing.
+
+## 1. Adapter wrappers, not native implementations
+
+Don't make the host's own Order/Subscription model implement `OrderInterface` - you usually can't edit it, and you don't want fluent's surface bleeding into the host's model. Instead wrap it in a thin adapter that holds the host record and exposes only the fluent surface:
+
+```php
+use Vatly\Fluent\Contracts\OrderInterface;
+
+final class FluentCartOrder implements OrderInterface
+{
+    public function __construct(private OrderTransaction $txn) {}
+
+    public function getVatlyId(): string        { return $this->txn->vatly_id; }
+    public function getStatus(): string         { return $this->txn->status; }
+    public function getInvoiceNumber(): ?string { return $this->txn->invoice_no; }
+    public function getTotal(): int             { return (int) $this->txn->total; }
+    public function getCurrency(): string       { return $this->txn->currency; }
+    public function getPaymentMethod(): ?string { return $this->txn->payment_method; }
+    public function isPaid(): bool              { return $this->txn->status === 'paid'; }
+
+    /** Escape hatch for your own code that needs the underlying host record. */
+    public function transaction(): OrderTransaction { return $this->txn; }
+}
+```
+
+## 2. Route inside `store()` instead of literally storing
+
+When the host already created the row at checkout time (before the webhook arrives), `OrderWriter::store(StoreOrderData)` is the place to **confirm** the existing row rather than `INSERT` a new one. Look up the host row by some signal the checkout stamped - most commonly a host id round-tripped through the Vatly order's `metadata` - update its status, write the Vatly id back, and return the adapter:
+
+```php
+public function store(StoreOrderData $data): ?OrderInterface
+{
+    $txnId = $data->metadata['fluentcart_transaction_id'] ?? null;
+    if ($txnId === null) {
+        return null; // anonymous / audit-only delivery - nothing local to attach to
+    }
+
+    $txn = OrderTransaction::find($txnId);
+    if ($txn === null) {
+        return null; // host row gone - tolerate rather than throw
+    }
+
+    $txn->vatly_id = $data->vatlyId; // <-- the idempotency hinge (see step 3)
+    $txn->status   = $data->status;
+    $txn->save();
+
+    return new FluentCartOrder($txn);
+}
+```
+
+Returning `null` is a first-class outcome: the built-in reactions tolerate it (a `SubscriptionWriter::store` returning null simply skips the follow-up `SubscriptionWasCreatedFromWebhook` dispatch).
+
+## 3. `findByVatlyId` as the idempotency hinge
+
+Every entity reaction calls `findByVatlyId()` first: a null return routes to `store()`, a hit routes to `update()`. So the moment `store()` writes the Vatly id onto the host row (step 2), &#x2A;*every subsequent re-delivery of that webhook hits `update()` instead of `store()`** - which is exactly what you want, because Vatly retries deliveries and you must be idempotent.
+
+```php
+public function findByVatlyId(string $vatlyId): ?OrderInterface
+{
+    $txn = OrderTransaction::where('vatly_id', $vatlyId)->first();
+
+    return $txn !== null ? new FluentCartOrder($txn) : null;
+}
+
+public function update(OrderInterface $order, UpdateOrderData $data): OrderInterface
+{
+    $txn = $order->transaction();           // adapter escape hatch from step 1
+    if ($data->status !== null)  { $txn->status = $data->status; }
+    if ($data->invoiceNumber !== null) { $txn->invoice_no = $data->invoiceNumber; }
+    $txn->save();
+
+    return $order;
+}
+```
+
+The result: a `store()` that *confirms* a pre-existing row on first delivery, and an `update()` that *reconciles* it on every re-delivery - with no duplicate rows and no host-side unique-constraint violations.
+
+## 4. Discriminating renewal vs. initial payment inside `store()`
+
+Some ecosystems split "first payment" and "renewal payment" into different service calls. FluentCart is the canonical example: `Confirmations::confirmPaymentSuccessByCharge` for the initial order vs. `SubscriptionRenewal::recordRenewalPayment` for renewals. A single `order.paid` webhook flows into your one `OrderWriter::store` - so you have to discriminate.
+
+Use the same metadata round-trip plus `$data->hostCustomerId` (pre-resolved by fluent via your `CustomerBindingRepository`):
+
+```php
+public function store(StoreOrderData $data): ?OrderInterface
+{
+    // Initial checkout stamped the host transaction id onto the Vatly order's
+    // metadata; renewals (created server-side by Vatly) carry no such id.
+    $txnId = $data->metadata['fluentcart_transaction_id'] ?? null;
+
+    if ($txnId !== null && ($txn = OrderTransaction::find($txnId)) !== null) {
+        // INITIAL payment - confirm the row the customer's checkout created.
+        Confirmations::confirmPaymentSuccessByCharge($txn, $data->vatlyId);
+
+        return new FluentCartOrder($txn->refresh());
+    }
+
+    // RENEWAL - no initial host row. Resolve the owning customer (via the
+    // binding fluent already mapped) and let the host mint a renewal order.
+    if ($data->hostCustomerId === null) {
+        return null; // unattributed renewal - nothing to route to
+    }
+
+    $renewal = SubscriptionRenewal::recordRenewalPayment(
+        customerId: $data->hostCustomerId,
+        vatlyOrderId: $data->vatlyId,
+        total: $data->total,
+        currency: $data->currency,
+    );
+
+    return new FluentCartOrder($renewal);
+}
+```
+
+The discriminator is "did *this* charge originate from a host-side checkout?" - answered by the presence of the metadata id. `hostCustomerId` then tells you *who* the renewal belongs to without an API re-fetch.
+
+## Summary
+
+| Step        | Contract surface                           | Pattern                                                                                         |
+| ----------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| Wrap        | `OrderInterface` / `SubscriptionInterface` | thin adapter over the host model; never make the host model implement the contract              |
+| Confirm     | `…Writer::store`                           | look up + confirm the existing host row; write the Vatly id back; return `null` when unroutable |
+| Idempotency | `…Reader::findByVatlyId`                   | once the Vatly id is on the host row, re-deliveries route to `update()`                         |
+| Route       | `…Writer::store`                           | discriminate initial vs. renewal via metadata id + `hostCustomerId`                             |
+
+A concrete end-to-end implementation lives in the FluentCart driver (`vatly-fluentcart-wp`).
+
+
+# Webhook flow: event → reaction → repo method → fields
+
+This guide and the recipes in `docs/` sync to [Vatly Docs](https://docs.vatly.com/packages/fluent-php/webhook-flow){rel="&#x22;nofollow&#x22;"} on pushes to `main`. The notifier uses the Actions secret `VATLY_DOCS_DISPATCH_TOKEN` with Contents: write access to `vatly/vatly-docs`.
+
+A driver author shouldn't have to read several directories (the event DTOs and the `WebhookEventFactory` in `vatly-api-php`'s `Vatly\API\Webhooks\*`, plus fluent's `src/Webhooks/Reactions/` and `src/Contracts/&#x60;) to answer &#x2A;"if I implement `OrderWriter::store`, which webhooks flow into it and with what data?"* This page is that single reference.
+
+> **Where the event DTOs live:** the typed webhook events (`OrderPaid`, `OrderPaymentFailed`, `SubscriptionStarted&#x60;, …) are owned by &#x2A;*`vatly-api-php`** under `Vatly\API\Webhooks\Events\*` and consumed by fluent - fluent no longer ships its own `src/Events/` copies (only the driver-side `SubscriptionWasCreatedFromWebhook` / `OrderWasCreatedFromWebhook` / `NullEventDispatcher` remain in `Vatly\Fluent\Events\`). Their `taxSummary` field is a `Vatly\API\Types\TaxSummaryCollection` whose items expose `taxRate` (a `TaxSummaryRate`) + `amount` (a `Money`); call `$item->amount->toCents()` for integer cents. Order lines are `Vatly\API\Types\OrderLineData[]` (note: `Vatly\API\Types\`, not the old `Vatly\API\Data\`), and each line's `basePrice` / `total` / `subtotal` are likewise `Money&#x60;. The event construction - verify → parse → map - is owned by &#x2A;*`vatly-api-php`**: `Vatly\API\Webhooks\WebhookEventFactory` builds the typed events from the signed payload. Fluent owns the downstream orchestration (the reactions and `WebhookProcessor`, which records → reacts → dispatches) and consumes that factory.
+
+> **Event money is `Money`, not int cents (api-php ≥ `0.1.0-alpha.18`):** the `total` / `subtotal` fields on the money-bearing events are `Vatly\API\Types\Money` value objects (decimal-string `value` + `currency`), not raw integer cents. Read the currency off the Money (`$event->total->currency`) and flatten to integer cents with `$event->total->toCents()`. The **standalone `currency` field was removed** from `OrderPaid`, `OrderPaymentFailed`, `RefundCompleted`, `RefundFailed`, and `RefundCanceled` (their `total` / `subtotal` are non-null `Money`). The chargeback events `OrderChargebackReceived` / `OrderChargebackReversed` are the exception: their `total` / `subtotal` are typed **nullable** (`?Money`) at the api-php contract level and they **keep** a standalone `currency` string - though the fat chargeback payload populates the amounts in practice. Fluent's built-in reactions flatten `Money → int` at the persistence edge, so the driver-facing `Store*Data` / `Update*Data` DTOs still carry integer-cents `total` / `subtotal` and a `currency` string - drivers are unaffected.
+
+The [README's "Webhook pipeline at a glance"](https://github.com/vatly/vatly-fluent-php/blob/main/README.md#webhook-pipeline-at-a-glance){rel="&#x22;nofollow&#x22;"} table is the quick version; this one adds the **fields drivers care about** column so you know exactly what each `Store*Data` / event carries.
+
+## How events are built (no API round-trip)
+
+Vatly sends **fat, HMAC-signed** webhook deliveries: the payload's `object` is the full resource - byte-identical to the corresponding `GET /…/{id}` body (subtotal, the complete tax summary, lines, mandate). The HMAC signature (verified in `WebhookProcessor`) is the trust boundary, so the payload is the authoritative snapshot and there is &#x2A;*no follow-up API GET to "enrich"**. The mapping below is performed by api-php's `Vatly\API\Webhooks\WebhookEventFactory`:
+
+- **`order.paid`, `order.payment_failed`, `refund.*`, `order.chargeback_*`, `subscription.started`, `subscription.billing_updated`, `subscription.updated`** - the matching api-php Resource (`Order` / `Refund` / `Chargeback` / `Subscription`) is hydrated in memory from `$webhook->object` (via `ResourceFactory::createResourceFromApiResult()`, the same path the API client uses to build a resource from a `GET` response), then mapped through the event's `fromApi*` constructor. Same enriched event - full tax breakdown, lines, mandate, dispute status - with zero network call.
+- **`order.canceled`, `checkout.*`, `subscription.cancellation_grace_period_completed`, `subscription.canceled_for_nonpayment`, `subscription.update_scheduled`, `webhook.setup`** - built straight from the payload envelope; they carry no money/tax resource to hydrate. (`subscription.update_scheduled` exposes the envelope's `object.scheduledUpdate` as a typed `ScheduledSubscriptionUpdate`; `subscription.canceled_for_nonpayment` exposes `cancellationReason`.)
+
+Because nothing depends on a live API call, a transient API error can never block a delivery, and all events (including `refund.*` and `order.chargeback_*`) are always supported regardless of which optional repositories are wired.
+
+## Full matrix
+
+| Vatly event                                                                    | Typed event                                                                | Built-in reaction                                                                          | Repo method called                                                                                                                                                                            | Fields drivers care about                                                                                                                                                                 |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `order.paid`                                                                   | `OrderPaid`                                                                | `StoreOrderOnPaid`                                                                         | `OrderWriter::store(StoreOrderData)` if `findByVatlyId` is null (then dispatches `OrderWasCreatedFromWebhook`, skipped if store returns null), else `OrderWriter::update(…, UpdateOrderData)` | `hostCustomerId` (pre-resolved via binding repo), `customerId`, `total`, `subtotal`, `currency`, `invoiceNumber`, `paymentMethod`, `taxSummary`, `metadata`, `lines`, `testmode`          |
+| `order.payment_failed`                                                         | `OrderPaymentFailed`                                                       | `StoreOrderOnPaymentFailed`                                                                | `OrderWriter::store(StoreOrderData)` if new, else `OrderWriter::update(…, UpdateOrderData)`                                                                                                   | same as `order.paid` (sans `lines`); persists whatever status the order in the signed payload carries (typically `pending` during dunning) - mirrors, never synthesises a `failed` status |
+| `order.canceled`                                                               | `OrderCanceled`                                                            | `CancelOrderOnCanceled`                                                                    | `OrderWriter::update(…, UpdateOrderData{status, cancellationReason})`                                                                                                                         | `status` (== `canceled`), plus `cancellationReason` (`payment_failure` or null) - find-or-skip, never creates                                                                             |
+| `refund.completed` / `refund.failed` / `refund.canceled`                       | `RefundCompleted` / `RefundFailed` / `RefundCanceled`                      | `SyncRefundOnStatusChange&#x60; &#x2A;(opt-in: needs `RefundRepositoryInterface`)*         | `RefundWriter::store(StoreRefundData)` if new, else `RefundWriter::update(…, UpdateRefundData)`                                                                                               | `refundId`, `originalOrderId`, `customerId`, `hostCustomerId`, `status`, `total`, `subtotal`, `currency`, `taxSummary`, `testmode`                                                        |
+| `subscription.started`                                                         | `SubscriptionStarted`                                                      | `SyncSubscriptionOnStarted`                                                                | `SubscriptionWriter::store(StoreSubscriptionData)` then dispatches `SubscriptionWasCreatedFromWebhook` (skipped if store returns null)                                                        | `hostCustomerId`, `customerId`, `planId`, `name`, `quantity`, `type`, `mandate`, `testmode`                                                                                               |
+| `subscription.billing_updated`                                                 | `SubscriptionBillingUpdated`                                               | `SyncSubscriptionOnBillingUpdated`                                                         | `SubscriptionWriter::update(…, UpdateSubscriptionData{mandate})`                                                                                                                              | `mandate` (card last-4 / masked IBAN) - find-or-skip                                                                                                                                      |
+| `subscription.updated`                                                         | `SubscriptionUpdated`                                                      | `SyncSubscriptionOnUpdated`                                                                | `SubscriptionWriter::update(…, UpdateSubscriptionData{planId, name, quantity})`                                                                                                               | immediate plan/price/interval/quantity change - `planId`, `name`, `quantity` (price is not persisted locally) - find-or-skip                                                              |
+| `subscription.update_scheduled`                                                | `SubscriptionUpdateScheduled`                                              | - &#x2A;(dispatched only)*                                                                 | none - change applies at the next cycle, current state unchanged                                                                                                                              | typed `scheduledUpdate` (`ScheduledSubscriptionUpdate`: `subscriptionPlanId`, `name`, `description`, `basePrice`, `quantity`, `interval`, `intervalCount`, `effectiveAt`)                 |
+| `subscription.resumed`                                                         | `SubscriptionResumed`                                                      | `ResumeSubscriptionOnResumed`                                                              | `SubscriptionWriter::update(…, UpdateSubscriptionData{endsAt: null})`                                                                                                                         | clears `endsAt` - find-or-skip                                                                                                                                                            |
+| `subscription.canceled_immediately`                                            | `SubscriptionCanceledImmediately`                                          | `CancelSubscriptionOnCanceled`                                                             | `SubscriptionWriter::update(…, UpdateSubscriptionData{endsAt, cancellationReason})`                                                                                                           | `endsAt` (== now), plus `cancellationReason` (`merchant_request`)                                                                                                                         |
+| `subscription.canceled_with_grace_period`                                      | `SubscriptionCanceledWithGracePeriod`                                      | `CancelSubscriptionOnCanceled`                                                             | `SubscriptionWriter::update(…, UpdateSubscriptionData{endsAt, cancellationReason})`                                                                                                           | `endsAt` (future grace end), plus `cancellationReason` (`customer_request` / `merchant_request`)                                                                                          |
+| `subscription.canceled_for_nonpayment`                                         | `SubscriptionCanceledForNonpayment`                                        | `CancelSubscriptionOnCanceled`                                                             | `SubscriptionWriter::update(…, UpdateSubscriptionData{endsAt, cancellationReason})`                                                                                                           | hard cancel after payment recovery is exhausted - `endsAt` (== now), plus `cancellationReason` (`payment_failure`), persistable by the host                                               |
+| `subscription.cancellation_grace_period_completed`                             | `SubscriptionCancellationGracePeriodCompleted`                             | `EndSubscriptionOnGracePeriodCompleted`                                                    | `SubscriptionWriter::update(…, UpdateSubscriptionData{endsAt})`                                                                                                                               | `endsAt` (actual end; self-heals a missed/out-of-order cancel webhook)                                                                                                                    |
+| `order.chargeback_received` / `order.chargeback_reversed`                      | `OrderChargebackReceived` / `OrderChargebackReversed`                      | `SyncChargebackOnStatusChange&#x60; &#x2A;(opt-in: needs `ChargebackRepositoryInterface`)* | `ChargebackWriter::store(StoreChargebackData)` if new, else `ChargebackWriter::update(…, UpdateChargebackData)`                                                                               | `chargebackId`, `originalOrderId`, `customerId`, `hostCustomerId`, `status`, `total`, `subtotal`, `currency`, `taxSummary`, `reason`, `testmode`                                          |
+| `checkout.paid` / `checkout.failed` / `checkout.canceled` / `checkout.expired` | `CheckoutPaid` / `CheckoutFailed` / `CheckoutCanceled` / `CheckoutExpired` | - &#x2A;(dispatched only)*                                                                 | none - driver-handled                                                                                                                                                                         | `checkoutId`, `customerId` (nullable for anonymous), `orderId`, `status`, `metadata`                                                                                                      |
+| `webhook.setup`                                                                | `WebhookSetupReceived`                                                     | - &#x2A;(dispatched only)*                                                                 | none - endpoint verification ping; acknowledge with `2xx`                                                                                                                                     | raw `WebhookReceived` envelope (`object` is the secret-free endpoint config)                                                                                                              |
+| *(any unmapped event)*                                                         | `UnsupportedWebhookReceived`                                               | -                                                                                          | none                                                                                                                                                                                          | raw `WebhookReceived` envelope                                                                                                                                                            |
+
+## Reading the matrix
+
+- **"store if new, else update"** - every entity reaction first calls `findByVatlyId()`. A null return routes to `store()`; a hit routes to `update()`. This is the idempotency hinge: once `store()` writes the Vatly id back, webhook re-deliveries safely hit `update()`. See the [host-owns-its-tables recipe](https://docs.vatly.com/packages/fluent-php/recipes/host-owns-its-tables).
+- **"find-or-skip"** - the reaction only `update()`s an existing local record and never creates one (`order.canceled`, `subscription.billing_updated`, `subscription.updated`, `subscription.resumed`).
+- **`hostCustomerId`** - resolved from your `CustomerBindingRepository` *before* the reaction calls your writer, so `store()` can fill the owner column directly. It's `null` for unattributed / anonymous-checkout rows; accept that.
+- **`cancellationReason` is persistable** - when a cancellation ends the subscription, `CancelSubscriptionOnCanceled` passes the raw Vatly reason on `UpdateSubscriptionData` alongside `endsAt`; persist it if your host tracks *why* a subscription ended. All three cancel events carry one: `merchant_request` (`subscription.canceled_immediately`), `customer_request` / `merchant_request` (`subscription.canceled_with_grace_period`), and `payment_failure` (`subscription.canceled_for_nonpayment`). `null` means "no change" (don't overwrite a stored reason). `CancelOrderOnCanceled` does the same for orders on `UpdateOrderData`: `payment_failure` when payment recovery for the unpaid order was exhausted, otherwise `null`.
+- **store may return `null`** - `OrderWriter`, `SubscriptionWriter`, `RefundWriter`, and `ChargebackWriter` `store()` may return `null` when the driver can't route the data. Built-in reactions tolerate it.
+- **opt-in reactions** register only when their repository is wired into `Wiring`. Without it, the typed events still dispatch for you to handle yourself.
+- **order reversal progress is not a webhook reaction.** Whether - and how much of - an order was returned to the customer (by refund *or* chargeback) is read from the live API Order via `OrderHandle::reversedSubtotal()` / `refundableSubtotal()` / `isReversed()` / `isPartiallyReversed()` / `isFullyReversed()`. The order's own `status` stays terminal `paid`; fluent never synthesizes a local refunded/chargeback status.
+
+
 # Getting Started
 
 ![Vatly for Laravel](https://raw.githubusercontent.com/Vatly/vatly-laravel/main/art/banner.png)
@@ -11553,28 +11788,859 @@ See the [testing guide](https://docs.vatly.com/guides/testing){rel="&#x22;nofoll
 [Test Helpers API reference](https://docs.vatly.com/api-reference/test-helpers){rel="&#x22;nofollow&#x22;"}.
 
 
+# Getting started
+
+> **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
+
+Use `vatly-api-python==0.1.0a2`, imported as `vatly`. Requires Python 3.10+.
+Create `VatlyClient` inside `with`, or `AsyncVatlyClient` inside `async with`, to
+close the connection pool. Both accept an explicit API key or `VATLY_API_KEY`.
+Test and live modes use the same API host; keys select the mode.
+
+See the [SDK README](https://github.com/vatly/vatly-api-python/blob/main/README.md){rel="&#x22;nofollow&#x22;"} for runnable initialization, checkout,
+pagination, retries, configuration, errors and development commands.
+
+| Guide                                                                          | Purpose                                      |
+| ------------------------------------------------------------------------------ | -------------------------------------------- |
+| [API](https://docs.vatly.com/packages/python/api)                              | Every method, endpoint and response          |
+| [Checkouts](https://docs.vatly.com/packages/python/checkouts)                  | Hosted payment pages                         |
+| [Customers](https://docs.vatly.com/packages/python/customers)                  | Customer identity and portal sessions        |
+| [Subscriptions](https://docs.vatly.com/packages/python/subscriptions)          | Recurring billing                            |
+| [Subscription Plans](https://docs.vatly.com/packages/python/subscriptionplans) | Subscription products                        |
+| [One-Off Products](https://docs.vatly.com/packages/python/oneoffproducts)      | One-time products                            |
+| [Orders](https://docs.vatly.com/packages/python/orders)                        | Transactions and nested financial operations |
+| [Refunds](https://docs.vatly.com/packages/python/refunds)                      | Reversals                                    |
+| [Chargebacks](https://docs.vatly.com/packages/python/chargebacks)              | Disputes                                     |
+| [Webhooks](https://docs.vatly.com/packages/python/webhooks)                    | Signatures, events and endpoints             |
+| [Development](https://docs.vatly.com/packages/python/development)              | Spec/docs sync, setup, release               |
+
+
+# Customers
+
+`client.customers` provides `create`, `get`, `update`, `list`, `list_all`,
+`create_portal_session`, `list_subscriptions`, `list_all_subscriptions`, and
+`get_subscription`. Filter by email via `ListCustomersParams(email=...)` or
+`{"email": "person@example.com"}`. Email identity is storefront- and mode-scoped.
+
+`update` changes identity name/email, not billing-address details. Portal sessions
+are short-lived and single-use: redirect to the returned `url`; do not store it as
+a permanent link. Pass `{}` for an empty portal-session request body.
+
+See [method inventory](https://docs.vatly.com/packages/python/api#customers) and [customer fields](https://docs.vatly.com/api-reference/customers){rel="&#x22;nofollow&#x22;"}.
+
+
+# API reference
+
+Generated from `openapi.yaml`. Sync and async clients expose the same methods.
+Pass a Pydantic request/params model or a wire-format dictionary. All methods accept keyword-only `options=RequestOptions(...)`.
+
+## `checkouts`
+
+| Method              | HTTP endpoint                 | Returns          |
+| ------------------- | ----------------------------- | ---------------- |
+| `list(params=None)` | `GET /checkouts`              | `Page[Checkout]` |
+| `create(body)`      | `POST /checkouts`             | `Checkout`       |
+| `get(checkout_id)`  | `GET /checkouts/{checkoutId}` | `Checkout`       |
+
+## `customers`
+
+| Method                                           | HTTP endpoint                                                | Returns              |
+| ------------------------------------------------ | ------------------------------------------------------------ | -------------------- |
+| `list(params=None)`                              | `GET /customers`                                             | `Page[Customer]`     |
+| `create(body)`                                   | `POST /customers`                                            | `Customer`           |
+| `get(customer_id)`                               | `GET /customers/{customerId}`                                | `Customer`           |
+| `update(customer_id, body)`                      | `PATCH /customers/{customerId}`                              | `Customer`           |
+| `create_portal_session(customer_id, body)`       | `POST /customers/{customerId}/portal-sessions`               | `PortalSession`      |
+| `list_subscriptions(customer_id, params=None)`   | `GET /customers/{customerId}/subscriptions`                  | `Page[Subscription]` |
+| `get_subscription(customer_id, subscription_id)` | `GET /customers/{customerId}/subscriptions/{subscriptionId}` | `Subscription`       |
+
+## `one_off_products`
+
+| Method                             | HTTP endpoint                                        | Returns               |
+| ---------------------------------- | ---------------------------------------------------- | --------------------- |
+| `list(params=None)`                | `GET /one-off-products`                              | `Page[OneOffProduct]` |
+| `create(body)`                     | `POST /one-off-products`                             | `OneOffProduct`       |
+| `get(one_off_product_id)`          | `GET /one-off-products/{oneOffProductId}`            | `OneOffProduct`       |
+| `update(one_off_product_id, body)` | `PATCH /one-off-products/{oneOffProductId}`          | `OneOffProduct`       |
+| `archive(one_off_product_id)`      | `POST /one-off-products/{oneOffProductId}/archive`   | `None`                |
+| `unarchive(one_off_product_id)`    | `DELETE /one-off-products/{oneOffProductId}/archive` | `OneOffProduct`       |
+
+## `subscription_plans`
+
+| Method                               | HTTP endpoint                                             | Returns                  |
+| ------------------------------------ | --------------------------------------------------------- | ------------------------ |
+| `list(params=None)`                  | `GET /subscription-plans`                                 | `Page[SubscriptionPlan]` |
+| `create(body)`                       | `POST /subscription-plans`                                | `SubscriptionPlan`       |
+| `get(subscription_plan_id)`          | `GET /subscription-plans/{subscriptionPlanId}`            | `SubscriptionPlan`       |
+| `update(subscription_plan_id, body)` | `PATCH /subscription-plans/{subscriptionPlanId}`          | `SubscriptionPlan`       |
+| `archive(subscription_plan_id)`      | `POST /subscription-plans/{subscriptionPlanId}/archive`   | `None`                   |
+| `unarchive(subscription_plan_id)`    | `DELETE /subscription-plans/{subscriptionPlanId}/archive` | `SubscriptionPlan`       |
+
+## `orders`
+
+| Method                                    | HTTP endpoint                                      | Returns             |
+| ----------------------------------------- | -------------------------------------------------- | ------------------- |
+| `list(params=None)`                       | `GET /orders`                                      | `Page[Order]`       |
+| `get(order_id)`                           | `GET /orders/{orderId}`                            | `Order`             |
+| `create_invoice_update_link(order_id)`    | `POST /orders/{orderId}/invoice-update-link`       | `InvoiceUpdateLink` |
+| `list_refunds(order_id, params=None)`     | `GET /orders/{orderId}/refunds`                    | `Page[Refund]`      |
+| `create_refund(order_id, body)`           | `POST /orders/{orderId}/refunds`                   | `Refund`            |
+| `create_full_refund(order_id, body)`      | `POST /orders/{orderId}/refunds/full`              | `Refund`            |
+| `get_refund(order_id, refund_id)`         | `GET /orders/{orderId}/refunds/{refundId}`         | `Refund`            |
+| `cancel_refund(order_id, refund_id)`      | `DELETE /orders/{orderId}/refunds/{refundId}`      | `None`              |
+| `list_chargebacks(order_id, params=None)` | `GET /orders/{orderId}/chargebacks`                | `Page[Chargeback]`  |
+| `get_chargeback(order_id, chargeback_id)` | `GET /orders/{orderId}/chargebacks/{chargebackId}` | `Chargeback`        |
+
+## `refunds`
+
+| Method              | HTTP endpoint             | Returns        |
+| ------------------- | ------------------------- | -------------- |
+| `list(params=None)` | `GET /refunds`            | `Page[Refund]` |
+| `get(refund_id)`    | `GET /refunds/{refundId}` | `Refund`       |
+
+## `chargebacks`
+
+| Method               | HTTP endpoint                     | Returns            |
+| -------------------- | --------------------------------- | ------------------ |
+| `list(params=None)`  | `GET /chargebacks`                | `Page[Chargeback]` |
+| `get(chargeback_id)` | `GET /chargebacks/{chargebackId}` | `Chargeback`       |
+
+## `webhook_events`
+
+| Method          | HTTP endpoint                   | Returns        |
+| --------------- | ------------------------------- | -------------- |
+| `get(event_id)` | `GET /webhook-events/{eventId}` | `WebhookEvent` |
+
+## `webhook_endpoints`
+
+| Method                              | HTTP endpoint                                   | Returns                 |
+| ----------------------------------- | ----------------------------------------------- | ----------------------- |
+| `list(params=None)`                 | `GET /webhook-endpoints`                        | `Page[WebhookEndpoint]` |
+| `create(body)`                      | `POST /webhook-endpoints`                       | `WebhookEndpoint`       |
+| `get(webhook_endpoint_id)`          | `GET /webhook-endpoints/{webhookEndpointId}`    | `WebhookEndpoint`       |
+| `update(webhook_endpoint_id, body)` | `PATCH /webhook-endpoints/{webhookEndpointId}`  | `WebhookEndpoint`       |
+| `delete(webhook_endpoint_id)`       | `DELETE /webhook-endpoints/{webhookEndpointId}` | `None`                  |
+
+## `subscriptions`
+
+| Method                                              | HTTP endpoint                                              | Returns                                       |
+| --------------------------------------------------- | ---------------------------------------------------------- | --------------------------------------------- |
+| `list(params=None)`                                 | `GET /subscriptions`                                       | `Page[Subscription]`                          |
+| `get(subscription_id)`                              | `GET /subscriptions/{subscriptionId}`                      | `Subscription`                                |
+| `update(subscription_id, body)`                     | `PATCH /subscriptions/{subscriptionId}`                    | `Subscription`                                |
+| `cancel(subscription_id, params=None)`              | `DELETE /subscriptions/{subscriptionId}`                   | `None`                                        |
+| `create_billing_update_link(subscription_id, body)` | `POST /subscriptions/{subscriptionId}/billing-update-link` | `CreateSubscriptionBillingUpdateLinkResponse` |
+| `resume(subscription_id)`                           | `POST /subscriptions/{subscriptionId}/resume`              | `Subscription`                                |
+
+## `test_helpers`
+
+| Method                                        | HTTP endpoint                                                            | Returns        |
+| --------------------------------------------- | ------------------------------------------------------------------------ | -------------- |
+| `fast_forward_renewal(subscription_id, body)` | `POST /test-helpers/subscriptions/{subscriptionId}/fast-forward-renewal` | `Subscription` |
+| `simulate_order_payment(order_id, body)`      | `POST /test-helpers/orders/{orderId}/simulate-payment`                   | `Order`        |
+
+
+# Checkouts
+
+Use `client.checkouts.create(CreateCheckoutRequest(...))` to create a hosted payment
+page. Redirect to `checkout.links.checkout_url.href`. Products use Vatly product
+IDs and quantities. Both success/cancellation redirect URLs are required. Use
+`customer_id` for an existing authorized customer, or omit it for an anonymous flow.
+
+Read one checkout with `get(id)`, one page with `list(params)`, or iterate with
+`list_all(params)`. Async clients use `await` and `async for` respectively.
+Reuse a business-operation idempotency key across caller retries. Confirm payment
+through signed webhooks, not a browser redirect. A checkout's `order_id` links to
+the order; the checkout itself intentionally has no products array.
+
+See [method inventory](https://docs.vatly.com/packages/python/api#checkouts) and [production checkout fields](https://docs.vatly.com/api-reference/checkouts){rel="&#x22;nofollow&#x22;"}.
+
+
+# Subscriptions
+
+Use `client.subscriptions.get(id)`, `list(params)`, or `list_all(params)` to read.
+Create a subscription through a checkout containing a subscription-plan ID.
+
+`update(id, body)` changes plan, price or quantity. At least one is required;
+`trial_until` cannot be sent alone. By default updates are scheduled; request
+`apply_immediately` and the relevant invoice/proration flags deliberately.
+`cancel(id, {"immediately": True})` encodes the boolean as `1`, as the server expects.
+`resume(id)` is only valid during the cancellation grace period.
+
+`create_billing_update_link(id, body)` returns a hosted link for billing details;
+both redirect URLs are required. Check remote status before granting entitlements.
+The signed subscription events carry full snapshots, including scheduled changes,
+mandate, cancellation reason, and renewal periods.
+
+Test-only helpers live under `client.test_helpers`: `fast_forward_renewal` and
+`simulate_order_payment`. They mutate remote data and must never run in CI/live
+verification without explicit intent. This repository's tests use mocks only.
+
+See [method inventory](https://docs.vatly.com/packages/python/api#subscriptions) and [subscription fields](https://docs.vatly.com/api-reference/subscriptions){rel="&#x22;nofollow&#x22;"}.
+
+
+# Subscription plans
+
+`client.subscription_plans` provides `list`, `list_all`, `get`, `create`, `update`,
+`archive`, and `unarchive`. Use `CreateSubscriptionPlanRequest` and
+`UpdateSubscriptionPlanRequest` from `vatly.models`. Money is a decimal string
+plus currency; preserve both. Archiving returns `None`, unarchiving the plan.
+
+Test-mode product changes are auto-approved; live changes may await approval.
+Archive prevents new sales, not existing subscription renewals. Select
+`includeArchived` in dictionary filters when needed, or the corresponding model's
+`include_archived` field.
+
+See [method inventory](https://docs.vatly.com/packages/python/api#subscription_plans) and [plan fields](https://docs.vatly.com/api-reference/subscription-plans){rel="&#x22;nofollow&#x22;"}.
+
+
+# Orders
+
+`client.orders` provides read/pagination plus nested refunds and chargebacks.
+`create_invoice_update_link(order_id)` returns a hosted billing-details update
+link. Financial money values remain decimal strings. Tax and metadata fields are
+retained; do not reconstruct invoices from rounded float calculations.
+
+An order line's `product_type` selects what `product_id` refers to. Readers must
+support `subscription_plan` lines (plan IDs) and `subscription` lines
+(subscription IDs). This alpha has no typed related-resources accessor;
+extra output fields are preserved. Do not assume a plan reference identifies
+the customer's subscription.
+Never grant access from an ID alone; verify ownership and subscription status.
+
+See [method inventory](https://docs.vatly.com/packages/python/api#orders) and [order fields](https://docs.vatly.com/api-reference/orders){rel="&#x22;nofollow&#x22;"}.
+
+
+# Refunds
+
+Read refunds via `client.refunds.list`, `list_all`, and `get`. Order-scoped
+operations are `orders.list_refunds`, `list_all_refunds`, `get_refund`,
+`create_refund`, `create_full_refund`, and `cancel_refund`.
+
+Partial refunds use `CreateRefundRequest` with order lines and amounts; full
+refunds accept `CreateFullRefundRequest` or `{}`. A cancellation returns `None`.
+Use stable idempotency keys for business operations; a timeout does not prove
+that a refund failed. Read/reconcile before issuing another mutation when the
+server reports an unknown outcome. Webhooks confirm completion/failure/cancellation.
+
+See [method inventory](https://docs.vatly.com/packages/python/api#refunds) and [refund fields](https://docs.vatly.com/api-reference/refunds){rel="&#x22;nofollow&#x22;"}.
+
+
+# One-off products
+
+`client.one_off_products` provides `list`, `list_all`, `get`, `create`, `update`,
+`archive`, and `unarchive`. Use `CreateOneOffProductRequest` and
+`UpdateOneOffProductRequest` from `vatly.models`. `archive` returns `None`;
+`unarchive` returns the resource. Mode and approval behavior follow the API key.
+
+The output `product_type` preserves product type strings not yet listed in the
+production spec (including observed `digital_download`). Request validation still
+follows the production request schema. Unknown response fields are preserved.
+
+See [method inventory](https://docs.vatly.com/packages/python/api#one_off_products) and [product fields](https://docs.vatly.com/api-reference/one-off-products){rel="&#x22;nofollow&#x22;"}.
+
+
+# Chargebacks
+
+Read disputes via `client.chargebacks.list`, `list_all`, and `get`, or the
+order-scoped `orders.list_chargebacks`, `list_all_chargebacks`, and `get_chargeback`.
+All are read-only. Preserve the signed financial snapshot for accounting.
+
+`order.chargeback_received` and `order.chargeback_reversed` webhook deliveries
+carry a Chargeback in `object` even though `entity_type` is `order`.
+Use `object.resource`, not the envelope entity type, to inspect the resource.
+
+See [method inventory](https://docs.vatly.com/packages/python/api#chargebacks) and [chargeback fields](https://docs.vatly.com/api-reference/chargebacks){rel="&#x22;nofollow&#x22;"}.
+
+
+# Webhooks
+
+> Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.
+
+Verify the exact raw request bytes before parsing or acting. This example is
+framework-independent; obtain `raw_body` and the signature header in your server:
+
+```python
+from vatly.webhooks import construct_webhook_event
+
+
+def receive(raw_body: bytes, signature: str, secret: str):
+    event = construct_webhook_event(raw_body, signature, secret)
+    if not event.known:
+        return retain_for_triage(event)  # your durable storage
+    return handle_verified_event(event)  # your application
+```
+
+Header: `Vatly-Signature: t=<unix seconds>,v1=<hex HMAC-SHA256>`.
+Signed input: timestamp, a period, then raw body. Default absolute clock-skew
+tolerance is 300 seconds, including future timestamps. Zero disables freshness.
+Secret sequences support rotation. Unknown signature versions are ignored.
+`verify_webhook_signature` raises `VatlyInvalidSignatureError`; the boolean helper
+is `is_valid_webhook_signature`. `construct_event` returns the strict production
+`WebhookDelivery`. `construct_webhook_event` additionally supports future event
+names with `known=False`, preserving their payload. Known objects are Pydantic
+resources discriminated by `object.resource`, not `entityType`: chargeback events
+have an order entity but a chargeback object. Setup events need no links.
+
+Timestamp checks are not deduplication. Deduplicate by the &#x2A;*signed `event.id`**
+in the same transaction as business changes and your outbox. The header
+`Vatly-Event-Id` is useful for diagnostics but is not the signed authority.
+Return success only after committing; let storage/processing failures retry.
+No framework adapters, persistence, or implicit API reads are installed by the SDK.
+
+
+# Development and release
+
+## Sources
+
+`openapi.yaml` was fetched on 2026-11-09 from <https://docs.vatly.com/openapi.yaml>{rel="&#x22;nofollow&#x22;"},
+byte-identical to `vatly/vatly-docs/public/openapi.yaml` at
+`7e71ade32d311b10f79e10c15d0ac03ae32bde97`.
+SHA-256: `69640ac82bbba8d101e6aa882facd5f13aa5cf67f38508e5cea18abef03c4940`.
+The spec's generated-at date is not the retrieval date.
+JS design reference: `vatly/vatly-api-js` at `8b0b920c29f7e7b30bf71b9e379ec0a8a1a22028`.
+
+To update, deliberately replace the pinned spec from that production URL, update
+this provenance, run `uv run python scripts/generate.py`, inspect the diff, and
+run all README checks. CI checks regeneration offline. Do not edit generated files.
+
+Output objects preserve extra fields. URLs/emails remain strings. Input enums
+and constraints are generated from the spec. Two observed production differences
+are handled explicitly: empty metadata `[]` normalizes to `{}`, and the output
+OneOffProduct.productType is an open string (production returns `digital_download`).
+The checked-in spec is not patched. Response validation failures surface as
+`VatlyApiError` with the Pydantic cause; response bodies may contain personal data.
+Do not log them indiscriminately.
+
+## Documentation sync
+
+`docs/README.md`, `API.md`, and the resource guides mirror the JS SDK's layout.
+Pushes to `main` affecting `docs/**` notify `vatly/vatly-docs`, which imports
+these guides automatically. The notifier requires the Actions secret
+`VATLY_DOCS_DISPATCH_TOKEN` with Contents: write access to `vatly/vatly-docs`.
+Keep relative links portable.
+`API.md` is generated; prose guides are maintained manually.
+
+## Orb setup
+
+`.agents/setup` is executable, provisions uv 0.12.9 and Python 3.12, syncs the
+lockfile, and checks imports. It does not read API credentials or make API calls.
+Run twice to check warm behavior. No services or resume repairs are needed.
+It will become available to project orbs once pushed to the default branch and
+the repository is connected as an Amp project.
+
+## PyPI releases
+
+[`vatly-api-python` 0.1.0a2](https://pypi.org/project/vatly-api-python/0.1.0a2/){rel="&#x22;nofollow&#x22;"}
+was published on 2026-11-12. The import name remains `vatly`.
+
+1. Push reviewed code to the public `vatly/vatly-api-python` repository's main branch.
+2. Keep the PyPI trusted publisher for project `vatly-api-python`, owner `vatly`,
+   repository `vatly-api-python`, workflow `release.yml`; leave the environment field blank.
+   No GitHub environment or PyPI token is needed.
+3. Update both package-version sources and changelog, run CI, and only with approval
+   create a new `v<version>` tag and publish its GitHub release (mark alphas as prereleases).
+   Never reuse a published version or move an existing release tag.
+4. The release workflow validates/builds first, then exchanges GitHub OIDC for PyPI
+   credentials. Anyone able to publish a matching GitHub release can initiate publication;
+   restrict repository release access accordingly. Publish the SDK before Fluent.
+
+**A private GitHub repository does not make PyPI artifacts private.** Publishing
+uploads the wheel and sdist publicly, including their source and packaged docs.
+
+
+# Getting started
+
+> **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
+
+Use Fluent for a billing integration; use the raw SDK for direct API calls. Fluent
+depends on `vatly-api-python==0.1.0a2` and Python 3.10+. Follow the [quick start](https://github.com/vatly/vatly-fluent-python/blob/main/README.md){rel="&#x22;nofollow&#x22;"}
+for your first hosted checkout, then add storage for signed events and ownership.
+
+| Guide                                                                           | Responsibility                                     |
+| ------------------------------------------------------------------------------- | -------------------------------------------------- |
+| [Configuration](https://docs.vatly.com/packages/fluent-python/configuration)    | Keys, lifecycle, dependency bootstrap, release     |
+| [Core concepts](https://docs.vatly.com/packages/fluent-python/coreconcepts)     | Driver contracts, entities, scope and transactions |
+| [Checkouts](https://docs.vatly.com/packages/fluent-python/checkouts)            | One-off/mixed/subscription builders and retries    |
+| [Customers](https://docs.vatly.com/packages/fluent-python/customers)            | Billing identity and immutable bindings            |
+| [Customer portal](https://docs.vatly.com/packages/fluent-python/customerportal) | Short-lived hosted portal sessions                 |
+| [Subscriptions](https://docs.vatly.com/packages/fluent-python/subscriptions)    | Swaps, cancellation, state, reconciliation         |
+| [Orders](https://docs.vatly.com/packages/fluent-python/orders)                  | Lines, money and reversals                         |
+| [Webhooks](https://docs.vatly.com/packages/fluent-python/webhooks)              | Signed snapshots, atomic processing and outbox     |
+| [Testing](https://docs.vatly.com/packages/fluent-python/testing)                | SQLite example, mock transport and local checks    |
+| [Porting](https://docs.vatly.com/packages/fluent-python/porting)                | Source provenance and intentional differences      |
+
+Pushes to `main` affecting `docs/**` notify `vatly/vatly-docs`, which imports
+these guides automatically. The notifier requires the Actions secret
+`VATLY_DOCS_DISPATCH_TOKEN` with Contents: write access to `vatly/vatly-docs`.
+
+
+# Customers
+
+Use `customers.create_for(host_id, CustomerProfile(email=..., name=...))` with
+bindings, or `create_unattributed(profile)` to record billing identity without a
+host binding. `attribute(vatly_id, host_id)` checks both sides and delegates atomic
+uniqueness to the driver. It never reassigns identities. Reuse an explicit
+idempotency key when retrying creation after a local binding failure.
+
+Look up by `find_by_host_customer_id`, `find_by_vatly_customer_id`,
+`find_one_by_email`, or iterate `find_by_email`. Email is storefront/mode scoped,
+not a global customer key. All host/customer IDs require server authorization.
+
+`vatly.customer(id)` memoizes its full SDK resource via `await handle.model()`.
+`name`, `email` and `identity` share the cache; `sync()` refreshes it and `update`
+refreshes from the mutation response. Updating name/email changes communication
+identity, not invoice billing details. Use the hosted portal/billing flows instead.
+
+`customer_id_from_checkout(id)` returns billing identity only.
+`claim_customer_from_checkout(id, host_id)` requires host-verified checkout ownership
+and only binds the customer; neither method assigns order/subscription entitlements.
+Resource ownership follows the host's checkout records, never customerId.
+
+
+# Checkouts
+
+`vatly.checkout_builder(profile)` handles one-off and mixed carts. Call
+`.with_items([{"id": product_id, "quantity": 2}])`; repeated calls append detached
+copies. `vatly.subscribe(profile).to_plan(plan_id).with_quantity(3)` creates a
+single-plan checkout builder. Trial methods are `with_trial_days` and
+`with_trial_ends_at(aware_datetime)`, rounded up to whole days. Quantity and trial
+days must be positive integers. No request occurs until `await builder.create()`.
+
+Both builders offer `with_redirect_url_success`, `with_redirect_url_canceled`,
+`with_locale`, `with_metadata`, `with_billing_address`, `in_testmode`, and
+`in_live_mode`. Mode methods assert the key's mode; they cannot change it.
+`payload(overrides)` returns a deep detached wire-format dictionary.
+`create(overrides, options=RequestOptions(...))` returns a full SDK Checkout plus
+`get_url()`. Subscription builders replace rather than accumulate their plan item.
+
+Use `.for_entity(EntityRef("team", authorized_team_id))` with `checkouts` wiring to
+save ownership locally. A profile's `vatly_id` selects billing identity, not entity
+ownership. Authorize all overrides on the server. Persist a purchase ID before
+calling the API and reuse its idempotency key if the API or local save times out.
+If local persistence fails after the API succeeds, retry with that **same key**.
+Never blindly issue a second purchase. SDK auto-keys cover internal retries only.
+
+Checkout redirects do not prove payment. Use signed events and reconciliation.
+Checkout objects stay lean: read lines from checkout.order\_id's Order, not from
+invented checkout.products fields. [Subscriptions](https://docs.vatly.com/packages/fluent-python/subscriptions) covers old
+plan references and the pending core order-line change.
+
+
+# Subscriptions
+
+Authorize a `LocalSubscription` from your repository, then call
+`vatly.subscription(local)`. `swap(plan_id, body)` defaults to scheduled changes;
+`swap_and_invoice` forces immediate application/invoicing; `swap_without_charge`
+forces immediate application and disables the proration charge. Local data follows
+the API response, so a scheduled swap does not prematurely replace the active plan.
+
+`cancel(immediately=True)` sends the API mutation and waits for signed events to
+update local cancellation state. `resume()` clears local `ends_at` after API success.
+`sync()` saves the complete snapshot and derives expiry through `subscription_ends_at`.
+Grace expiry uses the next renewal, renewed-until or trial end (in that order),
+excluding historical dates at/before cancellation, then a previously known valid
+expiry. Conflicting usable trial and cycle deadlines raise `FluentError` rather
+than guessing whether the subscription was on trial; the API omits that flag.
+Equal instants are not conflicting, even with different timezone offsets.
+`canceled_at` is the request time, never a grace deadline. If no deadline
+is available, processing also raises `FluentError` and rolls back; monitor failures and
+reconcile instead of assuming a new expiry. The prior committed state remains
+until recovery, so hosts must apply their own stale-state entitlement policy.
+Terminal cancellation uses `ended_at` or `canceled_at`; an active snapshot clears
+stale expiry after a missed resume. Webhooks and Django reconciliation use the same
+mapping. Core's internal `ends_at` is not currently exposed; `next_renewal_at` alone
+must not be assumed universally present after cancellation.
+`scheduled_update`, `has_scheduled_update`, and `cancellation_reason` read remotely.
+`update_billing(body)` returns a hosted URL; both redirect defaults/overrides are required.
+
+`model()` is local. `state()`/`subscription_state(ends_at, now)` implements PHP's
+endsAt predicates: active/valid through grace period, recurring before cancellation,
+ended at or beyond the end time. **Check Vatly status separately before granting
+access**; these convenience predicates do not account for paused/unpaid states.
+
+## Initial subscription linking
+
+This alpha's linkage code reports `subscription_plan` lines as `legacy_plan_ids`.
+It does not consume a related-resources subscription reference. Do not assume
+an API addition alone completes this integration; package support must be
+implemented and tested separately.
+
+For existing subscription-valued lines, `await vatly.reconcile_checkout(checkout_id)` follows
+host records → checkout → order → distinct subscription IDs, retries each 404 up
+to three times (configurable 1–10), and returns `CheckoutResolution` with resolved
+resources, `pending_subscription_ids`, and legacy IDs. Two lines for the same plan
+can identify different subscriptions; quantity never multiplies IDs.
+
+An unresolved subscription ID is not evidence of entitlement. Enqueue bounded
+recovery and inspect ownership/status before granting access. The caller authorizes
+the checkout and wraps local writes in its driver transaction. Built-in reactions
+make no API reads. A future related-resources integration must preserve confirmed
+IDs across older null snapshots and refresh unresolved signup correlation via GET;
+core does not promise historical inference or backfill. Trial AUTH\_REQUEST flows
+may have no merchant order.paid event; explicitly reconcile the paid checkout's orderId.
+
+
+# Orders and reversals
+
+`vatly.order(id).model()` lazily fetches one complete Order. `sync()` refreshes;
+`lines()` shares the cached model; `invoice_url()` reads the invoice link.
+`reversed_subtotal()`/`refundable_subtotal()` return exact `Decimal` currency-unit
+amounts. `is_reversed`, `is_fully_reversed` and `is_partially_reversed` derive from
+both totals. Do not use float arithmetic for money.
+
+`refunds()` and `chargebacks()` read optional local repositories or return an empty
+list. To mutate refunds or read any unsupported operation, use `vatly.api.orders`
+and `vatly.api.refunds` directly. Signed reversal snapshots preserve taxes,
+metadata, original-order references and mode. Their ownership follows the original
+order's host checkout link; `entityType=order` does not make a chargeback an Order.
+
+
+# Transactional webhooks
+
+Call `await vatly.webhook_processor().handle(raw_bytes, signature_header)` in your
+framework route. Signature/HMAC freshness checks happen before storage, using the
+SDK. Missing/invalid signatures raise `VatlyInvalidSignatureError`. Keep the default
+300-second tolerance; arrays of secrets support rotation. Unknown signed events
+are retained and dispatched, not applied to known repositories.
+
+Implement `WebhookCalls.process(event, work)` in **one transaction** shared by all
+drivers. Lock/claim the signed event.id, skip committed duplicates, retain the
+envelope, await work, mark processed and commit. Roll back every write on failure
+so delivery retries can finish. Concurrency requires DB uniqueness/locking, not a
+check-then-insert in memory. Scope every key by tenant/storefront/mode. An unsigned
+Vatly-Event-Id header is not a dedup authority. Mode mismatches fail before storage.
+
+| Event                                          | Built-in behavior                                                                     |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------- |
+| subscription.started                           | Upsert; newly saved row emits local.subscription\_created                             |
+| subscription.updated / billing\_updated        | Update existing resource; null mandate preserves local value                          |
+| subscription.resumed                           | Update existing row; clear ends\_at                                                   |
+| cancellation / grace-period completion         | Update existing row and ends\_at                                                      |
+| order.paid / payment\_failed                   | Upsert signed snapshot; new paid row emits local.order\_created                       |
+| order.canceled                                 | Update existing snapshot only                                                         |
+| refund.\* / order.chargeback\_\*               | Optional reversal upsert                                                              |
+| checkout.paid                                  | Link own checkout record to order; link subscription IDs from an already stored order |
+| scheduled updates / products / setup / unknown | Dispatch without built-in resource writes                                             |
+
+Missing repositories skip persistence, not dispatch. Local-created events fire
+only when a row is first saved, not on every payment status transition. Custom
+`additional_webhook_reactions` run after built-ins and before final dispatch,
+inside the same transaction. Write transactional outbox rows in `events.dispatch`,
+then send external effects after commit. Throw on processing failure; respond 5xx,
+not 2xx, so Vatly retries. A duplicate committed event may respond 200.
+
+No implicit API reads occur. All six checkout/order/subscription delivery orders
+are tested to converge using host records and stored snapshots. Missing snapshots,
+AUTH\_REQUEST trials and legacy plan references need explicit reconciliation jobs.
+Delayed stale events can still overwrite newer snapshots: dedup is not ordering;
+reconcile conflicts with the API. Never infer ownership from customerId or metadata.
+
+
+# Configuration and lifecycle
+
+Construct `Vatly(Wiring(api=api, ...))` with an `AsyncVatlyClient`. The caller owns
+the SDK connection pool: use `async with AsyncVatlyClient()` and reuse it per
+application/worker lifespan. Fluent creates no additional transport. Pass an
+explicit key or use `VATLY_API_KEY`. Live/test share the same URL; keys select mode.
+
+Only `api` and both redirect URLs are needed for anonymous API-only checkout
+creation. Add `checkouts` to persist `.for_entity(EntityRef(...))`; add repositories,
+`webhook_secret`, `webhook_calls` and `events` for a durable integration. Missing
+wiring fails when used. `api` exposes all SDK resources, options, retries and errors.
+
+Use `RequestOptions` for stable idempotency keys, headers and timeouts (seconds).
+SDK errors propagate unchanged. Keep API/webhook secrets server-side and separate.
+An email-only profile does not create a customer. Authorization is always the host's job.
+
+## Development and releases
+
+Run `.agents/setup` to provision uv 0.12.9, Python 3.12, locked dependencies and an
+import sanity check. It is idempotent, has no service/database/secret requirements,
+and becomes active for project orbs after reaching the default branch.
+
+uv retains a [pinned SDK wheel](https://github.com/vatly/vatly-fluent-python/blob/main/vendor/README.md){rel="&#x22;nofollow&#x22;"} for reproducible development;
+published metadata declares the exact PyPI dependency.
+[`vatly-fluent-python` 0.1.0a2](https://pypi.org/project/vatly-fluent-python/0.1.0a2/){rel="&#x22;nofollow&#x22;"}
+was published on 2026-11-12. Publish the matching SDK version first. Keep the
+PyPI trusted publisher for project `vatly-fluent-python` with owner
+`vatly`, repository `vatly-fluent-python`, workflow `release.yml`; leave the
+environment field blank. No GitHub environment or API token is needed. Restrict
+repository release access: there is no environment approval gate. Only publish a
+GitHub release/tag after explicit authorization and green CI.
+The tag must match `v` plus the package version. Pushing main does not publish.
+PyPI artifacts are public even when the source GitHub repo is private.
+
+
+# Driver contracts and ownership
+
+Fluent's async `Protocol`s adapt existing databases; there are no framework models
+or containers. Implement synchronous storage inside async adapters deliberately,
+using your framework's thread/transaction rules. The [SQLite example](https://github.com/vatly/vatly-fluent-python/blob/main/examples/sqlite_driver.py){rel="&#x22;nofollow&#x22;"}
+demonstrates the contract, not a production async database strategy.
+
+`Stored[T]` wraps the untouched SDK `resource` with `entity: EntityRef | None`.
+`LocalSubscription` also adds `ends_at`. Repository methods are
+`find_by_vatly_id`, `store` and `update`. `store` may return None to decline saving;
+then no local-created event is emitted. `update` takes wrapper field changes:
+omitted keys stay unchanged; None explicitly clears. `resource` is a complete SDK
+snapshot. `ReversalRepository` adds `list_for_order` and `list_for_customer`.
+
+Scope all unique IDs and lookups by tenant, storefront and test/live mode.
+`CheckoutRecords.record(CheckoutRecord(...))` stores an authorized host entity.
+`find(checkout_id)` reads it; `link(checkout_id, resource_type, resource_id)` binds
+orders/subscriptions; `find_for_resource` follows the link. Identical repeats are
+idempotent; conflicting ownership must fail, never silently reassign.
+
+`CustomerBindings` is separate billing identity: atomic `bind`, non-clearing
+`record`, and lookups in both directions. Unique constraints on both sides protect
+concurrent binding. These bindings **never determine resource ownership**.
+
+`WebhookCalls.process(event, work)` must commit signed-ID dedup, audit, repository
+writes, checkout links and the outbox together. Write external effects to the outbox
+with `EventDispatcher.dispatch`; send them after commit. Driver concurrency must
+not interleave transactions on a shared connection. See [webhooks](https://docs.vatly.com/packages/fluent-python/webhooks).
+
+
+# Customer portal
+
+After authorizing the customer ID, call
+`await vatly.customer(id).portal_session({"returnUrl": "https://app.example.com/billing"})`
+using the production API's request fields. An empty `{}` body is also supported.
+Redirect to `session.url`. It is short-lived/single-use; never log it or use it as
+a permanent account URL. Errors propagate from the SDK without wrapping.
+
+Do not accept arbitrary Vatly customer IDs from the browser. Look up the customer's
+binding for the authenticated billable and tenant/storefront/mode first.
+For subscription invoice-address updates, `subscription(local).update_billing()`
+returns a hosted URL with success/cancellation redirects.
+
+
+# Porting notes
+
+See [PORTING.md](https://github.com/vatly/vatly-fluent-python/blob/main/PORTING.md){rel="&#x22;nofollow&#x22;"} for upstream commits, API mapping, deliberate
+Python differences, checkout/entity ownership, and subscription-linking compatibility.
+
+
+# Testing
+
+Run the README quality commands and `.agents/setup` twice for warm setup. Tests
+use `httpx.MockTransport` through the real SDK; no remote mutations or fake parallel
+API implementation. Static fixtures are synthesized from the SDK's pinned
+production OpenAPI examples, not customer-account data.
+
+The SQLite driver demonstrates persisted uniqueness, full snapshot storage,
+mode/tenant scoping, immutable checkout links, deduplication, transaction rollback,
+concurrent duplicate delivery and an outbox. It uses one connection/lock per driver
+and is intentionally a small example, not a production multi-worker async adapter.
+
+`test_helpers()` delegates test-only API mutations and includes `advance_renewal`,
+`force_renewal_paid/failed` and `force_order_payment_paid/failed`. These helpers
+change Vatly data. Use only with explicit test intent and a test key; the SDK
+blocks live keys. CI and orb setup never use real credentials.
+
+
+# Vatly Django guides
+
+**Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
+
+Pushes to `main` affecting `docs/**` notify `vatly/vatly-docs`, which imports
+these guides automatically. The notifier requires the Actions secret
+`VATLY_DOCS_DISPATCH_TOKEN` with Contents: write access to `vatly/vatly-docs`.
+
+- [Configuration](https://docs.vatly.com/packages/django/configuration): settings, installation and authorized billables
+- [Billing](https://docs.vatly.com/packages/django/billing): mixin, checkout, portal, subscription lifecycle
+- [Storage and webhooks](https://docs.vatly.com/packages/django/webhooks): transactions, signed snapshots, outbox and recovery
+- [Testing and release](https://docs.vatly.com/packages/django/development): supported versions, offline tests, boot and publishing
+
+
+# Webhooks, storage and outbox
+
+Register the configured HTTPS `billing/webhook/` path in Vatly separately. Setup
+and CI never register endpoints or create remote test data. The route verifies raw
+request bytes against Vatly-Signature (SDK HMAC, default ±300 seconds, secret rotation).
+The signed event.id is the dedup key; untrusted event-ID headers are ignored.
+Invalid signatures/payloads are 400, wrong methods405, committed duplicates200.
+Processing failures propagate as 500 so Vatly retries; all local writes roll back.
+
+Each scope+mode has a BillingScope row. An atomic UPDATE acquires its write lock
+before dedup reads, serializing callbacks across workers. The same transaction
+contains WebhookCall audit, immutable Checkout/ResourceLink writes, complete
+BillingResource snapshots, processed\_at and Outbox rows. PostgreSQL is recommended
+for concurrent production workers. SQLite supports local development; lock contention
+may fail a delivery, which is safe to retry. Database uniqueness is the final guard.
+
+Fluent's async protocols use thread-sensitive sync\_to\_async. ORMDriver.process
+bridges the work callback with async\_to\_sync while the outer atomic transaction is
+open, so nested writes remain on that same connection/thread. Never substitute
+`thread_sensitive=False`, parallelize repository writes, or put network effects in
+the callback. Storage assumes Django's default database; custom routers/multi-DB
+transactions need a purpose-built driver. All models are scoped by tenant/storefront
+and mode. Generic entity references deliberately have no cascading user deletion.
+Handle GDPR retention/deletion explicitly through audited host administration.
+
+Built-in reactions preserve signed snapshots and make no implicit API reads.
+checkout.paid/order/subscription deliveries converge even when reordered. Only
+subscription.started creates a missing local subscription; updates do not invent
+one. Unknown events remain audited/dispatched. Optional refunds/chargebacks retain
+full financial snapshots. Customer bindings are never an ownership fallback.
+The alpha follows Fluent's last-delivery-wins snapshot semantics: dedup is not
+event ordering; reconcile stale/conflicting events explicitly.
+
+Outbox is durable, not an automatic sender. Implement a worker that claims rows
+with database locks, sends using an idempotent consumer key (scope + outbox primary
+key), and marks delivered\_at after success. Delivery is at least once, not exactly
+once across external systems. Do not delete an outbox row before successful delivery.
+Local-created notifications can precede eventual ownership linkage; consumers must
+read current persisted ownership and retry/defer unattributed resources, not infer
+it from customerId. No entitlements or email side effects are enabled by default.
+
+Admin pages are read-only, but signed envelopes may contain personal data. Grant
+model view permissions only to trusted staff and apply your retention policy.
+
+
+# Billable operations
+
+Render one server-generated UUID per purchase as a hidden `idempotency_key`. POST
+to `billing/checkout/<offer>/` as an authenticated user with CSRF. Products, quantities,
+customerId, metadata and redirect URLs come from server settings, not user input.
+An invalid key/offer yields 400, a remote SDK error 502. Save/reuse the purchase key
+when retrying ambiguous failures. A durable CheckoutAttempt commits before network
+I/O and rejects key reuse for a different entity or changed payload. Never generate
+a new key merely because payment creation timed out. Concurrent API retries use
+the same key and local links are immutable/idempotent. Vatly's idempotency retention
+still applies; investigate stale attempts instead of retrying them indefinitely.
+
+The returned checkout URL redirects to Vatly. Success redirects do not prove payment.
+Persisted Checkout records link order/subscription resources through signed events.
+They never infer ownership from shared customer IDs or arbitrary metadata.
+
+POST to `billing/portal/` to create a short-lived, single-use portal session for the
+billable's bound customer. Do not cache/log the session URL. The portal request
+uses the OpenAPI `returnUrl` field, not a query string or redirectUrl.
+
+Mixin methods: `checkout`, `billing_portal`, `subscriptions`, `subscribed`,
+`cancel_subscription`, `resume_subscription`, `swap_subscription`. Subscription
+queries include only owned resources in the chosen scope/mode. `subscribed()`
+requires active/trial/on\_grace\_period status and an unexpired local end time; it is
+a convenience policy, not a replacement for your product's entitlement rules.
+Grace expiry comes from Fluent's shared lifecycle mapping, not `canceledAt`
+(the cancellation request time). Missing expiry raises `FluentError` and preserves
+the prior committed state for explicit recovery; do not treat failed/stale syncs
+as evidence of continuing entitlement. See Fluent's subscription guide for period
+field precedence and the missing-deadline policy.
+`Billing.subscription_action` also exposes sync, swap\_and\_invoice and
+swap\_without\_charge. It checks local ownership before any API mutation. Cancellation
+waits for signed events to update local state; resume refreshes immediately. Use
+RequestOptions for stable mutation keys on the underlying Fluent/SDK when a workflow
+must retry the same cancellation/swap. Never run these mutating methods on a GET.
+
+`Billing.reconcile(billable, checkout_id)` checks own checkout ownership then fetches
+checkout → order → subscriptions and persists snapshots/links transactionally.
+It can hold the scope lock during bounded GET retries; run it in a background job
+for busy deployments. It emits no local-created outbox event; consumers should
+derive access from the reconciled records or implement their own durable policy.
+
+## Initial subscription linking
+
+Initial lines can be `subscription_plan` + plan ID.
+There is no deterministic initial subscription ID to attach to a billable. The
+result reports `legacy_plan_ids`; it never guesses by customerId/plan/quantity.
+This alpha does not consume a related-resources subscription reference; any
+new API reference needs a separately tested package update. Quantity does not
+multiply subscription IDs, and identical plans can yield distinct subscriptions.
+For existing subscription-valued lines, `pending_subscription_ids` records IDs
+that could not be fetched, without granting access. Trial
+AUTH\_REQUEST flows can lack order.paid; reconcile the paid checkout's orderId.
+Historical lines are not backfilled. Do not claim a complete live initial
+subscription-to-entity flow until core provides the reference or an explicit host
+record establishes it. Renewal/update subscription lines remain usable.
+
+
+# Configuration
+
+Add `vatly_django` to INSTALLED\_APPS and run migrations. Include its URLs under
+your billing prefix. Use Django auth/session/CSRF middleware for browser endpoints.
+Use HTTPS in production; configure your reverse proxy, allowed hosts and CSRF origins
+as usual. Never disable CSRF for checkout/portal. Only webhook is exempt.
+
+| Setting                                  | Contract                                                                                    |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------- |
+| VATLY\_API\_KEY                          | Required; falls back to environment. test\_/live\_ chooses mode                             |
+| VATLY\_SCOPE                             | Required stable tenant/storefront string (max 200 chars)                                    |
+| VATLY\_WEBHOOK\_SECRET                   | Required for webhooks; string or rotation list, never client-side                           |
+| VATLY\_REDIRECT\_URL\_SUCCESS / CANCELED | Required checkout HTTPS destinations                                                        |
+| VATLY\_PORTAL\_REDIRECT\_URL             | Optional HTTPS returnUrl for hosted portal                                                  |
+| VATLY\_CHECKOUTS                         | Server allowlist: offer slug → products, optional locale/metadata/billingAddress            |
+| VATLY\_BILLABLE\_RESOLVER                | Optional dotted callable(request) → authorized saved Django model; defaults to request.user |
+| VATLY\_SCOPE\_RESOLVER                   | Optional dotted callable(request) → tenant/storefront string, also used on webhook routes   |
+
+For multi-tenant hosts, both resolvers must validate membership and select the
+matching key and webhook secret through the deployment's settings strategy. Do not
+trust query-string tenant IDs or webhook customerId to route ownership. The current
+facade uses one API key/secret configuration per deployment; construct ORMDriver +
+Fluent directly if you need a credential registry per tenant.
+
+The abstract `vatly_django.mixins.BillableMixin` adds no columns; use it with a
+custom user, team or organization model. Existing models need not inherit it:
+`Billing(scope).checkout(model, offer, idempotency_key=uuid)` provides the same
+behavior. Entity identities are model label + primary key (immutable across schema
+renames unless you migrate billing references). The mixin's `billing()` can be
+overridden to choose a trusted scope. Built-in views use explicit resolvers instead.
+
+There is no automatic remote customer creation or email lookup. Call
+`Billing.bind_customer(billable, authorized_customer_id)` from trusted provisioning
+code to reuse a known customer. Binding uniqueness is enforced in both directions,
+and does not assign entitlement ownership.
+
+
+# Development, support and release
+
+Python 3.10–3.14; Django 5.2 LTS, 6.0 and 6.1 within their Python compatibility ranges.
+CI runs representative supported combinations plus PostgreSQL 17 concurrent delivery.
+Tests use real ORM migrations + SDK MockTransport + signed local fixtures, no Vatly
+account writes. They cover all event permutations, rollback including outbox/audit,
+duplicate delivery, purchase-key recovery, authorization, CSRF, billing identity,
+status/grace rules and legacy/new subscription references. The isolated built wheel
+test migrates a fresh DB, imports the package, and checks py.typed.
+
+`.agents/setup` provisions pinned uv 0.12.9 and Python 3.12, syncs the lockfile and
+runs Django system checks. It is executable/idempotent and needs no secrets/services.
+It does not migrate a host application's DB or seed data. `vendor/` pins unmodified
+dependency wheels; compare SHA256SUMS when refreshing them.
+
+[`vatly-django` 0.1.0a2](https://pypi.org/project/vatly-django/0.1.0a2/){rel="&#x22;nofollow&#x22;"} was published
+on 2026-11-12; its import name is `vatly_django`. Keep the PyPI trusted publisher
+owner `vatly`, repo `vatly-django`, workflow `release.yml`; leave the environment
+field blank. No GitHub environment or PyPI token is needed. Restrict repository
+release access: there is no environment approval gate. Publish SDK then Fluent
+then Django. The release workflow builds/checks artifacts and only publishes on a
+published GitHub release whose tag matches `v` plus the package version. No tag or
+publication is triggered by pushing main. PyPI packages are public even if GitHub source is private.
+
+
 # Packages
 
 > Official Vatly packages for your language or framework.
 
-Vatly provides official packages to integrate billing, subscriptions, and tax compliance into your application.
+Vatly is the European merchant of record for AI, software and digital products. These official packages connect billing, subscriptions, and tax compliance to your application.
 
 ## Available packages
 
-| Language / Framework             | Package                                                                                                                                                                                                                                    | Install                                |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- |
-| PHP 8.0+                         | [vatly-api-php](https://docs.vatly.com/packages/php/readme)                                                                                                                                                                                | `composer require vatly/vatly-api-php` |
-| Laravel 11+                      | [vatly-laravel](https://docs.vatly.com/packages/laravel/readme)                                                                                                                                                                            | `composer require vatly/vatly-laravel` |
-| JavaScript / TypeScript          | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js){rel="&#x22;nofollow&#x22;"}         | `npm install @getvatly/sdk@alpha`      |
-| JavaScript / TypeScript (fluent) | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js){rel="&#x22;nofollow&#x22;"} | `npm install @getvatly/fluent@alpha`   |
+| Language / Framework | Package                                                                                                                                                                                                                                                         | Install                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| PHP SDK              | [vatly/vatly-api-php](https://packagist.org/packages/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/php/readme) · [GitHub](https://github.com/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"}                       | `composer require vatly/vatly-api-php`    |
+| PHP Fluent           | [vatly/vatly-fluent-php](https://packagist.org/packages/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-php/webhook-flow) · [GitHub](https://github.com/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} | `composer require vatly/vatly-fluent-php` |
+| Laravel              | [vatly/vatly-laravel](https://packagist.org/packages/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/laravel/readme) · [GitHub](https://github.com/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"}                   | `composer require vatly/vatly-laravel`    |
+| JavaScript SDK       | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js){rel="&#x22;nofollow&#x22;"}                              | `npm install @getvatly/sdk`               |
+| JavaScript Fluent    | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js){rel="&#x22;nofollow&#x22;"}                      | `npm install @getvatly/fluent`            |
+| Python SDK           | [vatly-api-python](https://pypi.org/project/vatly-api-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"}                            | `pip install vatly-api-python`            |
+| Python Fluent        | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python){rel="&#x22;nofollow&#x22;"}            | `pip install vatly-fluent-python`         |
+| Django               | [vatly-django](https://pypi.org/project/vatly-django/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django){rel="&#x22;nofollow&#x22;"}                                        | `pip install vatly-django`                |
 
-The JavaScript / TypeScript packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha.
+These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha. The Python packages require Python 3.10+ and are released at `0.1.0a2`; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively. For example, pin the SDK with `pip install vatly-api-python==0.1.0a2`.
 
-## Planned
-
-| Language / Framework | Package      | Status  |
-| -------------------- | ------------ | ------- |
-| Python               | vatly-python | Planned |
+PHP Fluent currently has two in-depth guides, not a complete getting-started section. Follow its [README](https://github.com/vatly/vatly-fluent-php#readme){rel="&#x22;nofollow&#x22;"} for setup.
 
 Not using one of these languages? You can use the [REST API directly](https://docs.vatly.com/guides/authentication) with any HTTP client.
 
@@ -11852,7 +12918,7 @@ Building in Lovable instead? See [Lovable payments with Vatly](https://docs.vatl
 
 # Integrations
 
-Connect Vatly to the tools and platforms you use to build your app. Vatly is the merchant of record for European software and digital products, handling tax and customer invoicing while your app delivers the product.
+Connect Vatly to the tools and platforms you use to build your app. Vatly is the European merchant of record for AI, software and digital products, handling tax and customer invoicing while your app delivers the product.
 
 []{#choose-your-builder}
 
@@ -11866,6 +12932,12 @@ Connect Vatly to the tools and platforms you use to build your app. Vatly is the
 The Lovable and Bolt guides describe custom integrations using Vatly's existing packages and API. They are not native payment connectors or endorsements by those platforms.
 
 []{#choose-your-integration-approach}[]{#create-a-checkout-with-the-javascript-sdk}[]{#create-a-checkout}[]{#prepare-your-vatly-account}[]{#keep-credentials-on-the-server}[]{#verify-webhooks-before-granting-access}[]{#before-you-connect}[]{#test-before-publishing}[]{#documentation-for-your-agent}
+
+## Framework packages
+
+Using a framework rather than an app builder? Official [Laravel](https://docs.vatly.com/packages/laravel/readme) and [Django](https://docs.vatly.com/packages/django/readme) packages integrate Vatly with your application. Their installation, configuration and API guides live under [Packages](https://docs.vatly.com/packages), alongside the SDKs and fluent packages, rather than being duplicated here.
+
+These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha.
 
 ## Connecting another app?
 

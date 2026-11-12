@@ -2,7 +2,7 @@
 
 > Understand what adopting Vatly involves: responsibilities, checkout and fulfillment, choosing an integration path, and preparing your developer or AI agent.
 
-You do not need to build a payment form or your own tax and invoicing workflow to sell with Vatly. Vatly is the merchant of record for European software and digital products: it acts as the legal seller and provides hosted checkout. Your app delivers the product and controls access.
+You do not need to build a payment form or your own tax and invoicing workflow to sell with Vatly. Vatly is the European merchant of record for AI, software and digital products: it acts as the legal seller and provides hosted checkout. Your app delivers the product and controls access.
 
 This guide helps you decide what to connect before writing code or asking an agent to implement it. Whether a developer or an AI agent does the work, the responsibilities are the same.
 
@@ -95,10 +95,11 @@ Test mode is available before going live. Your first milestone is one complete t
 For app-level billing, start with a fluent package rather than assembling every flow from low-level API calls:
 
 - **JavaScript / TypeScript:** [`@getvatly/fluent`](/packages/fluent-js/readme) builds on `@getvatly/sdk` with checkout and subscription builders, customer bindings, and webhook processing. Follow [configuration](/packages/fluent-js/configuration) for compatible versions and runtime requirements.
-- **PHP:** [`vatly/vatly-fluent-php`](https://github.com/vatly/vatly-fluent-php) provides higher-level billing flows. The [Laravel package](/packages/laravel/readme) wires fluent for Laravel.
-- **Direct API access:** Use the matching [SDK](/packages) when you only need the API client, or the [HTTP API](/api-reference) from another server-side language. The [Python SDK](https://github.com/vatly/vatly-api-python) is alpha and not yet published on PyPI; follow its repository's installation instructions.
+- **PHP:** [PHP Fluent](/packages/fluent-php/webhook-flow) provides higher-level billing flows. The [Laravel package](/packages/laravel/readme) wires fluent for Laravel.
+- **Python:** [Python Fluent](/packages/fluent-python/readme) provides async-first billing flows and storage contracts. The [Django package](/packages/django/readme) integrates fluent with Django's ORM and webhook handling. Both are available on PyPI.
+- **Direct API access:** Use the matching [SDK](/packages) when you only need the API client, or the [HTTP API](/api-reference) from another server-side language. The [Python SDK](/packages/python/readme) is available on PyPI as `vatly-api-python` (import `vatly`).
 
-The JavaScript packages and PHP fluent are **alpha**. Follow each package's installation guidance, pin compatible versions, and review upgrades. Fluent packages provide building blocks, not your app's access policy or a database integration that configures itself: your developer or agent must wire the required storage drivers and authorization checks.
+The JavaScript, Python, Django and PHP fluent packages are **alpha**. Every alpha release may include breaking changes. Pin exact versions during alpha. Follow each package's installation guidance and review upgrades. Fluent packages provide building blocks, not your app's access policy or a database integration that configures itself: your developer or agent must wire the required storage drivers and authorization checks.
 
 ## Hand off a clear brief
 

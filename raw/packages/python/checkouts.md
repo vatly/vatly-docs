@@ -1,0 +1,16 @@
+# Checkouts
+
+> Vatly Python SDK - Checkouts
+
+Use `client.checkouts.create(CreateCheckoutRequest(...))` to create a hosted payment
+page. Redirect to `checkout.links.checkout_url.href`. Products use Vatly product
+IDs and quantities. Both success/cancellation redirect URLs are required. Use
+`customer_id` for an existing authorized customer, or omit it for an anonymous flow.
+
+Read one checkout with `get(id)`, one page with `list(params)`, or iterate with
+`list_all(params)`. Async clients use `await` and `async for` respectively.
+Reuse a business-operation idempotency key across caller retries. Confirm payment
+through signed webhooks, not a browser redirect. A checkout's `order_id` links to
+the order; the checkout itself intentionally has no products array.
+
+See [method inventory](/packages/python/api#checkouts) and [production checkout fields](https://docs.vatly.com/api-reference/checkouts).

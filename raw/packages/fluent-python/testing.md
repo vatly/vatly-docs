@@ -1,0 +1,18 @@
+# Testing
+
+> Vatly Python Fluent - Testing
+
+Run the README quality commands and `.agents/setup` twice for warm setup. Tests
+use `httpx.MockTransport` through the real SDK; no remote mutations or fake parallel
+API implementation. Static fixtures are synthesized from the SDK's pinned
+production OpenAPI examples, not customer-account data.
+
+The SQLite driver demonstrates persisted uniqueness, full snapshot storage,
+mode/tenant scoping, immutable checkout links, deduplication, transaction rollback,
+concurrent duplicate delivery and an outbox. It uses one connection/lock per driver
+and is intentionally a small example, not a production multi-worker async adapter.
+
+`test_helpers()` delegates test-only API mutations and includes `advance_renewal`,
+`force_renewal_paid/failed` and `force_order_payment_paid/failed`. These helpers
+change Vatly data. Use only with explicit test intent and a test key; the SDK
+blocks live keys. CI and orb setup never use real credentials.

@@ -1,0 +1,58 @@
+# Billable operations
+
+> Vatly Django - Billable operations
+
+Render one server-generated UUID per purchase as a hidden `idempotency_key`. POST
+to `billing/checkout/<offer>/` as an authenticated user with CSRF. Products, quantities,
+customerId, metadata and redirect URLs come from server settings, not user input.
+An invalid key/offer yields 400, a remote SDK error 502. Save/reuse the purchase key
+when retrying ambiguous failures. A durable CheckoutAttempt commits before network
+I/O and rejects key reuse for a different entity or changed payload. Never generate
+a new key merely because payment creation timed out. Concurrent API retries use
+the same key and local links are immutable/idempotent. Vatly's idempotency retention
+still applies; investigate stale attempts instead of retrying them indefinitely.
+
+The returned checkout URL redirects to Vatly. Success redirects do not prove payment.
+Persisted Checkout records link order/subscription resources through signed events.
+They never infer ownership from shared customer IDs or arbitrary metadata.
+
+POST to `billing/portal/` to create a short-lived, single-use portal session for the
+billable's bound customer. Do not cache/log the session URL. The portal request
+uses the OpenAPI `returnUrl` field, not a query string or redirectUrl.
+
+Mixin methods: `checkout`, `billing_portal`, `subscriptions`, `subscribed`,
+`cancel_subscription`, `resume_subscription`, `swap_subscription`. Subscription
+queries include only owned resources in the chosen scope/mode. `subscribed()`
+requires active/trial/on_grace_period status and an unexpired local end time; it is
+a convenience policy, not a replacement for your product's entitlement rules.
+Grace expiry comes from Fluent's shared lifecycle mapping, not `canceledAt`
+(the cancellation request time). Missing expiry raises `FluentError` and preserves
+the prior committed state for explicit recovery; do not treat failed/stale syncs
+as evidence of continuing entitlement. See Fluent's subscription guide for period
+field precedence and the missing-deadline policy.
+`Billing.subscription_action` also exposes sync, swap_and_invoice and
+swap_without_charge. It checks local ownership before any API mutation. Cancellation
+waits for signed events to update local state; resume refreshes immediately. Use
+RequestOptions for stable mutation keys on the underlying Fluent/SDK when a workflow
+must retry the same cancellation/swap. Never run these mutating methods on a GET.
+
+`Billing.reconcile(billable, checkout_id)` checks own checkout ownership then fetches
+checkout → order → subscriptions and persists snapshots/links transactionally.
+It can hold the scope lock during bounded GET retries; run it in a background job
+for busy deployments. It emits no local-created outbox event; consumers should
+derive access from the reconciled records or implement their own durable policy.
+
+## Initial subscription linking
+
+Initial lines can be `subscription_plan` + plan ID.
+There is no deterministic initial subscription ID to attach to a billable. The
+result reports `legacy_plan_ids`; it never guesses by customerId/plan/quantity.
+This alpha does not consume a related-resources subscription reference; any
+new API reference needs a separately tested package update. Quantity does not
+multiply subscription IDs, and identical plans can yield distinct subscriptions.
+For existing subscription-valued lines, `pending_subscription_ids` records IDs
+that could not be fetched, without granting access. Trial
+AUTH_REQUEST flows can lack order.paid; reconcile the paid checkout's orderId.
+Historical lines are not backfilled. Do not claim a complete live initial
+subscription-to-entity flow until core provides the reference or an explicit host
+record establishes it. Renewal/update subscription lines remain usable.

@@ -1,0 +1,60 @@
+# Development and release
+
+> Vatly Python SDK - Development and release
+
+## Sources
+
+`openapi.yaml` was fetched on 2026-11-09 from [https://docs.vatly.com/openapi.yaml](https://docs.vatly.com/openapi.yaml),
+byte-identical to `vatly/vatly-docs/public/openapi.yaml` at
+`7e71ade32d311b10f79e10c15d0ac03ae32bde97`.
+SHA-256: `69640ac82bbba8d101e6aa882facd5f13aa5cf67f38508e5cea18abef03c4940`.
+The spec's generated-at date is not the retrieval date.
+JS design reference: `vatly/vatly-api-js` at `8b0b920c29f7e7b30bf71b9e379ec0a8a1a22028`.
+
+To update, deliberately replace the pinned spec from that production URL, update
+this provenance, run `uv run python scripts/generate.py`, inspect the diff, and
+run all README checks. CI checks regeneration offline. Do not edit generated files.
+
+Output objects preserve extra fields. URLs/emails remain strings. Input enums
+and constraints are generated from the spec. Two observed production differences
+are handled explicitly: empty metadata `[]` normalizes to `{}`, and the output
+OneOffProduct.productType is an open string (production returns `digital_download`).
+The checked-in spec is not patched. Response validation failures surface as
+`VatlyApiError` with the Pydantic cause; response bodies may contain personal data.
+Do not log them indiscriminately.
+
+## Documentation sync
+
+`docs/README.md`, `API.md`, and the resource guides mirror the JS SDK's layout.
+Pushes to `main` affecting `docs/**` notify `vatly/vatly-docs`, which imports
+these guides automatically. The notifier requires the Actions secret
+`VATLY_DOCS_DISPATCH_TOKEN` with Contents: write access to `vatly/vatly-docs`.
+Keep relative links portable.
+`API.md` is generated; prose guides are maintained manually.
+
+## Orb setup
+
+`.agents/setup` is executable, provisions uv 0.12.9 and Python 3.12, syncs the
+lockfile, and checks imports. It does not read API credentials or make API calls.
+Run twice to check warm behavior. No services or resume repairs are needed.
+It will become available to project orbs once pushed to the default branch and
+the repository is connected as an Amp project.
+
+## PyPI releases
+
+[`vatly-api-python` 0.1.0a2](https://pypi.org/project/vatly-api-python/0.1.0a2/)
+was published on 2026-11-12. The import name remains `vatly`.
+
+1. Push reviewed code to the public `vatly/vatly-api-python` repository's main branch.
+2. Keep the PyPI trusted publisher for project `vatly-api-python`, owner `vatly`,
+repository `vatly-api-python`, workflow `release.yml`; leave the environment field blank.
+No GitHub environment or PyPI token is needed.
+3. Update both package-version sources and changelog, run CI, and only with approval
+create a new `v<version>` tag and publish its GitHub release (mark alphas as prereleases).
+Never reuse a published version or move an existing release tag.
+4. The release workflow validates/builds first, then exchanges GitHub OIDC for PyPI
+credentials. Anyone able to publish a matching GitHub release can initiate publication;
+restrict repository release access accordingly. Publish the SDK before Fluent.
+
+**A private GitHub repository does not make PyPI artifacts private.** Publishing
+uploads the wheel and sdist publicly, including their source and packaged docs.

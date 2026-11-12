@@ -1,0 +1,6 @@
+# Porting notes
+
+> Vatly Python Fluent - Porting notes
+
+See [PORTING.md](https://github.com/vatly/vatly-fluent-python/blob/main/PORTING.md) for upstream commits, API mapping, deliberate
+Python differences, checkout/entity ownership, and subscription-linking compatibility.

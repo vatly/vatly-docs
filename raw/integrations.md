@@ -2,7 +2,7 @@
 
 > Find platform-specific guides for using Vatly as merchant of record. Connect your Lovable or Bolt app and take the next step toward your first test purchase.
 
-Connect Vatly to the tools and platforms you use to build your app. Vatly is the merchant of record for European software and digital products, handling tax and customer invoicing while your app delivers the product.
+Connect Vatly to the tools and platforms you use to build your app. Vatly is the European merchant of record for AI, software and digital products, handling tax and customer invoicing while your app delivers the product.
 
 <span id="choose-your-builder">
 
@@ -111,6 +111,12 @@ The Lovable and Bolt guides describe custom integrations using Vatly's existing 
 </span>
 
 
+
+## Framework packages
+
+Using a framework rather than an app builder? Official [Laravel](/packages/laravel/readme) and [Django](/packages/django/readme) packages integrate Vatly with your application. Their installation, configuration and API guides live under [Packages](/packages), alongside the SDKs and fluent packages, rather than being duplicated here.
+
+These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha.
 
 ## Connecting another app?
 

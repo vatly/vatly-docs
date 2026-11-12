@@ -1,0 +1,14 @@
+# Vatly Django guides
+
+> Vatly Django - Vatly Django guides
+
+**Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
+
+Pushes to `main` affecting `docs/**` notify `vatly/vatly-docs`, which imports
+these guides automatically. The notifier requires the Actions secret
+`VATLY_DOCS_DISPATCH_TOKEN` with Contents: write access to `vatly/vatly-docs`.
+
+- [Configuration](/packages/django/configuration): settings, installation and authorized billables
+- [Billing](/packages/django/billing): mixin, checkout, portal, subscription lifecycle
+- [Storage and webhooks](/packages/django/webhooks): transactions, signed snapshots, outbox and recovery
+- [Testing and release](/packages/django/development): supported versions, offline tests, boot and publishing
