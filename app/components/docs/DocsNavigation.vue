@@ -11,7 +11,16 @@ const contentNavVariants = useUIConfig('contentNavigation')
 function packageNavigation(items: ContentNavigationLink[]): ContentNavigationLink[] {
   return items.map((item) => {
     if (!item.children?.length) {
-      return item.path === '/packages' ? { ...item, title: 'Overview' } : item
+      if (item.path === '/packages') return { ...item, title: 'Overview' }
+      // Keep common package labels concise even when synced page titles expand.
+      const titles: Record<string, string> = {
+        configuration: 'Configuration',
+        coreconcepts: 'Core concepts',
+        development: 'Development',
+        comparison: 'Compare packages',
+      }
+      const title = item.path.startsWith('/packages/') ? titles[item.path.split('/').pop() || ''] : undefined
+      return title ? { ...item, title } : item
     }
 
     const isPackage = item.path.startsWith('/packages/')

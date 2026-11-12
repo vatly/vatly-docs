@@ -92,8 +92,10 @@ on manual runs. Leave it absent or false until that package is released.
 Python senders use the same workflow, trigger and dispatch secret as PHP and JS,
 without switches or release gates. These sources are public: no source token is
 needed. The shared `transform-js-docs.mjs` accepts an optional fourth argument
-for the package description and also handles nested PHP Fluent guides. Group
-names live in `.navigation.yml`, which transformations preserve; ordering prefixes
+for the package description and also handles nested PHP Fluent guides. All
+transformers flatten source subdirectories to direct package pages, rewrite
+cross-page links and reject duplicate basenames before replacing existing docs.
+Group names live in `.navigation.yml`, which transformations preserve; ordering prefixes
 control the sidebar without changing public URLs. Keep overview tables in that order.
 
 To launch a package's docs:

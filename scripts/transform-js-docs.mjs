@@ -14,8 +14,12 @@ if (!files.length) throw new Error(`No markdown docs found in ${source}`)
 const route = `/packages/${basename(target).replace(/^\d+\./, '')}`
 const order = ['README', 'Customers', 'Checkouts', 'Subscriptions', 'SubscriptionPlans',
   'Orders', 'Refunds', 'OneOffProducts', 'Chargebacks', 'Webhooks', 'API']
-const slug = file => file.replace(/\.md$/, '').toLowerCase()
+// Source folders organize authoring, not the public package navigation.
+const slug = file => basename(file, '.md').toLowerCase()
 const pages = new Map(files.map(file => [file, `${route}/${slug(file)}`]))
+if (new Set(pages.values()).size !== files.length) {
+  throw new Error('Duplicate page basenames: rename source docs before flattening')
+}
 
 // Prepare every page before replacing the previous mirror.
 const output = files.map(file => {
@@ -51,9 +55,8 @@ const output = files.map(file => {
 })
 
 mkdirSync(target, { recursive: true })
-for (const file of readdirSync(target, { recursive: true }).filter(file => file.endsWith('.md'))) rmSync(join(target, file))
-for (const [file, content] of output) {
-  mkdirSync(join(target, file, '..'), { recursive: true })
-  writeFileSync(join(target, file), content)
+for (const entry of readdirSync(target, { withFileTypes: true })) {
+  if (entry.isDirectory() || entry.name.endsWith('.md')) rmSync(join(target, entry.name), { recursive: true })
 }
+for (const [file, content] of output) writeFileSync(join(target, file), content)
 console.log(`Transformed ${output.length} files into ${target}`)

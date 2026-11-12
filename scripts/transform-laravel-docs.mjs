@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync, rmSync
 import { join, basename, extname } from 'path'
 
 const SOURCE = process.argv[2] || 'tmp/laravel-docs'
-const TARGET = process.argv[3] || 'content/3.packages/2.laravel'
+const TARGET = process.argv[3] || 'content/3.packages/3.laravel'
 
 const ORDER = {
   'README.md': 0,
@@ -28,15 +28,18 @@ if (!existsSync(SOURCE)) {
   process.exit(1)
 }
 
+const files = readdirSync(SOURCE, { recursive: true }).filter(f => extname(f) === '.md')
+if (!files.length) throw new Error(`No markdown docs found in ${SOURCE}`)
+const pages = new Map(files.map(file => [file, `/packages/laravel/${basename(file, '.md').toLowerCase()}`]))
+if (new Set(pages.values()).size !== files.length) throw new Error('Duplicate page basenames: rename source docs before flattening')
+
 mkdirSync(TARGET, { recursive: true })
 
 // Mirror the source dir: drop previously-generated pages so a renamed or removed
 // source doc doesn't leave an orphaned page (and stale nav entry) behind.
-for (const stale of readdirSync(TARGET).filter(f => extname(f) === '.md')) {
-  rmSync(join(TARGET, stale))
+for (const entry of readdirSync(TARGET, { withFileTypes: true })) {
+  if (entry.isDirectory() || extname(entry.name) === '.md') rmSync(join(TARGET, entry.name), { recursive: true })
 }
-
-const files = readdirSync(SOURCE).filter(f => extname(f) === '.md')
 
 for (const file of files) {
   const content = readFileSync(join(SOURCE, file), 'utf-8')
@@ -56,6 +59,19 @@ for (const file of files) {
   // (e.g. `![…](banner.png)` at the very top of the README) — the image is
   // kept, only the title line is removed.
   let transformed = content.replace(/^#\s+.+\n+/m, '')
+
+  // Flatten source folders while resolving links relative to the original file.
+  transformed = transformed.replace(/(!?\[[^\]\n]*\])\(([^)]+)\)/g, (match, label, href) => {
+    if (/^(?:[a-z]+:|#|\/\/)/i.test(href)) return match
+    const [path, anchor = ''] = href.split('#')
+    const key = new URL(path, `https://docs.invalid/docs/${file}`).pathname.replace(/^\/docs\//, '')
+    const page = pages.get(key) || pages.get(`${key}.md`)
+    if (page) return `${label}(${page}${anchor ? `#${anchor}` : ''})`
+    if (path.startsWith('/')) return match
+    const resolved = new URL(path, `https://github.com/Vatly/vatly-laravel/blob/main/docs/${file}`).pathname
+    const url = label.startsWith('!') ? `https://raw.githubusercontent.com${resolved.replace('/blob/', '/')}` : `https://github.com${resolved}`
+    return `${label}(${url}${anchor ? `#${anchor}` : ''})`
+  })
 
   // Rewrite internal links to point to Laravel package pages
   const linkMap = {

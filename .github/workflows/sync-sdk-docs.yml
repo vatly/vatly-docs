@@ -35,16 +35,10 @@ jobs:
           sparse-checkout: docs
 
       - name: Transform and copy PHP SDK docs
-        run: |
-          mkdir -p tmp/sdk-docs
-          cp tmp/sdk-repo/docs/*.md tmp/sdk-docs/ 2>/dev/null || true
-          node scripts/transform-sdk-docs.mjs tmp/sdk-docs content/3.packages/1.php
+        run: node scripts/transform-sdk-docs.mjs tmp/sdk-repo/docs content/3.packages/1.php
 
       - name: Transform and copy Laravel docs
-        run: |
-          mkdir -p tmp/laravel-docs
-          cp tmp/laravel-repo/docs/*.md tmp/laravel-docs/ 2>/dev/null || true
-          node scripts/transform-laravel-docs.mjs tmp/laravel-docs content/3.packages/3.laravel
+        run: node scripts/transform-laravel-docs.mjs tmp/laravel-repo/docs content/3.packages/3.laravel
 
       - name: Pull PHP Fluent docs
         uses: actions/checkout@v4
