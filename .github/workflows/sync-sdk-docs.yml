@@ -110,6 +110,7 @@ jobs:
 
       - name: Commit changes with optimistic retry (signed via GitHub API)
         id: commit
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -122,24 +123,25 @@ jobs:
               exit 0
             fi
             HEAD_OID=$(git rev-parse HEAD)
-            additions=$(git diff --staged --no-renames -z --name-only --diff-filter=ACM \
+            git diff --staged --no-renames -z --name-only --diff-filter=ACM \
               | while IFS= read -r -d '' f; do
-                  jq -n --arg path "$f" --arg contents "$(base64 -w0 "$f")" \
-                    '{path: $path, contents: $contents}'
-                done | jq -s '.')
-            deletions=$(git diff --staged --no-renames -z --name-only --diff-filter=D \
+                  jq -n --arg path "$f" --rawfile contents "$f" \
+                    '{path: $path, contents: ($contents | @base64)}'
+                done | jq -s '.' > "$RUNNER_TEMP/docs-additions.json"
+            git diff --staged --no-renames -z --name-only --diff-filter=D \
               | while IFS= read -r -d '' f; do
                   jq -n --arg path "$f" '{path: $path}'
-                done | jq -s '.')
+                done | jq -s '.' > "$RUNNER_TEMP/docs-deletions.json"
             jq -n \
               --arg query 'mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid url } } }' \
               --arg repo "$REPO" --arg oid "$HEAD_OID" \
-              --argjson additions "$additions" --argjson deletions "$deletions" \
+              --slurpfile additions "$RUNNER_TEMP/docs-additions.json" \
+              --slurpfile deletions "$RUNNER_TEMP/docs-deletions.json" \
               '{query: $query, variables: {input: {
                   branch: {repositoryNameWithOwner: $repo, branchName: "main"},
                   message: {headline: "docs: sync SDK documentation"},
                   expectedHeadOid: $oid,
-                  fileChanges: {additions: $additions, deletions: $deletions}
+                  fileChanges: {additions: $additions[0], deletions: $deletions[0]}
               }}}' > "$RUNNER_TEMP/docs-commit.json"
             if gh api graphql --input "$RUNNER_TEMP/docs-commit.json"; then
               echo "changed=true" >> "$GITHUB_OUTPUT"
