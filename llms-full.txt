@@ -8283,7 +8283,7 @@ $endpoint->delete();
 ```
 
 
-# Recipe: adapting fluent contracts to a host that already owns its tables
+# Adapting to your framework
 
 The README's driver guide implicitly assumes you're modeling subscriptions/orders from scratch in your own schema. The other common case is the inverse: you're bolting onto an ecosystem plugin - **FluentCart, PMPro, MemberPress, Easy Digital Downloads, WooCommerce**, a Cashier-style Spark app - that **already owns** its `subscriptions`, `orders`, and `customers` tables. You don't want a parallel set of tables; you want fluent's contracts to read and write the host's existing ones.
 
@@ -8418,7 +8418,7 @@ The discriminator is "did *this* charge originate from a host-side checkout?" - 
 A concrete end-to-end implementation lives in the FluentCart driver (`vatly-fluentcart-wp`).
 
 
-# Webhook flow: event → reaction → repo method → fields
+# Webhook event flow
 
 This guide and the recipes in `docs/` sync to [Vatly Docs](https://docs.vatly.com/packages/fluent-php/webhook-flow){rel="&#x22;nofollow&#x22;"} on pushes to `main`. The notifier uses the Actions secret `VATLY_DOCS_DISPATCH_TOKEN` with Contents: write access to `vatly/vatly-docs`.
 
