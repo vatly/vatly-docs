@@ -2,8 +2,6 @@
 
 > Set up the repository, run checks and build the Django package locally.
 
-Set up the repository, run checks and build the Django package locally.
-
 ## Set up the repository
 
 Run commands from the repository root. On Linux or in an Amp orb:
