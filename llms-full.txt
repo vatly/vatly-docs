@@ -13177,6 +13177,8 @@ accept old and new secrets temporarily. Do not expose endpoint secrets to browse
 
 # API reference
 
+Look up SDK methods, HTTP endpoints and return types for synchronous and asynchronous clients.
+
 Generated from `openapi.yaml`. Sync and async clients expose the same methods.
 Pass a Pydantic request/params model or a wire-format dictionary. All methods accept keyword-only `options=RequestOptions(...)`.
 
@@ -13287,6 +13289,8 @@ Pass a Pydantic request/params model or a wire-format dictionary. All methods ac
 
 
 # Development and release
+
+Maintain the SDK, update its API specification, sync documentation and prepare releases.
 
 ## Sources
 

@@ -1,6 +1,8 @@
 # Development and release
 
-> 
+> Maintain the SDK, update its API specification, sync documentation and prepare releases.
+
+Maintain the SDK, update its API specification, sync documentation and prepare releases.
 
 ## Sources
 

@@ -98,8 +98,8 @@
 - [Chargebacks](https://docs.vatly.com/raw/packages/python/chargebacks.md): Read payment disputes and retain their financial snapshots for accounting.
 - [Webhooks](https://docs.vatly.com/raw/packages/python/webhooks.md): Use signed webhooks to learn about payments and subscription changes.
 - [Webhook endpoints](https://docs.vatly.com/raw/packages/python/webhookendpoints.md): Endpoints tell Vatly where to send events.
-- [API reference](https://docs.vatly.com/raw/packages/python/api.md): Generated from openapi.yaml.
-- [Development and release](https://docs.vatly.com/raw/packages/python/development.md)
+- [API reference](https://docs.vatly.com/raw/packages/python/api.md): Look up SDK methods, HTTP endpoints and return types for synchronous and asynchronous clients.
+- [Development and release](https://docs.vatly.com/raw/packages/python/development.md): Maintain the SDK, update its API specification, sync documentation and prepare releases.
 - [Python Fluent](https://docs.vatly.com/raw/packages/fluent-python/readme.md): Build checkout, customer and subscription flows without tying billing to a web framework.
 - [Configure Fluent](https://docs.vatly.com/raw/packages/fluent-python/configuration.md): Keep the SDK client open for your application or worker lifespan.
 - [Store ownership safely](https://docs.vatly.com/raw/packages/fluent-python/coreconcepts.md): Your application decides which user, team or organization owns a purchase.
