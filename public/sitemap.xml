@@ -105,6 +105,7 @@
   <url><loc>https://docs.vatly.com/packages/fluent-python/webhooks</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluent-python/testing</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluent-python/porting</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/fluent-python/development</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/django/readme</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/packages/django/installation</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/django/configuration</loc><priority>0.6</priority></url>
