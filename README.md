@@ -42,12 +42,34 @@ public/
 
 ## Package documentation sync
 
-`.github/workflows/sync-sdk-docs.yml` receives `repository_dispatch` events
-and supports a manual **Sync SDK Docs** run. It pulls package `docs/*.md` from
-`main`, converts them to ordered Docus pages, regenerates the sitemap, creates
-a signed commit through the GitHub API, then builds and deploys to GitHub Pages
-when content changes. The explicit deploy is necessary because commits made
-with `GITHUB_TOKEN` do not start another push workflow.
+`.github/workflows/sync-sdk-docs.yml` runs on package `repository_dispatch`
+notifications, pushes to this repo's `main`, manual **Sync SDK Docs** runs, and
+daily at **04:17 UTC** as a safety net for missed notifications.
+
+Every run pulls **all eight package sources at their current default branch**:
+PHP SDK, PHP Fluent, Laravel, JavaScript SDK, JavaScript Fluent, Python SDK,
+Python Fluent and Django. Better Auth joins every run only when
+`SYNC_BETTER_AUTH_DOCS=true`. The event type/payload means only "resync"; it never
+selects a subset of sources. Source notifier workflows need no changes.
+
+`scripts/sync-package-docs.sh` deterministically regenerates all mirrored package
+pages and the sitemap. If there is no diff, the run makes **no commit and no
+deployment**. Otherwise it creates a signed commit through the GitHub API and
+calls the existing deploy workflow. That explicit call is necessary because
+commits made with `GITHUB_TOKEN` do not start another push workflow.
+
+The single `sdk-docs-sync` concurrency group has `cancel-in-progress: false`:
+one sync runs at a time; GitHub keeps only the latest pending run. Coalescing is
+safe because every run imports everything. An in-flight commit is never canceled.
+The signed commit uses an expected head SHA. If `main` moves, the workflow resets
+only its generated working copy, pulls/rebases onto fresh `main`, regenerates
+against it (including the sitemap and current navigation metadata), then retries,
+up to three attempts. Auth/validation errors without a branch advance fail rather
+than retrying blindly. Concurrent handwritten changes are not overwritten.
+
+The reusable `deploy.yml` always checks out current `main` and shares its existing
+`pages` concurrency group with normal push deployments, so package imports and
+handwritten docs use the same serialized build/deploy path.
 
 ### Existing PHP sources
 
@@ -75,7 +97,7 @@ and preserve existing frontmatter.
 
 JS senders mirror the PHP API sender: **Notify Docs**, `notify-docs.yml`, push
 to `main`, `docs/**`, dispatch action v4, same dispatch secret. Every sync run
-refreshes PHP, Laravel, JavaScript SDK and fluent JavaScript docs from `main`,
+refreshes all enabled sources from their default branches,
 without a release or variable gate. `SYNC_JS_DOCS` and `SYNC_FLUENT_JS_DOCS`
 are no longer used. Better Auth remains opt-in: its Actions **repository variable
 in vatly-docs**, `SYNC_BETTER_AUTH_DOCS`, must equal literal `true`, including
@@ -122,8 +144,9 @@ To launch a package's docs:
 
 The original personal JS repository URLs now redirect to the canonical Vatly
 repositories above; the SDK's actual destination is `vatly/vatly-api-js`.
-If a source moves again, update its receiver checkout and transformer repository
-argument together (the latter controls source and asset URLs).
+If a source moves again, update its receiver checkout and its transformer
+repository argument in `scripts/sync-package-docs.sh` together (the latter
+controls source and asset URLs).
 
 Better Auth was not available when this integration was prepared. Once its repo
 exists, copy `.github/templates/notify-better-auth-docs.yml` from this repo to

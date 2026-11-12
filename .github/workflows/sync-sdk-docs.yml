@@ -3,188 +3,162 @@ name: Sync SDK Docs
 on:
   repository_dispatch:
     types: [sync-sdk-docs, sync-fluent-php-docs, sync-laravel-docs, sync-js-docs, sync-fluent-js-docs, sync-better-auth-docs, sync-python-docs, sync-fluent-python-docs, sync-django-docs]
-  workflow_dispatch: # manual trigger
+  workflow_dispatch:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 4 * * *'
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+# GitHub keeps one running and only the latest pending run. Never interrupt a
+# running commit/deployment; the next run imports every source again anyway.
+concurrency:
+  group: sdk-docs-sync
+  cancel-in-progress: false
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    env:
+      SYNC_BETTER_AUTH_DOCS: ${{ vars.SYNC_BETTER_AUTH_DOCS }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
 
+      # Omitting ref selects each source repository's current default branch.
       - name: Pull PHP SDK docs
         uses: actions/checkout@v4
         with:
-          repository: Vatly/vatly-api-php
+          repository: vatly/vatly-api-php
           path: tmp/sdk-repo
           sparse-checkout: docs
-
-      - name: Pull Laravel package docs
-        uses: actions/checkout@v4
-        with:
-          repository: Vatly/vatly-laravel
-          path: tmp/laravel-repo
-          sparse-checkout: docs
-
-      - name: Transform and copy PHP SDK docs
-        run: node scripts/transform-sdk-docs.mjs tmp/sdk-repo/docs content/3.packages/1.php
-
-      - name: Transform and copy Laravel docs
-        run: node scripts/transform-laravel-docs.mjs tmp/laravel-repo/docs content/3.packages/3.laravel
 
       - name: Pull PHP Fluent docs
         uses: actions/checkout@v4
         with:
           repository: vatly/vatly-fluent-php
-          ref: main
           path: tmp/fluent-php-repo
           sparse-checkout: docs
 
-      - name: Transform and copy PHP Fluent docs
-        run: node scripts/transform-js-docs.mjs tmp/fluent-php-repo/docs content/3.packages/2.fluent-php vatly/vatly-fluent-php 'Vatly PHP Fluent'
+      - name: Pull Laravel package docs
+        uses: actions/checkout@v4
+        with:
+          repository: vatly/vatly-laravel
+          path: tmp/laravel-repo
+          sparse-checkout: docs
 
-      # Released JS packages track docs on main, just like the PHP packages.
       - name: Pull JavaScript SDK docs
         uses: actions/checkout@v4
         with:
           repository: vatly/vatly-api-js
-          ref: main
           path: tmp/js-repo
           sparse-checkout: docs
           token: ${{ secrets.VATLY_DOCS_SOURCE_TOKEN || github.token }}
 
-      - name: Transform and copy JavaScript SDK docs
-        run: node scripts/transform-js-docs.mjs tmp/js-repo/docs content/3.packages/4.javascript vatly/vatly-api-js
-
-      - name: Pull fluent JavaScript docs
+      - name: Pull JavaScript Fluent docs
         uses: actions/checkout@v4
         with:
           repository: vatly/vatly-fluent-js
-          ref: main
           path: tmp/fluent-js-repo
           sparse-checkout: docs
           token: ${{ secrets.VATLY_DOCS_SOURCE_TOKEN || github.token }}
 
-      - name: Transform and copy fluent JavaScript docs
-        run: node scripts/transform-js-docs.mjs tmp/fluent-js-repo/docs content/3.packages/5.fluent-js vatly/vatly-fluent-js
-
-      # Public Python sources need no cross-repository checkout token.
       - name: Pull Python SDK docs
         uses: actions/checkout@v4
         with:
           repository: vatly/vatly-api-python
-          ref: main
           path: tmp/python-repo
           sparse-checkout: docs
-
-      - name: Transform and copy Python SDK docs
-        run: node scripts/transform-js-docs.mjs tmp/python-repo/docs content/3.packages/6.python vatly/vatly-api-python 'Vatly Python SDK'
 
       - name: Pull Python Fluent docs
         uses: actions/checkout@v4
         with:
           repository: vatly/vatly-fluent-python
-          ref: main
           path: tmp/fluent-python-repo
           sparse-checkout: docs
-
-      - name: Transform and copy Python Fluent docs
-        run: node scripts/transform-js-docs.mjs tmp/fluent-python-repo/docs content/3.packages/7.fluent-python vatly/vatly-fluent-python 'Vatly Python Fluent'
 
       - name: Pull Django docs
         uses: actions/checkout@v4
         with:
           repository: vatly/vatly-django
-          ref: main
           path: tmp/django-repo
           sparse-checkout: docs
 
-      - name: Transform and copy Django docs
-        run: node scripts/transform-js-docs.mjs tmp/django-repo/docs content/3.packages/8.django vatly/vatly-django 'Vatly Django'
-
       - name: Pull Better Auth docs
-        if: vars.SYNC_BETTER_AUTH_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-better-auth-docs')
+        if: vars.SYNC_BETTER_AUTH_DOCS == 'true'
         uses: actions/checkout@v4
         with:
           repository: vatly/vatly-better-auth-js
-          ref: main
           path: tmp/better-auth-repo
           sparse-checkout: docs
           token: ${{ secrets.VATLY_DOCS_SOURCE_TOKEN || github.token }}
 
-      - name: Transform and copy Better Auth docs
-        if: vars.SYNC_BETTER_AUTH_DOCS == 'true' && (github.event_name == 'workflow_dispatch' || github.event.action == 'sync-better-auth-docs')
-        run: node scripts/transform-js-docs.mjs tmp/better-auth-repo/docs content/3.packages/9.better-auth vatly/vatly-better-auth-js
+      - name: Regenerate all package docs and sitemap
+        run: bash scripts/sync-package-docs.sh
 
-      - name: Regenerate sitemap
-        run: node scripts/generate-sitemap.mjs
-
-      - name: Check for changes
-        id: changes
-        run: |
-          git add content/3.packages/ public/sitemap.xml
-          if git diff --staged --quiet; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit and push (signed via GitHub API)
-        if: steps.changes.outputs.changed == 'true'
+      - name: Commit changes with optimistic retry (signed via GitHub API)
+        id: commit
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          BRANCH: ${{ github.ref_name }}
         run: |
-          # Commit through the GraphQL createCommitOnBranch mutation so GitHub
-          # signs the commit with its web-flow key -> shows as "Verified".
-          # Attributed to github-actions[bot]; no signing key/secret to manage.
-          HEAD_OID=$(git rev-parse HEAD)
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+          for attempt in 1 2 3; do
+            git add content/3.packages/ public/sitemap.xml
+            if git diff --staged --quiet; then
+              echo "All package docs are current; no commit or deployment needed."
+              exit 0
+            fi
+            HEAD_OID=$(git rev-parse HEAD)
+            additions=$(git diff --staged --no-renames -z --name-only --diff-filter=ACM \
+              | while IFS= read -r -d '' f; do
+                  jq -n --arg path "$f" --arg contents "$(base64 -w0 "$f")" \
+                    '{path: $path, contents: $contents}'
+                done | jq -s '.')
+            deletions=$(git diff --staged --no-renames -z --name-only --diff-filter=D \
+              | while IFS= read -r -d '' f; do
+                  jq -n --arg path "$f" '{path: $path}'
+                done | jq -s '.')
+            jq -n \
+              --arg query 'mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid url } } }' \
+              --arg repo "$REPO" --arg oid "$HEAD_OID" \
+              --argjson additions "$additions" --argjson deletions "$deletions" \
+              '{query: $query, variables: {input: {
+                  branch: {repositoryNameWithOwner: $repo, branchName: "main"},
+                  message: {headline: "docs: sync SDK documentation"},
+                  expectedHeadOid: $oid,
+                  fileChanges: {additions: $additions, deletions: $deletions}
+              }}}' > "$RUNNER_TEMP/docs-commit.json"
+            if gh api graphql --input "$RUNNER_TEMP/docs-commit.json"; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            # Retry only a branch advance, not auth/validation failures. Rebase
+            # the generated result onto fresh main by regenerating, rather than
+            # choosing conflict sides and risking concurrent handwritten edits.
+            remote_oid=$(gh api "repos/$REPO/git/ref/heads/main" --jq '.object.sha')
+            if [[ "$remote_oid" == "$HEAD_OID" || "$attempt" == 3 ]]; then
+              exit 1
+            fi
+            echo "main advanced; refreshing and regenerating (attempt $((attempt + 1)))."
+            git reset --hard HEAD
+            git pull --rebase origin main
+            bash scripts/sync-package-docs.sh
+          done
 
-          additions=$(git diff --staged --no-renames -z --name-only --diff-filter=ACM \
-            | while IFS= read -r -d '' f; do
-                jq -n --arg path "$f" --arg contents "$(base64 -w0 "$f")" \
-                  '{path: $path, contents: $contents}'
-              done | jq -s '.')
-
-          deletions=$(git diff --staged --no-renames -z --name-only --diff-filter=D \
-            | while IFS= read -r -d '' f; do
-                jq -n --arg path "$f" '{path: $path}'
-              done | jq -s '.')
-
-          jq -n \
-            --arg query 'mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid url } } }' \
-            --arg repo "$REPO" \
-            --arg branch "$BRANCH" \
-            --arg oid "$HEAD_OID" \
-            --argjson additions "$additions" \
-            --argjson deletions "$deletions" \
-            '{query: $query, variables: {input: {
-                branch: {repositoryNameWithOwner: $repo, branchName: $branch},
-                message: {headline: "docs: sync SDK documentation"},
-                expectedHeadOid: $oid,
-                fileChanges: {additions: $additions, deletions: $deletions}
-            }}}' \
-            | gh api graphql --input -
-
-      - name: Build and deploy
-        if: steps.changes.outputs.changed == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm install -g npm@11
-          npm ci
-          npx nuxi build
-          echo "docs.vatly.com" > .output/public/CNAME
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/Vatly/vatly-docs.git
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          npx gh-pages --dotfiles -d .output/public
+  deploy:
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy.yml
