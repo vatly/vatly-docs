@@ -13,7 +13,7 @@ This Quickstart covers your first authenticated API request. To understand the f
 
 ## Choose your client
 
-Before making your first API request, you need to pick which API client you will use. In addition to good ol' cURL HTTP requests, Vatly offers clients for JavaScript, Python, and PHP. In the following example, you can see how to install each client.
+Before making your first API request, choose a client. Vatly offers packages for JavaScript / TypeScript, Python, and PHP, with framework integrations for Django and Laravel. See [available packages](/packages) for installation and language-specific examples. This page demonstrates a first request with cURL or the PHP SDK.
 
 <code-group sync="client">
 
@@ -39,7 +39,7 @@ After picking your preferred client, you are ready to make your first call to th
 
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/checkouts \
-  -H "Authorization: Bearer live_your_api_key_here" \
+  -H "Authorization: Bearer test_your_api_key_here" \
   -d limit=10
 ```
 

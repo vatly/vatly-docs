@@ -1,6 +1,6 @@
 # Introduction
 
-Vatly is the Merchant of Record for European software and digital products. It becomes the legal seller on every sale and handles payments, tax and compliance, so you just ship. Sell subscriptions and one-off products through a single API.
+Vatly is the European merchant of record for AI, software and digital products. It becomes the legal seller on every sale and handles payments, tax and compliance, so you just ship. Sell subscriptions and one-off products through a single API.
 
 To understand what adopting Vatly involves, start with [Build your own integration](https://docs.vatly.com/guides/build-your-own-integration). Using a specific platform? Find [Lovable payments with Vatly](https://docs.vatly.com/integrations/lovable) and [Bolt payments with Vatly](https://docs.vatly.com/integrations/bolt) under **Integrations**, with platform-specific setup and agent prompts.
 
@@ -83,7 +83,7 @@ This Quickstart covers your first authenticated API request. To understand the f
 
 ## Choose your client
 
-Before making your first API request, you need to pick which API client you will use. In addition to good ol' cURL HTTP requests, Vatly offers clients for JavaScript, Python, and PHP. In the following example, you can see how to install each client.
+Before making your first API request, choose a client. Vatly offers packages for JavaScript / TypeScript, Python, and PHP, with framework integrations for Django and Laravel. See [available packages](https://docs.vatly.com/packages) for installation and language-specific examples. This page demonstrates a first request with cURL or the PHP SDK.
 
 ::code-group{sync="client"}
 ```bash [cURL]
@@ -106,7 +106,7 @@ After picking your preferred client, you are ready to make your first call to th
 ::code-group{sync="client"}
 ```bash [cURL]
 curl -G https://api.vatly.com/v1/checkouts \
-  -H "Authorization: Bearer live_your_api_key_here" \
+  -H "Authorization: Bearer test_your_api_key_here" \
   -d limit=10
 ```
 
@@ -11581,7 +11581,7 @@ Not using one of these languages? You can use the [REST API directly](https://do
 
 # Lovable payments with Vatly
 
-Use Vatly as the **merchant of record for your Lovable app** to sell software, digital products, or SaaS subscriptions without building your own tax and invoicing workflow. Vatly is the merchant of record for European software and digital products: it becomes the legal seller, while you build and deliver the product.
+Use Vatly as the **European merchant of record for your Lovable app** to sell software, digital products, or SaaS subscriptions without building your own tax and invoicing workflow. Vatly is the European merchant of record for AI, software and digital products: it becomes the legal seller, while you build and deliver the product.
 
 **[Get a test API key](https://my.vatly.com){rel="&#x22;nofollow&#x22;"} · [Copy the Lovable agent prompt](https://docs.vatly.com/#prompt-lovable-to-build-the-integration)**
 
@@ -11709,7 +11709,7 @@ Building in Bolt instead? See [Bolt payments with Vatly](https://docs.vatly.com/
 
 # Bolt payments with Vatly
 
-Add **Vatly payments to your Bolt.new app** without turning a generated checkout into a tax and invoicing project. Vatly is the merchant of record for European software and digital products: it acts as the legal seller for your software, digital downloads, or subscriptions, while your Bolt app handles the product and customer access.
+Add **Vatly payments to your Bolt.new app** without turning a generated checkout into a tax and invoicing project. Vatly is the European merchant of record for AI, software and digital products: it acts as the legal seller for your software, digital downloads, or subscriptions, while your Bolt app handles the product and customer access.
 
 **[Sign up and get a test key](https://my.vatly.com){rel="&#x22;nofollow&#x22;"} · [Copy the Bolt integration prompt](https://docs.vatly.com/#prompt-bolt-to-add-checkout-and-webhooks)**
 

@@ -8,7 +8,7 @@
 
 ## Docs
 
-- [Introduction](https://docs.vatly.com/raw/introduction.md): Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.
+- [Introduction](https://docs.vatly.com/raw/introduction.md): Vatly is the European merchant of record for AI, software and digital products. Sell worldwide with payments, tax and compliance handled.
 - [Quickstart](https://docs.vatly.com/raw/guides/quickstart.md): This guide will get you all set up and ready to use the Vatly API. We’ll cover how to set up an API client and how to make your first API request.
 - [Payouts & Settlement](https://docs.vatly.com/raw/guides/payouts.md): How and when your share of each payment reaches your Mollie account, and where to follow it in the dashboard.
 - [Customer Emails](https://docs.vatly.com/raw/guides/customer-emails.md): The billing emails Vatly sends to your customers as Merchant of Record, when each one is sent, and what you can configure.
