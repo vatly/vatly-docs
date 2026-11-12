@@ -3,7 +3,7 @@ const title = 'Vatly Developer Documentation'
 // The OG card keeps the short name: it reads better at card size, and
 // og:title already carries the full one.
 const cardTitle = 'Vatly Docs'
-const tagline = 'Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.'
+const tagline = 'Vatly is the European merchant of record for AI, software and digital products. Sell worldwide with payments, tax and compliance handled.'
 const description = `${tagline} Guides, API reference and SDKs.`
 
 useSeo({
@@ -52,7 +52,7 @@ defineOgImage('Docs', {
             Developer Documentation
           </h1>
           <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400">
-            Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.
+            {{ tagline }}
           </p>
           <div class="mt-10 flex items-center justify-center gap-x-4">
             <NuxtLink

@@ -1,6 +1,6 @@
 ---
 title: "Vatly Developer Documentation"
-description: "Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled. Guides, API reference and SDKs."
+description: "Vatly is the European merchant of record for AI, software and digital products. Guides, API reference and packages for selling worldwide."
 navigation: false
 ---
 
@@ -24,7 +24,7 @@ actions:
 Vatly API Documentation
 
 #description
-Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.
+Vatly is the European merchant of record for AI, software and digital products. Sell worldwide with Vatly as the legal seller, handling payments, tax and compliance.
 ::
 
 ::card-group

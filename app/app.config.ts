@@ -1,14 +1,14 @@
 export default defineAppConfig({
   docus: {
     title: 'Vatly Docs',
-    description: 'Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.',
+    description: 'Vatly is the European merchant of record for AI, software and digital products. Sell worldwide with payments, tax and compliance handled.',
     url: 'https://docs.vatly.com',
   },
   // Docus derives these from the site name ("Vatly") unless set here.
   seo: {
     titleTemplate: '%s - Vatly Docs',
     title: 'Vatly Developer Documentation',
-    description: 'Sell software and digital products worldwide. Vatly is the legal seller; payments, tax and compliance are handled.',
+    description: 'Vatly is the European merchant of record for AI, software and digital products. Sell worldwide with payments, tax and compliance handled.',
   },
   header: {
     title: 'Vatly',
