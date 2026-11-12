@@ -6,7 +6,7 @@
 
 > **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
 
-Official TypeScript SDK for Vatly, the European merchant of record for AI, software and digital products. Create checkouts and manage customers, subscriptions, and orders from your server.
+Official TypeScript SDK for Vatly, the European Merchant of Record for AI, software and digital products. Create checkouts and manage customers, subscriptions, and orders from your server.
 
 For all endpoint fields and options, see the [API reference](https://docs.vatly.com/api-reference). The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.
 

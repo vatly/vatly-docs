@@ -8286,7 +8286,7 @@ $endpoint->delete();
 # Getting started
 
 Sell a download, start a subscription, and keep your app's billing records in step with Vatly.
-Vatly is the European merchant of record for AI, software and digital products.
+Vatly is the European Merchant of Record for AI, software and digital products.
 
 > **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
 
@@ -10656,7 +10656,7 @@ For the full webhook setup flow, see [Webhooks](https://docs.vatly.com/packages/
 
 > **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
 
-Official TypeScript SDK for Vatly, the European merchant of record for AI, software and digital products. Create checkouts and manage customers, subscriptions, and orders from your server.
+Official TypeScript SDK for Vatly, the European Merchant of Record for AI, software and digital products. Create checkouts and manage customers, subscriptions, and orders from your server.
 
 For all endpoint fields and options, see the [API reference](https://docs.vatly.com/api-reference){rel="&#x22;nofollow&#x22;"}. The [OpenAPI spec](https://docs.vatly.com/openapi.yaml){rel="&#x22;nofollow&#x22;"} is also available for tooling.
 
