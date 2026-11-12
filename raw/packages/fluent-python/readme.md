@@ -186,6 +186,18 @@ lifespan. IDs and billable entities must be authorized by your application.
       Map JS/PHP concepts to Python
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <a href="/packages/fluent-python/development">
+        Development
+      </a>
+    </td>
+    
+    <td>
+      Set up, test and build the package
+    </td>
+  </tr>
 </tbody>
 </table>
 

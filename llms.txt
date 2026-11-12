@@ -111,6 +111,7 @@
 - [Process signed webhooks](https://docs.vatly.com/raw/packages/fluent-python/webhooks.md): Fluent verifies a delivery, updates local snapshots and dispatches events through your storage driver.
 - [Test without real payments](https://docs.vatly.com/raw/packages/fluent-python/testing.md): Use httpx's MockTransport with the real published SDK and Fluent.
 - [Move from JS or PHP](https://docs.vatly.com/raw/packages/fluent-python/porting.md): Python Fluent keeps the same billing concepts, with snake_case methods and async I/O.
+- [Development and release](https://docs.vatly.com/raw/packages/fluent-python/development.md): Set up the repository, test billing integrations and build the Fluent package locally.
 - [Django](https://docs.vatly.com/raw/packages/django/readme.md): Add hosted checkout, customer billing and signed webhook persistence to Django.
 - [Install Vatly Django](https://docs.vatly.com/raw/packages/django/installation.md): Start with a normal Django project, including its auth, sessions, messages and CSRF configuration.
 - [Configure billing](https://docs.vatly.com/raw/packages/django/configuration.md): Keep keys on the server.
@@ -121,7 +122,7 @@
 - [Receive signed webhooks](https://docs.vatly.com/raw/packages/django/webhooks.md): Mount the billing URLs and register the public HTTPS /billing/webhook/ URL in Vatly.
 - [Inspect billing in admin](https://docs.vatly.com/raw/packages/django/admin.md): When django.contrib.admin and vatly_django are installed, billing models register automatically.
 - [Test billing offline](https://docs.vatly.com/raw/packages/django/testing.md): Use Django's test database and httpx fixtures.
-- [Development, support and release](https://docs.vatly.com/raw/packages/django/development.md): Python 3.10–3.14; Django 5.2 LTS, 6.0 and 6.1 within their Python compatibility ranges.
+- [Development and release](https://docs.vatly.com/raw/packages/django/development.md): Set up the repository, run checks and build the Django package locally.
 - [Packages](https://docs.vatly.com/raw/packages.md): Official Vatly SDKs and fluent packages for PHP, Laravel, JavaScript, Python and Django. Installation, package registries and documentation.
 - [Lovable payments with Vatly](https://docs.vatly.com/raw/integrations/lovable.md): Sell European software and digital products from Lovable with Vatly handling tax and invoicing. Start with a test API key and a copy-paste integration prompt.
 - [Bolt payments with Vatly](https://docs.vatly.com/raw/integrations/bolt.md): Add Vatly payments to Bolt.new for European software and digital products. Offload tax and invoicing, get a test API key, and prompt Bolt to wire up checkout.
