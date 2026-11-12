@@ -17,8 +17,10 @@ def example(billable):
 Pass a saved, already-authorized model instance. Queries include its entity,
 scope and mode; no customer-ID ownership fallback is used.
 
-## Add Cashier-style methods
+## Add billing methods to your model
 
+Add helpers such as `checkout()`, `subscribed()` and `billing_portal()` to your
+user or team model without adding database columns.
 For a model in your `teams` app, inherit the abstract mixin:
 
 ```python

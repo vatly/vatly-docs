@@ -64,7 +64,7 @@ need a custom user model: the `Billing` facade accepts any saved Django model.
     </td>
     
     <td>
-      Use existing users or a Cashier-style mixin
+      Add billing helpers to your user or team model
     </td>
   </tr>
   

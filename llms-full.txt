@@ -14068,7 +14068,7 @@ need a custom user model: the `Billing` facade accepts any saved Django model.
 | ------------------------------------------------------------------------ | --------------------------------------------------------- |
 | [Installation](https://docs.vatly.com/packages/django/installation)      | Install, connect URLs and run migrations                  |
 | [Configuration](https://docs.vatly.com/packages/django/configuration)    | Set credentials, offers and tenant scope                  |
-| [Billable models](https://docs.vatly.com/packages/django/billablemodels) | Use existing users or a Cashier-style mixin               |
+| [Billable models](https://docs.vatly.com/packages/django/billablemodels) | Add billing helpers to your user or team model            |
 | [Checkout](https://docs.vatly.com/packages/django/checkout)              | Start a purchase with a durable retry key                 |
 | [Customer portal](https://docs.vatly.com/packages/django/customerportal) | Open hosted billing for an authorized customer            |
 | [Subscriptions](https://docs.vatly.com/packages/django/billing)          | Inspect, cancel, resume and reconcile owned subscriptions |
@@ -14206,8 +14206,10 @@ def example(billable):
 Pass a saved, already-authorized model instance. Queries include its entity,
 scope and mode; no customer-ID ownership fallback is used.
 
-## Add Cashier-style methods
+## Add billing methods to your model
 
+Add helpers such as `checkout()`, `subscribed()` and `billing_portal()` to your
+user or team model without adding database columns.
 For a model in your `teams` app, inherit the abstract mixin:
 
 ```python
