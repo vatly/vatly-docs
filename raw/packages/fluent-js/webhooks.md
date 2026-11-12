@@ -226,6 +226,9 @@ Reactions use the signed snapshot without an API GET. Missing repositories skip
 writes, not dispatch. Null billing-event mandates leave the local mandate unchanged;
 subscription `sync()` reconciles removal.
 
+Before using subscription state to grant or revoke access, read the
+[grace-period limitation in this alpha](/packages/fluent-js/subscriptions#grace-period-limitation-in-010-alpha1).
+
 ## Application events and extensions
 
 ```ts

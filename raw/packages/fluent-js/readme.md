@@ -5,6 +5,7 @@
 > **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
 
 Create checkouts and manage billing with `@getvatly/fluent` on your server.
+Vatly is the European merchant of record for AI, software and digital products.
 Install the tested alpha pair:
 
 ```sh

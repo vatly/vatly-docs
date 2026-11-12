@@ -2,7 +2,7 @@
 
 > Vatly JavaScript packages - Orders
 
-An order is the transaction record created when a checkout is paid. It carries the full tax breakdown needed to issue a compliant invoice — and it's where you create refunds and inspect chargebacks.
+Orders record checkout purchases and subscription renewals, including pending payments. They carry invoice links and tax breakdowns, and let you create refunds and inspect chargebacks.
 
 For all fields and options, see the [Orders API reference](https://docs.vatly.com/api-reference/orders). The [OpenAPI spec](https://docs.vatly.com/openapi.yaml) is also available for tooling.
 

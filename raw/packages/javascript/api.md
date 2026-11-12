@@ -1186,4 +1186,5 @@ const order = await vatly.testHelpers.simulateOrderPayment("order_123", {
 Omitting the renewal body advances the cycle and leaves its payment pending.
 `failureReason` only applies with `paymentStatus: "failed"`.
 These operations simulate payment outcomes; payment recovery remains managed
-by Vatly. Read the production spec for recovery timelines and event semantics.
+by Vatly. See the [testing guide](https://docs.vatly.com/guides/testing) for
+recovery timelines and event semantics.
