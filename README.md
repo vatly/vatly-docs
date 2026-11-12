@@ -113,12 +113,28 @@ on manual runs. Leave it absent or false until that package is released.
 
 Python senders use the same workflow, trigger and dispatch secret as PHP and JS,
 without switches or release gates. These sources are public: no source token is
-needed. The shared `transform-js-docs.mjs` accepts an optional fourth argument
-for the package description and also handles nested PHP Fluent guides. All
+needed. The shared `transform-js-docs.mjs` also handles nested PHP Fluent guides. All
 transformers flatten source subdirectories to direct package pages, rewrite
 cross-page links and reject duplicate basenames before replacing existing docs.
 Group names live in `.navigation.yml`, which transformations preserve; ordering prefixes
 control the sidebar without changing public URLs. Keep overview tables in that order.
+
+### Page order and headers
+
+All three transformers use `scripts/package-docs-navigation.mjs` for explicit,
+per-package reader journeys. New slugs not yet in a journey sort alphabetically
+after the curated pages; add them to the relevant list when importing a new guide.
+Generated `navigation.title` supplies concise sidebar labels independently of page
+H1s. Overview H1s use the package group's name. Numeric filename prefixes change
+ordering only, never public URLs. Do not hand-edit the generated pages.
+
+Descriptions preserve source frontmatter when present, otherwise use a sentence
+from the introductory prose (not banners, alpha warnings, headings or code).
+No package-name/title placeholder is generated. Missing introductions produce
+a sync warning and no invented description. Add an authored `description` in the
+source frontmatter to improve a weak excerpt; notably the Python SDK's
+`docs/Development.md` needs an introduction/description, and its generated
+`docs/API.md` currently only introduces the reference with spec provenance.
 
 To launch a package's docs:
 

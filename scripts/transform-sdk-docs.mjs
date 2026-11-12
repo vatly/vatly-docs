@@ -8,22 +8,10 @@
 
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync, rmSync } from 'fs'
 import { join, basename, extname } from 'path'
+import { pagePosition, pageMetadata } from './package-docs-navigation.mjs'
 
 const SDK_SOURCE = process.argv[2] || 'tmp/sdk-docs'
 const SDK_TARGET = process.argv[3] || 'content/3.packages/1.php'
-
-const ORDER = {
-  'README.md': 0,
-  'Customers.md': 1,
-  'Checkouts.md': 2,
-  'Subscriptions.md': 3,
-  'SubscriptionPlans.md': 4,
-  'Orders.md': 5,
-  'Refunds.md': 6,
-  'OneOffProducts.md': 7,
-  'Chargebacks.md': 8,
-  'Webhooks.md': 9,
-}
 
 if (!existsSync(SDK_SOURCE)) {
   console.error(`Source directory not found: ${SDK_SOURCE}`)
@@ -45,7 +33,7 @@ for (const entry of readdirSync(SDK_TARGET, { withFileTypes: true })) {
 
 for (const file of files) {
   const content = readFileSync(join(SDK_SOURCE, file), 'utf-8')
-  const order = ORDER[file] ?? 99
+  const order = pagePosition(SDK_TARGET, file)
   const name = basename(file, '.md')
   const targetName = `${order}.${name.toLowerCase().replace(/([A-Z])/g, (m, c, i) => i ? '-' + c.toLowerCase() : c.toLowerCase())}.md`
 
@@ -122,10 +110,10 @@ for (const file of files) {
 
   // Add frontmatter if missing
   if (!hasFrontmatter) {
-    transformed = `---\ntitle: "${title}"\ndescription: "Vatly PHP SDK - ${title}"\n---\n\n${transformed}`
+    transformed = `---\ntitle: ${JSON.stringify(title)}\n---\n\n${transformed}`
   }
 
-  writeFileSync(join(SDK_TARGET, targetName), transformed)
+  writeFileSync(join(SDK_TARGET, targetName), pageMetadata(transformed, SDK_TARGET, file))
   console.log(`  ${file} -> ${targetName}`)
 }
 

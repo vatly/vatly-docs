@@ -2,8 +2,9 @@
 // Package docs -> ordered Docus pages, shared by JS, Python and PHP Fluent.
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, rmSync } from 'node:fs'
 import { join, basename } from 'node:path'
+import { pagePosition, pageMetadata } from './package-docs-navigation.mjs'
 
-const [source, target, repository, label = 'Vatly JavaScript packages'] = process.argv.slice(2)
+const [source, target, repository] = process.argv.slice(2)
 if (!source || !target || !repository) {
   throw new Error('Usage: transform-js-docs.mjs SOURCE TARGET OWNER/REPO')
 }
@@ -12,8 +13,6 @@ const files = readdirSync(source, { recursive: true }).filter(file => file.endsW
 if (!files.length) throw new Error(`No markdown docs found in ${source}`)
 
 const route = `/packages/${basename(target).replace(/^\d+\./, '')}`
-const order = ['README', 'Customers', 'Checkouts', 'Subscriptions', 'SubscriptionPlans',
-  'Orders', 'Refunds', 'OneOffProducts', 'Chargebacks', 'Webhooks', 'API']
 // Source folders organize authoring, not the public package navigation.
 const slug = file => basename(file, '.md').toLowerCase()
 const pages = new Map(files.map(file => [file, `${route}/${slug(file)}`]))
@@ -48,10 +47,9 @@ const output = files.map(file => {
     },
   )
   if (!original.startsWith('---')) {
-    transformed = `---\ntitle: ${JSON.stringify(title)}\ndescription: ${JSON.stringify(`${label} - ${title}`)}\n---\n\n${transformed}`
+    transformed = `---\ntitle: ${JSON.stringify(title)}\n---\n\n${transformed}`
   }
-  const position = order.indexOf(basename(file, '.md'))
-  return [`${position < 0 ? 99 : position}.${slug(file)}.md`, transformed]
+  return [`${pagePosition(target, file)}.${slug(file)}.md`, pageMetadata(transformed, target, file)]
 })
 
 mkdirSync(target, { recursive: true })

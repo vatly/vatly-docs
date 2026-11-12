@@ -8,20 +8,10 @@
 
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync, rmSync } from 'fs'
 import { join, basename, extname } from 'path'
+import { pagePosition, pageMetadata } from './package-docs-navigation.mjs'
 
 const SOURCE = process.argv[2] || 'tmp/laravel-docs'
 const TARGET = process.argv[3] || 'content/3.packages/3.laravel'
-
-const ORDER = {
-  'README.md': 0,
-  'Customers.md': 1,
-  'Checkouts.md': 2,
-  'Subscriptions.md': 3,
-  'Orders.md': 4,
-  'Webhooks.md': 5,
-  'Comparison.md': 6,
-  'Migrating-to-Vatly.md': 7,
-}
 
 if (!existsSync(SOURCE)) {
   console.error(`Source directory not found: ${SOURCE}`)
@@ -43,7 +33,7 @@ for (const entry of readdirSync(TARGET, { withFileTypes: true })) {
 
 for (const file of files) {
   const content = readFileSync(join(SOURCE, file), 'utf-8')
-  const order = ORDER[file] ?? 99
+  const order = pagePosition(TARGET, file)
   const name = basename(file, '.md')
   const targetName = `${order}.${name.toLowerCase().replace(/([A-Z])/g, (m, c, i) => i ? '-' + c.toLowerCase() : c.toLowerCase())}.md`
 
@@ -109,10 +99,10 @@ for (const file of files) {
 
   // Add frontmatter if missing
   if (!hasFrontmatter) {
-    transformed = `---\ntitle: "${title}"\ndescription: "Vatly Laravel Package - ${title}"\n---\n\n${transformed}`
+    transformed = `---\ntitle: ${JSON.stringify(title)}\n---\n\n${transformed}`
   }
 
-  writeFileSync(join(TARGET, targetName), transformed)
+  writeFileSync(join(TARGET, targetName), pageMetadata(transformed, TARGET, file))
   console.log(`  ${file} -> ${targetName}`)
 }
 

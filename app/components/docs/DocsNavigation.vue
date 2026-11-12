@@ -12,24 +12,7 @@ function packageNavigation(items: ContentNavigationLink[]): ContentNavigationLin
   return items.map((item) => {
     if (!item.children?.length) {
       if (item.path === '/packages') return { ...item, title: 'Overview' }
-      // Keep common package labels concise even when synced page titles expand.
-      const titles: Record<string, string> = {
-        configuration: 'Configuration',
-        coreconcepts: 'Core concepts',
-        development: 'Development',
-        comparison: 'Comparison',
-        'migrating-to-vatly': 'Migrating to Vatly',
-        'host-owns-its-tables': 'Existing tables',
-        'webhook-flow': 'Webhook flow',
-        webhookendpoints: 'Webhook URLs',
-        api: 'API reference',
-        customers: 'Customers',
-        orders: 'Orders',
-        webhooks: 'Webhooks',
-        readme: 'Getting started',
-      }
-      const title = item.path.startsWith('/packages/') ? titles[item.path.split('/').pop() || ''] : undefined
-      return title ? { ...item, title } : item
+      return item
     }
 
     const isPackage = item.path.startsWith('/packages/')
