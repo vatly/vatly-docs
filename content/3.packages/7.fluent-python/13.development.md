@@ -50,15 +50,10 @@ imports and `py.typed`. These commands do not publish anything.
 
 ## Pinned SDK dependency
 
-Development uses the SDK wheel in `vendor/`. Published Fluent metadata declares
-the normal, exact PyPI dependency instead. Verify the pinned file before updating:
-
-```bash
-sha256sum --check vendor/SHA256SUMS
-```
-
-Keep published wheels immutable. Use a new alpha version when dependency behavior
-changes; do not silently replace a version's wheel.
+Fluent pins one exact `vatly-api-python` version from PyPI in `pyproject.toml`;
+`uv.lock` records its hashes. To move to a new SDK version, change the pin, run
+`uv lock`, and run the full checks. Use a new Fluent alpha version when dependency
+behavior changes.
 
 ## Documentation sync
 
