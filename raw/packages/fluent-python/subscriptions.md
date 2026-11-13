@@ -179,10 +179,13 @@ async def example(vatly: Vatly):
 ```
 
 Authorize the checkout and wrap local writes in your driver's transaction. Reads
-follow checkout → order → distinct subscription IDs; repeated 404s remain pending.
-This alpha reports plan-valued lines as `legacy_plan_ids` and does not consume the
-proposed `relatedResources.subscriptionId` addition. A plan/customer match is
-never an ownership fallback. Trial flows can lack `order.paid`, so reconciliation
+follow checkout → order → distinct subscription IDs from each line's
+`relatedResources.subscriptionId` and from `subscription` renewal lines; repeated
+404s remain pending. A signup line whose `subscriptionId` is still null is
+reported in `unresolved_line_ids`: core has not resolved that subscription yet, so
+reconcile again later; it may never resolve. Plan lines on historical orders
+without `relatedResources` are reported as `legacy_plan_ids`. A plan/customer
+match is never an ownership fallback. Trial flows can lack `order.paid`, so reconciliation
 must be explicit. Unknown linkage must not grant access.
 
 [Subscription API reference](https://docs.vatly.com/api-reference/subscriptions)
