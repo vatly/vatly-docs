@@ -220,6 +220,10 @@ For all fields and options, see the [Orders API reference](https://docs.vatly.co
         productId
       </code>
       
+       and <code>
+        relatedResources
+      </code>
+      
       .
     </td>
   </tr>
@@ -297,6 +301,31 @@ For all fields and options, see the [Orders API reference](https://docs.vatly.co
   </tr>
 </tbody>
 </table>
+
+### Subscription on an order line
+
+`lines[].relatedResources.subscriptionId` names the subscription a signup, renewal or
+immediate-update line belongs to. `productType` / `productId` keep their meaning: a
+signup line references the plan (`subscription_plan`), a renewal or update line the
+subscription (`subscription`).
+
+- `relatedResources` is `null` on historical lines and on unrelated lines (one-off
+products, billing verification, authorization minimums). Older payloads may omit it.
+- `subscriptionId` is `null` on a signup line while its subscription is not yet
+available. A later `orders.get` returns the ID once it is.
+- An ID is not proof of activation or entitlement. Retrieve the subscription and check
+its status before granting access.
+
+```ts
+// For a paid checkout, use checkout.orderId.
+const order = await vatly.orders.get("order_abc123");
+for (const line of order.lines) {
+  const subscriptionId = line.relatedResources?.subscriptionId; // string | null | undefined
+  if (subscriptionId) {
+    const subscription = await vatly.subscriptions.get(subscriptionId);
+  }
+}
+```
 
 ## Retrieve an order
 
