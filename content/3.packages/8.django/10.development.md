@@ -62,13 +62,10 @@ commands publishes a package.
 
 ## Pinned dependencies
 
-Development uses the SDK and Fluent wheels in `vendor/`. Normal PyPI installs
-resolve the exact published dependencies instead. Check the pinned files before
-refreshing them:
-
-```bash
-sha256sum --check vendor/SHA256SUMS
-```
+`pyproject.toml` pins one exact `vatly-api-python` and `vatly-fluent-python`
+version from PyPI; `uv.lock` records their hashes. To move to new versions, change
+the pins, run `uv lock`, and run the full checks. Use a new alpha version when
+dependency behavior changes.
 
 ## Prepare a release
 
