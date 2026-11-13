@@ -410,6 +410,270 @@ Below you'll find all properties for the Vatly Order resource.
 </tbody>
 </table>
 
+### Order line properties
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        id
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Unique identifier for the order line.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        description
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Line description.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        quantity
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        int
+      </code>
+    </td>
+    
+    <td>
+      Quantity. On a subscription line this is the quantity of one subscription, not a count of subscriptions.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        basePrice
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Price per unit before taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        total
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Line total including taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        subtotal
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      Line subtotal before taxes.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        taxes
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        TaxSummaryCollection
+      </code>
+    </td>
+    
+    <td>
+      Tax breakdown for this line.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        productType
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The linked resource type: <code>
+        subscription_plan
+      </code>
+      
+       on an initial subscription signup line, <code>
+        subscription
+      </code>
+      
+       on a renewal or immediate-update line, <code>
+        one_off_product
+      </code>
+      
+       for a one-off product. <code>
+        null
+      </code>
+      
+       when the line has no product link.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        productId
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The linked resource's ID: a plan ID for <code>
+        subscription_plan
+      </code>
+      
+      , a subscription ID for <code>
+        subscription
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        relatedResources
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        OrderLineRelatedResources | null
+      </code>
+    </td>
+    
+    <td>
+      Additional relationships for this line. <code>
+        null
+      </code>
+      
+       on historical lines and on lines unrelated to a subscription.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        relatedResources->subscriptionId
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The subscription this line belongs to, on signup, renewal and immediate-update lines alike. <code>
+        null
+      </code>
+      
+       on a signup line while the subscription is not available yet; retrieve the order again later to read it.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+To find the subscription a paid checkout created, follow the checkout's `orderId` and read the lines' `relatedResources`:
+
+```php
+$order = $vatly->orders->get($checkout->orderId);
+
+foreach ($order->lines() as $line) {
+    $subscriptionId = $line->relatedResources?->subscriptionId;
+}
+```
+
+A subscription ID alone does not mean the subscription is active. Check the subscription's status before granting access.
+
 ---
 
 ## Retrieve an order
