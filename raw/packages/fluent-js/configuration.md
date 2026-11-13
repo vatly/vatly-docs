@@ -1,11 +1,11 @@
 # Installation and configuration
 
-> Fluent 0.1.0-alpha.1 requires SDK 0.3.0-alpha.2.
+> Fluent 0.1.0-alpha.2 requires SDK 0.3.0-alpha.4.
 
-Fluent `0.1.0-alpha.1` requires SDK `0.3.0-alpha.2`. Pin both during alpha:
+Fluent `0.1.0-alpha.2` requires SDK `0.3.0-alpha.4`. Pin both during alpha:
 
 ```sh
-npm install --save-exact @getvatly/sdk@0.3.0-alpha.2 @getvatly/fluent@0.1.0-alpha.1
+npm install --save-exact @getvatly/sdk@0.3.0-alpha.4 @getvatly/fluent@0.1.0-alpha.2
 ```
 
 Use Node 20+ or a runtime with Fetch and Web Crypto. ESM, CommonJS, and TypeScript

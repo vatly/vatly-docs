@@ -227,7 +227,7 @@ writes, not dispatch. Null billing-event mandates leave the local mandate unchan
 subscription `sync()` reconciles removal.
 
 Before using subscription state to grant or revoke access, read the
-[grace-period limitation in this alpha](/packages/fluent-js/subscriptions#grace-period-limitation-in-010-alpha1).
+[grace-period limitation in this alpha](/packages/fluent-js/subscriptions#grace-period-limitation-in-this-alpha).
 
 ## Application events and extensions
 

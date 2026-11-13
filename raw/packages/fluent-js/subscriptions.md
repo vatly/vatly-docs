@@ -129,7 +129,7 @@ it after the API succeeds. `cancellationReason()` fetches the remote reason.
 `state()` derives `active`, `valid`, `recurring`, `cancelled`, `onGracePeriod`, and
 `ended` from `endsAt`. Check Vatly's `status` separately for states such as paused.
 
-### Grace-period limitation in 0.1.0-alpha.1
+### Grace-period limitation in this alpha
 
 This alpha's `sync()` and cancellation reactions set `endsAt` to
 `endedAt ?? canceledAt`. During a grace period, `endedAt` can be null and

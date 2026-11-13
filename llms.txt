@@ -77,7 +77,7 @@
 - [Webhooks](https://docs.vatly.com/raw/packages/javascript/webhooks.md): Vatly sends webhooks to notify your application when events happen — an order being paid, a refund completing, a subscription being canceled.
 - [SDK operation reference](https://docs.vatly.com/raw/packages/javascript/api.md): Import VatlyClient from @getvatly/sdk.
 - [JavaScript Fluent](https://docs.vatly.com/raw/packages/fluent-js/readme.md): Create checkouts and manage billing with @getvatly/fluent on your server.
-- [Installation and configuration](https://docs.vatly.com/raw/packages/fluent-js/configuration.md): Fluent 0.1.0-alpha.1 requires SDK 0.3.0-alpha.2.
+- [Installation and configuration](https://docs.vatly.com/raw/packages/fluent-js/configuration.md): Fluent 0.1.0-alpha.2 requires SDK 0.3.0-alpha.4.
 - [Core concepts and storage](https://docs.vatly.com/raw/packages/fluent-js/coreconcepts.md): Connect Fluent to your existing tables through storage drivers.
 - [Customers and bindings](https://docs.vatly.com/raw/packages/fluent-js/customers.md): Find or create a Vatly customer for your signed-in user.
 - [Checkouts](https://docs.vatly.com/raw/packages/fluent-js/checkouts.md): Create a hosted payment page, then redirect the customer to checkout.getUrl().

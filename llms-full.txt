@@ -11625,7 +11625,7 @@ Vatly is the European Merchant of Record for AI, software and digital products.
 Install the tested alpha pair:
 
 ```sh
-npm install --save-exact @getvatly/sdk@0.3.0-alpha.2 @getvatly/fluent@0.1.0-alpha.1
+npm install --save-exact @getvatly/sdk@0.3.0-alpha.4 @getvatly/fluent@0.1.0-alpha.2
 ```
 
 ## Start a subscription
@@ -11676,10 +11676,10 @@ The [OpenAPI spec](https://docs.vatly.com/openapi.yaml){rel="&#x22;nofollow&#x22
 
 # Installation and configuration
 
-Fluent `0.1.0-alpha.1` requires SDK `0.3.0-alpha.2`. Pin both during alpha:
+Fluent `0.1.0-alpha.2` requires SDK `0.3.0-alpha.4`. Pin both during alpha:
 
 ```sh
-npm install --save-exact @getvatly/sdk@0.3.0-alpha.2 @getvatly/fluent@0.1.0-alpha.1
+npm install --save-exact @getvatly/sdk@0.3.0-alpha.4 @getvatly/fluent@0.1.0-alpha.2
 ```
 
 Use Node 20+ or a runtime with Fetch and Web Crypto. ESM, CommonJS, and TypeScript
@@ -12005,7 +12005,7 @@ it after the API succeeds. `cancellationReason()` fetches the remote reason.
 `state()` derives `active`, `valid`, `recurring`, `cancelled`, `onGracePeriod`, and
 `ended` from `endsAt`. Check Vatly's `status` separately for states such as paused.
 
-### Grace-period limitation in 0.1.0-alpha.1
+### Grace-period limitation in this alpha
 
 This alpha's `sync()` and cancellation reactions set `endsAt` to
 `endedAt ?? canceledAt`. During a grace period, `endedAt` can be null and
@@ -12061,6 +12061,39 @@ export async function invoice(vatly: Vatly, orderId: string) {
 The handle fetches once and caches the API resource. `sync()` refreshes it.
 `invoiceUrl()` returns null if no link exists. These reads need no local order or
 line repository. Use [webhooks](https://docs.vatly.com/packages/fluent-js/webhooks) to persist payments and fulfill orders.
+
+## Link order lines to subscriptions
+
+Each line's `relatedResources.subscriptionId` names the subscription it belongs
+to. Signup, renewal and immediate-update lines all use it. Signup lines keep
+`productType: 'subscription_plan'` with the plan in `productId`. Renewals use
+`'subscription'`.
+
+```ts
+import type { Order } from '@getvatly/sdk';
+
+export function subscriptionLinks(order: Order) {
+  const linked = new Set<string>();
+  const unresolved: string[] = [];
+  for (const line of order.lines) {
+    const id = line.relatedResources?.subscriptionId;
+    if (id) linked.add(id);
+    else if (line.productType === 'subscription_plan') unresolved.push(line.id);
+  }
+  return { subscriptionIds: [...linked], unresolvedLineIds: unresolved };
+}
+```
+
+`relatedResources` is null on historical and unrelated lines, such as one-off
+products, and older payloads may omit it. `{ subscriptionId: null }` means a
+signup's subscription is not available yet. It does not mean creation failed.
+Fetch the order again later with `vatly.order(id).sync()`, because a stored
+`order.paid` snapshot keeps the value it was signed with. An ID does not prove
+the subscription is active or that access is owed. Check its status and owner first.
+
+`order.paid` handling stores the whole signed order, including these links, in
+your `orders` repository. Fluent does not query orders by subscription. Index the
+stored line IDs yourself if you need that.
 
 ## Money and reversals
 
@@ -12204,7 +12237,7 @@ writes, not dispatch. Null billing-event mandates leave the local mandate unchan
 subscription `sync()` reconciles removal.
 
 Before using subscription state to grant or revoke access, read the
-[grace-period limitation in this alpha](https://docs.vatly.com/packages/fluent-js/subscriptions#grace-period-limitation-in-010-alpha1).
+[grace-period limitation in this alpha](https://docs.vatly.com/packages/fluent-js/subscriptions#grace-period-limitation-in-this-alpha).
 
 ## Application events and extensions
 
