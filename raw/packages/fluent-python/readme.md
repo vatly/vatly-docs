@@ -11,10 +11,10 @@ European Merchant of Record for AI, software and digital products.
 ## Install and create a checkout
 
 ```bash
-python -m pip install vatly-fluent-python==0.1.0a2
+python -m pip install vatly-fluent-python==0.1.0a3
 ```
 
-Python 3.10+ is required. This installs `vatly-api-python==0.1.0a2` too. Set
+Python 3.10+ is required. This installs `vatly-api-python==0.1.0a3` too. Set
 `VATLY_API_KEY` on the server, then run this async function with your event loop.
 
 ```python
@@ -202,5 +202,5 @@ lifespan. IDs and billable entities must be authorized by your application.
 </table>
 
 [API reference](https://docs.vatly.com/api-reference) documents the underlying
-requests. These examples are executed with published `0.1.0a2` packages and local
+requests. These examples are executed with published `0.1.0a3` packages and local
 fixtures; no real payments or account changes occur in documentation tests.
