@@ -16,8 +16,13 @@ from vatly import VatlyClient
 def example(client: VatlyClient):
     order = client.orders.get("order_example")
     lines = [(line.product_type, line.product_id, line.quantity) for line in order.lines]
+    subscription_ids = [
+        line.related_resources.subscription_id
+        for line in order.lines
+        if line.related_resources is not None
+    ]
     refundable = Decimal(order.refundable_subtotal.root.value)
-    return order.status, lines, refundable
+    return order.status, lines, subscription_ids, refundable
 ```
 
 <table>
@@ -77,6 +82,10 @@ def example(client: VatlyClient):
       , <code>
         quantity
       </code>
+      
+      , <code>
+        related_resources
+      </code>
     </td>
   </tr>
   
@@ -134,8 +143,13 @@ def example(client: VatlyClient):
 
 `product_type="subscription_plan"` means `product_id` is a plan ID;
 `"subscription"` means a subscription ID. Never substitute one for the other.
-This alpha has no typed related-resources accessor; extra response fields survive
-validation, but application linkage support still needs a package update.
+
+`line.related_resources.subscription_id` is the subscription associated with a
+signup, renewal or immediate-update line. `related_resources` is `None` on
+historical and unrelated lines. On a signup line, `subscription_id` is `None`
+until the subscription is available; read the order again later. An ID alone
+does not prove activation or entitlement: check the subscription's ownership and
+status before granting access.
 
 ## List orders and request an invoice-details link
 

@@ -11,7 +11,7 @@ integration, use Fluent Python or Vatly Django.
 ## Install and connect
 
 ```bash
-python -m pip install vatly-api-python==0.1.0a2
+python -m pip install vatly-api-python==0.1.0a3
 ```
 
 Set `VATLY_API_KEY` in your server environment. Test and live keys use the same
@@ -221,4 +221,4 @@ camelCase wire keys. Unknown response fields are preserved.
 
 [API reference](https://docs.vatly.com/api-reference) contains the complete request
 and response contracts. Examples in these guides are executed against published
-`0.1.0a2` packages with local HTTP fixtures; tests make no Vatly account changes.
+`0.1.0a3` packages with local HTTP fixtures; tests make no Vatly account changes.
