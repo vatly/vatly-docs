@@ -205,8 +205,103 @@ The facade checks the checkout's host record, performs bounded API reads and
 persists snapshots/links transactionally. This may hold the scope lock during
 reads; run it in a worker for busy deployments. It emits no created outbox event.
 
-Initial order lines can still contain plan IDs. `0.1.0a2` reports those as legacy
-and does not consume the proposed `relatedResources.subscriptionId` addition.
+Signup lines reference their plan and name their subscription in
+`relatedResources.subscriptionId`; renewal lines reference the subscription as
+their product. Both link the subscription to the checkout's billable.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Result field
+    </th>
+    
+    <th>
+      Meaning
+    </th>
+    
+    <th>
+      What to do
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        subscriptions
+      </code>
+    </td>
+    
+    <td>
+      Linked and stored subscriptions
+    </td>
+    
+    <td>
+      Nothing
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        pending_subscription_ids
+      </code>
+    </td>
+    
+    <td>
+      Referenced, but not readable yet
+    </td>
+    
+    <td>
+      Reconcile again later
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        unresolved_line_ids
+      </code>
+    </td>
+    
+    <td>
+      Signup lines whose <code>
+        subscriptionId
+      </code>
+      
+       is still null
+    </td>
+    
+    <td>
+      Reconcile again later; it may never resolve
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        legacy_plan_ids
+      </code>
+    </td>
+    
+    <td>
+      Plan lines on historical orders without <code>
+        relatedResources
+      </code>
+    </td>
+    
+    <td>
+      Resolve manually
+    </td>
+  </tr>
+</tbody>
+</table>
+
+A signed `order.paid` snapshot is frozen when it is sent and can carry a null
+`subscriptionId`, so the first order may still need an explicit reconcile. Schedule
+a bounded number of later reconciles while `unresolved_line_ids` is not empty.
 Never guess by customer/plan/quantity. Missing subscription IDs remain pending,
 not entitled. Trial flows may lack an order.paid event.
 
