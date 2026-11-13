@@ -3,7 +3,7 @@
 > Add hosted checkout, customer billing and signed webhook persistence to Django.
 
 Add hosted checkout, customer billing and signed webhook persistence to Django.
-Vatly is the European merchant of record for AI, software and digital products.
+Vatly is the European Merchant of Record for AI, software and digital products.
 This package builds on Fluent Python and the Python SDK.
 
 **Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**

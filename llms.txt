@@ -86,7 +86,7 @@
 - [Customer portal](https://docs.vatly.com/raw/packages/fluent-js/customerportal.md): Send a signed-in customer to their invoices and subscription controls.
 - [Webhooks](https://docs.vatly.com/raw/packages/fluent-js/webhooks.md): Record payments and subscription changes from signed webhooks, not checkout redirects.
 - [Testing](https://docs.vatly.com/raw/packages/fluent-js/testing.md): Test API calls without a network by injecting the SDK's fetch.
-- [Python SDK](https://docs.vatly.com/raw/packages/python/readme.md): Use this SDK for typed API calls from Python 3.10+.
+- [Python SDK](https://docs.vatly.com/raw/packages/python/readme.md): Vatly is the European Merchant of Record for AI, software and digital products.
 - [Configuration and errors](https://docs.vatly.com/raw/packages/python/configuration.md): Use one client per application task or worker lifetime and close it with with or async with.
 - [Customers](https://docs.vatly.com/raw/packages/python/customers.md): Keep a Vatly customer ID alongside your own user or company.
 - [Checkouts](https://docs.vatly.com/raw/packages/python/checkouts.md): Create a hosted payment page and redirect your buyer to it.
