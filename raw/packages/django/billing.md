@@ -198,7 +198,8 @@ from vatly_django.billing import Billing
 
 def example(billable):
     result = Billing().reconcile(billable, "checkout_example")
-    return result.pending_subscription_ids, result.legacy_plan_ids
+    # Schedule a bounded later reconcile while either tuple is not empty.
+    return result.unresolved_line_ids, result.pending_subscription_ids
 ```
 
 The facade checks the checkout's host record, performs bounded API reads and

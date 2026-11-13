@@ -14105,7 +14105,7 @@ This package builds on Fluent Python and the Python SDK.
 ## Start here
 
 ```bash
-python -m pip install vatly-django==0.1.0a2
+python -m pip install vatly-django==0.1.0a3
 ```
 
 Follow [Installation](https://docs.vatly.com/packages/django/installation) to add the app, URLs and database tables,
@@ -14126,7 +14126,7 @@ need a custom user model: the `Billing` facade accepts any saved Django model.
 | [Development](https://docs.vatly.com/packages/django/development)        | Run contributor checks and understand release tooling     |
 
 Python 3.10+; Django 5.2 LTS, 6.0 and 6.1 within their supported Python ranges.
-Code samples are executed with the published `0.1.0a2` packages and local fixtures.
+Code samples are executed with the published `0.1.0a3` packages and local fixtures.
 See the [API reference](https://docs.vatly.com/api-reference){rel="&#x22;nofollow&#x22;"} for Vatly's fields.
 
 
@@ -14136,10 +14136,10 @@ Start with a normal Django project, including its auth, sessions, messages and
 CSRF configuration. Install the pinned alpha:
 
 ```bash
-python -m pip install vatly-django==0.1.0a2
+python -m pip install vatly-django==0.1.0a3
 ```
 
-This also installs `vatly-api-python==0.1.0a2` and `vatly-fluent-python==0.1.0a2`.
+This also installs `vatly-api-python==0.1.0a3` and `vatly-fluent-python==0.1.0a3`.
 Add the billing app to your existing `settings.py` app list:
 
 ```python
@@ -14419,7 +14419,8 @@ from vatly_django.billing import Billing
 
 def example(billable):
     result = Billing().reconcile(billable, "checkout_example")
-    return result.pending_subscription_ids, result.legacy_plan_ids
+    # Schedule a bounded later reconcile while either tuple is not empty.
+    return result.unresolved_line_ids, result.pending_subscription_ids
 ```
 
 The facade checks the checkout's host record, performs bounded API reads and
