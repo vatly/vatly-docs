@@ -4,7 +4,7 @@ info:
   version: '1.0'
   x-generated-at: '2026-05-28'
   description: |
-    Vatly is a Merchant of Record billing platform for European SaaS companies.
+    Vatly is the European Merchant of Record for AI, software and digital products.
     This API enables you to manage checkouts, customers, orders, subscriptions, refunds, and more.
 
     ## Authentication
@@ -1965,6 +1965,10 @@ paths:
       description: |
         Retrieves a specific order by its ID.
         Includes full order details with line items, totals, and billing information.
+        For a paid checkout, follow `Checkout.orderId` and inspect `lines[].relatedResources`.
+        Signup, renewal and immediate-update lines expose the same subscriptionId.
+        Product references are unchanged. Neither
+        creation, a paid order nor an ID alone proves activation or entitlement.
       tags:
         - Orders
       parameters:
@@ -2009,7 +2013,7 @@ paths:
                 lines:
                   - id: order_item_Jk4pQrSvWm8NjLhYbUcP
                     resource: orderline
-                    description: Pro Monthly Subscription
+                    description: Pro Monthly Subscription — initial checkout
                     quantity: 1
                     basePrice:
                       value: '29.00'
@@ -2028,8 +2032,10 @@ paths:
                         amount:
                           value: '6.09'
                           currency: EUR
-                    productType: subscription
-                    productId: subscription_Hn5xWqVfKm8RjTgYbUcP
+                    productType: subscription_plan
+                    productId: subscription_plan_Hn5xWqVfKm8RjTgYbUcP
+                    relatedResources:
+                      subscriptionId: subscription_Hn5xWqVfKm8RjTgYbUcP
                 customerDetails:
                   fullName: John Doe
                   companyName: Acme Corp
@@ -6767,7 +6773,14 @@ components:
                 and expires after 72 hours; an expired link lets the customer request a fresh one by email.
     OrderLine:
       type: object
-      description: A line item in an order
+      description: |
+        A line item in an order. `productType`/`productId` retain their existing meaning:
+        initial subscription lines reference the plan; renewal and immediate-update
+        lines reference the existing subscription. `relatedResources` adds the exact
+        per-line subscription relationship without repeating the product reference.
+        Discounts remain components of their owning line.
+        Follow a paid Checkout's `orderId` to its order lines; Checkout is unchanged.
+        No historical backfill is performed.
       required:
         - id
         - resource
@@ -6822,14 +6835,55 @@ components:
             - billing_details_verification
             - auth_request_product
             - null
-          description: The product type this line links to; null when the line has no product link.
-          example: subscription
+          description: |
+            Linked resource type. Initial subscription orders use
+            `subscription_plan`; renewals and immediate updates use `subscription`.
+            Existing values and new-write behavior are unchanged.
+          example: subscription_plan
         productId:
           type:
             - string
             - 'null'
-          description: The linked product's id; for a `subscription` line this is the public `subscription_…` id.
-          example: subscription_Hn5xWqVfKm8RjTgYbUcP
+          description: |
+            Linked resource ID: a plan ID when productType is subscription_plan,
+            a subscription ID when productType is subscription. Existing values and
+            new-write behavior are unchanged.
+          example: subscription_plan_Hn5xWqVfKm8RjTgYbUcP
+        relatedResources:
+          description: |
+            Additional per-line relationships. Null on historical lines without recorded
+            correlation and on unrelated lines (including one-off, billing-verification
+            and authorization-minimum lines). Older payloads may omit this property.
+            Signup, renewal and immediate-update lines use the same subscriptionId:
+            the subscription associated with this line, not a creation or entitlement
+            signal. On ordinary sale lines productType distinguishes initial signup
+            (subscription_plan) from renewal/update (subscription). It does not
+            distinguish a renewal from an immediate update. Reversal lines copy the
+            original relationship and product reference, not a new creation claim.
+          oneOf:
+            - type: object
+              additionalProperties: false
+              required:
+                - subscriptionId
+              properties:
+                subscriptionId:
+                  type:
+                    - string
+                    - 'null'
+                  description: |
+                    Subscription associated with this line. On initial signup lines,
+                    null while the exact subscription projection is unavailable,
+                    including pending or skipped creation; null does not distinguish
+                    these cases and is not proof that creation failed or was skipped.
+                    The deterministic per-line identity is retained durably, so GET
+                    reveals the ID after projection recovery without recreating the
+                    paid order. Frozen webhook deliveries retain their original snapshot;
+                    GET and newly generated webhooks use the current availability.
+                    Separate same-plan checkout lines have distinct subscription IDs;
+                    quantity is the quantity of one subscription, not a subscription count.
+                    Creation does not imply activation, entitlement or immediate readability.
+                    Validate ownership and status before granting access.
+            - type: 'null'
     InvoiceUpdateLink:
       type: object
       description: A signed URL for the customer to update invoice details (billing address, VAT number, company name)
