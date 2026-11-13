@@ -68,13 +68,14 @@ logging response bodies that may contain personal data.
 
 | Source | Revision |
 | --- | --- |
-| Production OpenAPI, retrieved 2026-11-09 | [vatly-docs specification](https://github.com/vatly/vatly-docs/blob/7e71ade32d311b10f79e10c15d0ac03ae32bde97/public/openapi.yaml) |
+| Production OpenAPI, retrieved 2026-11-13 | [vatly-docs specification](https://github.com/vatly/vatly-docs/blob/66c8205ea886e4cb48e8e3b2e988de3839c6d4d8/public/openapi.yaml) |
 | Original JS design reference | [SDK revision](https://github.com/vatly/vatly-api-js/commit/8b0b920c29f7e7b30bf71b9e379ec0a8a1a22028) |
 
-The checked-in specification is byte-identical to that source. Its SHA-256 is:
+The checked-in specification is byte-identical to that source and to the bundle
+published by Vatly's production release. Its SHA-256 is:
 
 ```text
-69640ac82bbba8d101e6aa882facd5f13aa5cf67f38508e5cea18abef03c4940
+5e648169e101edc8b3e088dc0e28d0f0a293e8a0ed057014c7336057d986def9
 ```
 
 The specification's generated-at date is not its retrieval date.
