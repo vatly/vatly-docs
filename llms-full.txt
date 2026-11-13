@@ -10515,8 +10515,8 @@ For all endpoint fields and options, see the [API reference](https://docs.vatly.
 Pin the published alpha version:
 
 ```bash
-npm install --save-exact @getvatly/sdk@0.3.0-alpha.3
-# or: pnpm add --save-exact @getvatly/sdk@0.3.0-alpha.3
+npm install --save-exact @getvatly/sdk@0.3.0-alpha.4
+# or: pnpm add --save-exact @getvatly/sdk@0.3.0-alpha.4
 ```
 
 The package ships ESM + CommonJS builds and its own TypeScript types. It uses the
