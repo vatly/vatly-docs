@@ -1,79 +1,65 @@
 ---
-title: "Vatly Developer Documentation"
-description: "Vatly is the European merchant of record for AI, software and digital products. Guides, API reference and packages for selling worldwide."
+title: "Start building with Vatly"
+description: "Add checkout, subscriptions and billing to your app. Make your first request, or start with your integration guide."
 navigation: false
+seo:
+  title: "Vatly Developer Documentation"
 ---
 
-::hero
----
-announcement:
-  title: Vatly API v1
-  to: /api-reference/checkouts
-actions:
-  - label: Get Started
-    to: /guides/quickstart
-    color: primary
-    variant: solid
-  - label: API Reference
-    to: /api-reference/customers
-    color: neutral
-    variant: outline
----
+::div{class="guides-start"}
+  :::div
+  ## Make your first API request
 
-#title
-Vatly API Documentation
+  Get a test key, choose a client and connect to the Vatly API.
+  :::
 
-#description
-Vatly is the European merchant of record for AI, software and digital products. Sell worldwide with Vatly as the legal seller, handling payments, tax and compliance.
+[Open quickstart →](/guides/quickstart){.guides-primary}
 ::
 
-::card-group
-  ::card
-  ---
-  title: Hosted Checkouts
-  icon: i-heroicons-shopping-cart
-  to: /api-reference/checkouts
-  ---
-  Create hosted checkout sessions with one API call. Support for one-off products and subscription plans with automatic tax calculation.
-  ::
+## Build your integration
 
-  ::card
-  ---
-  title: Subscriptions
-  icon: i-heroicons-arrow-path
-  to: /api-reference/subscriptions
-  ---
-  Full subscription lifecycle management. Handle upgrades, downgrades, proration, trials, and cancellations.
-  ::
+::div{class="guides-paths"}
+  :::div
+  ### Using Lovable or Bolt?
 
-  ::card
-  ---
-  title: Tax Compliance
-  icon: i-heroicons-shield-check
-  to: /api-reference/orders
-  ---
-  Vatly is the seller on every sale, so it calculates the tax, issues the invoices and takes care of EU VAT reporting.
-  ::
+  Follow a guide for your builder, with the account setup and integration brief in one place.
 
-  ::card
-  ---
-  title: Webhooks
-  icon: i-heroicons-bell-alert
-  to: /guides/webhooks
-  ---
-  Real-time event notifications for checkouts, orders, subscriptions, refunds, and chargebacks.
-  ::
+  [Lovable →](/integrations/lovable) · [Bolt →](/integrations/bolt)
+  :::
+
+  :::div
+  ### Building your own app?
+
+  See what Vatly handles, what your app needs to build, and how to choose your approach.
+
+  [Build your own integration →](/guides/build-your-own-integration)
+  :::
 ::
 
-## Getting started
+## Understand the billing flow
 
-Getting started with Vatly is easy!
+::div{class="guides-basics"}
+  :::div
+  [Selling workflow](/guides/selling-workflow)
 
-1. Create a new account at [vatly.com](https://my.vatly.com).
-2. Grab your API keys from **Developers » API keys**.
-3. Connect your Mollie account.
-4. Set up your products.
-5. Integrate Vatly in your app or landing page using one of our [SDKs](/guides/sdks).
-6. Follow the [selling workflow guide](/guides/selling-workflow) to connect products, checkouts, webhooks, and fulfillment.
+  From checkout to fulfillment.
+  :::
 
-[Read the quickstart guide](/guides/quickstart)
+  :::div
+  [Webhooks](/guides/webhooks)
+
+  Keep your app in sync.
+  :::
+
+  :::div
+  [Testing](/guides/testing)
+
+  Try the flow before going live.
+  :::
+::
+
+::div{class="guides-crosslinks"}
+Looking for implementation details? [SDKs & Packages →](/packages) · [API Reference →](/api-reference/customers)
+::
+
+Vatly is the European merchant of record for AI, software and digital products.

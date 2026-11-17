@@ -31,6 +31,12 @@ export default defineAppConfig({
       primary: 'blue',
       neutral: 'zinc',
     },
+    // The top tabs and sidebar name the current area. Docus's folder-derived
+    // eyebrow is redundant, and would still say Guides on API fundamentals
+    // whose existing /guides/... URLs we intentionally preserve.
+    pageHeader: {
+      slots: { headline: 'hidden' },
+    },
   },
   // Per-page OG image card style, read by app/components/OgImage/Docs.takumi.vue.
   //  'vatly'   → solid Vatly-blue card matching Vatly's marketing/changelog OG

@@ -1,163 +1,126 @@
 <script setup lang="ts">
-const title = 'Vatly Developer Documentation'
-// The OG card keeps the short name: it reads better at card size, and
-// og:title already carries the full one.
-const cardTitle = 'Vatly Docs'
-const tagline = 'Vatly is the European merchant of record for AI, software and digital products. Sell worldwide with payments, tax and compliance handled.'
-const description = `${tagline} Guides, API reference and SDKs.`
+definePageMeta({ layout: 'docs' })
+
+const { data: page } = await useAsyncData('guides-home', () => queryCollection('landing').path('/').first())
+if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 
 useSeo({
-  title,
-  description,
+  title: page.value.seo?.title || page.value.title,
+  description: page.value.description,
   type: 'website',
 })
-
-// The home title already names the site, so drop the "%s - Vatly Docs"
-// suffix that every other page gets.
 useHead({ titleTemplate: null })
-
-useSeoMeta({
-  ogImageAlt: `${title}: ${tagline}`,
-  twitterImageAlt: `${title}: ${tagline}`,
-})
-
-// Give the homepage a per-page OG card via the same nuxt-og-image v6 / takumi
-// template as the docs pages (Docs.takumi.vue). Without this the homepage falls
-// back to the static og-image.jpg — a bare wordmark at a non-standard 2400x1120
-// ratio that social platforms crop awkwardly.
-//
-// No trailing period on the card description: nuxt-og-image derives the static
-// OG filename from the props, and on the homepage the description is the final
-// path segment — a trailing "." would make the filename end in "..png", which
-// Nitro silently skips writing (docs pages avoid this because a base64
-// page-path segment follows their description).
+useSeoMeta({ ogImageAlt: page.value.title, twitterImageAlt: page.value.title })
 defineOgImage('Docs', {
-  title: cardTitle,
-  description: tagline.replace(/\.$/, ''),
+  title: 'Vatly Docs',
+  description: page.value.description?.replace(/\.$/, ''),
 })
 </script>
 
 <template>
-  <div>
-    <!-- Hero -->
-    <section class="relative overflow-hidden border-b border-gray-200 dark:border-gray-800">
-      <div class="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
-        <div class="mx-auto max-w-2xl text-center">
-          <div class="mb-6">
-            <span class="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-950 px-3 py-1 text-sm font-medium text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-600/20">
-              Vatly API v1
-            </span>
-          </div>
-          <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl" style="font-family: 'Poppins', sans-serif;">
-            Developer Documentation
-          </h1>
-          <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400">
-            {{ tagline }}
-          </p>
-          <div class="mt-10 flex items-center justify-center gap-x-4">
-            <NuxtLink
-              to="/guides/quickstart"
-              class="rounded-lg bg-[#326bff] px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
-            >
-              Get Started
-            </NuxtLink>
-            <NuxtLink
-              to="/api-reference/customers"
-              class="rounded-lg px-5 py-2.5 text-sm font-semibold text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            >
-              API Reference →
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Feature cards -->
-    <section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <NuxtLink
-          v-for="feature in features"
-          :key="feature.title"
-          :to="feature.to"
-          class="group relative rounded-xl border border-gray-200 dark:border-gray-800 p-6 hover:border-[#326bff] dark:hover:border-[#5993ff] hover:shadow-md transition-all"
-        >
-          <div class="flex items-center gap-3 mb-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950 text-[#326bff] dark:text-[#5993ff]">
-              <UIcon :name="feature.icon" class="h-5 w-5" />
-            </div>
-            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
-              {{ feature.title }}
-            </h3>
-          </div>
-          <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-            {{ feature.description }}
-          </p>
-        </NuxtLink>
-      </div>
-    </section>
-
-    <!-- Getting started -->
-    <section class="mx-auto max-w-7xl px-6 pb-20 lg:px-8">
-      <div class="mx-auto max-w-3xl">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-          Getting started
-        </h2>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">
-          Getting started with Vatly is easy!
-        </p>
-        <ol class="space-y-3 text-gray-600 dark:text-gray-400 list-decimal list-inside">
-          <li>Create a new account at <NuxtLink to="https://my.vatly.com" class="text-[#326bff] dark:text-[#5993ff] hover:underline" target="_blank">vatly.com</NuxtLink>.</li>
-          <li>Grab your API keys from <strong class="text-gray-900 dark:text-white">Developers » API keys</strong>.</li>
-          <li>Connect your Mollie account.</li>
-          <li>Set up your products.</li>
-          <li>Integrate Vatly in your app or site using one of our <NuxtLink to="/guides/sdks" class="text-[#326bff] dark:text-[#5993ff] hover:underline">SDKs</NuxtLink>.</li>
-        </ol>
-        <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
-          <NuxtLink
-            to="/guides/quickstart"
-            class="inline-flex items-center rounded-lg bg-[#326bff] px-5 py-2.5 font-medium text-white shadow-sm transition-colors hover:bg-[#1f55e0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#326bff] focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-[#5993ff] dark:focus-visible:ring-offset-gray-950"
-          >
-            Read the quickstart guide →
-          </NuxtLink>
-          <a
-            href="https://docs.vatly.com/openapi.yaml"
-            download
-            class="inline-flex items-center gap-1.5 rounded font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#326bff] dark:focus-visible:ring-[#5993ff]"
-          >
-            <UIcon name="i-lucide-download" class="h-4 w-4" aria-hidden="true" />
-            OpenAPI spec (YAML)
-          </a>
-        </div>
-      </div>
-    </section>
-  </div>
+  <UPage class="guides-home">
+    <UPageHeader :title="page?.title" :description="page?.description" />
+    <UPageBody>
+      <ContentRenderer v-if="page" :value="page" />
+    </UPageBody>
+  </UPage>
 </template>
 
-<script lang="ts">
-const features = [
-  {
-    title: 'Hosted Checkouts',
-    icon: 'i-lucide-shopping-cart',
-    to: '/api-reference/checkouts',
-    description: 'Create hosted checkout sessions with one API call. Support for one-off products and subscription plans with automatic tax calculation.',
-  },
-  {
-    title: 'Subscriptions',
-    icon: 'i-lucide-refresh-cw',
-    to: '/api-reference/subscriptions',
-    description: 'Full subscription lifecycle management. Handle upgrades, downgrades, proration, trials, and cancellations.',
-  },
-  {
-    title: 'Orders and Invoices',
-    icon: 'i-lucide-receipt',
-    to: '/api-reference/orders',
-    description: 'Vatly is the seller on every sale, so it calculates the tax, issues the invoices and takes care of EU VAT reporting.',
-  },
-  {
-    title: 'Webhooks',
-    icon: 'i-lucide-bell',
-    to: '/guides/webhooks',
-    description: 'Real-time event notifications for checkouts, orders, subscriptions, refunds, and chargebacks.',
-  },
-]
-</script>
+<style scoped>
+.guides-home :deep(h2) {
+  margin: 2rem 0 1rem;
+  padding: 0;
+  border: 0;
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.guides-home :deep(h3) {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.guides-home :deep(.guides-start) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 0.5rem;
+  background: var(--ui-bg-elevated);
+}
+
+.guides-home :deep(.guides-start h2) {
+  margin: 0 0 0.5rem;
+}
+
+.guides-home :deep(.guides-start p) {
+  margin: 0;
+}
+
+.guides-home :deep(.guides-primary) {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0.625rem 1rem;
+  border-radius: 0.375rem;
+  background: var(--ui-primary);
+  color: var(--ui-bg);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.guides-home :deep(.guides-paths),
+.guides-home :deep(.guides-basics) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.guides-home :deep(.guides-paths > div) {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.guides-home :deep(.guides-paths p),
+.guides-home :deep(.guides-basics p) {
+  font-size: 0.875rem;
+  color: var(--ui-text-muted);
+}
+
+.guides-home :deep(.guides-basics) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.guides-home :deep(.guides-basics p) {
+  margin: 0.5rem 0;
+}
+
+.guides-home :deep(.guides-crosslinks) {
+  margin: 2rem 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ui-border);
+  font-size: 0.875rem;
+  color: var(--ui-text-muted);
+}
+
+.guides-home :deep(a:focus-visible) {
+  outline: 2px solid var(--ui-primary);
+  outline-offset: 4px;
+}
+
+@media (max-width: 767px) {
+  .guides-home :deep(.guides-start) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .guides-home :deep(.guides-paths),
+  .guides-home :deep(.guides-basics) {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

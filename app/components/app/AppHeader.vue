@@ -1,10 +1,7 @@
 <script setup lang="ts">
 // Overrides the docus theme's `AppHeader` (node_modules/docus/app/components/app/AppHeader.vue).
-// Identical to the upstream component except for the `links` computed below:
-// instead of always linking the top-right GitHub icon to the core docs repo
-// (`appConfig.github.url`), it links to the repository that owns the page being
-// viewed. Package reference pages are synced from their SDK repos, so this points
-// contributors at the real source. See `useSourceRepoUrl()`.
+// Adds the three documentation areas and links the GitHub icon to the source
+// repository of the current page. The mobile menu shares the desktop sidebar.
 
 const appConfig = useAppConfig()
 const site = useSiteConfig()
@@ -13,6 +10,12 @@ const { isEnabled: isAssistantEnabled } = useAssistant()
 const { localePath, isEnabled, locales } = useDocusI18n()
 
 const source = useSourceRepo()
+const { areas } = useDocumentationNavigation()
+const menuOpen = ref(false)
+
+function closeMenuOnLink(event: MouseEvent) {
+  if ((event.target as Element).closest('a[href]')) menuOpen.value = false
+}
 
 const links = computed(() => source.value.repoUrl
   ? [
@@ -28,11 +31,19 @@ const links = computed(() => source.value.repoUrl
 
 <template>
   <UHeader
-    :ui="{ center: 'flex-1' }"
+    v-model:open="menuOpen"
+    :ui="{ center: 'flex-1 justify-start' }"
     :to="localePath('/')"
     :title="appConfig.header?.title || site.name"
+    :menu="{ title: 'Documentation navigation', description: 'Choose an area or a page.' }"
   >
-    <AppHeaderCenter />
+    <UNavigationMenu
+      :items="areas"
+      aria-label="Documentation areas"
+      variant="link"
+      highlight
+      class="hidden lg:flex"
+    />
 
     <template #title>
       <AppHeaderLogo class="h-6 w-auto shrink-0" />
@@ -60,10 +71,15 @@ const links = computed(() => source.value.repoUrl
         />
       </template>
 
-      <UContentSearchButton class="lg:hidden" />
+      <UContentSearchButton
+        :collapsed="false"
+        variant="soft"
+        class="hidden lg:flex lg:w-44 xl:w-56"
+      />
+      <UContentSearchButton class="lg:hidden min-h-11 min-w-11" />
 
       <ClientOnly>
-        <UColorModeButton />
+        <UColorModeButton class="min-h-11 min-w-11 lg:min-h-8 lg:min-w-8" />
 
         <template #fallback>
           <div class="h-8 w-8 animate-pulse bg-neutral-200 dark:bg-neutral-800 rounded-md" />
@@ -75,6 +91,7 @@ const links = computed(() => source.value.repoUrl
           v-for="(link, index) of links"
           :key="index"
           v-bind="{ color: 'neutral', variant: 'ghost', ...link }"
+          class="min-h-11 min-w-11 lg:min-h-8 lg:min-w-8"
         />
       </template>
     </template>
@@ -82,13 +99,16 @@ const links = computed(() => source.value.repoUrl
     <template #toggle="{ open, toggle }">
       <IconMenuToggle
         :open="open"
-        class="lg:hidden"
+        :aria-label="open ? 'Close navigation' : 'Open navigation'"
+        :aria-expanded="open"
+        aria-controls="documentation-menu"
+        class="lg:hidden min-h-11 min-w-11"
         @click="toggle"
       />
     </template>
 
     <template #body>
-      <AppHeaderBody />
+      <AppHeaderBody @click="closeMenuOnLink" />
     </template>
   </UHeader>
 </template>
