@@ -123,7 +123,11 @@
 - [Inspect billing in admin](https://docs.vatly.com/raw/packages/django/admin.md): When django.contrib.admin and vatly_django are installed, billing models register automatically.
 - [Test billing offline](https://docs.vatly.com/raw/packages/django/testing.md): Use Django's test database and httpx fixtures.
 - [Development and release](https://docs.vatly.com/raw/packages/django/development.md): Set up the repository, run checks and build the Django package locally.
-- [Packages](https://docs.vatly.com/raw/packages.md): Official Vatly SDKs and fluent packages for PHP, Laravel, JavaScript, Python and Django. Installation, package registries and documentation.
+- [SDKs & Packages](https://docs.vatly.com/raw/packages.md): Official Vatly SDKs and fluent packages for PHP, Laravel, JavaScript, Python and Django. Installation, package registries and documentation.
 - [Lovable payments with Vatly](https://docs.vatly.com/raw/integrations/lovable.md): Sell European software and digital products from Lovable with Vatly handling tax and invoicing. Start with a test API key and a copy-paste integration prompt.
 - [Bolt payments with Vatly](https://docs.vatly.com/raw/integrations/bolt.md): Add Vatly payments to Bolt.new for European software and digital products. Offload tax and invoicing, get a test API key, and prompt Bolt to wire up checkout.
 - [Integrations](https://docs.vatly.com/raw/integrations.md): Find platform-specific guides for using Vatly as merchant of record. Connect your Lovable or Bolt app and take the next step toward your first test purchase.
+
+## Landing
+
+- [Start building with Vatly](https://docs.vatly.com/raw/index.md): Add checkout, subscriptions and billing to your app. Make your first request, or start with your integration guide.

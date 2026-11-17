@@ -1,4 +1,4 @@
-# Packages
+# SDKs & Packages
 
 > Official Vatly SDKs and fluent packages for PHP, Laravel, JavaScript, Python and Django. Installation, package registries and documentation.
 
@@ -62,7 +62,7 @@ Vatly is the European merchant of record for AI, software and digital products. 
         vatly/vatly-fluent-php
       </a>
       
-       · <a href="/packages/fluent-php/webhook-flow">
+       · <a href="/packages/fluent-php/readme">
         Docs
       </a>
       
@@ -237,7 +237,5 @@ Vatly is the European merchant of record for AI, software and digital products. 
 </table>
 
 These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha. The Python packages require Python 3.10+ and are released at `0.1.0a2`; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively. For example, pin the SDK with `pip install vatly-api-python==0.1.0a2`.
-
-PHP Fluent currently has two in-depth guides, not a complete getting-started section. Follow its [README](https://github.com/vatly/vatly-fluent-php#readme) for setup.
 
 Not using one of these languages? You can use the [REST API directly](/guides/authentication) with any HTTP client.

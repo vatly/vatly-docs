@@ -14828,7 +14828,7 @@ token, and all PyPI artifacts are public.
 [Offline testing examples](https://docs.vatly.com/packages/django/testing) · [Installation](https://docs.vatly.com/packages/django/installation)
 
 
-# Packages
+# SDKs & Packages
 
 > Official Vatly packages for your language or framework.
 
@@ -14836,20 +14836,18 @@ Vatly is the European merchant of record for AI, software and digital products. 
 
 ## Available packages
 
-| Language / Framework | Package                                                                                                                                                                                                                                                         | Install                                   |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| PHP SDK              | [vatly/vatly-api-php](https://packagist.org/packages/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/php/readme) · [GitHub](https://github.com/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"}                       | `composer require vatly/vatly-api-php`    |
-| PHP Fluent           | [vatly/vatly-fluent-php](https://packagist.org/packages/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-php/webhook-flow) · [GitHub](https://github.com/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} | `composer require vatly/vatly-fluent-php` |
-| Laravel              | [vatly/vatly-laravel](https://packagist.org/packages/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/laravel/readme) · [GitHub](https://github.com/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"}                   | `composer require vatly/vatly-laravel`    |
-| JavaScript SDK       | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js){rel="&#x22;nofollow&#x22;"}                              | `npm install @getvatly/sdk`               |
-| JavaScript Fluent    | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js){rel="&#x22;nofollow&#x22;"}                      | `npm install @getvatly/fluent`            |
-| Python SDK           | [vatly-api-python](https://pypi.org/project/vatly-api-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"}                            | `pip install vatly-api-python`            |
-| Python Fluent        | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python){rel="&#x22;nofollow&#x22;"}            | `pip install vatly-fluent-python`         |
-| Django               | [vatly-django](https://pypi.org/project/vatly-django/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django){rel="&#x22;nofollow&#x22;"}                                        | `pip install vatly-django`                |
+| Language / Framework | Package                                                                                                                                                                                                                                                   | Install                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| PHP SDK              | [vatly/vatly-api-php](https://packagist.org/packages/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/php/readme) · [GitHub](https://github.com/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"}                 | `composer require vatly/vatly-api-php`    |
+| PHP Fluent           | [vatly/vatly-fluent-php](https://packagist.org/packages/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-php/readme) · [GitHub](https://github.com/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} | `composer require vatly/vatly-fluent-php` |
+| Laravel              | [vatly/vatly-laravel](https://packagist.org/packages/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/laravel/readme) · [GitHub](https://github.com/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"}             | `composer require vatly/vatly-laravel`    |
+| JavaScript SDK       | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js){rel="&#x22;nofollow&#x22;"}                        | `npm install @getvatly/sdk`               |
+| JavaScript Fluent    | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js){rel="&#x22;nofollow&#x22;"}                | `npm install @getvatly/fluent`            |
+| Python SDK           | [vatly-api-python](https://pypi.org/project/vatly-api-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"}                      | `pip install vatly-api-python`            |
+| Python Fluent        | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python){rel="&#x22;nofollow&#x22;"}      | `pip install vatly-fluent-python`         |
+| Django               | [vatly-django](https://pypi.org/project/vatly-django/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django){rel="&#x22;nofollow&#x22;"}                                  | `pip install vatly-django`                |
 
 These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha. The Python packages require Python 3.10+ and are released at `0.1.0a2`; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively. For example, pin the SDK with `pip install vatly-api-python==0.1.0a2`.
-
-PHP Fluent currently has two in-depth guides, not a complete getting-started section. Follow its [README](https://github.com/vatly/vatly-fluent-php#readme){rel="&#x22;nofollow&#x22;"} for setup.
 
 Not using one of these languages? You can use the [REST API directly](https://docs.vatly.com/guides/authentication) with any HTTP client.
 
@@ -15153,3 +15151,64 @@ These packages are in alpha. Every alpha release may include breaking changes. P
 Start with [Build your own integration](https://docs.vatly.com/guides/build-your-own-integration) to understand what Vatly handles, what your app needs, and what to ask your developer or agent to build. It also helps you choose a fluent package, SDK, or direct API approach.
 
 If you are ready for your first API request, follow the [Quickstart](https://docs.vatly.com/guides/quickstart). Implementation examples live in the [package docs](https://docs.vatly.com/packages), with exact endpoint and field details in the [API reference](https://docs.vatly.com/api-reference).
+
+
+# Start building with Vatly
+
+::div{.guides-start}
+  :::div
+  ## Make your first API request
+
+  Get a test key, choose a client and connect to the Vatly API.
+  :::
+
+[Open quickstart →](https://docs.vatly.com/guides/quickstart){.guides-primary}
+::
+
+## Build your integration
+
+::div{.guides-paths}
+  :::div
+  ### Using Lovable or Bolt?
+
+  Follow a guide for your builder, with the account setup and integration brief in one place.
+
+  [Lovable →](https://docs.vatly.com/integrations/lovable) · [Bolt →](https://docs.vatly.com/integrations/bolt)
+  :::
+
+  :::div
+  ### Building your own app?
+
+  See what Vatly handles, what your app needs to build, and how to choose your approach.
+
+  [Build your own integration →](https://docs.vatly.com/guides/build-your-own-integration)
+  :::
+::
+
+## Understand the billing flow
+
+::div{.guides-basics}
+  :::div
+  [Selling workflow](https://docs.vatly.com/guides/selling-workflow)
+
+  From checkout to fulfillment.
+  :::
+
+  :::div
+  [Webhooks](https://docs.vatly.com/guides/webhooks)
+
+  Keep your app in sync.
+  :::
+
+  :::div
+  [Testing](https://docs.vatly.com/guides/testing)
+
+  Try the flow before going live.
+  :::
+::
+
+::div{.guides-crosslinks}
+Looking for implementation details? [SDKs & Packages →](https://docs.vatly.com/packages) · [API Reference →](https://docs.vatly.com/api-reference/customers)
+::
+
+Vatly is the European merchant of record for AI, software and digital products.
