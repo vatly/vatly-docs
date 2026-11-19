@@ -11,6 +11,7 @@ node scripts/transform-js-docs.mjs tmp/fluent-js-repo/docs content/3.packages/5.
 node scripts/transform-js-docs.mjs tmp/python-repo/docs content/3.packages/6.python vatly/vatly-api-python
 node scripts/transform-js-docs.mjs tmp/fluent-python-repo/docs content/3.packages/7.fluent-python vatly/vatly-fluent-python
 node scripts/transform-js-docs.mjs tmp/django-repo/docs content/3.packages/8.django vatly/vatly-django
+node scripts/transform-js-docs.mjs tmp/fluentcart-repo/docs content/3.packages/10.fluentcart vatly/vatly-fluentcart-wp
 if [[ "${SYNC_BETTER_AUTH_DOCS:-}" == true ]]; then
   node scripts/transform-js-docs.mjs tmp/better-auth-repo/docs content/3.packages/9.better-auth vatly/vatly-better-auth-js
 fi

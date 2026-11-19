@@ -12,6 +12,7 @@ export const packageNavigation = {
   python: { title: 'Python SDK', order: sdk },
   'fluent-python': { title: 'Python Fluent', order: fluent },
   django: { title: 'Django', order: ['readme', 'installation', 'configuration', 'billablemodels', 'checkout', 'billing', 'customerportal', 'webhooks', 'admin', 'testing', 'development'] },
+  fluentcart: { title: 'FluentCart', order: ['readme', 'merchant-of-record'] },
 }
 
 const labels = {
@@ -24,7 +25,7 @@ const labels = {
   'webhook-flow': 'Webhook event flow', 'host-owns-its-tables': 'Existing tables',
   testing: 'Testing', porting: 'Porting', development: 'Development',
   comparison: 'Comparison', 'migrating-to-vatly': 'Migrating from Cashier',
-  billablemodels: 'Billable models', admin: 'Admin',
+  billablemodels: 'Billable models', admin: 'Admin', 'merchant-of-record': 'Invoicing internals',
 }
 
 export function pagePosition(target, file) {
