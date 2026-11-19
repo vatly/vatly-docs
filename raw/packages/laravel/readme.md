@@ -24,12 +24,14 @@ Vatly Laravel provides a Cashier-like integration for [Vatly](https://vatly.com)
 ## Installation
 
 ```bash
-composer require vatly/vatly-laravel:v0.7.0-alpha.17
+composer config minimum-stability alpha
+composer config prefer-stable true
+composer require vatly/vatly-laravel
 ```
 
 <warning>
 
-This is an alpha release. Pin to an exact version to avoid breaking changes.
+This package is in alpha, and every alpha release may include breaking changes. The two `config` commands let Composer install alpha releases while `prefer-stable` keeps your other dependencies on stable releases. Composer installs the latest alpha and records it in `composer.lock`.
 
 </warning>
 

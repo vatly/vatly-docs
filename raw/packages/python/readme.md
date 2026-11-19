@@ -6,13 +6,15 @@ Vatly is the European Merchant of Record for AI, software and digital products.
 Use this SDK for typed API calls from Python 3.10+. For a storage-backed billing
 integration, use Fluent Python or Vatly Django.
 
-**Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
+**Alpha — under active development. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading.**
 
 ## Install and connect
 
 ```bash
-python -m pip install vatly-api-python==0.1.0a3
+python -m pip install --pre vatly-api-python
 ```
+
+The SDK is in alpha, so `--pre` is needed to install the latest alpha release.
 
 Set `VATLY_API_KEY` in your server environment. Test and live keys use the same
 API host; the key selects the mode. Never put credentials in client-side code.
@@ -220,5 +222,5 @@ camelCase wire keys. Unknown response fields are preserved.
 </table>
 
 [API reference](https://docs.vatly.com/api-reference) contains the complete request
-and response contracts. Examples in these guides are executed against published
-`0.1.0a3` packages with local HTTP fixtures; tests make no Vatly account changes.
+and response contracts. Examples in these guides are executed against the published
+packages with local HTTP fixtures; tests make no Vatly account changes.

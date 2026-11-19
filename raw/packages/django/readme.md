@@ -6,12 +6,12 @@ Add hosted checkout, customer billing and signed webhook persistence to Django.
 Vatly is the European Merchant of Record for AI, software and digital products.
 This package builds on Fluent Python and the Python SDK.
 
-**Alpha — under active development. Every alpha release may include breaking changes. Pin exact versions during alpha.**
+**Alpha — under active development. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading.**
 
 ## Start here
 
 ```bash
-python -m pip install vatly-django==0.1.0a3
+python -m pip install --pre vatly-django
 ```
 
 Follow [Installation](/packages/django/installation) to add the app, URLs and database tables,
@@ -155,5 +155,5 @@ need a custom user model: the `Billing` facade accepts any saved Django model.
 </table>
 
 Python 3.10+; Django 5.2 LTS, 6.0 and 6.1 within their supported Python ranges.
-Code samples are executed with the published `0.1.0a3` packages and local fixtures.
+Code samples are executed with the published packages and local fixtures.
 See the [API reference](https://docs.vatly.com/api-reference) for Vatly's fields.

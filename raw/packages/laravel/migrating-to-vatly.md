@@ -373,7 +373,9 @@ code you have to think about is the trait.
 ### 1. Install and migrate
 
 ```bash
-composer require vatly/vatly-laravel:v0.7.0-alpha.17
+composer config minimum-stability alpha
+composer config prefer-stable true
+composer require vatly/vatly-laravel
 
 php artisan vendor:publish --tag=vatly-config
 php artisan vendor:publish --tag=vatly-migrations

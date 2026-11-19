@@ -1,11 +1,11 @@
 # Installation and configuration
 
-> Fluent 0.1.0-alpha.2 requires SDK 0.3.0-alpha.4.
+> Fluent requires @getvatly/sdk as a peer.
 
-Fluent `0.1.0-alpha.2` requires SDK `0.3.0-alpha.4`. Pin both during alpha:
+Fluent requires `@getvatly/sdk` as a peer. Install the latest alpha of both; `--save-exact` pins the installed versions:
 
 ```sh
-npm install --save-exact @getvatly/sdk@0.3.0-alpha.4 @getvatly/fluent@0.1.0-alpha.2
+npm install --save-exact @getvatly/sdk @getvatly/fluent
 ```
 
 Use Node 20+ or a runtime with Fetch and Web Crypto. ESM, CommonJS, and TypeScript
