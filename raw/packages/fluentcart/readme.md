@@ -8,10 +8,9 @@ This plugin registers Vatly as a FluentCart payment gateway and builds on PHP Fl
 
 <warning>
 
-**Unreleased.** No release of this plugin has been published yet, and its payment
-confirmation flow has not been verified against current FluentCart versions.
-Use it only in Vatly test mode, and do not take live payments with it yet.
-Expect breaking changes before the first alpha release.
+**Alpha.** The plugin works end to end with Vatly test mode on FluentCart 2.3, but it
+can still change in ways that need you to update your setup. Try it in Vatly test mode
+before you take live payments with it.
 
 </warning>
 
@@ -20,27 +19,22 @@ Expect breaking changes before the first alpha release.
 - **Merchant-of-Record checkout** for one-off products and subscriptions, including free trials carried over from FluentCart.
 - **Official Vatly invoices** on the FluentCart receipt and as shortcodes. FluentCart's own competing receipt email is suppressed for Vatly orders, so customers never receive two invoices for one purchase.
 - **Refunds routed through Vatly**, so Vatly issues the credit note and its VAT, and the result is recorded on the FluentCart order.
+- **FluentCart's own events** for every payment and subscription change, including renewals, failed payments, refunds, cancellations and chargebacks, so other plugins that listen to FluentCart keep working.
 - **Per-record test and live mode**, frozen at checkout, so refunds always use the API key that matches the original order.
 
 ## Requirements
 
 - WordPress 6.2 or newer
 - PHP 8.1 or newer
-- [FluentCart](https://fluentcart.com) installed and active
+- [FluentCart](https://fluentcart.com) 2.3 or newer, installed and active
 - A [Vatly](https://vatly.com) account with test-mode API credentials
 
 ## Installation
 
-There is no release zip yet. Build the plugin from source:
+1. Download the zip from the [latest alpha release](https://github.com/vatly/vatly-fluentcart-wp/releases/latest). It includes the plugin's dependencies, so you don't need Composer.
+2. In WordPress, go to **Plugins → Add New → Upload Plugin**, choose the zip, and activate it.
 
-```bash
-git clone https://github.com/vatly/vatly-fluentcart-wp.git
-cd vatly-fluentcart-wp
-bin/build-release.sh
-```
-
-The script produces `build/vatly-for-fluentcart.zip` with a namespace-scoped copy of its dependencies (it needs PHP, Composer, curl and zip).
-In WordPress, go to **Plugins → Add New → Upload Plugin**, choose the zip, and activate it.
+To build the zip yourself, run `bin/build-release.sh` in a clone of the repository. It produces `build/vatly-for-fluentcart.zip` with a namespace-scoped copy of the dependencies, and needs PHP, Composer, curl and zip.
 
 For development, run `composer install` in the clone instead, then place or symlink the directory in `wp-content/plugins/`.
 

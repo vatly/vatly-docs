@@ -18,11 +18,19 @@ FluentCart's own invoicing, but only for orders paid via the Vatly gateway
 (`payment_method === 'vatly'`). Every guard callback is a strict no-op for
 non-Vatly orders. The guard lives in `src/Support/MoRInvoiceGuard.php`.
 
-## Hooks used (verified against FluentCart free v1.3.28)
+## Hooks used
 
-The guard wires only hooks confirmed to exist **and fire** in FluentCart free
-1.3.28. Each wired hook carries a `// verified: …` file:line comment in the
-source.
+> **FluentCart version note.** The gateway integration (registration, checkout,
+> refunds, and the `order.paid` confirmation + Vatly-invoice stamping) has been
+> ported to and verified against **FluentCart free 2.2.0**. The two
+> Merchant-of-Record email/receipt guard hooks in the table below still carry
+> their original `// verified: FluentCart free 1.3.28` file:line references and
+> have **not** yet been re-verified against 2.2.0: the hook names and line
+> numbers may have moved, so re-confirm they still exist and fire before relying
+> on the email-suppression guard on 2.2.0.
+
+The guard wires only hooks confirmed to exist **and fire**. Each wired hook
+carries a `// verified: …` file:line comment in the source.
 
 <table>
 <thead>
