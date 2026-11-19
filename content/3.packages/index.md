@@ -11,17 +11,17 @@ Vatly is the European merchant of record for AI, software and digital products. 
 
 | Language / Framework | Package | Install |
 | --- | --- | --- |
-| PHP SDK | [vatly/vatly-api-php](https://packagist.org/packages/vatly/vatly-api-php) · [Docs](/packages/php/readme) · [GitHub](https://github.com/vatly/vatly-api-php) | `composer require vatly/vatly-api-php` |
-| PHP Fluent | [vatly/vatly-fluent-php](https://packagist.org/packages/vatly/vatly-fluent-php) · [Docs](/packages/fluent-php/readme) · [GitHub](https://github.com/vatly/vatly-fluent-php) | `composer require vatly/vatly-fluent-php` |
-| Laravel | [vatly/vatly-laravel](https://packagist.org/packages/vatly/vatly-laravel) · [Docs](/packages/laravel/readme) · [GitHub](https://github.com/vatly/vatly-laravel) | `composer require vatly/vatly-laravel` |
-| JavaScript SDK | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk) · [Docs](/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js) | `npm install @getvatly/sdk` |
-| JavaScript Fluent | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent) · [Docs](/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js) | `npm install @getvatly/fluent` |
-| Python SDK | [vatly-api-python](https://pypi.org/project/vatly-api-python/) · [Docs](/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python) | `pip install vatly-api-python` |
-| Python Fluent | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/) · [Docs](/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python) | `pip install vatly-fluent-python` |
-| Django | [vatly-django](https://pypi.org/project/vatly-django/) · [Docs](/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django) | `pip install vatly-django` |
+| PHP SDK | [vatly/vatly-api-php](https://packagist.org/packages/vatly/vatly-api-php) · [Docs](/packages/php/readme) · [GitHub](https://github.com/vatly/vatly-api-php) | `composer require vatly/vatly-api-php` (after allowing alpha, see below) |
+| PHP Fluent | [vatly/vatly-fluent-php](https://packagist.org/packages/vatly/vatly-fluent-php) · [Docs](/packages/fluent-php/readme) · [GitHub](https://github.com/vatly/vatly-fluent-php) | `composer require vatly/vatly-fluent-php` (after allowing alpha, see below) |
+| Laravel | [vatly/vatly-laravel](https://packagist.org/packages/vatly/vatly-laravel) · [Docs](/packages/laravel/readme) · [GitHub](https://github.com/vatly/vatly-laravel) | `composer require vatly/vatly-laravel` (after allowing alpha, see below) |
+| JavaScript SDK | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk) · [Docs](/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js) | `npm install --save-exact @getvatly/sdk` |
+| JavaScript Fluent | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent) · [Docs](/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js) | `npm install --save-exact @getvatly/sdk @getvatly/fluent` |
+| Python SDK | [vatly-api-python](https://pypi.org/project/vatly-api-python/) · [Docs](/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python) | `pip install --pre vatly-api-python` |
+| Python Fluent | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/) · [Docs](/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python) | `pip install --pre vatly-fluent-python` |
+| Django | [vatly-django](https://pypi.org/project/vatly-django/) · [Docs](/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django) | `pip install --pre vatly-django` |
 | FluentCart (WordPress) | Unreleased · [Docs](/packages/fluentcart/readme) · [GitHub](https://github.com/vatly/vatly-fluentcart-wp) | Build from source |
 
-These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha. The Python packages require Python 3.10+ and are released at `0.1.0a2`; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively. For example, pin the SDK with `pip install vatly-api-python==0.1.0a2`.
+These packages are in alpha. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading. The install commands above get the latest alpha. For the PHP packages, first run `composer config minimum-stability alpha` and `composer config prefer-stable true`, because Composer installs only stable releases by default. For the Python packages, `--pre` selects the latest alpha. The Python packages require Python 3.10+; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively.
 
 The FluentCart plugin has not been released yet. Its payment flow is not yet verified against current FluentCart versions, so use it only in test mode.
 
