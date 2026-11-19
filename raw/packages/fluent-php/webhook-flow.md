@@ -64,7 +64,7 @@ In production, let that callback write outbox jobs on the same transaction as yo
         failed
       </code>
       
-       order status.
+       order status. New store data includes lines, so a renewal paid on retry keeps its lines.
     </td>
   </tr>
   
