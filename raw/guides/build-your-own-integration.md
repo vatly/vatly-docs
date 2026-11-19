@@ -99,7 +99,7 @@ For app-level billing, start with a fluent package rather than assembling every 
 - **Python:** [Python Fluent](/packages/fluent-python/readme) provides async-first billing flows and storage contracts. The [Django package](/packages/django/readme) integrates fluent with Django's ORM and webhook handling. Both are available on PyPI.
 - **Direct API access:** Use the matching [SDK](/packages) when you only need the API client, or the [HTTP API](/api-reference) from another server-side language. The [Python SDK](/packages/python/readme) is available on PyPI as `vatly-api-python` (import `vatly`).
 
-The JavaScript, Python, Django and PHP fluent packages are **alpha**. Every alpha release may include breaking changes. Pin exact versions during alpha. Follow each package's installation guidance and review upgrades. Fluent packages provide building blocks, not your app's access policy or a database integration that configures itself: your developer or agent must wire the required storage drivers and authorization checks.
+The JavaScript, Python, Django and PHP fluent packages are **alpha**. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading. Follow each package's installation guidance and review upgrades. Fluent packages provide building blocks, not your app's access policy or a database integration that configures itself: your developer or agent must wire the required storage drivers and authorization checks.
 
 ## Hand off a clear brief
 

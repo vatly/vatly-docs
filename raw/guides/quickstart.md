@@ -23,7 +23,9 @@ curl --version
 ```
 
 ```bash [PHP]
-# Install the Vatly PHP SDK
+# Install the latest alpha of the Vatly PHP SDK
+composer config minimum-stability alpha
+composer config prefer-stable true
 composer require vatly/vatly-api-php
 ```
 

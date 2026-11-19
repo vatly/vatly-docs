@@ -116,7 +116,7 @@ The Lovable and Bolt guides describe custom integrations using Vatly's existing 
 
 Using a framework rather than an app builder? Official [Laravel](/packages/laravel/readme) and [Django](/packages/django/readme) packages integrate Vatly with your application. Their installation, configuration and API guides live under [Packages](/packages), alongside the SDKs and fluent packages, rather than being duplicated here.
 
-These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha.
+These packages are in alpha. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading.
 
 Running a WordPress store on FluentCart? The [FluentCart plugin](/packages/fluentcart/readme) adds Vatly as a payment gateway. It has not been released yet, so use it only in test mode.
 

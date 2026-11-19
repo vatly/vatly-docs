@@ -83,7 +83,7 @@ The prompt below starts your agent with [`@getvatly/fluent`](/packages/fluent-js
 
 ## Set up the account and secrets
 
-Follow the [Quickstart](/guides/quickstart), starting with a test key and product. Both `@getvatly/fluent` and its underlying `@getvatly/sdk` are **alpha**; use the compatible, exact versions in [fluent installation and configuration](/packages/fluent-js/configuration), because alpha updates may break compatibility.
+Follow the [Quickstart](/guides/quickstart), starting with a test key and product. Both `@getvatly/fluent` and its underlying `@getvatly/sdk` are **alpha**; install them as shown in [fluent installation and configuration](/packages/fluent-js/configuration) and lock the installed versions, because alpha updates may break compatibility.
 
 When Lovable prompts for `VATLY_API_KEY`, use the secure **Add secret** form, not the chat. Manage project secrets under **More » Settings » Secrets**. If your app uses an external Supabase project, Lovable's **Manage secrets** opens the Supabase dashboard; store the secret in that project's Edge Function settings. See [Lovable secrets](https://docs.lovable.dev/features/secrets).
 
@@ -115,7 +115,7 @@ https://docs.vatly.com/api-reference
 https://docs.vatly.com/openapi.yaml
 
 Start with @getvatly/fluent and its required @getvatly/sdk dependency.
-Pin the compatible alpha versions documented in configuration and check
+Install both as documented in configuration, lock the installed versions, and check
 the deployed runtime; use pinned npm: imports for Deno. Use the underlying
 SDK when a fluent helper is missing or the deployed runtime requires a
 different approach, and explain the reason. Wire the documented storage
