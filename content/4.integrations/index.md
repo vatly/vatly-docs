@@ -32,6 +32,8 @@ Using a framework rather than an app builder? Official [Laravel](/packages/larav
 
 These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha.
 
+Running a WordPress store on FluentCart? The [FluentCart plugin](/packages/fluentcart/readme) adds Vatly as a payment gateway. It has not been released yet, so use it only in test mode.
+
 ## Connecting another app?
 
 Start with [Build your own integration](/guides/build-your-own-integration) to understand what Vatly handles, what your app needs, and what to ask your developer or agent to build. It also helps you choose a fluent package, SDK, or direct API approach.

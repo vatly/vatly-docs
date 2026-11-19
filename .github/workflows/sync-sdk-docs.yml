@@ -2,7 +2,7 @@ name: Sync SDK Docs
 
 on:
   repository_dispatch:
-    types: [sync-sdk-docs, sync-fluent-php-docs, sync-laravel-docs, sync-js-docs, sync-fluent-js-docs, sync-better-auth-docs, sync-python-docs, sync-fluent-python-docs, sync-django-docs]
+    types: [sync-sdk-docs, sync-fluent-php-docs, sync-laravel-docs, sync-js-docs, sync-fluent-js-docs, sync-better-auth-docs, sync-python-docs, sync-fluent-python-docs, sync-django-docs, sync-fluentcart-docs]
   workflow_dispatch:
   push:
     branches: [main]
@@ -94,6 +94,13 @@ jobs:
         with:
           repository: vatly/vatly-django
           path: tmp/django-repo
+          sparse-checkout: docs
+
+      - name: Pull FluentCart plugin docs
+        uses: actions/checkout@v4
+        with:
+          repository: vatly/vatly-fluentcart-wp
+          path: tmp/fluentcart-repo
           sparse-checkout: docs
 
       - name: Pull Better Auth docs

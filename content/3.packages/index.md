@@ -1,6 +1,6 @@
 ---
 title: "SDKs & Packages"
-description: "Official Vatly SDKs and fluent packages for PHP, Laravel, JavaScript, Python and Django. Installation, package registries and documentation."
+description: "Official Vatly SDKs, fluent packages and integrations for PHP, Laravel, JavaScript, Python, Django and FluentCart. Installation, package registries and documentation."
 ---
 
 > Official Vatly packages for your language or framework.
@@ -19,7 +19,10 @@ Vatly is the European merchant of record for AI, software and digital products. 
 | Python SDK | [vatly-api-python](https://pypi.org/project/vatly-api-python/) · [Docs](/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python) | `pip install vatly-api-python` |
 | Python Fluent | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/) · [Docs](/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python) | `pip install vatly-fluent-python` |
 | Django | [vatly-django](https://pypi.org/project/vatly-django/) · [Docs](/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django) | `pip install vatly-django` |
+| FluentCart (WordPress) | Unreleased · [Docs](/packages/fluentcart/readme) · [GitHub](https://github.com/vatly/vatly-fluentcart-wp) | Build from source |
 
 These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha. The Python packages require Python 3.10+ and are released at `0.1.0a2`; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively. For example, pin the SDK with `pip install vatly-api-python==0.1.0a2`.
+
+The FluentCart plugin has not been released yet. Its payment flow is not yet verified against current FluentCart versions, so use it only in test mode.
 
 Not using one of these languages? You can use the [REST API directly](/guides/authentication) with any HTTP client.

@@ -136,6 +136,13 @@ const PACKAGE_REPOS: PackageRepo[] = [
       development: 'Development.md', webhooks: 'Webhooks.md',
     },
   },
+  {
+    prefix: '/packages/fluentcart',
+    url: 'https://github.com/vatly/vatly-fluentcart-wp',
+    branch: 'main',
+    docsDir: 'docs',
+    files: { readme: 'README.md', 'merchant-of-record': 'merchant-of-record.md' },
+  },
 ]
 
 export interface PageSource {

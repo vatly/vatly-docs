@@ -46,9 +46,9 @@ public/
 notifications, pushes to this repo's `main`, manual **Sync SDK Docs** runs, and
 daily at **04:17 UTC** as a safety net for missed notifications.
 
-Every run pulls **all eight package sources at their current default branch**:
+Every run pulls **all nine package sources at their current default branch**:
 PHP SDK, PHP Fluent, Laravel, JavaScript SDK, JavaScript Fluent, Python SDK,
-Python Fluent and Django. Better Auth joins every run only when
+Python Fluent, Django and the FluentCart WordPress plugin. Better Auth joins every run only when
 `SYNC_BETTER_AUTH_DOCS=true`. The event type/payload means only "resync"; it never
 selects a subset of sources. Source notifier workflows need no changes.
 
@@ -81,8 +81,7 @@ handwritten docs use the same serialized build/deploy path.
 
 The senders trigger on pushes to `main` affecting `docs/**`, using
 `peter-evans/repository-dispatch` and `VATLY_DOCS_DISPATCH_TOKEN`. There is no
-release/tag gate. Every event refreshes all enabled sources. The WordPress
-plugin is not imported by this workflow. PHP Fluent has two existing guides
+release/tag gate. Every event refreshes all enabled sources. PHP Fluent has two existing guides
 (including a nested recipe), but no docs README; setup remains in its source README.
 The PHP transformers mirror markdown pages, rewrite links and GitHub alerts,
 and preserve existing frontmatter.
@@ -110,6 +109,16 @@ on manual runs. Leave it absent or false until that package is released.
 | `vatly/vatly-api-python` | `vatly-api-python` / `vatly` | `sync-python-docs` | `content/3.packages/6.python` |
 | `vatly/vatly-fluent-python` | `vatly-fluent-python` / `vatly_fluent` | `sync-fluent-python-docs` | `content/3.packages/7.fluent-python` |
 | `vatly/vatly-django` | `vatly-django` / `vatly_django` | `sync-django-docs` | `content/3.packages/8.django` |
+
+### WordPress sources
+
+| Source | Event | Destination | Publication |
+| --- | --- | --- | --- |
+| `vatly/vatly-fluentcart-wp` | `sync-fluentcart-docs` | `content/3.packages/10.fluentcart` | Automatic (plugin unreleased; its docs say so) |
+
+The FluentCart sender is the same **Notify Docs** workflow with the same dispatch
+secret. The repo is public, so no source token is needed. The PMPro plugin is
+private and has no docs import.
 
 Python senders use the same workflow, trigger and dispatch secret as PHP and JS,
 without switches or release gates. These sources are public: no source token is
