@@ -194,6 +194,18 @@ These packages are in alpha. Every alpha release may include breaking changes. P
   
   <tr>
     <td>
+      <a href="/packages/fluentcart/readme">
+        FluentCart (WordPress)
+      </a>
+    </td>
+    
+    <td>
+      Unreleased (test mode only)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
       Ruby
     </td>
     

@@ -580,17 +580,18 @@ These packages are in alpha. Every alpha release may include breaking changes. P
 
 ## SDK availability
 
-| SDK                                                                   | Status            |
-| --------------------------------------------------------------------- | ----------------- |
-| [PHP SDK](https://docs.vatly.com/packages/php/readme)                 | Available (alpha) |
-| [PHP Fluent](https://docs.vatly.com/packages/fluent-php/webhook-flow) | Available (alpha) |
-| [Laravel](https://docs.vatly.com/packages/laravel/readme)             | Available (alpha) |
-| [JavaScript SDK](https://docs.vatly.com/packages/javascript/readme)   | Available (alpha) |
-| [JavaScript Fluent](https://docs.vatly.com/packages/fluent-js/readme) | Available (alpha) |
-| [Python SDK](https://docs.vatly.com/packages/python/readme)           | Available (alpha) |
-| [Python Fluent](https://docs.vatly.com/packages/fluent-python/readme) | Available (alpha) |
-| [Django](https://docs.vatly.com/packages/django/readme)               | Available (alpha) |
-| Ruby                                                                  | Planned           |
+| SDK                                                                         | Status                      |
+| --------------------------------------------------------------------------- | --------------------------- |
+| [PHP SDK](https://docs.vatly.com/packages/php/readme)                       | Available (alpha)           |
+| [PHP Fluent](https://docs.vatly.com/packages/fluent-php/webhook-flow)       | Available (alpha)           |
+| [Laravel](https://docs.vatly.com/packages/laravel/readme)                   | Available (alpha)           |
+| [JavaScript SDK](https://docs.vatly.com/packages/javascript/readme)         | Available (alpha)           |
+| [JavaScript Fluent](https://docs.vatly.com/packages/fluent-js/readme)       | Available (alpha)           |
+| [Python SDK](https://docs.vatly.com/packages/python/readme)                 | Available (alpha)           |
+| [Python Fluent](https://docs.vatly.com/packages/fluent-python/readme)       | Available (alpha)           |
+| [Django](https://docs.vatly.com/packages/django/readme)                     | Available (alpha)           |
+| [FluentCart (WordPress)](https://docs.vatly.com/packages/fluentcart/readme) | Unreleased (test mode only) |
+| Ruby                                                                        | Planned                     |
 
 In the meantime, you can use the [REST API directly](https://docs.vatly.com/guides/authentication) with any HTTP client in any language.
 
@@ -8133,6 +8134,155 @@ $endpoint->delete();
 ```
 
 
+# FluentCart
+
+Accept payments through Vatly in FluentCart, the WordPress e-commerce plugin.
+Vatly is the European Merchant of Record for AI, software and digital products.
+This plugin registers Vatly as a FluentCart payment gateway and builds on PHP Fluent and the PHP SDK.
+
+::warning
+**Unreleased.**
+
+ No release of this plugin has been published yet, and its payment
+confirmation flow has not been verified against current FluentCart versions.
+Use it only in Vatly test mode, and do not take live payments with it yet.
+Expect breaking changes before the first alpha release.
+::
+
+## What it does
+
+- **Merchant-of-Record checkout** for one-off products and subscriptions, including free trials carried over from FluentCart.
+- **Official Vatly invoices** on the FluentCart receipt and as shortcodes. FluentCart's own competing receipt email is suppressed for Vatly orders, so customers never receive two invoices for one purchase.
+- **Refunds routed through Vatly**, so Vatly issues the credit note and its VAT, and the result is recorded on the FluentCart order.
+- **Per-record test and live mode**, frozen at checkout, so refunds always use the API key that matches the original order.
+
+## Requirements
+
+- WordPress 6.2 or newer
+- PHP 8.1 or newer
+- [FluentCart](https://fluentcart.com){rel="&#x22;nofollow&#x22;"} installed and active
+- A [Vatly](https://vatly.com){rel="&#x22;nofollow&#x22;"} account with test-mode API credentials
+
+## Installation
+
+There is no release zip yet. Build the plugin from source:
+
+```bash
+git clone https://github.com/vatly/vatly-fluentcart-wp.git
+cd vatly-fluentcart-wp
+bin/build-release.sh
+```
+
+The script produces `build/vatly-for-fluentcart.zip` with a namespace-scoped copy of its dependencies (it needs PHP, Composer, curl and zip).
+In WordPress, go to **Plugins → Add New → Upload Plugin**, choose the zip, and activate it.
+
+For development, run `composer install` in the clone instead, then place or symlink the directory in `wp-content/plugins/`.
+
+## Setup
+
+1. **Add your API credentials.** Go to **FluentCart → Settings → Payment Methods → Vatly**, choose **Test** mode, and paste the test **API key** and **Webhook secret** from the **Developers** section of your Vatly dashboard.
+2. **Register the webhook in Vatly.** Under **Developers** in the Vatly dashboard, add a webhook endpoint pointing at:
+   ```text
+   https://your-site.com/wp-admin/admin-ajax.php?action=fluent_cart_vatly_webhook
+   ```
+   :brUse the webhook secret you entered above. Vatly's `order.paid` webhook stamps the official invoice onto each order.
+3. **Map your products to Vatly.** Edit a FluentCart product and fill in the **Vatly mapping** box with the IDs from **Manage Products** in your Vatly dashboard:
+   - **Vatly product ID**: the `one_off_product_…` ID, for one-time products.
+   - **Vatly plan ID**: the `subscription_plan_…` ID, for subscription products.
+   :brA checkout fails with a clear error when the product it sells has no matching Vatly ID.
+
+## Invoices
+
+Vatly issues the legally valid VAT invoice and, for refunds, the credit note. When a Vatly `order.paid` webhook arrives, the plugin stores the Vatly invoice URL on the FluentCart order and the credit-note URL on refunds. Show the invoice anywhere FluentCart accepts shortcodes:
+
+| Shortcode                | Output                                          |
+| ------------------------ | ----------------------------------------------- |
+| `[vatly_invoice_link]`   | A plain "Download official Vatly invoice" link. |
+| `[vatly_invoice_button]` | The same link, styled as a button.              |
+
+Both accept an optional `order_id`, for example `[vatly_invoice_link order_id="123"]`; otherwise they use FluentCart's current order. They render nothing for orders without a Vatly invoice, so they are safe in templates shared with other gateways. The invoice button also appears automatically on the FluentCart receipt page.
+
+For the FluentCart hooks the invoicing relies on, see [Merchant-of-Record invoicing](https://docs.vatly.com/packages/fluentcart/merchant-of-record).
+
+## Refunds
+
+Refunds issued from the FluentCart admin go through Vatly, then are recorded on the FluentCart transaction.
+
+- **Full refunds** are supported.
+- **Partial refunds on single-item orders** are refunded against the order's line.
+- **Partial refunds on multi-item orders** are not supported from FluentCart. Issue a full refund, or refund a specific line from the Vatly dashboard.
+
+Vatly refunds are asynchronous: the FluentCart refund starts with Vatly's initial status, usually `pending`, and moves to `refunded` once Vatly confirms it.
+
+Each FluentCart transaction keeps the mode (test or live) it had at checkout. Refunds use the API key for that record's mode, not the gateway's current setting.
+
+## Development
+
+```bash
+composer install
+composer test:unit          # PHPUnit unit suite
+composer test:integration   # integration suite (see docker/ for a WordPress + FluentCart environment)
+composer analyse            # PHPStan
+composer phpcs              # WordPress coding standards
+```
+
+The source and issue tracker are on [GitHub](https://github.com/vatly/vatly-fluentcart-wp){rel="&#x22;nofollow&#x22;"}.
+
+
+# Merchant-of-Record invoicing: implementation notes
+
+How the plugin makes Vatly the single source of truth for invoices on FluentCart
+orders, and the FluentCart integration points it relies on. This is reference
+material for maintainers; end users only need the [README](https://github.com/vatly/vatly-fluentcart-wp/blob/main/README.md){rel="&#x22;nofollow&#x22;"}.
+
+## The problem
+
+Vatly is the Merchant of Record, so the legally valid VAT invoice (and, for
+refunds, the credit note) is the one **Vatly** issues. FluentCart also generates
+its own receipt/invoice. Left alone, a customer paying via Vatly would receive
+**two competing invoices** for one purchase.
+
+The plugin therefore (a) surfaces Vatly's invoice and (b) suppresses
+FluentCart's own invoicing, but only for orders paid via the Vatly gateway
+(`payment_method === 'vatly'`). Every guard callback is a strict no-op for
+non-Vatly orders. The guard lives in `src/Support/MoRInvoiceGuard.php`.
+
+## Hooks used (verified against FluentCart free v1.3.28)
+
+The guard wires only hooks confirmed to exist **and fire** in FluentCart free
+1.3.28. Each wired hook carries a `// verified: …` file\:line comment in the
+source.
+
+| Intent                                                                                  | FluentCart hook                                                                                     | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Suppress FluentCart's competing customer receipt/invoice email (and its PDF attachment) | `fluent_cart/should_send_email_notification` (filter, `EmailNotificationMailer::mailEmailsOfEvent`) | Returns `false` for the `order_paid_customer` notification (event `order_paid`, subject "Purchase Receipt #{{ order.invoice_no }}") on Vatly orders: the only customer mail that doubles as FluentCart's invoice and the only one that can attach FluentCart's PDF receipt. No email ⇒ no competing invoice and no attached PDF (covers Pro too). All other notifications (refunds, shipping, subscription, and every admin copy) pass through untouched. |
+| Surface the Vatly invoice link on the customer receipt page                             | `fluent_cart/receipt/thank_you/after_order_items` (action, `ThankYouRender`)                        | Auto-renders the Vatly invoice button (reusing the shortcode renderer) beneath the order items for Vatly orders.                                                                                                                                                                                                                                                                                                                                          |
+
+## Why some surfaces aren't hooked
+
+- **FluentCart Pro PDF receipt** (`fluent_cart/pdf/generate_receipt`) only fires
+  under Pro + FluentPDF (`OrderService::canGenerateReceiptPdf()` +
+  `defined('FLUENT_PDF')`), so it never runs on free. Suppressing the receipt
+  *email* already drops its PDF attachment on Pro, so no separate handler is
+  needed.
+- **Refund PDF / refund URL**: FluentCart free exposes no hook to redirect a
+  refund PDF, and there is no free refund-PDF surface to gate.
+- **Admin billing-detail edits**: FluentCart free fires no action or filter
+  around `CustomerAddressResource::update` or the admin
+  `CustomerController::updateAddress`, so an admin edit of an order's/customer's
+  billing address cannot be blocked or mirrored.
+
+These FluentCart-side artifacts remain FluentCart-local and **non-authoritative**;
+Vatly's invoice and credit note are the legal record of account. For
+subscriptions, point staff to the Vatly customer portal
+(`SubscriptionService::updateBillingUrl()`) when billing details must change; a
+FluentCart-local edit never reaches Vatly's already-issued invoice.
+
+> Earlier revisions referenced several FluentCart hook names that don't exist in
+> core; those have been removed. If you extend the guard, confirm any new hook
+> actually fires in the FluentCart version you target before relying on it.
+
+
 # PHP Fluent
 
 Sell a download, start a subscription, and keep your app's billing records in step with Vatly.
@@ -14836,18 +14986,21 @@ Vatly is the European merchant of record for AI, software and digital products. 
 
 ## Available packages
 
-| Language / Framework | Package                                                                                                                                                                                                                                                   | Install                                   |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| PHP SDK              | [vatly/vatly-api-php](https://packagist.org/packages/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/php/readme) · [GitHub](https://github.com/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"}                 | `composer require vatly/vatly-api-php`    |
-| PHP Fluent           | [vatly/vatly-fluent-php](https://packagist.org/packages/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-php/readme) · [GitHub](https://github.com/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} | `composer require vatly/vatly-fluent-php` |
-| Laravel              | [vatly/vatly-laravel](https://packagist.org/packages/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/laravel/readme) · [GitHub](https://github.com/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"}             | `composer require vatly/vatly-laravel`    |
-| JavaScript SDK       | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js){rel="&#x22;nofollow&#x22;"}                        | `npm install @getvatly/sdk`               |
-| JavaScript Fluent    | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js){rel="&#x22;nofollow&#x22;"}                | `npm install @getvatly/fluent`            |
-| Python SDK           | [vatly-api-python](https://pypi.org/project/vatly-api-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"}                      | `pip install vatly-api-python`            |
-| Python Fluent        | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python){rel="&#x22;nofollow&#x22;"}      | `pip install vatly-fluent-python`         |
-| Django               | [vatly-django](https://pypi.org/project/vatly-django/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django){rel="&#x22;nofollow&#x22;"}                                  | `pip install vatly-django`                |
+| Language / Framework   | Package                                                                                                                                                                                                                                                   | Install                                   |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| PHP SDK                | [vatly/vatly-api-php](https://packagist.org/packages/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/php/readme) · [GitHub](https://github.com/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"}                 | `composer require vatly/vatly-api-php`    |
+| PHP Fluent             | [vatly/vatly-fluent-php](https://packagist.org/packages/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-php/readme) · [GitHub](https://github.com/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} | `composer require vatly/vatly-fluent-php` |
+| Laravel                | [vatly/vatly-laravel](https://packagist.org/packages/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/laravel/readme) · [GitHub](https://github.com/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"}             | `composer require vatly/vatly-laravel`    |
+| JavaScript SDK         | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js){rel="&#x22;nofollow&#x22;"}                        | `npm install @getvatly/sdk`               |
+| JavaScript Fluent      | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js){rel="&#x22;nofollow&#x22;"}                | `npm install @getvatly/fluent`            |
+| Python SDK             | [vatly-api-python](https://pypi.org/project/vatly-api-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"}                      | `pip install vatly-api-python`            |
+| Python Fluent          | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python){rel="&#x22;nofollow&#x22;"}      | `pip install vatly-fluent-python`         |
+| Django                 | [vatly-django](https://pypi.org/project/vatly-django/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django){rel="&#x22;nofollow&#x22;"}                                  | `pip install vatly-django`                |
+| FluentCart (WordPress) | Unreleased · [Docs](https://docs.vatly.com/packages/fluentcart/readme) · [GitHub](https://github.com/vatly/vatly-fluentcart-wp){rel="&#x22;nofollow&#x22;"}                                                                                               | Build from source                         |
 
 These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha. The Python packages require Python 3.10+ and are released at `0.1.0a2`; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively. For example, pin the SDK with `pip install vatly-api-python==0.1.0a2`.
+
+The FluentCart plugin has not been released yet. Its payment flow is not yet verified against current FluentCart versions, so use it only in test mode.
 
 Not using one of these languages? You can use the [REST API directly](https://docs.vatly.com/guides/authentication) with any HTTP client.
 
@@ -15145,6 +15298,8 @@ The Lovable and Bolt guides describe custom integrations using Vatly's existing 
 Using a framework rather than an app builder? Official [Laravel](https://docs.vatly.com/packages/laravel/readme) and [Django](https://docs.vatly.com/packages/django/readme) packages integrate Vatly with your application. Their installation, configuration and API guides live under [Packages](https://docs.vatly.com/packages), alongside the SDKs and fluent packages, rather than being duplicated here.
 
 These packages are in alpha. Every alpha release may include breaking changes. Pin exact versions during alpha.
+
+Running a WordPress store on FluentCart? The [FluentCart plugin](https://docs.vatly.com/packages/fluentcart/readme) adds Vatly as a payment gateway. It has not been released yet, so use it only in test mode.
 
 ## Connecting another app?
 
