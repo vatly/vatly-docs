@@ -120,7 +120,7 @@ For your records of processing and for access and deletion requests:
 
 - **Settings:** your Vatly API keys and webhook secrets, encrypted, in FluentCart's settings.
 - **Customer links:** the table `{prefix}vatly_customer_bindings` maps each Vatly customer ID to its FluentCart customer ID. It holds no names or contact details.
-- **Webhook log:** the table `{prefix}vatly_webhook_calls` keeps each webhook Vatly sends, for debugging. Personal fields (customer name, email, address, tax ID, payment method details) are removed before it is stored; what remains is the event's IDs, statuses, amounts, tax and order lines. Entries are deleted after 30 days. Change that with the `vatly_fluentcart_webhook_log_retention_days` filter, for example `add_filter('vatly_fluentcart_webhook_log_retention_days', fn () => 7);`.
+- **Webhook log:** the table `{prefix}vatly_webhook_calls` keeps each webhook Vatly sends, for debugging. Personal fields (customer name, email, address, tax ID, payment method details) are redacted before it is stored, so they read `[redacted]`; the event's IDs, statuses, amounts, tax and order lines are kept. Entries are deleted after 30 days. Change that with the `vatly_fluentcart_webhook_log_retention_days` filter, for example `add_filter('vatly_fluentcart_webhook_log_retention_days', fn () => 7);`.
 
 Orders, subscriptions and transactions are FluentCart's own records. Deleting the plugin removes both tables, its settings and its scheduled jobs, and leaves those records in place.
 
