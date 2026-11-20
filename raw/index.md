@@ -69,8 +69,8 @@ Try the flow before going live.
 
 <div className="guides-crosslinks">
 
+Vatly is the European merchant of record for AI, software and digital products.
+
 Looking for implementation details? [SDKs & Packages →](/packages) · [API Reference →](/api-reference/customers)
 
 </div>
-
-Vatly is the European merchant of record for AI, software and digital products.

@@ -15415,7 +15415,7 @@ If you are ready for your first API request, follow the [Quickstart](https://doc
 ::
 
 ::div{.guides-crosslinks}
+Vatly is the European merchant of record for AI, software and digital products.
+
 Looking for implementation details? [SDKs & Packages →](https://docs.vatly.com/packages) · [API Reference →](https://docs.vatly.com/api-reference/customers)
 ::
-
-Vatly is the European merchant of record for AI, software and digital products.
