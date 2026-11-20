@@ -37,15 +37,6 @@ export default defineNuxtConfig({
           sizes: '180x180',
           href: '/apple-touch-icon.png',
         },
-        {
-          rel: 'preconnect',
-          href: 'https://fonts.bunny.net',
-          crossorigin: '',
-        },
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.bunny.net/css2?family=Poppins:wght@300;400;500;600;700&display=swap',
-        },
       ],
       meta: [
         { property: 'og:image', content: 'https://docs.vatly.com/og-image.jpg' },
@@ -89,7 +80,7 @@ export default defineNuxtConfig({
     },
   },
 
-  css: ['~/assets/css/overrides.css'],
+  css: ['~/assets/css/fonts.css', '~/assets/css/overrides.css'],
 
   mcp: {
     enabled: false,
