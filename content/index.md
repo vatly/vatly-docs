@@ -59,7 +59,7 @@ seo:
 ::
 
 ::div{class="guides-crosslinks"}
+Vatly is the European merchant of record for AI, software and digital products.
+
 Looking for implementation details? [SDKs & Packages →](/packages) · [API Reference →](/api-reference/customers)
 ::
-
-Vatly is the European merchant of record for AI, software and digital products.

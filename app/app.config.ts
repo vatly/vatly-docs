@@ -37,6 +37,18 @@ export default defineAppConfig({
     pageHeader: {
       slots: { headline: 'hidden' },
     },
+    // Long "On this page" titles wrap instead of truncating. Nuxt UI's
+    // highlight indicator assumes every link is one fixed-height line, so it
+    // would drift on wrapped titles; it is replaced by a plain rail and the
+    // active link's color.
+    contentToc: {
+      defaultVariants: { highlight: false },
+      slots: {
+        list: 'ms-2.5 ps-4 border-s border-default',
+        link: 'items-start',
+        linkText: 'whitespace-normal! overflow-visible! break-words',
+      },
+    },
   },
   // Per-page OG image card style, read by app/components/OgImage/Docs.takumi.vue.
   //  'vatly'   → solid Vatly-blue card matching Vatly's marketing/changelog OG
