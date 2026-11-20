@@ -8482,13 +8482,13 @@ A profile is input, not a stored customer. Supplying only its email to a checkou
 
 ## Save local billing state
 
-| Contract                          | Your implementation does                                                                                |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `CustomerBindingRepository`       | Maps host IDs to Vatly customer IDs in both directions; records unattributed customers.                 |
-| `SubscriptionRepositoryInterface` | Finds by Vatly ID, stores a subscription, updates it.                                                   |
-| `OrderRepositoryInterface`        | Finds by Vatly ID, stores an order, updates it.                                                         |
-| `WebhookCallRepositoryInterface`  | Records received deliveries and cleans up old audit rows. It does not skip duplicate processing.        |
-| `EventDispatcherInterface`        | Dispatches typed events to your listeners. `NullEventDispatcher` is available if you need no listeners. |
+| Contract                          | Your implementation does                                                                                                                                                                                                                                                         |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CustomerBindingRepository`       | Maps host IDs to Vatly customer IDs in both directions; records unattributed customers.                                                                                                                                                                                          |
+| `SubscriptionRepositoryInterface` | Finds by Vatly ID, stores a subscription, updates it.                                                                                                                                                                                                                            |
+| `OrderRepositoryInterface`        | Finds by Vatly ID, stores an order, updates it.                                                                                                                                                                                                                                  |
+| `WebhookCallRepositoryInterface`  | Records received deliveries and cleans up old audit rows. It does not skip duplicate processing. The recorded `object` has the customer's personal data (`customerDetails`, `billingAddress`, `shippingAddress`, `mandate`) redacted to `[redacted]`; keys and nesting are kept. |
+| `EventDispatcherInterface`        | Dispatches typed events to your listeners. `NullEventDispatcher` is available if you need no listeners.                                                                                                                                                                          |
 
 Repositories return your objects implementing `SubscriptionInterface` or `OrderInterface`. Wrap existing host records rather than copying them; see [Host tables](https://docs.vatly.com/packages/fluent-php/host-owns-its-tables). Reader and writer contracts are also available separately when a component needs only one role.
 

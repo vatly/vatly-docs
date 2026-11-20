@@ -101,7 +101,31 @@ A profile is input, not a stored customer. Supplying only its email to a checkou
     </td>
     
     <td>
-      Records received deliveries and cleans up old audit rows. It does not skip duplicate processing.
+      Records received deliveries and cleans up old audit rows. It does not skip duplicate processing. The recorded <code>
+        object
+      </code>
+      
+       has the customer's personal data (<code>
+        customerDetails
+      </code>
+      
+      , <code>
+        billingAddress
+      </code>
+      
+      , <code>
+        shippingAddress
+      </code>
+      
+      , <code>
+        mandate
+      </code>
+      
+      ) redacted to <code>
+        [redacted]
+      </code>
+      
+      ; keys and nesting are kept.
     </td>
   </tr>
   
