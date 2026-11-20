@@ -107,6 +107,18 @@ defineOgImage('Docs', {
   color: var(--ui-text-muted);
 }
 
+.guides-home :deep(.guides-crosslinks p) {
+  margin: 0 0 0.5rem;
+}
+
+.guides-home :deep(.guides-crosslinks p:first-child) {
+  color: var(--ui-text);
+}
+
+.guides-home :deep(.guides-crosslinks a) {
+  white-space: nowrap;
+}
+
 .guides-home :deep(a:focus-visible) {
   outline: 2px solid var(--ui-primary);
   outline-offset: 4px;
