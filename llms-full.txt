@@ -10153,11 +10153,11 @@ to, and that's where Vatly stands apart:
 
 ## Next steps
 
-- **Starting fresh** → [Getting started](https://docs.vatly.com/packages/laravel/readme) wires up the trait, config, migrations and
+- **Starting fresh:** [Getting started](https://docs.vatly.com/packages/laravel/readme) wires up the trait, config, migrations and
   webhook in a few minutes.
-- **Already running another provider** → [Migrating from Cashier](https://docs.vatly.com/packages/laravel/migrating-to-vatly)
+- **Already running another provider:** [Migrating from Cashier](https://docs.vatly.com/packages/laravel/migrating-to-vatly)
   shows how to add Vatly beside your current biller and migrate customers over gradually.
-- **Reference** → [Configuration](https://docs.vatly.com/packages/laravel/configuration) · [Customers](https://docs.vatly.com/packages/laravel/customers) · [Checkouts](https://docs.vatly.com/packages/laravel/checkouts) · [Subscriptions](https://docs.vatly.com/packages/laravel/subscriptions) · [Orders](https://docs.vatly.com/packages/laravel/orders) · [Webhooks](https://docs.vatly.com/packages/laravel/webhooks)
+- **Reference:** [Configuration](https://docs.vatly.com/packages/laravel/configuration) · [Customers](https://docs.vatly.com/packages/laravel/customers) · [Checkouts](https://docs.vatly.com/packages/laravel/checkouts) · [Subscriptions](https://docs.vatly.com/packages/laravel/subscriptions) · [Orders](https://docs.vatly.com/packages/laravel/orders) · [Webhooks](https://docs.vatly.com/packages/laravel/webhooks)
 
 Compared against, at time of writing:
 [Laravel Cashier (Stripe)](https://laravel.com/docs/12.x/billing){rel="&#x22;nofollow&#x22;"} ·
@@ -10711,10 +10711,10 @@ A couple of shape differences worth flagging for whoever's implementing:
 
 ## Reference
 
-- **Deciding / comparing** → [How Vatly compares](https://docs.vatly.com/packages/laravel/comparison) (Merchant-of-Record model,
+- **Deciding / comparing:** [How Vatly compares](https://docs.vatly.com/packages/laravel/comparison) (Merchant-of-Record model,
   feature parity, roadmap)
-- **Getting started** → [Getting started](https://docs.vatly.com/packages/laravel/readme) · [Configuration](https://docs.vatly.com/packages/laravel/configuration)
-- **API surface** → [Customers](https://docs.vatly.com/packages/laravel/customers) · [Checkouts](https://docs.vatly.com/packages/laravel/checkouts) · [Subscriptions](https://docs.vatly.com/packages/laravel/subscriptions) · [Orders](https://docs.vatly.com/packages/laravel/orders) · [Webhooks](https://docs.vatly.com/packages/laravel/webhooks)
+- **Getting started:** [Getting started](https://docs.vatly.com/packages/laravel/readme) · [Configuration](https://docs.vatly.com/packages/laravel/configuration)
+- **API surface:** [Customers](https://docs.vatly.com/packages/laravel/customers) · [Checkouts](https://docs.vatly.com/packages/laravel/checkouts) · [Subscriptions](https://docs.vatly.com/packages/laravel/subscriptions) · [Orders](https://docs.vatly.com/packages/laravel/orders) · [Webhooks](https://docs.vatly.com/packages/laravel/webhooks)
 
 Compared against, at time of writing:
 [Laravel Cashier (Stripe)](https://laravel.com/docs/12.x/billing){rel="&#x22;nofollow&#x22;"} ·

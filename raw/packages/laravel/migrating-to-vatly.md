@@ -1152,10 +1152,10 @@ webhook events — not something you reconstruct from raw payloads.
 
 ## Reference
 
-- **Deciding / comparing** → [How Vatly compares](/packages/laravel/comparison) (Merchant-of-Record model,
+- **Deciding / comparing:** [How Vatly compares](/packages/laravel/comparison) (Merchant-of-Record model,
 feature parity, roadmap)
-- **Getting started** → [Getting started](/packages/laravel/readme) · [Configuration](/packages/laravel/configuration)
-- **API surface** → [Customers](/packages/laravel/customers) · [Checkouts](/packages/laravel/checkouts) · [Subscriptions](/packages/laravel/subscriptions) · [Orders](/packages/laravel/orders) · [Webhooks](/packages/laravel/webhooks)
+- **Getting started:** [Getting started](/packages/laravel/readme) · [Configuration](/packages/laravel/configuration)
+- **API surface:** [Customers](/packages/laravel/customers) · [Checkouts](/packages/laravel/checkouts) · [Subscriptions](/packages/laravel/subscriptions) · [Orders](/packages/laravel/orders) · [Webhooks](/packages/laravel/webhooks)
 
 Compared against, at time of writing:
 [Laravel Cashier (Stripe)](https://laravel.com/docs/12.x/billing) ·

@@ -660,11 +660,11 @@ rewrite.
 
 ## Next steps
 
-- **Starting fresh** → [Getting started](/packages/laravel/readme) wires up the trait, config, migrations and
+- **Starting fresh:** [Getting started](/packages/laravel/readme) wires up the trait, config, migrations and
 webhook in a few minutes.
-- **Already running another provider** → [Migrating from Cashier](/packages/laravel/migrating-to-vatly)
+- **Already running another provider:** [Migrating from Cashier](/packages/laravel/migrating-to-vatly)
 shows how to add Vatly beside your current biller and migrate customers over gradually.
-- **Reference** → [Configuration](/packages/laravel/configuration) · [Customers](/packages/laravel/customers) · [Checkouts](/packages/laravel/checkouts) · [Subscriptions](/packages/laravel/subscriptions) · [Orders](/packages/laravel/orders) · [Webhooks](/packages/laravel/webhooks)
+- **Reference:** [Configuration](/packages/laravel/configuration) · [Customers](/packages/laravel/customers) · [Checkouts](/packages/laravel/checkouts) · [Subscriptions](/packages/laravel/subscriptions) · [Orders](/packages/laravel/orders) · [Webhooks](/packages/laravel/webhooks)
 
 Compared against, at time of writing:
 [Laravel Cashier (Stripe)](https://laravel.com/docs/12.x/billing) ·
