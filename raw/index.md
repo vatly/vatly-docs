@@ -24,7 +24,7 @@ Get a test key, choose a client and connect to the Vatly API.
 
 Follow a guide for your builder, with the account setup and integration brief in one place.
 
-[Lovable →](/integrations/lovable) · [Bolt →](/integrations/bolt)
+[Lovable](/integrations/lovable) · [Bolt](/integrations/bolt)
 
 </div>
 
@@ -71,6 +71,6 @@ Try the flow before going live.
 
 Vatly is the European merchant of record for AI, software and digital products.
 
-Looking for implementation details? [SDKs & Packages →](/packages) · [API Reference →](/api-reference/customers)
+Looking for implementation details? [SDKs & Packages](/packages) · [API Reference](/api-reference/customers)
 
 </div>

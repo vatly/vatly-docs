@@ -15380,7 +15380,7 @@ If you are ready for your first API request, follow the [Quickstart](https://doc
 
   Follow a guide for your builder, with the account setup and integration brief in one place.
 
-  [Lovable →](https://docs.vatly.com/integrations/lovable) · [Bolt →](https://docs.vatly.com/integrations/bolt)
+  [Lovable](https://docs.vatly.com/integrations/lovable) · [Bolt](https://docs.vatly.com/integrations/bolt)
   :::
 
   :::div
@@ -15417,5 +15417,5 @@ If you are ready for your first API request, follow the [Quickstart](https://doc
 ::div{.guides-crosslinks}
 Vatly is the European merchant of record for AI, software and digital products.
 
-Looking for implementation details? [SDKs & Packages →](https://docs.vatly.com/packages) · [API Reference →](https://docs.vatly.com/api-reference/customers)
+Looking for implementation details? [SDKs & Packages](https://docs.vatly.com/packages) · [API Reference](https://docs.vatly.com/api-reference/customers)
 ::
