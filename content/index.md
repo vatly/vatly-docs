@@ -24,7 +24,7 @@ seo:
 
   Follow a guide for your builder, with the account setup and integration brief in one place.
 
-  [Lovable →](/integrations/lovable) · [Bolt →](/integrations/bolt)
+  [Lovable](/integrations/lovable) · [Bolt](/integrations/bolt)
   :::
 
   :::div
@@ -61,5 +61,5 @@ seo:
 ::div{class="guides-crosslinks"}
 Vatly is the European merchant of record for AI, software and digital products.
 
-Looking for implementation details? [SDKs & Packages →](/packages) · [API Reference →](/api-reference/customers)
+Looking for implementation details? [SDKs & Packages](/packages) · [API Reference](/api-reference/customers)
 ::
