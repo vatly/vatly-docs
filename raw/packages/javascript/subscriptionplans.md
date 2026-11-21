@@ -151,11 +151,23 @@ For all fields and options, see the [Subscription Plans API reference](https://d
     </td>
     
     <td>
-      Billing cadence (e.g. <code>
+      Billing cadence: <code>
         month
       </code>
       
-       × 1).
+       × 1 or <code>
+        year
+      </code>
+      
+       × 1. Plans created earlier may still return <code>
+        day
+      </code>
+      
+      , <code>
+        week
+      </code>
+      
+      , or a higher count.
     </td>
   </tr>
   
@@ -261,12 +273,16 @@ const plan = await vatly.subscriptionPlans.create({
   name: "Pro Monthly", description: "Pro features", productType: "saas",
   basePrice: { value: "29.00", currency: "EUR" }, interval: "month", intervalCount: 1,
 });
-await vatly.subscriptionPlans.update(plan.id, { interval: "week", intervalCount: 2 });
+await vatly.subscriptionPlans.update(plan.id, { interval: "year", intervalCount: 1 });
 await vatly.subscriptionPlans.archive(plan.id); // 204: no return value
 const restored = await vatly.subscriptionPlans.unarchive(plan.id);
 const all = await vatly.subscriptionPlans.list({ includeArchived: true });
 ```
 
 New prices are EUR-only. `taxBehavior` defaults to `exclusive` and is immutable.
-Plans sell `saas` only; `day` intervals are test-mode-only. Creation and updates
-may require approval; inspect `status`, `pendingUpdates`, and `updateStatus`.
+Plans sell `saas` only. New and updated plans bill monthly (`interval: "month"`,
+`intervalCount: 1`) or yearly (`interval: "year"`, `intervalCount: 1`), in both
+live and test mode; anything else returns `422`. When updating, send `interval`
+and `intervalCount` together. Plans already on another interval keep working and
+can be updated without sending the interval. Creation and updates may require
+approval; inspect `status`, `pendingUpdates`, and `updateStatus`.
