@@ -218,23 +218,23 @@ The subscription plan model contains all the information about the subscription 
     </td>
     
     <td>
-      Billing interval unit. Can be <code>
-        day
-      </code>
-      
-      , <code>
-        week
-      </code>
-      
-      , <code>
+      Billing interval unit. <code>
         month
       </code>
       
-      , or <code>
+       or <code>
         year
       </code>
       
-      .
+       for new plans. A plan created earlier on another interval may still return <code>
+        day
+      </code>
+      
+       or <code>
+        week
+      </code>
+      
+      ; it keeps working.
     </td>
   </tr>
   
@@ -252,15 +252,15 @@ The subscription plan model contains all the information about the subscription 
     </td>
     
     <td>
-      Number of interval units between billing cycles. For example, <code>
-        interval: month
+      Number of interval units between billing cycles. Always <code>
+        1
       </code>
       
-       with <code>
-        intervalCount: 3
+       for new plans. A plan created earlier may still return a higher value, such as <code>
+        3
       </code>
       
-       bills every 3 months.
+       for a plan that bills every 3 months.
     </td>
   </tr>
   
@@ -652,8 +652,7 @@ A plan created with a `live_` token starts in `pending` status and must be appro
 **Constraints:**
 
 - `productType` must be `saas`: e-books are one-off purchases and cannot be sold on a recurring basis.
-- The `day` interval is sandbox-only; live plans support `week`, `month`, and `year`.
-- `intervalCount` is bounded per unit: up to 365 days, 52 weeks, or 12 months. `year` always bills once per year (`intervalCount` is ignored).
+- The plan must bill monthly (`interval: month`, `intervalCount: 1`) or yearly (`interval: year`, `intervalCount: 1`), in both live and test mode. Any other combination returns a `422`.
 
 ### Required attributes
 
@@ -777,19 +776,11 @@ A plan created with a `live_` token starts in `pending` status and must be appro
     </td>
     
     <td>
-      Billing interval unit. One of <code>
-        day
-      </code>
-      
-       (sandbox-only), <code>
-        week
-      </code>
-      
-      , <code>
+      Billing interval unit. Either <code>
         month
       </code>
       
-      , or <code>
+       or <code>
         year
       </code>
       
@@ -811,7 +802,11 @@ A plan created with a `live_` token starts in `pending` status and must be appro
     </td>
     
     <td>
-      Number of interval units between billing cycles (at least 1).
+      Number of interval units between billing cycles. Must be <code>
+        1
+      </code>
+      
+      .
     </td>
   </tr>
 </tbody>
@@ -1033,6 +1028,8 @@ Submits an update to a live subscription plan. Because plans drive VAT-bearing r
 
 Each request is the **complete set of changes** relative to the current live plan, and must contain at least one field. Fields equal to the live value are ignored, and a request that nets to no change clears any pending update. A new request replaces the not-yet-reviewed one; while an update is being reviewed, further requests return `409`. Changing the interval on a plan that has ever been used by a subscription (active or not) also returns `409`. The price stays changeable.
 
+To change the billing interval, send `interval` and `intervalCount` together, set to monthly (`month`, `1`) or yearly (`year`, `1`). Anything else returns a `422`, in both live and test mode. A plan that already bills on another interval keeps working, and you can still update its other fields without sending the interval.
+
 The submitted change is surfaced on the plan resource as `pendingUpdates` (only the fields that differ), with `updateStatus` tracking the review. Approval is signalled by the `subscription_plan.update_submitted`, `subscription_plan.update_approved`, and `subscription_plan.update_rejected` webhook events.
 
 ### URL parameters
@@ -1199,20 +1196,16 @@ At least one field must be provided.
     </td>
     
     <td>
-      New billing interval unit. One of <code>
-        day
-      </code>
-      
-       (sandbox-only), <code>
-        week
-      </code>
-      
-      , <code>
+      New billing interval unit. Either <code>
         month
       </code>
       
-      , or <code>
+       or <code>
         year
+      </code>
+      
+      . Must be sent together with <code>
+        intervalCount
       </code>
       
       .
@@ -1233,11 +1226,15 @@ At least one field must be provided.
     </td>
     
     <td>
-      Number of interval units between billing cycles (at least 1). Required when <code>
+      Number of interval units between billing cycles. Must be <code>
+        1
+      </code>
+      
+      . Must be sent together with <code>
         interval
       </code>
       
-       is provided.
+      .
     </td>
   </tr>
 </tbody>
@@ -1250,9 +1247,9 @@ curl -X PATCH https://api.vatly.com/v1/subscription-plans/subscription_plan_Bm7x
   -H "Authorization: Bearer live_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Pro Weekly",
-    "basePrice": { "value": "9.00", "currency": "EUR" },
-    "interval": "week",
+    "name": "Pro Yearly",
+    "basePrice": { "value": "290.00", "currency": "EUR" },
+    "interval": "year",
     "intervalCount": 1
   }'
 ```
@@ -1262,9 +1259,9 @@ $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
 $plan = $vatly->subscriptionPlans->update('subscription_plan_Bm7xNvPwKr3YjTgHcZaE', [
-  'name' => 'Pro Weekly',
-  'basePrice' => ['value' => '9.00', 'currency' => 'EUR'],
-  'interval' => 'week',
+  'name' => 'Pro Yearly',
+  'basePrice' => ['value' => '290.00', 'currency' => 'EUR'],
+  'interval' => 'year',
   'intervalCount' => 1,
 ]);
 ```
@@ -1287,12 +1284,12 @@ $plan = $vatly->subscriptionPlans->update('subscription_plan_Bm7xNvPwKr3YjTgHcZa
   "status": "active",
   "archivedAt": null,
   "pendingUpdates": {
-    "name": "Pro Weekly",
+    "name": "Pro Yearly",
     "basePrice": {
-      "value": "9.00",
+      "value": "290.00",
       "currency": "EUR"
     },
-    "interval": "week",
+    "interval": "year",
     "intervalCount": 1
   },
   "updateStatus": "pending",

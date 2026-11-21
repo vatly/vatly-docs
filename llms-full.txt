@@ -3221,8 +3221,8 @@ The subscription model contains all the information about recurring billing rela
 | `billingAddress`     | `object`        | The customer billing address for the subscription. Includes `fullName`, `companyName`, `taxId`, `streetAndNumber`, `streetAdditional`, `city`, `region`, `postalCode`, and `country`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `basePrice`          | `Money`         | The base price per billing cycle before taxes. A Money object with `value` (decimal string) and `currency` (ISO 4217 code).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `quantity`           | `integer`       | The quantity for the subscription (e.g., number of seats).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `interval`           | `string`        | The billing interval. Can be `day`, `week`, `month`, or `year`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `intervalCount`      | `integer`       | The interval count, e.g., "3" for charging every 3 months.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `interval`           | `string`        | The billing interval: `month` or `year`. A subscription on a plan created earlier on another interval may still return `day` or `week`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `intervalCount`      | `integer`       | The interval count. Always `1` for new plans; a subscription on an older plan may return a higher value, such as `3` for charging every 3 months.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `status`             | `string`        | The status for the subscription. Can be `created`, `trial`, `active`, `canceled`, `on_grace_period`, or `paused`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `cancellationReason` | `string | null` | Why the subscription was canceled. Can be `payment_failure` (payment recovery was exhausted after failed renewals), `merchant_request` (the merchant canceled the subscription), or `customer_request` (the customer canceled from the self-service portal). Null unless a cancellation has been requested.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `mandate`            | `object | null` | The payment method (mandate) on file. Contains `method` (e.g. `card`, `sepa_debit`, `paypal`, `bacs_debit`) and `maskedIdentifier` (e.g. the last 4 digits). Null if no mandate is set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
@@ -4012,8 +4012,8 @@ The subscription plan model contains all the information about the subscription 
 | `description`    | `string`        | Detailed description of the plan.                                                                                                                                                                                                                                                                                                              |
 | `basePrice`      | `Money`         | Price per billing interval. A Money object with `value` (decimal string) and `currency` (ISO 4217 code). Interpretation depends on `taxBehavior`: when `exclusive`, `basePrice` is the net amount and tax is added at checkout; when `inclusive`, `basePrice` already includes tax and the net is back-computed from the buyer's jurisdiction. |
 | `taxBehavior`    | `string`        | Whether `basePrice` is tax-exclusive (`exclusive`, the B2B convention) or tax-inclusive (`inclusive`, the B2C convention). Immutable after plan creation: create a new plan for the other mode. A checkout may not mix products with different `taxBehavior` values.                                                                           |
-| `interval`       | `string`        | Billing interval unit. Can be `day`, `week`, `month`, or `year`.                                                                                                                                                                                                                                                                               |
-| `intervalCount`  | `integer`       | Number of interval units between billing cycles. For example, `interval: month` with `intervalCount: 3` bills every 3 months.                                                                                                                                                                                                                  |
+| `interval`       | `string`        | Billing interval unit. `month` or `year` for new plans. A plan created earlier on another interval may still return `day` or `week`; it keeps working.                                                                                                                                                                                         |
+| `intervalCount`  | `integer`       | Number of interval units between billing cycles. Always `1` for new plans. A plan created earlier may still return a higher value, such as `3` for a plan that bills every 3 months.                                                                                                                                                           |
 | `productType`    | `string`        | What kind of product this plan sells. Always `saas`: an e-book is a one-time purchase, so sell it as a one-off product instead. Set when the plan is created.                                                                                                                                                                                  |
 | `status`         | `string`        | Current status of the plan. Can be `active` (plan is active and can be subscribed to), `pending` (plan is awaiting approval), or `rejected` (plan has been rejected).                                                                                                                                                                          |
 | `archivedAt`     | `string | null` | When this plan was archived (ISO 8601), or `null` while it is open to new business. Always present. An archived plan is hidden from `GET /v1/subscription-plans`, refused by `POST /v1/checkouts`, and cannot be switched to from `PATCH /v1/subscriptions/:id`.                                                                               |
@@ -4131,8 +4131,7 @@ A plan created with a `live_` token starts in `pending` status and must be appro
 **Constraints:**
 
 - `productType` must be `saas`: e-books are one-off purchases and cannot be sold on a recurring basis.
-- The `day` interval is sandbox-only; live plans support `week`, `month`, and `year`.
-- `intervalCount` is bounded per unit: up to 365 days, 52 weeks, or 12 months. `year` always bills once per year (`intervalCount` is ignored).
+- The plan must bill monthly (`interval: month`, `intervalCount: 1`) or yearly (`interval: year`, `intervalCount: 1`), in both live and test mode. Any other combination returns a `422`.
 
 ### Required attributes
 
@@ -4142,8 +4141,8 @@ A plan created with a `live_` token starts in `pending` status and must be appro
 | `description`   | `string`  | Detailed description of the plan.                                                                                                                                             |
 | `basePrice`     | `Money`   | Price per billing interval. A Money object whose `value` is a decimal string with exactly two decimals. Currently only `EUR` is accepted; any other currency returns a `422`. |
 | `productType`   | `string`  | Tax product classification. Must be `saas`.                                                                                                                                   |
-| `interval`      | `string`  | Billing interval unit. One of `day` (sandbox-only), `week`, `month`, or `year`.                                                                                               |
-| `intervalCount` | `integer` | Number of interval units between billing cycles (at least 1).                                                                                                                 |
+| `interval`      | `string`  | Billing interval unit. Either `month` or `year`.                                                                                                                              |
+| `intervalCount` | `integer` | Number of interval units between billing cycles. Must be `1`.                                                                                                                 |
 
 ### Optional attributes
 
@@ -4273,6 +4272,8 @@ Submits an update to a live subscription plan. Because plans drive VAT-bearing r
 
 Each request is the **complete set of changes** relative to the current live plan, and must contain at least one field. Fields equal to the live value are ignored, and a request that nets to no change clears any pending update. A new request replaces the not-yet-reviewed one; while an update is being reviewed, further requests return `409`. Changing the interval on a plan that has ever been used by a subscription (active or not) also returns `409`. The price stays changeable.
 
+To change the billing interval, send `interval` and `intervalCount` together, set to monthly (`month`, `1`) or yearly (`year`, `1`). Anything else returns a `422`, in both live and test mode. A plan that already bills on another interval keeps working, and you can still update its other fields without sending the interval.
+
 The submitted change is surfaced on the plan resource as `pendingUpdates` (only the fields that differ), with `updateStatus` tracking the review. Approval is signalled by the `subscription_plan.update_submitted`, `subscription_plan.update_approved`, and `subscription_plan.update_rejected` webhook events.
 
 ### URL parameters
@@ -4291,8 +4292,8 @@ At least one field must be provided.
 | `description`   | `string`  | New description of the plan.                                                                                                                                                      |
 | `basePrice`     | `Money`   | New price per billing interval. A Money object whose `value` is a decimal string with exactly two decimals. Currently only `EUR` is accepted; any other currency returns a `422`. |
 | `productType`   | `string`  | Tax product classification. Must be `saas`.                                                                                                                                       |
-| `interval`      | `string`  | New billing interval unit. One of `day` (sandbox-only), `week`, `month`, or `year`.                                                                                               |
-| `intervalCount` | `integer` | Number of interval units between billing cycles (at least 1). Required when `interval` is provided.                                                                               |
+| `interval`      | `string`  | New billing interval unit. Either `month` or `year`. Must be sent together with `intervalCount`.                                                                                  |
+| `intervalCount` | `integer` | Number of interval units between billing cycles. Must be `1`. Must be sent together with `interval`.                                                                              |
 
 ::code-group{sync="api"}
 ```bash [cURL]
@@ -4300,9 +4301,9 @@ curl -X PATCH https://api.vatly.com/v1/subscription-plans/subscription_plan_Bm7x
   -H "Authorization: Bearer live_your_api_key_here" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Pro Weekly",
-    "basePrice": { "value": "9.00", "currency": "EUR" },
-    "interval": "week",
+    "name": "Pro Yearly",
+    "basePrice": { "value": "290.00", "currency": "EUR" },
+    "interval": "year",
     "intervalCount": 1
   }'
 ```
@@ -4312,9 +4313,9 @@ $vatly = new \Vatly\API\VatlyApiClient();
 $vatly->setApiKey('live_your_api_key_here');
 
 $plan = $vatly->subscriptionPlans->update('subscription_plan_Bm7xNvPwKr3YjTgHcZaE', [
-  'name' => 'Pro Weekly',
-  'basePrice' => ['value' => '9.00', 'currency' => 'EUR'],
-  'interval' => 'week',
+  'name' => 'Pro Yearly',
+  'basePrice' => ['value' => '290.00', 'currency' => 'EUR'],
+  'interval' => 'year',
   'intervalCount' => 1,
 ]);
 ```
@@ -4337,12 +4338,12 @@ $plan = $vatly->subscriptionPlans->update('subscription_plan_Bm7xNvPwKr3YjTgHcZa
   "status": "active",
   "archivedAt": null,
   "pendingUpdates": {
-    "name": "Pro Weekly",
+    "name": "Pro Yearly",
     "basePrice": {
-      "value": "9.00",
+      "value": "290.00",
       "currency": "EUR"
     },
-    "interval": "week",
+    "interval": "year",
     "intervalCount": 1
   },
   "updateStatus": "pending",

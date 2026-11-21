@@ -276,20 +276,20 @@ The subscription model contains all the information about recurring billing rela
     </td>
     
     <td>
-      The billing interval. Can be <code>
-        day
-      </code>
-      
-      , <code>
-        week
-      </code>
-      
-      , <code>
+      The billing interval: <code>
         month
       </code>
       
-      , or <code>
+       or <code>
         year
+      </code>
+      
+      . A subscription on a plan created earlier on another interval may still return <code>
+        day
+      </code>
+      
+       or <code>
+        week
       </code>
       
       .
@@ -310,7 +310,15 @@ The subscription model contains all the information about recurring billing rela
     </td>
     
     <td>
-      The interval count, e.g., "3" for charging every 3 months.
+      The interval count. Always <code>
+        1
+      </code>
+      
+       for new plans; a subscription on an older plan may return a higher value, such as <code>
+        3
+      </code>
+      
+       for charging every 3 months.
     </td>
   </tr>
   
