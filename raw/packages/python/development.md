@@ -79,11 +79,11 @@ logging response bodies that may contain personal data.
 <tbody>
   <tr>
     <td>
-      Production OpenAPI, retrieved 2026-11-13
+      Production OpenAPI, retrieved 2026-11-21
     </td>
     
     <td>
-      <a href="https://github.com/vatly/vatly-docs/blob/66c8205ea886e4cb48e8e3b2e988de3839c6d4d8/public/openapi.yaml" rel="nofollow">
+      <a href="https://github.com/vatly/vatly-docs/blob/d5c09d94a52c4e7d884c2817b4b7834597294cb0/public/openapi.yaml" rel="nofollow">
         vatly-docs specification
       </a>
     </td>
@@ -107,7 +107,7 @@ The checked-in specification is byte-identical to that source and to the bundle
 published by Vatly's production release. Its SHA-256 is:
 
 ```text
-5e648169e101edc8b3e088dc0e28d0f0a293e8a0ed057014c7336057d986def9
+be578c73c71c234262b6f5f21bd1f01e209fcc64464a1e81d7fd0675eb3c273c
 ```
 
 The specification's generated-at date is not its retrieval date.

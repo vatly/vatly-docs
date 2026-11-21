@@ -109,18 +109,10 @@ def example(client: VatlyClient):
     
     <td>
       <code>
-        "day"
-      </code>
-      
-      , <code>
-        "week"
-      </code>
-      
-      , <code>
         "month"
       </code>
       
-      , <code>
+       or <code>
         "year"
       </code>
     </td>
@@ -138,7 +130,9 @@ def example(client: VatlyClient):
     </td>
     
     <td>
-      positive integer
+      <code>
+        1
+      </code>
     </td>
     
     <td>
@@ -170,9 +164,10 @@ def example(client: VatlyClient):
 </tbody>
 </table>
 
-Use decimal strings, never floats, for money. The current creation contract uses
-EUR. Model fields are snake_case; dictionary inputs use `basePrice`, `productType`,
-`intervalCount` and `taxBehavior`.
+Plans bill monthly (`"month"`, `1`) or yearly (`"year"`, `1`) in both live and
+test mode; any other combination returns `422`. Use decimal strings, never floats,
+for money. The current creation contract uses EUR. Model fields are snake_case;
+dictionary inputs use `basePrice`, `productType`, `intervalCount` and `taxBehavior`.
 
 ## Find, update and archive
 
@@ -188,6 +183,10 @@ def example(client: VatlyClient):
     restored = client.subscription_plans.unarchive(updated.id)
     return plans, restored
 ```
+
+To change the billing interval, send `interval` and `intervalCount` together, set to
+`"month"` or `"year"` with `1`; anything else returns `422`. Other fields can be
+updated without sending the interval.
 
 Archiving prevents new sales, not existing renewals. `archive()` returns None;
 `unarchive()` returns the plan. Test changes are auto-approved; live changes may
@@ -255,7 +254,17 @@ require approval.
     </td>
     
     <td>
-      Billing cadence
+      Billing cadence; plans created earlier may still return <code>
+        "day"
+      </code>
+      
+      , <code>
+        "week"
+      </code>
+      
+       or a count above <code>
+        1
+      </code>
     </td>
   </tr>
   

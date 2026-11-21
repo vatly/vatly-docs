@@ -12914,13 +12914,14 @@ def example(client: VatlyClient):
 | `name`, `description` | string                                                  | Yes       |
 | `base_price`          | EUR money, e.g. `{"value": "19.00", "currency": "EUR"}` | Yes       |
 | `product_type`        | `"saas"`                                                | Yes       |
-| `interval`            | `"day"`, `"week"`, `"month"`, `"year"`                  | Yes       |
-| `interval_count`      | positive integer                                        | Yes       |
+| `interval`            | `"month"` or `"year"`                                   | Yes       |
+| `interval_count`      | `1`                                                     | Yes       |
 | `tax_behavior`        | `"exclusive"` or `"inclusive"`                          | No        |
 
-Use decimal strings, never floats, for money. The current creation contract uses
-EUR. Model fields are snake\_case; dictionary inputs use `basePrice`, `productType`,
-`intervalCount` and `taxBehavior`.
+Plans bill monthly (`"month"`, `1`) or yearly (`"year"`, `1`) in both live and
+test mode; any other combination returns `422`. Use decimal strings, never floats,
+for money. The current creation contract uses EUR. Model fields are snake\_case;
+dictionary inputs use `basePrice`, `productType`, `intervalCount` and `taxBehavior`.
 
 ## Find, update and archive
 
@@ -12937,16 +12938,20 @@ def example(client: VatlyClient):
     return plans, restored
 ```
 
+To change the billing interval, send `interval` and `intervalCount` together, set to
+`"month"` or `"year"` with `1`; anything else returns `422`. Other fields can be
+updated without sending the interval.
+
 Archiving prevents new sales, not existing renewals. `archive()` returns None;
 `unarchive()` returns the plan. Test changes are auto-approved; live changes may
 require approval.
 
-| Response field                      | Meaning                            |
-| ----------------------------------- | ---------------------------------- |
-| `id`                                | `subscription_plan_...` catalog ID |
-| `name`, `description`, `base_price` | Product and price                  |
-| `interval`, `interval_count`        | Billing cadence                    |
-| `testmode`, `links`                 | Mode and resource links            |
+| Response field                      | Meaning                                                                                        |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `id`                                | `subscription_plan_...` catalog ID                                                             |
+| `name`, `description`, `base_price` | Product and price                                                                              |
+| `interval`, `interval_count`        | Billing cadence; plans created earlier may still return `"day"`, `"week"` or a count above `1` |
+| `testmode`, `links`                 | Mode and resource links                                                                        |
 
 [Plan API reference](https://docs.vatly.com/api-reference/subscription-plans){rel="&#x22;nofollow&#x22;"} · [All methods](https://docs.vatly.com/packages/python/api#subscription_plans)
 
@@ -13496,14 +13501,14 @@ logging response bodies that may contain personal data.
 
 | Source                                   | Revision                                                                                                                                                      |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Production OpenAPI, retrieved 2026-11-13 | [vatly-docs specification](https://github.com/vatly/vatly-docs/blob/66c8205ea886e4cb48e8e3b2e988de3839c6d4d8/public/openapi.yaml){rel="&#x22;nofollow&#x22;"} |
+| Production OpenAPI, retrieved 2026-11-21 | [vatly-docs specification](https://github.com/vatly/vatly-docs/blob/d5c09d94a52c4e7d884c2817b4b7834597294cb0/public/openapi.yaml){rel="&#x22;nofollow&#x22;"} |
 | Original JS design reference             | [SDK revision](https://github.com/vatly/vatly-api-js/commit/8b0b920c29f7e7b30bf71b9e379ec0a8a1a22028){rel="&#x22;nofollow&#x22;"}                             |
 
 The checked-in specification is byte-identical to that source and to the bundle
 published by Vatly's production release. Its SHA-256 is:
 
 ```text
-5e648169e101edc8b3e088dc0e28d0f0a293e8a0ed057014c7336057d986def9
+be578c73c71c234262b6f5f21bd1f01e209fcc64464a1e81d7fd0675eb3c273c
 ```
 
 The specification's generated-at date is not its retrieval date.
