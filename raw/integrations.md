@@ -118,7 +118,7 @@ Using a framework rather than an app builder? Official [Laravel](/packages/larav
 
 These packages are in alpha. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading.
 
-Running a WordPress store on FluentCart? The [FluentCart plugin](/packages/fluentcart/readme) adds Vatly as a payment gateway. It has not been released yet, so use it only in test mode.
+Running a WordPress store on FluentCart? The [FluentCart plugin](/packages/fluentcart/readme) adds Vatly as a payment gateway. It is in alpha; try it in Vatly test mode before you take live payments.
 
 Selling memberships with Paid Memberships Pro? The [Paid Memberships Pro plugin](/packages/pmpro/readme) adds Vatly as a payment gateway. It is in alpha; try it in Vatly test mode before you take live payments.
 

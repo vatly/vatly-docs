@@ -584,19 +584,19 @@ These packages are in alpha. Every alpha release may include breaking changes. L
 
 ## SDK availability
 
-| SDK                                                                              | Status                      |
-| -------------------------------------------------------------------------------- | --------------------------- |
-| [PHP SDK](https://docs.vatly.com/packages/php/readme)                            | Available (alpha)           |
-| [PHP Fluent](https://docs.vatly.com/packages/fluent-php/webhook-flow)            | Available (alpha)           |
-| [Laravel](https://docs.vatly.com/packages/laravel/readme)                        | Available (alpha)           |
-| [JavaScript SDK](https://docs.vatly.com/packages/javascript/readme)              | Available (alpha)           |
-| [JavaScript Fluent](https://docs.vatly.com/packages/fluent-js/readme)            | Available (alpha)           |
-| [Python SDK](https://docs.vatly.com/packages/python/readme)                      | Available (alpha)           |
-| [Python Fluent](https://docs.vatly.com/packages/fluent-python/readme)            | Available (alpha)           |
-| [Django](https://docs.vatly.com/packages/django/readme)                          | Available (alpha)           |
-| [FluentCart (WordPress)](https://docs.vatly.com/packages/fluentcart/readme)      | Unreleased (test mode only) |
-| [Paid Memberships Pro (WordPress)](https://docs.vatly.com/packages/pmpro/readme) | Available (alpha)           |
-| Ruby                                                                             | Planned                     |
+| SDK                                                                              | Status            |
+| -------------------------------------------------------------------------------- | ----------------- |
+| [PHP SDK](https://docs.vatly.com/packages/php/readme)                            | Available (alpha) |
+| [PHP Fluent](https://docs.vatly.com/packages/fluent-php/webhook-flow)            | Available (alpha) |
+| [Laravel](https://docs.vatly.com/packages/laravel/readme)                        | Available (alpha) |
+| [JavaScript SDK](https://docs.vatly.com/packages/javascript/readme)              | Available (alpha) |
+| [JavaScript Fluent](https://docs.vatly.com/packages/fluent-js/readme)            | Available (alpha) |
+| [Python SDK](https://docs.vatly.com/packages/python/readme)                      | Available (alpha) |
+| [Python Fluent](https://docs.vatly.com/packages/fluent-python/readme)            | Available (alpha) |
+| [Django](https://docs.vatly.com/packages/django/readme)                          | Available (alpha) |
+| [FluentCart (WordPress)](https://docs.vatly.com/packages/fluentcart/readme)      | Available (alpha) |
+| [Paid Memberships Pro (WordPress)](https://docs.vatly.com/packages/pmpro/readme) | Available (alpha) |
+| Ruby                                                                             | Planned           |
 
 In the meantime, you can use the [REST API directly](https://docs.vatly.com/guides/authentication) with any HTTP client in any language.
 
@@ -15130,22 +15130,22 @@ Vatly is the European merchant of record for AI, software and digital products. 
 
 ## Available packages
 
-| Language / Framework             | Package                                                                                                                                                                                                                                                   | Install                                                                     |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| PHP SDK                          | [vatly/vatly-api-php](https://packagist.org/packages/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/php/readme) · [GitHub](https://github.com/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"}                 | `composer require vatly/vatly-api-php` (after allowing alpha, see below)    |
-| PHP Fluent                       | [vatly/vatly-fluent-php](https://packagist.org/packages/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-php/readme) · [GitHub](https://github.com/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} | `composer require vatly/vatly-fluent-php` (after allowing alpha, see below) |
-| Laravel                          | [vatly/vatly-laravel](https://packagist.org/packages/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/laravel/readme) · [GitHub](https://github.com/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"}             | `composer require vatly/vatly-laravel` (after allowing alpha, see below)    |
-| JavaScript SDK                   | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js){rel="&#x22;nofollow&#x22;"}                        | `npm install --save-exact @getvatly/sdk`                                    |
-| JavaScript Fluent                | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js){rel="&#x22;nofollow&#x22;"}                | `npm install --save-exact @getvatly/sdk @getvatly/fluent`                   |
-| Python SDK                       | [vatly-api-python](https://pypi.org/project/vatly-api-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"}                      | `pip install --pre vatly-api-python`                                        |
-| Python Fluent                    | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python){rel="&#x22;nofollow&#x22;"}      | `pip install --pre vatly-fluent-python`                                     |
-| Django                           | [vatly-django](https://pypi.org/project/vatly-django/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django){rel="&#x22;nofollow&#x22;"}                                  | `pip install --pre vatly-django`                                            |
-| FluentCart (WordPress)           | Unreleased · [Docs](https://docs.vatly.com/packages/fluentcart/readme) · [GitHub](https://github.com/vatly/vatly-fluentcart-wp){rel="&#x22;nofollow&#x22;"}                                                                                               | Build from source                                                           |
-| Paid Memberships Pro (WordPress) | [GitHub Releases](https://github.com/vatly/vatly-pmpro/releases/latest){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/pmpro/readme) · [GitHub](https://github.com/vatly/vatly-pmpro){rel="&#x22;nofollow&#x22;"}                   | Upload the release zip in WordPress                                         |
+| Language / Framework             | Package                                                                                                                                                                                                                                                      | Install                                                                     |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| PHP SDK                          | [vatly/vatly-api-php](https://packagist.org/packages/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/php/readme) · [GitHub](https://github.com/vatly/vatly-api-php){rel="&#x22;nofollow&#x22;"}                    | `composer require vatly/vatly-api-php` (after allowing alpha, see below)    |
+| PHP Fluent                       | [vatly/vatly-fluent-php](https://packagist.org/packages/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-php/readme) · [GitHub](https://github.com/vatly/vatly-fluent-php){rel="&#x22;nofollow&#x22;"}    | `composer require vatly/vatly-fluent-php` (after allowing alpha, see below) |
+| Laravel                          | [vatly/vatly-laravel](https://packagist.org/packages/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/laravel/readme) · [GitHub](https://github.com/vatly/vatly-laravel){rel="&#x22;nofollow&#x22;"}                | `composer require vatly/vatly-laravel` (after allowing alpha, see below)    |
+| JavaScript SDK                   | [@getvatly/sdk](https://www.npmjs.com/package/@getvatly/sdk){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/javascript/readme) · [GitHub](https://github.com/vatly/vatly-api-js){rel="&#x22;nofollow&#x22;"}                           | `npm install --save-exact @getvatly/sdk`                                    |
+| JavaScript Fluent                | [@getvatly/fluent](https://www.npmjs.com/package/@getvatly/fluent){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-js/readme) · [GitHub](https://github.com/vatly/vatly-fluent-js){rel="&#x22;nofollow&#x22;"}                   | `npm install --save-exact @getvatly/sdk @getvatly/fluent`                   |
+| Python SDK                       | [vatly-api-python](https://pypi.org/project/vatly-api-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/python/readme) · [GitHub](https://github.com/vatly/vatly-api-python){rel="&#x22;nofollow&#x22;"}                         | `pip install --pre vatly-api-python`                                        |
+| Python Fluent                    | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python){rel="&#x22;nofollow&#x22;"}         | `pip install --pre vatly-fluent-python`                                     |
+| Django                           | [vatly-django](https://pypi.org/project/vatly-django/){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django){rel="&#x22;nofollow&#x22;"}                                     | `pip install --pre vatly-django`                                            |
+| FluentCart (WordPress)           | [GitHub Releases](https://github.com/vatly/vatly-fluentcart-wp/releases/latest){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/fluentcart/readme) · [GitHub](https://github.com/vatly/vatly-fluentcart-wp){rel="&#x22;nofollow&#x22;"} | Upload the release zip in WordPress                                         |
+| Paid Memberships Pro (WordPress) | [GitHub Releases](https://github.com/vatly/vatly-pmpro/releases/latest){rel="&#x22;nofollow&#x22;"} · [Docs](https://docs.vatly.com/packages/pmpro/readme) · [GitHub](https://github.com/vatly/vatly-pmpro){rel="&#x22;nofollow&#x22;"}                      | Upload the release zip in WordPress                                         |
 
 These packages are in alpha. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading. The install commands above get the latest alpha. For the PHP packages, first run `composer config minimum-stability alpha` and `composer config prefer-stable true`, because Composer installs only stable releases by default. For the Python packages, `--pre` selects the latest alpha. The Python packages require Python 3.10+; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively.
 
-The FluentCart plugin has not been released yet. Its payment flow is not yet verified against current FluentCart versions, so use it only in test mode.
+The FluentCart plugin is in alpha and requires FluentCart 2.3 or newer. It is not on WordPress.org or Packagist: download the zip from [GitHub Releases](https://github.com/vatly/vatly-fluentcart-wp/releases/latest){rel="&#x22;nofollow&#x22;"} and upload it under **Plugins → Add New → Upload Plugin**.
 
 The Paid Memberships Pro plugin is in alpha and requires Paid Memberships Pro 3.x. It is not on WordPress.org or Packagist: download the zip from [GitHub Releases](https://github.com/vatly/vatly-pmpro/releases/latest){rel="&#x22;nofollow&#x22;"} and upload it under **Plugins → Add New → Upload Plugin**.
 
@@ -15446,7 +15446,7 @@ Using a framework rather than an app builder? Official [Laravel](https://docs.va
 
 These packages are in alpha. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading.
 
-Running a WordPress store on FluentCart? The [FluentCart plugin](https://docs.vatly.com/packages/fluentcart/readme) adds Vatly as a payment gateway. It has not been released yet, so use it only in test mode.
+Running a WordPress store on FluentCart? The [FluentCart plugin](https://docs.vatly.com/packages/fluentcart/readme) adds Vatly as a payment gateway. It is in alpha; try it in Vatly test mode before you take live payments.
 
 Selling memberships with Paid Memberships Pro? The [Paid Memberships Pro plugin](https://docs.vatly.com/packages/pmpro/readme) adds Vatly as a payment gateway. It is in alpha; try it in Vatly test mode before you take live payments.
 

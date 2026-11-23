@@ -202,7 +202,7 @@ These packages are in alpha. Every alpha release may include breaking changes. L
     </td>
     
     <td>
-      Unreleased (test mode only)
+      Available (alpha)
     </td>
   </tr>
   
