@@ -1603,7 +1603,7 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
     </td>
     
     <td>
-      Whether to generate and charge an invoice immediately for proration. Only applies when <code>
+      Whether to invoice and charge the proration now instead of on the next renewal. Only applies when <code>
         applyImmediately
       </code>
       
@@ -1611,7 +1611,7 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
         prorate
       </code>
       
-       are both true. When <code>
+       are both true. The proration order is created and charged asynchronously, typically within 15 to 30 minutes (see below). When <code>
         false
       </code>
       
@@ -1716,6 +1716,7 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
 - With `applyImmediately: false` (the default), the change is scheduled for the next billing cycle and returned on the subscription's `scheduledUpdate`. Scheduled updates are applied at renewal (they are no longer silently discarded) and are cleared only if the subscription is canceled before that renewal.
 - A subscription whose `status` is `on_grace_period` has no next billing period. Scheduling an update for it returns `422`; resume the subscription first, or set `applyImmediately: true` to apply the change to the remaining period.
 - An immediate update on an `on_grace_period` subscription can change the plan, price, or quantity for the remaining period, but not when that period ends: `anchor`, `resetAnchor`, and switching to a plan with a different interval each return `422`, because each would move the already-communicated end date.
+- When `invoiceImmediately` is `true`, the proration order is created and charged asynchronously, typically within 15 to 30 minutes of the update, so the update response does not include it. Vatly waits briefly so that other charges for the same customer made around the same time are combined into one order and one payment, instead of several separate orders and charges. Follow the `order.paid` webhook (or `order.payment_failed` if the payment fails): the order's line has `relatedResources.subscriptionId` set to the subscription. In test mode, a card payment settles right away and a SEPA Direct Debit payment after 10 to 15 minutes; use [Simulate an order payment](/api-reference/test-helpers#simulate-an-order-payment) to settle or decline a pending payment on that order.
 - When `invoiceImmediately` is `false`, the proration delta is parked on the current cycle and billed on the next renewal invoice. If the subscription is canceled before that renewal, the parked charge is waived.
 - On an immediate prorated update (`applyImmediately: true`, `prorate: true`) that keeps the billing anchor, the customer pays the new price for the time left on the cycle, minus a credit for the old price over that same time.
 - A prorated downgrade, price decrease or seat reduction applied immediately is not accepted while time is left on the cycle. It would give a negative charge, and the difference is not refunded mid-cycle, so the request returns `422`.
