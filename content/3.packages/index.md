@@ -1,6 +1,6 @@
 ---
 title: "SDKs & Packages"
-description: "Official Vatly SDKs, fluent packages and integrations for PHP, Laravel, JavaScript, Python, Django and FluentCart. Installation, package registries and documentation."
+description: "Official Vatly SDKs, fluent packages and integrations for PHP, Laravel, JavaScript, Python, Django, FluentCart and Paid Memberships Pro. Installation, package registries and documentation."
 ---
 
 > Official Vatly packages for your language or framework.
@@ -20,9 +20,12 @@ Vatly is the European merchant of record for AI, software and digital products. 
 | Python Fluent | [vatly-fluent-python](https://pypi.org/project/vatly-fluent-python/) · [Docs](/packages/fluent-python/readme) · [GitHub](https://github.com/vatly/vatly-fluent-python) | `pip install --pre vatly-fluent-python` |
 | Django | [vatly-django](https://pypi.org/project/vatly-django/) · [Docs](/packages/django/readme) · [GitHub](https://github.com/vatly/vatly-django) | `pip install --pre vatly-django` |
 | FluentCart (WordPress) | Unreleased · [Docs](/packages/fluentcart/readme) · [GitHub](https://github.com/vatly/vatly-fluentcart-wp) | Build from source |
+| Paid Memberships Pro (WordPress) | [GitHub Releases](https://github.com/vatly/vatly-pmpro/releases/latest) · [Docs](/packages/pmpro/readme) · [GitHub](https://github.com/vatly/vatly-pmpro) | Upload the release zip in WordPress |
 
 These packages are in alpha. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading. The install commands above get the latest alpha. For the PHP packages, first run `composer config minimum-stability alpha` and `composer config prefer-stable true`, because Composer installs only stable releases by default. For the Python packages, `--pre` selects the latest alpha. The Python packages require Python 3.10+; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively.
 
 The FluentCart plugin has not been released yet. Its payment flow is not yet verified against current FluentCart versions, so use it only in test mode.
+
+The Paid Memberships Pro plugin is in alpha and requires Paid Memberships Pro 3.x. It is not on WordPress.org or Packagist: download the zip from [GitHub Releases](https://github.com/vatly/vatly-pmpro/releases/latest) and upload it under **Plugins → Add New → Upload Plugin**.
 
 Not using one of these languages? You can use the [REST API directly](/guides/authentication) with any HTTP client.

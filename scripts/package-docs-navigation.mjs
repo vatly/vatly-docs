@@ -13,6 +13,7 @@ export const packageNavigation = {
   'fluent-python': { title: 'Python Fluent', order: fluent },
   django: { title: 'Django', order: ['readme', 'installation', 'configuration', 'billablemodels', 'checkout', 'billing', 'customerportal', 'webhooks', 'admin', 'testing', 'development'] },
   fluentcart: { title: 'FluentCart', order: ['readme', 'merchant-of-record'] },
+  pmpro: { title: 'Paid Memberships Pro', order: ['readme'] },
 }
 
 const labels = {

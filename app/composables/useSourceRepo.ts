@@ -143,6 +143,13 @@ const PACKAGE_REPOS: PackageRepo[] = [
     docsDir: 'docs',
     files: { readme: 'README.md', 'merchant-of-record': 'merchant-of-record.md' },
   },
+  {
+    prefix: '/packages/pmpro',
+    url: 'https://github.com/vatly/vatly-pmpro',
+    branch: 'main',
+    docsDir: 'docs',
+    files: { readme: 'README.md' },
+  },
 ]
 
 export interface PageSource {

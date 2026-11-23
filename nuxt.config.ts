@@ -125,12 +125,13 @@ export default defineNuxtConfig({
     '/packages/fluent-python': { redirect: { to: '/packages/fluent-python/readme', statusCode: 301 } },
     '/packages/django': { redirect: { to: '/packages/django/readme', statusCode: 301 } },
     '/packages/fluentcart': { redirect: { to: '/packages/fluentcart/readme', statusCode: 301 } },
+    '/packages/pmpro': { redirect: { to: '/packages/pmpro/readme', statusCode: 301 } },
   },
 
   nitro: {
     preset: 'github-pages',
     prerender: {
-      routes: ['/guides', '/api-reference', '/packages/php', '/packages/fluent-php', '/packages/fluent-php/recipes/host-owns-its-tables', '/packages/laravel', '/packages/javascript', '/packages/fluent-js', '/packages/python', '/packages/fluent-python', '/packages/django', '/packages/fluentcart'],
+      routes: ['/guides', '/api-reference', '/packages/php', '/packages/fluent-php', '/packages/fluent-php/recipes/host-owns-its-tables', '/packages/laravel', '/packages/javascript', '/packages/fluent-js', '/packages/python', '/packages/fluent-python', '/packages/django', '/packages/fluentcart', '/packages/pmpro'],
     },
   },
 

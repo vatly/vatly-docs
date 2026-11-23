@@ -119,6 +119,7 @@
   <url><loc>https://docs.vatly.com/packages/django/development</loc><priority>0.6</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluentcart/readme</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/packages/fluentcart/merchant-of-record</loc><priority>0.6</priority></url>
+  <url><loc>https://docs.vatly.com/packages/pmpro/readme</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/integrations</loc><priority>0.7</priority></url>
   <url><loc>https://docs.vatly.com/integrations/lovable</loc><priority>0.8</priority></url>
   <url><loc>https://docs.vatly.com/integrations/bolt</loc><priority>0.8</priority></url>

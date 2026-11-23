@@ -46,9 +46,9 @@ public/
 notifications, pushes to this repo's `main`, manual **Sync SDK Docs** runs, and
 daily at **04:17 UTC** as a safety net for missed notifications.
 
-Every run pulls **all nine package sources at their current default branch**:
+Every run pulls **all ten package sources at their current default branch**:
 PHP SDK, PHP Fluent, Laravel, JavaScript SDK, JavaScript Fluent, Python SDK,
-Python Fluent, Django and the FluentCart WordPress plugin. Better Auth joins every run only when
+Python Fluent, Django and the FluentCart and Paid Memberships Pro WordPress plugins. Better Auth joins every run only when
 `SYNC_BETTER_AUTH_DOCS=true`. The event type/payload means only "resync"; it never
 selects a subset of sources. Source notifier workflows need no changes.
 
@@ -115,10 +115,10 @@ on manual runs. Leave it absent or false until that package is released.
 | Source | Event | Destination | Publication |
 | --- | --- | --- | --- |
 | `vatly/vatly-fluentcart-wp` | `sync-fluentcart-docs` | `content/3.packages/10.fluentcart` | Automatic (plugin unreleased; its docs say so) |
+| `vatly/vatly-pmpro` | `sync-pmpro-docs` | `content/3.packages/11.pmpro` | Automatic (alpha; its docs say so) |
 
-The FluentCart sender is the same **Notify Docs** workflow with the same dispatch
-secret. The repo is public, so no source token is needed. The PMPro plugin is
-private and has no docs import.
+Both senders are the same **Notify Docs** workflow with the same dispatch
+secret. The repos are public, so no source token is needed.
 
 Python senders use the same workflow, trigger and dispatch secret as PHP and JS,
 without switches or release gates. These sources are public: no source token is
