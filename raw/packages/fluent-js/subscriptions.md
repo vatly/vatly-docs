@@ -98,6 +98,14 @@ Choose one action:
 </tbody>
 </table>
 
+`swapAndInvoice()` does not return the proration order. It is created and charged
+asynchronously, typically within 15 to 30 minutes: Vatly waits briefly so that
+other charges for the same customer made around the same time are combined into
+one order and one payment instead of several. Follow the `order.paid` webhook
+(or `order.payment_failed`); its order line has `relatedResources.subscriptionId`
+set to the subscription. In test mode, settle or decline its pending payment with
+`vatly.testHelpers().simulateOrderPayment()` (see [Testing](/packages/fluent-js/testing)).
+
 Local plan and quantity follow the API response. A scheduled swap leaves the
 current plan unchanged. `scheduledUpdate()` fetches the pending change;
 `hasScheduledUpdate()` checks whether one exists. See the API reference below

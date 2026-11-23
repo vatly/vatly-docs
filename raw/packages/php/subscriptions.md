@@ -940,7 +940,7 @@ subscriptionPlanId, quantity, or price is required.**
     </td>
     
     <td>
-      Generate and charge a proration invoice immediately. Only applies when <code>
+      Invoice and charge the proration now instead of on the next renewal. Only applies when <code>
         applyImmediately
       </code>
       
@@ -950,6 +950,26 @@ subscriptionPlanId, quantity, or price is required.**
       
        are both <code>
         true
+      </code>
+      
+      . The proration order is created and charged asynchronously, typically within 15 to 30 minutes, so <code>
+        update()
+      </code>
+      
+       does not return it. Vatly waits briefly so that other charges for the same customer made around the same time are combined into one order and one payment instead of several. Follow the <code>
+        order.paid
+      </code>
+      
+       webhook (or <code>
+        order.payment_failed
+      </code>
+      
+      ), whose order line has <code>
+        relatedResources->subscriptionId
+      </code>
+      
+       set to the subscription. In test mode, settle or decline its pending payment with <code>
+        $vatly->testHelpers->simulateOrderPayment()
       </code>
       
       . Defaults to <code>
