@@ -208,6 +208,18 @@ These packages are in alpha. Every alpha release may include breaking changes. L
   
   <tr>
     <td>
+      <a href="/packages/pmpro/readme">
+        Paid Memberships Pro (WordPress)
+      </a>
+    </td>
+    
+    <td>
+      Available (alpha)
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
       Ruby
     </td>
     

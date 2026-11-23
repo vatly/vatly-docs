@@ -46,6 +46,7 @@
 - [Webhook Endpoints](https://docs.vatly.com/raw/packages/php/webhookendpoints.md): A webhook endpoint is the HTTPS URL Vatly POSTs event deliveries to — registered from code (or infrastructure-as-code) rather than the dashboard.
 - [FluentCart](https://docs.vatly.com/raw/packages/fluentcart/readme.md): Accept payments through Vatly in FluentCart, the WordPress e-commerce plugin.
 - [Merchant-of-Record invoicing: implementation notes](https://docs.vatly.com/raw/packages/fluentcart/merchant-of-record.md): How the plugin makes Vatly the single source of truth for invoices on FluentCart orders, and the FluentCart integration points it relies on.
+- [Paid Memberships Pro](https://docs.vatly.com/raw/packages/pmpro/readme.md): Sell Paid Memberships Pro (PMPro) memberships through Vatly.
 - [PHP Fluent](https://docs.vatly.com/raw/packages/fluent-php/readme.md): Sell a download, start a subscription, and keep your app's billing records in step with Vatly.
 - [Configuration](https://docs.vatly.com/raw/packages/fluent-php/configuration.md): Install Fluent on your server with PHP 8.1 or newer and Composer.
 - [Core concepts](https://docs.vatly.com/raw/packages/fluent-php/coreconcepts.md): Connect Fluent to your database without replacing your models.
@@ -125,7 +126,7 @@
 - [Inspect billing in admin](https://docs.vatly.com/raw/packages/django/admin.md): When django.contrib.admin and vatly_django are installed, billing models register automatically.
 - [Test billing offline](https://docs.vatly.com/raw/packages/django/testing.md): Use Django's test database and httpx fixtures.
 - [Development and release](https://docs.vatly.com/raw/packages/django/development.md): Set up the repository, run checks and build the Django package locally.
-- [SDKs & Packages](https://docs.vatly.com/raw/packages.md): Official Vatly SDKs, fluent packages and integrations for PHP, Laravel, JavaScript, Python, Django and FluentCart. Installation, package registries and documentation.
+- [SDKs & Packages](https://docs.vatly.com/raw/packages.md): Official Vatly SDKs, fluent packages and integrations for PHP, Laravel, JavaScript, Python, Django, FluentCart and Paid Memberships Pro. Installation, package registries and documentation.
 - [Lovable payments with Vatly](https://docs.vatly.com/raw/integrations/lovable.md): Sell European software and digital products from Lovable with Vatly handling tax and invoicing. Start with a test API key and a copy-paste integration prompt.
 - [Bolt payments with Vatly](https://docs.vatly.com/raw/integrations/bolt.md): Add Vatly payments to Bolt.new for European software and digital products. Offload tax and invoicing, get a test API key, and prompt Bolt to wire up checkout.
 - [Integrations](https://docs.vatly.com/raw/integrations.md): Find platform-specific guides for using Vatly as merchant of record. Connect your Lovable or Bolt app and take the next step toward your first test purchase.

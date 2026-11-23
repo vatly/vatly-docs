@@ -120,6 +120,8 @@ These packages are in alpha. Every alpha release may include breaking changes. L
 
 Running a WordPress store on FluentCart? The [FluentCart plugin](/packages/fluentcart/readme) adds Vatly as a payment gateway. It has not been released yet, so use it only in test mode.
 
+Selling memberships with Paid Memberships Pro? The [Paid Memberships Pro plugin](/packages/pmpro/readme) adds Vatly as a payment gateway. It is in alpha; try it in Vatly test mode before you take live payments.
+
 ## Connecting another app?
 
 Start with [Build your own integration](/guides/build-your-own-integration) to understand what Vatly handles, what your app needs, and what to ask your developer or agent to build. It also helps you choose a fluent package, SDK, or direct API approach.
