@@ -114,7 +114,7 @@ on manual runs. Leave it absent or false until that package is released.
 
 | Source | Event | Destination | Publication |
 | --- | --- | --- | --- |
-| `vatly/vatly-fluentcart-wp` | `sync-fluentcart-docs` | `content/3.packages/10.fluentcart` | Automatic (plugin unreleased; its docs say so) |
+| `vatly/vatly-fluentcart-wp` | `sync-fluentcart-docs` | `content/3.packages/10.fluentcart` | Automatic (alpha; its docs say so) |
 | `vatly/vatly-pmpro` | `sync-pmpro-docs` | `content/3.packages/11.pmpro` | Automatic (alpha; its docs say so) |
 
 Both senders are the same **Notify Docs** workflow with the same dispatch
