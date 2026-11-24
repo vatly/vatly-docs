@@ -217,12 +217,16 @@ For all fields and options, see the [Customers API reference](https://docs.vatly
     
     <td>
       <code>
-        object
+        object | null
       </code>
     </td>
     
     <td>
-      Custom key/value metadata.
+      Custom key/value metadata: string values, at most 50 keys, keys up to 40 characters, values up to 500 characters. <code>
+        null
+      </code>
+      
+       means none.
     </td>
   </tr>
 </tbody>

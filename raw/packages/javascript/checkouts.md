@@ -326,7 +326,19 @@ For all fields and options, see the [Checkouts API reference](https://docs.vatly
         one_off_product_…
       </code>
       
-       id.
+       id. An item may also set <code>
+        price
+      </code>
+      
+      , <code>
+        trialDays
+      </code>
+      
+       and <code>
+        metadata
+      </code>
+      
+      .
     </td>
   </tr>
   
@@ -423,8 +435,124 @@ For all fields and options, see the [Checkouts API reference](https://docs.vatly
       Custom metadata echoed back on the checkout and resulting order.
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <code>
+        locale
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      Language of the hosted checkout: <code>
+        en
+      </code>
+      
+      , <code>
+        de
+      </code>
+      
+      , <code>
+        fr
+      </code>
+      
+      , <code>
+        nl
+      </code>
+      
+      , <code>
+        es
+      </code>
+      
+      , <code>
+        it
+      </code>
+      
+      , <code>
+        pt
+      </code>
+      
+      , <code>
+        pl
+      </code>
+      
+      , <code>
+        cs
+      </code>
+      
+      , <code>
+        ca
+      </code>
+      
+      , <code>
+        da
+      </code>
+      
+      , <code>
+        el
+      </code>
+      
+      , <code>
+        fi
+      </code>
+      
+      , <code>
+        hu
+      </code>
+      
+      , <code>
+        is
+      </code>
+      
+      , <code>
+        lt
+      </code>
+      
+      , <code>
+        lv
+      </code>
+      
+      , <code>
+        nb
+      </code>
+      
+      , <code>
+        sk
+      </code>
+      
+      , <code>
+        sl
+      </code>
+      
+      , <code>
+        sv
+      </code>
+      
+       or <code>
+        tr
+      </code>
+      
+      . Omit it to detect the shopper's language.
+    </td>
+  </tr>
 </tbody>
 </table>
+
+`products[].trialDays` gives a subscription plan a trial of that many days. It
+must be at least `1`, and the API returns `422` when it is set on a one-off
+product. Omit it or pass `null` for no trial; the SDK rejects `0` or less with a
+`RangeError` before sending the request.
+
+Optional fields the API marks nullable, such as `metadata`, `products[].price`
+and `products[].trialDays`, also accept `null`, which means the same as
+omitting them. `metadata` is an object of string values: at most 50 keys, keys
+up to 40 characters, values up to 500 characters. Anything else returns `422`.
 
 ```ts
 const checkout = await vatly.checkouts.create({

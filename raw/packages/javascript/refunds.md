@@ -191,6 +191,32 @@ For all fields and options, see the [Refunds API reference](https://docs.vatly.c
   <tr>
     <td>
       <code>
+        metadata
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        object | null
+      </code>
+    </td>
+    
+    <td>
+      The <code>
+        metadata
+      </code>
+      
+       sent when the refund was created; <code>
+        null
+      </code>
+      
+       when none was sent.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         testmode
       </code>
     </td>
@@ -235,10 +261,19 @@ Create refunds against an order with `orders.createRefund` / `orders.createFullR
 ```ts
 await vatly.orders.createRefund("order_abc123", {
   items: [{ itemId: "order_item_abc123", amount: { value: "15.00", currency: "EUR" } }],
+  metadata: { ticketId: "SUPPORT-12345" },
 });
 
-await vatly.orders.createFullRefund("order_abc123");
+await vatly.orders.createFullRefund("order_abc123", { metadata: { reason: "cancellation" } });
 ```
+
+`metadata` is optional and follows the same rules as on checkouts and customers:
+string values, at most 50 keys, keys up to 40 characters, values up to 500
+characters. It is returned on the refund and in refund webhooks.
+
+Only sales (checkout and subscription orders) can be refunded. For any other
+order, such as a payment-method authorization, the API returns `422` with
+`details.orderType` naming the order's type.
 
 Listen for the `refund.completed` / `refund.failed` / `refund.canceled` webhooks
 to reconcile your local records — the webhook payload carries the full tax

@@ -11057,9 +11057,9 @@ For all fields and options, see the [Customers API reference](https://docs.vatly
 
 ### Optional attributes
 
-| Name       | Type     | Description                |
-| ---------- | -------- | -------------------------- |
-| `metadata` | `object` | Custom key/value metadata. |
+| Name       | Type            | Description                                                                                                                          |
+| ---------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `metadata` | `object | null` | Custom key/value metadata: string values, at most 50 keys, keys up to 40 characters, values up to 500 characters. `null` means none. |
 
 ```ts
 const customer = await vatly.customers.create({
@@ -11160,18 +11160,29 @@ For all fields and options, see the [Checkouts API reference](https://docs.vatly
 
 ### Required attributes
 
-| Name                  | Type     | Description                                                                                                              |
-| --------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `products`            | `array`  | Product items to sell. Each item is `{ id, quantity }`, where `id` is a `subscription_plan_…` or `one_off_product_…` id. |
-| `redirectUrlSuccess`  | `string` | Success redirect URL.                                                                                                    |
-| `redirectUrlCanceled` | `string` | Cancel redirect URL.                                                                                                     |
+| Name                  | Type     | Description                                                                                                                                                                        |
+| --------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `products`            | `array`  | Product items to sell. Each item is `{ id, quantity }`, where `id` is a `subscription_plan_…` or `one_off_product_…` id. An item may also set `price`, `trialDays` and `metadata`. |
+| `redirectUrlSuccess`  | `string` | Success redirect URL.                                                                                                                                                              |
+| `redirectUrlCanceled` | `string` | Cancel redirect URL.                                                                                                                                                               |
 
 ### Optional attributes
 
-| Name         | Type     | Description                                                      |
-| ------------ | -------- | ---------------------------------------------------------------- |
-| `customerId` | `string` | Attach the checkout to an existing customer.                     |
-| `metadata`   | `object` | Custom metadata echoed back on the checkout and resulting order. |
+| Name         | Type     | Description                                                                                                                                                                                                      |
+| ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `customerId` | `string` | Attach the checkout to an existing customer.                                                                                                                                                                     |
+| `metadata`   | `object` | Custom metadata echoed back on the checkout and resulting order.                                                                                                                                                 |
+| `locale`     | `string` | Language of the hosted checkout: `en`, `de`, `fr`, `nl`, `es`, `it`, `pt`, `pl`, `cs`, `ca`, `da`, `el`, `fi`, `hu`, `is`, `lt`, `lv`, `nb`, `sk`, `sl`, `sv` or `tr`. Omit it to detect the shopper's language. |
+
+`products[].trialDays` gives a subscription plan a trial of that many days. It
+must be at least `1`, and the API returns `422` when it is set on a one-off
+product. Omit it or pass `null` for no trial; the SDK rejects `0` or less with a
+`RangeError` before sending the request.
+
+Optional fields the API marks nullable, such as `metadata`, `products[].price`
+and `products[].trialDays`, also accept `null`, which means the same as
+omitting them. `metadata` is an object of string values: at most 50 keys, keys
+up to 40 characters, values up to 500 characters. Anything else returns `422`.
 
 ```ts
 const checkout = await vatly.checkouts.create({
@@ -11256,7 +11267,8 @@ for await (const sub of vatly.subscriptions.listAll()) {
 
 Common attributes: `quantity`, `subscriptionPlanId` (plan change), `prorate`,
 `applyImmediately`, `trialUntil`. Include at least one of `subscriptionPlanId`,
-`price`, or `quantity`; `trialUntil` cannot be sent alone. See the
+`price`, or `quantity`; `trialUntil` cannot be sent alone. `anchor` accepts
+`null`, which means the same as omitting it. See the
 [API reference](https://docs.vatly.com/api-reference/subscriptions){rel="&#x22;nofollow&#x22;"} for all options.
 
 ```ts
@@ -11547,7 +11559,8 @@ const restored = await vatly.oneOffProducts.unarchive(product.id);
 const all = await vatly.oneOffProducts.list({ includeArchived: true });
 ```
 
-`productType` is `saas` or `ebook`. Creation and updates may require approval;
+`productType` is `saas`, `ebook`, `digital_download`, `online_course` or
+`audiobook`. Creation and updates may require approval;
 inspect `status`, `pendingUpdates`, and `updateStatus` rather than assuming the
 requested values are already live. `taxBehavior` is immutable after creation.
 
@@ -11560,16 +11573,17 @@ For all fields and options, see the [Refunds API reference](https://docs.vatly.c
 
 ## The Refund resource
 
-| Name              | Type      | Description                                                                                                                                    |
-| ----------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`              | `string`  | Unique identifier (`refund_…`).                                                                                                                |
-| `customerId`      | `string`  | The customer being refunded.                                                                                                                   |
-| `originalOrderId` | `string`  | The order this refund is against.                                                                                                              |
-| `status`          | `string`  | `pending`, `queued`, `processing`, `refunded`, `failed`, or `canceled`. The success event is `refund.completed`, but the status is `refunded`. |
-| `total`           | `Money`   | Gross amount refunded (incl. tax).                                                                                                             |
-| `subtotal`        | `Money`   | Net amount refunded (excl. tax).                                                                                                               |
-| `taxSummary`      | `array`   | Per-rate VAT breakdown of the refund.                                                                                                          |
-| `testmode`        | `boolean` | Whether this is a test refund.                                                                                                                 |
+| Name              | Type            | Description                                                                                                                                    |
+| ----------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`              | `string`        | Unique identifier (`refund_…`).                                                                                                                |
+| `customerId`      | `string`        | The customer being refunded.                                                                                                                   |
+| `originalOrderId` | `string`        | The order this refund is against.                                                                                                              |
+| `status`          | `string`        | `pending`, `queued`, `processing`, `refunded`, `failed`, or `canceled`. The success event is `refund.completed`, but the status is `refunded`. |
+| `total`           | `Money`         | Gross amount refunded (incl. tax).                                                                                                             |
+| `subtotal`        | `Money`         | Net amount refunded (excl. tax).                                                                                                               |
+| `taxSummary`      | `array`         | Per-rate VAT breakdown of the refund.                                                                                                          |
+| `metadata`        | `object | null` | The `metadata` sent when the refund was created; `null` when none was sent.                                                                    |
+| `testmode`        | `boolean`       | Whether this is a test refund.                                                                                                                 |
 
 ## Retrieve a refund
 
@@ -11598,10 +11612,19 @@ Create refunds against an order with `orders.createRefund` / `orders.createFullR
 ```ts
 await vatly.orders.createRefund("order_abc123", {
   items: [{ itemId: "order_item_abc123", amount: { value: "15.00", currency: "EUR" } }],
+  metadata: { ticketId: "SUPPORT-12345" },
 });
 
-await vatly.orders.createFullRefund("order_abc123");
+await vatly.orders.createFullRefund("order_abc123", { metadata: { reason: "cancellation" } });
 ```
+
+`metadata` is optional and follows the same rules as on checkouts and customers:
+string values, at most 50 keys, keys up to 40 characters, values up to 500
+characters. It is returned on the refund and in refund webhooks.
+
+Only sales (checkout and subscription orders) can be refunded. For any other
+order, such as a payment-method authorization, the API returns `422` with
+`details.orderType` naming the order's type.
 
 Listen for the `refund.completed` / `refund.failed` / `refund.canceled` webhooks
 to reconcile your local records — the webhook payload carries the full tax
