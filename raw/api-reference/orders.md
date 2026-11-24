@@ -332,7 +332,15 @@ The order model contains all the information about your orders, including the or
     </td>
     
     <td>
-      Remaining amount that can still be refunded, before taxes.
+      Remaining amount that can still be refunded, before taxes. Always zero for an order that is not a sale (any order type other than <code>
+        checkout_order
+      </code>
+      
+       and <code>
+        mandated_order
+      </code>
+      
+      , such as a payment-method authorization or a verification charge), because such orders cannot be refunded.
     </td>
   </tr>
   

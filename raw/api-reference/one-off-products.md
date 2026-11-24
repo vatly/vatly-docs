@@ -226,11 +226,23 @@ Below you'll find all properties for the Vatly One-off Product API resource.
         saas
       </code>
       
-       (software supplied as a service) or <code>
+       (software supplied as a service), <code>
         ebook
       </code>
       
-       (an electronic publication supplied as a download or stream).
+       (an electronic publication supplied as a download or stream), <code>
+        digital_download
+      </code>
+      
+       (files the customer keeps that aren't a book or software, such as photos, fonts, templates or music), <code>
+        online_course
+      </code>
+      
+       (recorded lessons the customer follows at their own pace) or <code>
+        audiobook
+      </code>
+      
+       (a book to listen to, streamed or downloaded).
     </td>
   </tr>
   
@@ -669,11 +681,23 @@ A product created with a `live_` token starts in `pending` status and must be ap
         saas
       </code>
       
-       (Software as a Service) or <code>
+       (software supplied as a service), <code>
         ebook
       </code>
       
-       (electronic book).
+       (an electronic publication supplied as a download or stream), <code>
+        digital_download
+      </code>
+      
+       (files the customer keeps that aren't a book or software, such as photos, fonts, templates or music), <code>
+        online_course
+      </code>
+      
+       (recorded lessons the customer follows at their own pace) or <code>
+        audiobook
+      </code>
+      
+       (a book to listen to, streamed or downloaded).
     </td>
   </tr>
 </tbody>
@@ -1033,8 +1057,20 @@ At least one attribute must be provided. `taxBehavior` is immutable and cannot b
         saas
       </code>
       
-       or <code>
+      , <code>
         ebook
+      </code>
+      
+      , <code>
+        digital_download
+      </code>
+      
+      , <code>
+        online_course
+      </code>
+      
+       or <code>
+        audiobook
       </code>
       
       .

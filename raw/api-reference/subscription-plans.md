@@ -282,7 +282,7 @@ The subscription plan model contains all the information about the subscription 
         saas
       </code>
       
-      : an e-book is a one-time purchase, so sell it as a one-off product instead. Set when the plan is created.
+      : e-books, digital downloads, online courses and audiobooks are one-time purchases, so sell them as one-off products instead. Set when the plan is created.
     </td>
   </tr>
   
@@ -651,7 +651,7 @@ A plan created with a `live_` token starts in `pending` status and must be appro
 
 **Constraints:**
 
-- `productType` must be `saas`: e-books are one-off purchases and cannot be sold on a recurring basis.
+- `productType` must be `saas`: e-books, digital downloads, online courses and audiobooks are one-off purchases and cannot be sold on a recurring basis.
 - The plan must bill monthly (`interval: month`, `intervalCount: 1`) or yearly (`interval: year`, `intervalCount: 1`), in both live and test mode. Any other combination returns a `422`.
 
 ### Required attributes

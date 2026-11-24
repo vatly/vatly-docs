@@ -668,6 +668,19 @@ The refund model contains all the information about order refunds, including the
 
 This endpoint allows you to create a partial refund for a specific order. You specify which order line items to refund and the amount for each.
 
+Only sales can be refunded: checkout and subscription orders. Refunding any other order type, such as a payment-method authorization request (`auth_request`) or a billing-details verification charge (`update_details_order`), returns `422` with the standard error shape. `details.orderType` names the order's type and is informational only:
+
+```json
+{
+  "message": "Orders of type `auth_request` are not sales and cannot be refunded. Only checkout and subscription orders can be refunded.",
+  "details": {
+    "orderType": "auth_request"
+  }
+}
+```
+
+The order's `refundableSubtotal` is always zero for such orders.
+
 If another refund of the same order is still being created, the request returns `409` with `details.retry_with_new_idempotency_key` set to `true`. Retry with a new `Idempotency-Key`. See [Understanding `409 Conflict`](/guides/idempotency#understanding-409-conflict).
 
 ### Parameters
@@ -931,6 +944,19 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->create([
 `POST /v1/orders/:orderId/refunds/full`
 
 This endpoint allows you to create a full refund for a specific order. This will refund the entire remaining amount of the order.
+
+Only sales can be refunded: checkout and subscription orders. Refunding any other order type, such as a payment-method authorization request (`auth_request`) or a billing-details verification charge (`update_details_order`), returns `422` with the standard error shape. `details.orderType` names the order's type and is informational only:
+
+```json
+{
+  "message": "Orders of type `auth_request` are not sales and cannot be refunded. Only checkout and subscription orders can be refunded.",
+  "details": {
+    "orderType": "auth_request"
+  }
+}
+```
+
+The order's `refundableSubtotal` is always zero for such orders.
 
 If another refund of the same order is still being created, the request returns `409` with `details.retry_with_new_idempotency_key` set to `true`. Retry with a new `Idempotency-Key`. See [Understanding `409 Conflict`](/guides/idempotency#understanding-409-conflict).
 

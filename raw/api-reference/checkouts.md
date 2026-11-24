@@ -248,6 +248,62 @@ Below you'll find all properties for the Vatly Checkout API resource.
         pl
       </code>
       
+      , <code>
+        cs
+      </code>
+      
+      , <code>
+        ca
+      </code>
+      
+      , <code>
+        da
+      </code>
+      
+      , <code>
+        el
+      </code>
+      
+      , <code>
+        fi
+      </code>
+      
+      , <code>
+        hu
+      </code>
+      
+      , <code>
+        is
+      </code>
+      
+      , <code>
+        lt
+      </code>
+      
+      , <code>
+        lv
+      </code>
+      
+      , <code>
+        nb
+      </code>
+      
+      , <code>
+        sk
+      </code>
+      
+      , <code>
+        sl
+      </code>
+      
+      , <code>
+        sv
+      </code>
+      
+      , <code>
+        tr
+      </code>
+      
       , or <code>
         null
       </code>
@@ -866,7 +922,75 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
         pl
       </code>
       
-      ; anything else is a <code>
+      , <code>
+        cs
+      </code>
+      
+      , <code>
+        ca
+      </code>
+      
+      , <code>
+        da
+      </code>
+      
+      , <code>
+        el
+      </code>
+      
+      , <code>
+        fi
+      </code>
+      
+      , <code>
+        hu
+      </code>
+      
+      , <code>
+        is
+      </code>
+      
+      , <code>
+        lt
+      </code>
+      
+      , <code>
+        lv
+      </code>
+      
+      , <code>
+        nb
+      </code>
+      
+      , <code>
+        sk
+      </code>
+      
+      , <code>
+        sl
+      </code>
+      
+      , <code>
+        sv
+      </code>
+      
+      , <code>
+        tr
+      </code>
+      
+      . Norwegian is served as <code>
+        nb
+      </code>
+      
+      ; <code>
+        no
+      </code>
+      
+       and <code>
+        nn
+      </code>
+      
+       fold to it. Anything else is a <code>
         422
       </code>
       
