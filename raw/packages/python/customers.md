@@ -81,11 +81,11 @@ def example(client: VatlyClient):
     </td>
     
     <td>
-      object
+      object or null
     </td>
     
     <td>
-      Optional custom data on create; not an update field
+      Optional custom data on create, up to 50 string values; not an update field
     </td>
   </tr>
 </tbody>

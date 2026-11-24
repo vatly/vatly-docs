@@ -54,7 +54,9 @@ read the existing refund/order before deciding to issue another.
         {}
       </code>
       
-       or optional metadata
+       or optional <code>
+        metadata
+      </code>
     </td>
     
     <td>
@@ -74,7 +76,9 @@ read the existing refund/order before deciding to issue another.
         {"items": [...]}
       </code>
       
-      ; optional metadata
+      ; optional <code>
+        metadata
+      </code>
     </td>
     
     <td>
@@ -214,17 +218,36 @@ completed refund. Signed refund events confirm completion, failure or cancellati
       <code>
         testmode
       </code>
-      
-      , <code>
+    </td>
+    
+    <td>
+      Mode
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         metadata
       </code>
     </td>
     
     <td>
-      Mode and custom data
+      The <code>
+        metadata
+      </code>
+      
+       sent on creation; <code>
+        None
+      </code>
+      
+       when none was sent
     </td>
   </tr>
 </tbody>
 </table>
+
+Only sales can be refunded: checkout and subscription orders. Other orders, such
+as payment-method authorizations, return `422` (`VatlyValidationError`).
 
 [Refund API reference](https://docs.vatly.com/api-reference/refunds) · [All methods](/packages/python/api#refunds)

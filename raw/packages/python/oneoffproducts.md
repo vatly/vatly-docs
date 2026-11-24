@@ -90,8 +90,20 @@ def example(client: VatlyClient):
         "saas"
       </code>
       
-       or <code>
+      , <code>
         "ebook"
+      </code>
+      
+      , <code>
+        "digital_download"
+      </code>
+      
+      , <code>
+        "online_course"
+      </code>
+      
+       or <code>
+        "audiobook"
       </code>
     </td>
     

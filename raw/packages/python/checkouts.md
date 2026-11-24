@@ -74,7 +74,7 @@ that convenience belongs to Fluent.
         trialDays
       </code>
       
-       for plans
+       (1 or more) for plans only
     </td>
   </tr>
   
@@ -170,6 +170,9 @@ that convenience belongs to Fluent.
 
 Pydantic inputs accept Python names. Dictionary inputs use wire keys, including
 `trialDays` inside product dictionaries. Omit `customer_id` for a guest checkout.
+Omit `trialDays`, or pass `None`, for no trial; `0` is rejected before sending.
+`metadata` takes up to 50 string values, with keys up to 40 characters and values
+up to 500 characters. The SDK rejects anything else before calling Vatly.
 
 ## Read a checkout or traverse pages
 

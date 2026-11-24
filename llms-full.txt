@@ -12835,11 +12835,11 @@ def example(client: VatlyClient):
     return updated.id, updated.email
 ```
 
-| Create/update parameter | Type           | Purpose                                             |
-| ----------------------- | -------------- | --------------------------------------------------- |
-| `email`                 | string         | Required on create; optional on update              |
-| `name`                  | string or null | Optional name; null clears it on update             |
-| `metadata`              | object         | Optional custom data on create; not an update field |
+| Create/update parameter | Type           | Purpose                                                                     |
+| ----------------------- | -------------- | --------------------------------------------------------------------------- |
+| `email`                 | string         | Required on create; optional on update                                      |
+| `name`                  | string or null | Optional name; null clears it on update                                     |
+| `metadata`              | object or null | Optional custom data on create, up to 50 string values; not an update field |
 
 Update changes name/email, not invoice addresses. Use the hosted billing flows for
 address changes. Keep the same idempotency key when retrying the same signup.
@@ -12918,16 +12918,19 @@ Persist the purchase key before calling Vatly and reuse it after a timeout. A ne
 key can create a second purchase. The raw SDK Checkout has no `get_url()` method;
 that convenience belongs to Fluent.
 
-| Input model field                       | Wire key                               | Required?                                                                 |
-| --------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------- |
-| `products`                              | `products`                             | Yes: items with `id`, positive `quantity`; optional `trialDays` for plans |
-| `redirect_url_success`                  | `redirectUrlSuccess`                   | Yes                                                                       |
-| `redirect_url_canceled`                 | `redirectUrlCanceled`                  | Yes                                                                       |
-| `customer_id`                           | `customerId`                           | No: an authorized existing customer                                       |
-| `locale`, `metadata`, `billing_address` | `locale`, `metadata`, `billingAddress` | No                                                                        |
+| Input model field                       | Wire key                               | Required?                                                                                  |
+| --------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `products`                              | `products`                             | Yes: items with `id`, positive `quantity`; optional `trialDays` (1 or more) for plans only |
+| `redirect_url_success`                  | `redirectUrlSuccess`                   | Yes                                                                                        |
+| `redirect_url_canceled`                 | `redirectUrlCanceled`                  | Yes                                                                                        |
+| `customer_id`                           | `customerId`                           | No: an authorized existing customer                                                        |
+| `locale`, `metadata`, `billing_address` | `locale`, `metadata`, `billingAddress` | No                                                                                         |
 
 Pydantic inputs accept Python names. Dictionary inputs use wire keys, including
 `trialDays` inside product dictionaries. Omit `customer_id` for a guest checkout.
+Omit `trialDays`, or pass `None`, for no trial; `0` is rejected before sending.
+`metadata` takes up to 50 string values, with keys up to 40 characters and values
+up to 500 characters. The SDK rejects anything else before calling Vatly.
 
 ## Read a checkout or traverse pages
 
@@ -13207,12 +13210,12 @@ def example(client: VatlyClient):
     )
 ```
 
-| Input field           | Type                                | Required? |
-| --------------------- | ----------------------------------- | --------- |
-| `name`, `description` | string                              | Yes       |
-| `base_price`          | EUR money with a two-decimal string | Yes       |
-| `product_type`        | `"saas"` or `"ebook"`               | Yes       |
-| `tax_behavior`        | `"exclusive"` or `"inclusive"`      | No        |
+| Input field           | Type                                                                          | Required? |
+| --------------------- | ----------------------------------------------------------------------------- | --------- |
+| `name`, `description` | string                                                                        | Yes       |
+| `base_price`          | EUR money with a two-decimal string                                           | Yes       |
+| `product_type`        | `"saas"`, `"ebook"`, `"digital_download"`, `"online_course"` or `"audiobook"` | Yes       |
+| `tax_behavior`        | `"exclusive"` or `"inclusive"`                                                | No        |
 
 Dictionary inputs use `basePrice`, `productType` and `taxBehavior`. Responses may
 contain additional product-type strings; the SDK preserves them. That does not
@@ -13269,12 +13272,12 @@ def example(client: VatlyClient):
 Keep the same key for retries of this refund. A timeout does not prove it failed;
 read the existing refund/order before deciding to issue another.
 
-| Operation                   | Inputs                                          | Return |
-| --------------------------- | ----------------------------------------------- | ------ |
-| `orders.create_full_refund` | order ID, `{}` or optional metadata             | Refund |
-| `orders.create_refund`      | order ID, `{"items": [...]}`; optional metadata | Refund |
-| `orders.cancel_refund`      | order ID, refund ID                             | None   |
-| `refunds.get`               | refund ID                                       | Refund |
+| Operation                   | Inputs                                            | Return |
+| --------------------------- | ------------------------------------------------- | ------ |
+| `orders.create_full_refund` | order ID, `{}` or optional `metadata`             | Refund |
+| `orders.create_refund`      | order ID, `{"items": [...]}`; optional `metadata` | Refund |
+| `orders.cancel_refund`      | order ID, refund ID                               | None   |
+| `refunds.get`               | refund ID                                         | Refund |
 
 ## Refund part of a line
 
@@ -13315,12 +13318,16 @@ def example(client: VatlyClient):
 Cancellation is only allowed while Vatly permits it; it is not a reversal of a
 completed refund. Signed refund events confirm completion, failure or cancellation.
 
-| Response field         | Meaning                              |
-| ---------------------- | ------------------------------------ |
-| `id`, `status`         | Refund identifier and state          |
-| `original_order_id`    | Order being reversed                 |
-| `lines`                | Refunded lines and financial details |
-| `testmode`, `metadata` | Mode and custom data                 |
+| Response field      | Meaning                                                    |
+| ------------------- | ---------------------------------------------------------- |
+| `id`, `status`      | Refund identifier and state                                |
+| `original_order_id` | Order being reversed                                       |
+| `lines`             | Refunded lines and financial details                       |
+| `testmode`          | Mode                                                       |
+| `metadata`          | The `metadata` sent on creation; `None` when none was sent |
+
+Only sales can be refunded: checkout and subscription orders. Other orders, such
+as payment-method authorizations, return `422` (`VatlyValidationError`).
 
 [Refund API reference](https://docs.vatly.com/api-reference/refunds){rel="&#x22;nofollow&#x22;"} · [All methods](https://docs.vatly.com/packages/python/api#refunds)
 
@@ -13655,22 +13662,24 @@ models, resources, clients or `docs/API.md`.
 
 Output models preserve extra fields and keep URLs and emails as strings. The
 generator handles two observed API differences: metadata `[]` becomes `{}`, and
-response product types accept values such as `digital_download`. Request validation
-still follows the pinned schema. Invalid responses raise `VatlyApiError`; avoid
+response product types stay open to catalogue values added before the next sync.
+Request validation follows the pinned schema: dictionaries are validated through the
+request model, request metadata limits are checked, and only spec-defined fields are
+sent, with `null` only where the specification allows it. Invalid responses raise `VatlyApiError`; avoid
 logging response bodies that may contain personal data.
 
 ### Pinned source
 
 | Source                                   | Revision                                                                                                                                                      |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Production OpenAPI, retrieved 2026-11-21 | [vatly-docs specification](https://github.com/vatly/vatly-docs/blob/d5c09d94a52c4e7d884c2817b4b7834597294cb0/public/openapi.yaml){rel="&#x22;nofollow&#x22;"} |
+| Production OpenAPI, retrieved 2026-11-24 | [vatly-docs specification](https://github.com/vatly/vatly-docs/blob/7ec49a749e7b3df53cfce8e498160f03003e0dd9/public/openapi.yaml){rel="&#x22;nofollow&#x22;"} |
 | Original JS design reference             | [SDK revision](https://github.com/vatly/vatly-api-js/commit/8b0b920c29f7e7b30bf71b9e379ec0a8a1a22028){rel="&#x22;nofollow&#x22;"}                             |
 
 The checked-in specification is byte-identical to that source and to the bundle
 published by Vatly's production release. Its SHA-256 is:
 
 ```text
-be578c73c71c234262b6f5f21bd1f01e209fcc64464a1e81d7fd0675eb3c273c
+a8aff52f58ff58cda5b1de0f911849ba21109ea07d5df66d55747262eb21f29d
 ```
 
 The specification's generated-at date is not its retrieval date.
