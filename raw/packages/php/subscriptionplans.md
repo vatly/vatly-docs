@@ -165,19 +165,19 @@ Below you'll find all properties for the Vatly Subscription Plan resource.
     
     <td>
       Billing interval: <code>
-        day
-      </code>
-      
-      , <code>
-        week
-      </code>
-      
-      , <code>
         month
       </code>
       
-      , or <code>
+       or <code>
         year
+      </code>
+      
+      . Plans created before that restriction can still show <code>
+        day
+      </code>
+      
+       or <code>
+        week
       </code>
       
       .
@@ -198,7 +198,11 @@ Below you'll find all properties for the Vatly Subscription Plan resource.
     </td>
     
     <td>
-      Number of intervals between billings.
+      Number of intervals between billings. Always <code>
+        1
+      </code>
+      
+       for new plans; older plans can show another value.
     </td>
   </tr>
   
@@ -498,20 +502,16 @@ checkouts; a plan created with a `test_` token is auto-approved (`active`).
     </td>
     
     <td>
-      Billing interval unit. <code>
-        day
-      </code>
-      
-       is sandbox-only; live plans support <code>
-        week
-      </code>
-      
-      , <code>
+      Billing interval unit: <code>
         month
       </code>
       
-      , <code>
+       or <code>
         year
+      </code>
+      
+      , in live and test mode alike. Anything else returns <code>
+        422
       </code>
       
       .
@@ -532,11 +532,11 @@ checkouts; a plan created with a `test_` token is auto-approved (`active`).
     </td>
     
     <td>
-      Interval units between billings (≤ 365 days / 52 weeks / 12 months). For <code>
-        year
+      Must be <code>
+        1
       </code>
       
-      , billing is always annual and this is ignored.
+      : a plan bills every month or every year.
     </td>
   </tr>
 </tbody>
@@ -620,6 +620,8 @@ update; while an update is being reviewed, further requests return `409`.
 
 The `interval` cannot be changed once the plan has ever been used by a
 subscription (active or not) — that returns `409`. The price stays changeable.
+A new `interval` must be `month` or `year`, sent together with `intervalCount: 1`;
+anything else returns `422`. A plan that already bills on another interval keeps it.
 
 ### Optional attributes
 
@@ -713,7 +715,15 @@ subscription (active or not) — that returns `409`. The price stays changeable.
     </td>
     
     <td>
-      New billing interval. Requires <code>
+      New billing interval: <code>
+        month
+      </code>
+      
+       or <code>
+        year
+      </code>
+      
+      . Requires <code>
         intervalCount
       </code>
       
@@ -735,7 +745,11 @@ subscription (active or not) — that returns `409`. The price stays changeable.
     </td>
     
     <td>
-      Required when <code>
+      Must be <code>
+        1
+      </code>
+      
+      . Required when <code>
         interval
       </code>
       
@@ -769,14 +783,14 @@ subscription (active or not) — that returns `409`. The price stays changeable.
 
 ```php
 $plan = $vatly->subscriptionPlans->update('subscription_plan_abc123', [
-    'name' => 'Pro Weekly',
+    'name' => 'Pro Yearly',
     'basePrice' => ['value' => '9.00', 'currency' => 'EUR'],
-    'interval' => 'week',
+    'interval' => 'year',
     'intervalCount' => 1,
 ]);
 
 echo $plan->updateStatus;              // 'pending'
-echo $plan->pendingUpdates->interval;  // 'week'
+echo $plan->pendingUpdates->interval;  // 'year'
 ```
 
 ---

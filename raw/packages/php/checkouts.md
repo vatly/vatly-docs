@@ -270,6 +270,62 @@ Below you'll find all properties for the Vatly Checkout resource.
         pl
       </code>
       
+      , <code>
+        cs
+      </code>
+      
+      , <code>
+        ca
+      </code>
+      
+      , <code>
+        da
+      </code>
+      
+      , <code>
+        el
+      </code>
+      
+      , <code>
+        fi
+      </code>
+      
+      , <code>
+        hu
+      </code>
+      
+      , <code>
+        is
+      </code>
+      
+      , <code>
+        lt
+      </code>
+      
+      , <code>
+        lv
+      </code>
+      
+      , <code>
+        nb
+      </code>
+      
+      , <code>
+        sk
+      </code>
+      
+      , <code>
+        sl
+      </code>
+      
+      , <code>
+        sv
+      </code>
+      
+      , <code>
+        tr
+      </code>
+      
       ), echoed back as the folded language. <code>
         null
       </code>
@@ -543,12 +599,20 @@ Create a new hosted checkout for your customer.
     
     <td>
       <code>
-        array
+        array | null
       </code>
     </td>
     
     <td>
-      Your custom metadata to store with the checkout.
+      Your custom metadata: string values only, at most 50 keys, keys up to 40 characters and values up to 500 characters (anything else returns <code>
+        422
+      </code>
+      
+      ). <code>
+        null
+      </code>
+      
+       is the same as leaving it out.
     </td>
   </tr>
   
@@ -610,11 +674,79 @@ Create a new hosted checkout for your customer.
         pl
       </code>
       
+      , <code>
+        cs
+      </code>
+      
+      , <code>
+        ca
+      </code>
+      
+      , <code>
+        da
+      </code>
+      
+      , <code>
+        el
+      </code>
+      
+      , <code>
+        fi
+      </code>
+      
+      , <code>
+        hu
+      </code>
+      
+      , <code>
+        is
+      </code>
+      
+      , <code>
+        lt
+      </code>
+      
+      , <code>
+        lv
+      </code>
+      
+      , <code>
+        nb
+      </code>
+      
+      , <code>
+        sk
+      </code>
+      
+      , <code>
+        sl
+      </code>
+      
+      , <code>
+        sv
+      </code>
+      
+      , <code>
+        tr
+      </code>
+      
        (anything else returns <code>
         422
       </code>
       
-      ). Omit (or <code>
+      ). Norwegian is served as <code>
+        nb
+      </code>
+      
+      ; <code>
+        no
+      </code>
+      
+       and <code>
+        nn
+      </code>
+      
+       fold to it. Omit (or <code>
         null
       </code>
       
@@ -675,7 +807,7 @@ If you omit `idempotencyKey`, the SDK generates an `Idempotency-Key` header auto
 
 Each entry in `products` references a product you have **already created in the Vatly dashboard** — there is no API endpoint to create products on the fly. The `id` is either a `one_off_product_…` or `subscription_plan_…` id.
 
-To charge an amount other than the product's dashboard price, set a `price` override (a `Money` object). For the full list of accepted item fields and their validation rules, see the `CheckoutProduct` schema in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml).
+To charge an amount other than the product's dashboard price, set a `price` override (a `Money` object). To start a subscription plan with a trial, set `trialDays` to at least `1`; omit it or pass `null` for no trial. A `trialDays` below `1` throws an `ApiException` before the request is sent, and a `trialDays` on a one-off product returns `422`. For the full list of accepted item fields and their validation rules, see the `CheckoutProduct` schema in the [OpenAPI spec](https://docs.vatly.com/openapi.yaml).
 
 ```php
 // Override the price of a pre-configured product at checkout time.

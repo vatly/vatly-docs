@@ -231,22 +231,22 @@ Below you'll find all properties for the Vatly Subscription resource.
     
     <td>
       Billing interval unit: <code>
-        day
-      </code>
-      
-      , <code>
-        week
-      </code>
-      
-      , <code>
         month
       </code>
       
-      , or <code>
+       or <code>
         year
       </code>
       
-      .
+       (subscriptions on plans created before that restriction can show <code>
+        day
+      </code>
+      
+       or <code>
+        week
+      </code>
+      
+      ).
     </td>
   </tr>
   
@@ -1006,7 +1006,11 @@ subscriptionPlanId, quantity, or price is required.**
         YYYY-MM-DD
       </code>
       
-      , UTC). Cannot be combined with <code>
+      , UTC). <code>
+        null
+      </code>
+      
+       is the same as leaving it out. Cannot be combined with <code>
         resetAnchor
       </code>
       

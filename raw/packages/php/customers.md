@@ -277,12 +277,20 @@ Create a new customer.
     
     <td>
       <code>
-        array
+        array | null
       </code>
     </td>
     
     <td>
-      Your custom metadata.
+      Your custom metadata: string values only, at most 50 keys, keys up to 40 characters and values up to 500 characters (anything else returns <code>
+        422
+      </code>
+      
+      ). <code>
+        null
+      </code>
+      
+       is the same as leaving it out.
     </td>
   </tr>
 </tbody>

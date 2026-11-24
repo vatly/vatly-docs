@@ -253,6 +253,36 @@ Below you'll find all properties for the Vatly Refund resource.
   <tr>
     <td>
       <code>
+        metadata
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        object | null
+      </code>
+    </td>
+    
+    <td>
+      The <code>
+        metadata
+      </code>
+      
+       sent when the refund was created, read as <code>
+        $refund->metadata->ticketId
+      </code>
+      
+      . <code>
+        null
+      </code>
+      
+       when none was sent, including refunds created before Vatly stored refund metadata.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         createdAt
       </code>
     </td>
@@ -310,7 +340,7 @@ Below you'll find all properties for the Vatly Refund resource.
 
 `POST /v1/orders/:orderId/refunds`
 
-Refund part of an order, line by line.
+Refund part of an order, line by line. Only sales can be refunded: checkout and subscription orders. Any other order, such as a payment-method authorization, returns `422` with the order's type in `details.orderType`.
 
 ### Required attributes
 
@@ -385,12 +415,20 @@ Refund part of an order, line by line.
     
     <td>
       <code>
-        array
+        array | null
       </code>
     </td>
     
     <td>
-      Your custom metadata.
+      Your custom metadata: string values only, at most 50 keys, keys up to 40 characters and values up to 500 characters (anything else returns <code>
+        422
+      </code>
+      
+      ). <code>
+        null
+      </code>
+      
+       is the same as leaving it out.
     </td>
   </tr>
 </tbody>
@@ -523,10 +561,12 @@ $refund = $vatly->orderRefunds->createForOrderId('order_abc123', [
             'description' => 'Partial refund',
         ],
     ],
+    'metadata' => ['ticketId' => 'SUPPORT-12345'],
 ]);
 
 echo $refund->id;
 echo $refund->status;
+echo $refund->metadata->ticketId; // 'SUPPORT-12345'
 ```
 
 ---
@@ -535,7 +575,7 @@ echo $refund->status;
 
 `POST /v1/orders/:orderId/refunds/full`
 
-Refund everything that can still be refunded on an order.
+Refund everything that can still be refunded on an order. As with a partial refund, only checkout and subscription orders can be refunded.
 
 ### Optional attributes
 
@@ -566,12 +606,20 @@ Refund everything that can still be refunded on an order.
     
     <td>
       <code>
-        array
+        array | null
       </code>
     </td>
     
     <td>
-      Your custom metadata.
+      Your custom metadata: string values only, at most 50 keys, keys up to 40 characters and values up to 500 characters (anything else returns <code>
+        422
+      </code>
+      
+      ). <code>
+        null
+      </code>
+      
+       is the same as leaving it out.
     </td>
   </tr>
 </tbody>

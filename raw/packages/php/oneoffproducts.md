@@ -168,8 +168,20 @@ Below you'll find all properties for the Vatly One-Off Product resource.
         saas
       </code>
       
-       or <code>
+      , <code>
         ebook
+      </code>
+      
+      , <code>
+        digital_download
+      </code>
+      
+      , <code>
+        online_course
+      </code>
+      
+       or <code>
+        audiobook
       </code>
       
       .
@@ -433,8 +445,20 @@ you can trial checkout immediately.
         saas
       </code>
       
-       or <code>
+      , <code>
         ebook
+      </code>
+      
+      , <code>
+        digital_download
+      </code>
+      
+      , <code>
+        online_course
+      </code>
+      
+       or <code>
+        audiobook
       </code>
       
       .
@@ -616,8 +640,20 @@ The returned product carries `pendingUpdates` and `updateStatus`.
         saas
       </code>
       
-       or <code>
+      , <code>
         ebook
+      </code>
+      
+      , <code>
+        digital_download
+      </code>
+      
+      , <code>
+        online_course
+      </code>
+      
+       or <code>
+        audiobook
       </code>
       
       .
