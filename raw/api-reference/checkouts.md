@@ -584,11 +584,55 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
         trialDays
       </code>
       
-       (optional, for subscription plans), <code>
+       (optional, see below), <code>
         metadata
       </code>
       
-       (optional).
+       (optional, same limits as the checkout's <code>
+        metadata
+      </code>
+      
+      ). <code>
+        price
+      </code>
+      
+      , <code>
+        trialDays
+      </code>
+      
+       and <code>
+        metadata
+      </code>
+      
+       also accept <code>
+        null
+      </code>
+      
+      , which is treated as omitted.<br />
+      
+      <br />
+      
+      <code>
+        trialDays
+      </code>
+      
+       is a whole number of at least <code>
+        1
+      </code>
+      
+       and only works on a subscription plan. <code>
+        0
+      </code>
+      
+       or below, or any value on a one-off product, returns <code>
+        422
+      </code>
+      
+      . Omit it or send <code>
+        null
+      </code>
+      
+       for no trial.
     </td>
   </tr>
   
@@ -667,12 +711,20 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
     
     <td>
       <code>
-        object
+        object | null
       </code>
     </td>
     
     <td>
-      Arbitrary key-value metadata for your application.
+      Arbitrary key-value metadata for your application: an object with string values, up to 50 keys, key names up to 40 characters and values up to 500 characters. Anything else returns <code>
+        422
+      </code>
+      
+      . <code>
+        null
+      </code>
+      
+       is treated as omitted.
     </td>
   </tr>
   

@@ -291,6 +291,32 @@ The refund model contains all the information about order refunds, including the
   <tr>
     <td>
       <code>
+        metadata
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        object | null
+      </code>
+    </td>
+    
+    <td>
+      The <code>
+        metadata
+      </code>
+      
+       sent when the refund was created. Always present; <code>
+        null
+      </code>
+      
+       when none was sent, including for refunds created before Vatly stored refund metadata.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         createdAt
       </code>
     </td>
@@ -751,12 +777,20 @@ If another refund of the same order is still being created, the request returns 
     
     <td>
       <code>
-        object
+        object | null
       </code>
     </td>
     
     <td>
-      Arbitrary key-value metadata for your application.
+      Arbitrary key-value metadata for your application: an object with string values, up to 50 keys, key names up to 40 characters and values up to 500 characters. Anything else returns <code>
+        422
+      </code>
+      
+      . <code>
+        null
+      </code>
+      
+       is treated as omitted.
     </td>
   </tr>
 </tbody>
@@ -778,7 +812,10 @@ curl -X POST https://api.vatly.com/v1/orders/order_Fp2kQrSvWm8NjLhYbUcP/refunds 
         },
         "description": "50% refund for service issue"
       }
-    ]
+    ],
+    "metadata": {
+      "ticketId": "SUPPORT-12345"
+    }
   }'
 ```
 
@@ -797,6 +834,9 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->create([
             'description' => '50% refund for service issue',
         ],
     ],
+    'metadata' => [
+        'ticketId' => 'SUPPORT-12345',
+    ],
 ]);
 ```
 
@@ -805,6 +845,9 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->create([
   "id": "refund_Mn6xBtPvKw2RjTgYcZaE",
   "resource": "refund",
   "orderId": null,
+  "metadata": {
+    "ticketId": "SUPPORT-12345"
+  },
   "customerId": "customer_Lp3mNvBxKw7RjTgYcZaE",
   "testmode": false,
   "status": "pending",
@@ -960,12 +1003,20 @@ If another refund of the same order is still being created, the request returns 
     
     <td>
       <code>
-        object
+        object | null
       </code>
     </td>
     
     <td>
-      Arbitrary key-value metadata for your application.
+      Arbitrary key-value metadata for your application: an object with string values, up to 50 keys, key names up to 40 characters and values up to 500 characters. Anything else returns <code>
+        422
+      </code>
+      
+      . <code>
+        null
+      </code>
+      
+       is treated as omitted.
     </td>
   </tr>
 </tbody>
@@ -990,6 +1041,7 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->full();
   "id": "refund_Rk5pQrSvWm8NjLhYbUcP",
   "resource": "refund",
   "orderId": null,
+  "metadata": null,
   "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
   "testmode": false,
   "status": "pending",
@@ -1189,6 +1241,7 @@ $refunds = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->page();
       "id": "refund_Bm7xNvPwKr3YjTgHcZaE",
       "resource": "refund",
       "orderId": null,
+      "metadata": null,
       "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
       "testmode": false,
       "status": "pending",
@@ -1361,6 +1414,7 @@ $refund = $vatly->orders->refunds('order_Fp2kQrSvWm8NjLhYbUcP')->get('refund_Xk9
   "id": "refund_Xk9pQrSvWm4NjLhYbUcP",
   "resource": "refund",
   "orderId": "order_Bm7xNvPwKr3YjTgHcZaE",
+  "metadata": null,
   "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
   "testmode": false,
   "status": "refunded",

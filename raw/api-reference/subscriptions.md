@@ -1644,7 +1644,7 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
     
     <td>
       <code>
-        date
+        date | null
       </code>
     </td>
     
@@ -1653,7 +1653,11 @@ At least one of `subscriptionPlanId`, `quantity`, or `price` must be provided.
         YYYY-MM-DD
       </code>
       
-      , interpreted in UTC); the billing cycle is recalculated around it. Cannot be combined with <code>
+      , interpreted in UTC); the billing cycle is recalculated around it. <code>
+        null
+      </code>
+      
+       is treated as omitted. Cannot be combined with <code>
         resetAnchor
       </code>
       

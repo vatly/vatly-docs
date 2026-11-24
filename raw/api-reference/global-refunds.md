@@ -327,6 +327,32 @@ The refund model contains all the information about refunds, including the refun
   <tr>
     <td>
       <code>
+        metadata
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        object | null
+      </code>
+    </td>
+    
+    <td>
+      The <code>
+        metadata
+      </code>
+      
+       sent when the refund was created. Always present; <code>
+        null
+      </code>
+      
+       when none was sent, including for refunds created before Vatly stored refund metadata.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         createdAt
       </code>
     </td>
@@ -504,6 +530,7 @@ $refunds = $vatly->refunds->page();
       "id": "refund_Xk9pQrSvWm4NjLhYbUcP",
       "resource": "refund",
       "orderId": "order_Bm7xNvPwKr3YjTgHcZaE",
+      "metadata": null,
       "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
       "testmode": false,
       "createdAt": "2024-01-20T14:00:00Z",
@@ -664,6 +691,7 @@ $refund = $vatly->refunds->get('refund_Xk9pQrSvWm4NjLhYbUcP');
   "id": "refund_Xk9pQrSvWm4NjLhYbUcP",
   "resource": "refund",
   "orderId": "order_Bm7xNvPwKr3YjTgHcZaE",
+  "metadata": null,
   "customerId": "customer_Wt5mNvBxKw7YcZaEjLhR",
   "testmode": false,
   "createdAt": "2024-01-20T14:00:00Z",

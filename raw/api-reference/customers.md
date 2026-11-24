@@ -512,12 +512,20 @@ Addresses are canonicalized before they are compared, so `User@MÜLLER.de` and `
     
     <td>
       <code>
-        object
+        object | null
       </code>
     </td>
     
     <td>
-      Arbitrary key-value metadata for your application.
+      Arbitrary key-value metadata for your application: an object with string values, up to 50 keys, key names up to 40 characters and values up to 500 characters. Anything else returns <code>
+        422
+      </code>
+      
+      . <code>
+        null
+      </code>
+      
+       is treated as omitted.
     </td>
   </tr>
 </tbody>
