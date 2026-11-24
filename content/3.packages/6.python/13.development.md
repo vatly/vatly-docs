@@ -60,22 +60,24 @@ models, resources, clients or `docs/API.md`.
 
 Output models preserve extra fields and keep URLs and emails as strings. The
 generator handles two observed API differences: metadata `[]` becomes `{}`, and
-response product types accept values such as `digital_download`. Request validation
-still follows the pinned schema. Invalid responses raise `VatlyApiError`; avoid
+response product types stay open to catalogue values added before the next sync.
+Request validation follows the pinned schema: dictionaries are validated through the
+request model, request metadata limits are checked, and only spec-defined fields are
+sent, with `null` only where the specification allows it. Invalid responses raise `VatlyApiError`; avoid
 logging response bodies that may contain personal data.
 
 ### Pinned source
 
 | Source | Revision |
 | --- | --- |
-| Production OpenAPI, retrieved 2026-11-21 | [vatly-docs specification](https://github.com/vatly/vatly-docs/blob/d5c09d94a52c4e7d884c2817b4b7834597294cb0/public/openapi.yaml) |
+| Production OpenAPI, retrieved 2026-11-24 | [vatly-docs specification](https://github.com/vatly/vatly-docs/blob/7ec49a749e7b3df53cfce8e498160f03003e0dd9/public/openapi.yaml) |
 | Original JS design reference | [SDK revision](https://github.com/vatly/vatly-api-js/commit/8b0b920c29f7e7b30bf71b9e379ec0a8a1a22028) |
 
 The checked-in specification is byte-identical to that source and to the bundle
 published by Vatly's production release. Its SHA-256 is:
 
 ```text
-be578c73c71c234262b6f5f21bd1f01e209fcc64464a1e81d7fd0675eb3c273c
+a8aff52f58ff58cda5b1de0f911849ba21109ea07d5df66d55747262eb21f29d
 ```
 
 The specification's generated-at date is not its retrieval date.
