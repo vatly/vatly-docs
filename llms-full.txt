@@ -8651,13 +8651,13 @@ if ($customer === null) {
     $customer = $vatly->customers()->createFor(
         hostCustomerId: 'user_42',
         profile: new CustomerProfile(email: 'buyer@example.com', name: 'Alex'),
-        additionalPayload: ['locale' => 'nl_NL'],
+        additionalPayload: ['metadata' => ['host_account_id' => 'user_42']],
     );
 }
 $profile = new CustomerProfile(vatlyId: $customer->id);
 ```
 
-Use `$profile` in a [checkout](https://docs.vatly.com/packages/fluent-php/checkouts). `createFor()` always creates a new remote customer and then calls your binding repository. It throws if that host ID is already bound. Serialize concurrent creation for the same host account; a lookup followed by create is not an atomic lock. Remote creation and your database write are not one transaction. Reconcile the remote ID if binding fails rather than blindly creating again.
+Use `$profile` in a [checkout](https://docs.vatly.com/packages/fluent-php/checkouts). `additionalPayload` takes the other create-customer fields; today that is only `metadata`, an object of string values. `createFor()` always creates a new remote customer and then calls your binding repository. It throws if that host ID is already bound. Serialize concurrent creation for the same host account; a lookup followed by create is not an atomic lock. Remote creation and your database write are not one transaction. Reconcile the remote ID if binding fails rather than blindly creating again.
 
 ## Link an existing customer
 
@@ -8729,6 +8729,8 @@ $url = $checkout->links->checkoutUrl->href;
 ```
 
 The result is a checkout, not a local subscription. `subscription.started` creates the local record through your repository. `withTrialDays()` requires a positive whole number. `withTrialEndsAt()` rounds a future end time up to whole days. If you omit the trial, the API applies any plan-level default.
+
+Metadata is an object of string values: at most 50 keys, keys up to 40 characters, values up to 500 characters. Integer and float values are sent as strings, and an empty array sends no metadata. Test mode follows the API key; the builders' `inTestmode()` and `withTestmode()` do not change the request.
 
 Both builders support `withLocale()` and `withBillingAddress()`. Address values prefill hosted fields; the customer can still edit them. A supplied country takes precedence over IP detection. A supplied tax ID is registered only when checkout is submitted.
 
@@ -9032,7 +9034,7 @@ In production, let that callback write outbox jobs on the same transaction as yo
 | `refund.completed`, `refund.failed`, `refund.canceled`                         | Store or update only when a refund repository is wired.                                                                                                                                                        |
 | `order.chargeback_received`, `order.chargeback_reversed`                       | Store or update only when a chargeback repository is wired. The order stays `paid`.                                                                                                                            |
 
-Order and subscription creation resolve `hostCustomerId` through your binding repository. It can be `null`. The store DTOs carry `testmode`; persist it. Order, refund, and chargeback store DTOs also carry totals, currency, and tax details.
+Order and subscription creation resolve `hostCustomerId` through your binding repository. It can be `null`. The store DTOs carry `testmode`; persist it. Order, refund, and chargeback store DTOs also carry totals, currency, and tax details. Refund store and update DTOs carry the refund's `metadata`, or `null` when none was sent.
 
 All entity stores can return `null` for an unroutable record. Successful new paid-order and subscription stores dispatch `OrderWasCreatedFromWebhook` and `SubscriptionWasCreatedFromWebhook`. Updates do not dispatch those local-created events. This distinction is not a concurrency lock: enforce unique IDs and transactions in storage.
 

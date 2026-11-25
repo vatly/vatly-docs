@@ -214,7 +214,7 @@ In production, let that callback write outbox jobs on the same transaction as yo
 </tbody>
 </table>
 
-Order and subscription creation resolve `hostCustomerId` through your binding repository. It can be `null`. The store DTOs carry `testmode`; persist it. Order, refund, and chargeback store DTOs also carry totals, currency, and tax details.
+Order and subscription creation resolve `hostCustomerId` through your binding repository. It can be `null`. The store DTOs carry `testmode`; persist it. Order, refund, and chargeback store DTOs also carry totals, currency, and tax details. Refund store and update DTOs carry the refund's `metadata`, or `null` when none was sent.
 
 All entity stores can return `null` for an unroutable record. Successful new paid-order and subscription stores dispatch `OrderWasCreatedFromWebhook` and `SubscriptionWasCreatedFromWebhook`. Updates do not dispatch those local-created events. This distinction is not a concurrency lock: enforce unique IDs and transactions in storage.
 
