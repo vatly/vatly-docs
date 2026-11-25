@@ -45,9 +45,9 @@
 - [Chargebacks](https://docs.vatly.com/raw/packages/php/chargebacks.md): Chargebacks occur when a customer disputes a payment with their bank.
 - [Webhooks](https://docs.vatly.com/raw/packages/php/webhooks.md): Vatly sends webhooks to notify your application when events happen — for example, an order being paid, a refund completing, or a subscription being canceled.
 - [Webhook Endpoints](https://docs.vatly.com/raw/packages/php/webhookendpoints.md): A webhook endpoint is the HTTPS URL Vatly POSTs event deliveries to — registered from code (or infrastructure-as-code) rather than the dashboard.
-- [FluentCart](https://docs.vatly.com/raw/packages/fluentcart/readme.md): Accept payments through Vatly in FluentCart, the WordPress e-commerce plugin.
+- [FluentCart](https://docs.vatly.com/raw/packages/fluentcart/readme.md): Sell from your FluentCart store with Vatly as the Merchant of Record, so you don't have to handle VAT yourself.
 - [Merchant-of-Record invoicing: implementation notes](https://docs.vatly.com/raw/packages/fluentcart/merchant-of-record.md): How the plugin makes Vatly the single source of truth for invoices on FluentCart orders, and the FluentCart integration points it relies on.
-- [Paid Memberships Pro](https://docs.vatly.com/raw/packages/pmpro/readme.md): Sell Paid Memberships Pro (PMPro) memberships through Vatly.
+- [Paid Memberships Pro](https://docs.vatly.com/raw/packages/pmpro/readme.md): Sell Paid Memberships Pro (PMPro) memberships with Vatly as the Merchant of Record, so you don't have to handle VAT yourself.
 - [PHP Fluent](https://docs.vatly.com/raw/packages/fluent-php/readme.md): Sell a download, start a subscription, and keep your app's billing records in step with Vatly.
 - [Configuration](https://docs.vatly.com/raw/packages/fluent-php/configuration.md): Install Fluent on your server with PHP 8.1 or newer and Composer.
 - [Core concepts](https://docs.vatly.com/raw/packages/fluent-php/coreconcepts.md): Connect Fluent to your database without replacing your models.
