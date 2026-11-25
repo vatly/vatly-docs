@@ -137,7 +137,7 @@ payloads. Products, quantity and redirect destinations stay under server control
     </td>
     
     <td>
-      Offer slug → products; optional locale, metadata, billingAddress
+      Offer slug → products; optional locale, metadata (string values), billingAddress
     </td>
   </tr>
   

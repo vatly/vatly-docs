@@ -14622,16 +14622,16 @@ VATLY_CHECKOUTS = {
 Replace catalog IDs with your own. Offers are an allowlist, not buyer-provided
 payloads. Products, quantity and redirect destinations stay under server control.
 
-| Setting                                                     | Required?    | Meaning                                                          |
-| ----------------------------------------------------------- | ------------ | ---------------------------------------------------------------- |
-| `VATLY_API_KEY`                                             | Yes          | May fall back to the environment                                 |
-| `VATLY_SCOPE`                                               | Yes          | Stable tenant/storefront identity, up to 200 characters          |
-| `VATLY_WEBHOOK_SECRET`                                      | For webhooks | Secret string or rotation sequence                               |
-| `VATLY_REDIRECT_URL_SUCCESS`, `VATLY_REDIRECT_URL_CANCELED` | For checkout | HTTPS return destinations                                        |
-| `VATLY_PORTAL_REDIRECT_URL`                                 | No           | Optional return link in the portal                               |
-| `VATLY_CHECKOUTS`                                           | For checkout | Offer slug → products; optional locale, metadata, billingAddress |
-| `VATLY_BILLABLE_RESOLVER`                                   | No           | Dotted callable taking request; defaults to request.user         |
-| `VATLY_SCOPE_RESOLVER`                                      | No           | Dotted callable taking request; chooses a trusted scope          |
+| Setting                                                     | Required?    | Meaning                                                                          |
+| ----------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------- |
+| `VATLY_API_KEY`                                             | Yes          | May fall back to the environment                                                 |
+| `VATLY_SCOPE`                                               | Yes          | Stable tenant/storefront identity, up to 200 characters                          |
+| `VATLY_WEBHOOK_SECRET`                                      | For webhooks | Secret string or rotation sequence                                               |
+| `VATLY_REDIRECT_URL_SUCCESS`, `VATLY_REDIRECT_URL_CANCELED` | For checkout | HTTPS return destinations                                                        |
+| `VATLY_PORTAL_REDIRECT_URL`                                 | No           | Optional return link in the portal                                               |
+| `VATLY_CHECKOUTS`                                           | For checkout | Offer slug → products; optional locale, metadata (string values), billingAddress |
+| `VATLY_BILLABLE_RESOLVER`                                   | No           | Dotted callable taking request; defaults to request.user                         |
+| `VATLY_SCOPE_RESOLVER`                                      | No           | Dotted callable taking request; chooses a trusted scope                          |
 
 ## Bill an organization instead of the user
 
