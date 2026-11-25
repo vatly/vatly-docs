@@ -35,6 +35,10 @@ The SDK checks `Vatly-Signature` HMAC and timestamp before touching storage.
 Keep timestamp checks enabled. To rotate secrets, set `webhookSecret` to an array
 of accepted secrets.
 
+A webhook for the other mode than your API key, such as a test-mode event while
+the key is live, is refused before anything is stored. `handle()` then throws a
+`WebhookModeMismatchError`, which extends `VatlyInvalidSignatureError`.
+
 ## Idempotency and one transaction
 
 Implement `WebhookCalls.process(event, work)` in one transaction shared by all
