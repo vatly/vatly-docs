@@ -270,8 +270,8 @@ Vatly is the European merchant of record for AI, software and digital products. 
     </td>
     
     <td>
-      <a href="https://github.com/vatly/vatly-pmpro/releases/latest" rel="nofollow">
-        GitHub Releases
+      <a href="https://packagist.org/packages/vatly/vatly-pmpro" rel="nofollow">
+        vatly/vatly-pmpro
       </a>
       
        · <a href="/packages/pmpro/readme">
@@ -284,7 +284,15 @@ Vatly is the European merchant of record for AI, software and digital products. 
     </td>
     
     <td>
-      Upload the release zip in WordPress
+      Upload the <a href="https://github.com/vatly/vatly-pmpro/releases/latest" rel="nofollow">
+        release zip
+      </a>
+      
+       in WordPress, or <code>
+        composer require vatly/vatly-pmpro
+      </code>
+      
+       (after allowing alpha, see below)
     </td>
   </tr>
 </tbody>
@@ -294,6 +302,6 @@ These packages are in alpha. Every alpha release may include breaking changes. L
 
 The FluentCart plugin is in alpha and requires FluentCart 2.3 or newer. It is not on WordPress.org or Packagist: download the zip from [GitHub Releases](https://github.com/vatly/vatly-fluentcart-wp/releases/latest) and upload it under **Plugins → Add New → Upload Plugin**.
 
-The Paid Memberships Pro plugin is in alpha and requires Paid Memberships Pro 3.x. It is not on WordPress.org or Packagist: download the zip from [GitHub Releases](https://github.com/vatly/vatly-pmpro/releases/latest) and upload it under **Plugins → Add New → Upload Plugin**.
+The Paid Memberships Pro plugin is in alpha and requires Paid Memberships Pro 3.x. It is not on WordPress.org: download the zip from [GitHub Releases](https://github.com/vatly/vatly-pmpro/releases/latest) and upload it under **Plugins → Add New → Upload Plugin**. Sites that manage plugins with Composer, such as Bedrock, can require it from Packagist instead.
 
 Not using one of these languages? You can use the [REST API directly](/guides/authentication) with any HTTP client.
