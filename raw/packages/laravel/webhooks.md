@@ -386,6 +386,10 @@ When a webhook is received, the driver's `LaravelEventDispatcher` forwards the t
         taxSummary
       </code>
       
+       and the refund's <code>
+        metadata
+      </code>
+      
       ; persisted to <code>
         vatly_refunds
       </code>
