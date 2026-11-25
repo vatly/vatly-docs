@@ -51,6 +51,27 @@ watch(() => navigation?.value, () => {
   headline.value = findPageHeadline(navigation?.value, page.value?.path) || headline.value
 })
 
+// FAQPage structured data for pages with a "Frequently asked questions"
+// section, read from that section's own h3 questions and paragraph answers so
+// the visible FAQ and the JSON-LD stay word for word the same.
+const faqEntries = extractFaqEntries(page.value.body)
+if (faqEntries.length) {
+  useHead({
+    script: [{
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': faqEntries.map(({ question, answer }) => ({
+          '@type': 'Question',
+          'name': question,
+          'acceptedAnswer': { '@type': 'Answer', 'text': answer },
+        })),
+      }),
+    }],
+  })
+}
+
 useSeoMeta({
   ogImageAlt: `${title}: Vatly Docs`,
   twitterImageAlt: `${title}: Vatly Docs`,
