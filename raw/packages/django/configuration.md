@@ -172,6 +172,30 @@ payloads. Products, quantity and redirect destinations stay under server control
       Dotted callable taking request; chooses a trusted scope
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <code>
+        VATLY_RETENTION_DAYS
+      </code>
+    </td>
+    
+    <td>
+      No
+    </td>
+    
+    <td>
+      Days <code>
+        vatly_prune
+      </code>
+      
+       keeps processed webhook calls and delivered outbox rows; default 30, <code>
+        0
+      </code>
+      
+       keeps all
+    </td>
+  </tr>
 </tbody>
 </table>
 

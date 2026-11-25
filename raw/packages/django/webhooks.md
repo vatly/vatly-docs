@@ -132,7 +132,7 @@ configure a sequence of secrets for rotation. Only this webhook route is CSRF-ex
     </td>
     
     <td>
-      Signed envelope and processed timestamp, unique per scope/event
+      Signed event ID, name, entity and processed timestamp, unique per scope/event
     </td>
   </tr>
   
@@ -206,5 +206,20 @@ rows with database locks, send using an idempotent key (scope + row primary key)
 and mark delivered_at after success. External delivery is at least once. Created
 events can precede ownership linkage: read current ownership before side effects.
 No email sender or entitlement side effect is enabled by default.
+
+## Prune old rows
+
+Schedule `vatly_prune` daily, for example from cron:
+
+```bash
+python manage.py vatly_prune
+```
+
+It deletes webhook calls processed and outbox rows delivered more than 30 days ago
+and keeps undelivered outbox rows. Set `VATLY_RETENTION_DAYS` (or pass `--days`)
+to change the window; `0` deletes nothing. Webhook calls store only the event ID,
+name and entity, not the resource. The command also reduces envelopes stored by
+earlier versions to those IDs. Outbox payloads keep the full resource for your
+worker, so prune delivered rows.
 
 [API reference](https://docs.vatly.com/api-reference) · [Admin](/packages/django/admin)

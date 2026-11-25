@@ -14653,16 +14653,17 @@ VATLY_CHECKOUTS = {
 Replace catalog IDs with your own. Offers are an allowlist, not buyer-provided
 payloads. Products, quantity and redirect destinations stay under server control.
 
-| Setting                                                     | Required?    | Meaning                                                                          |
-| ----------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------- |
-| `VATLY_API_KEY`                                             | Yes          | May fall back to the environment                                                 |
-| `VATLY_SCOPE`                                               | Yes          | Stable tenant/storefront identity, up to 200 characters                          |
-| `VATLY_WEBHOOK_SECRET`                                      | For webhooks | Secret string or rotation sequence                                               |
-| `VATLY_REDIRECT_URL_SUCCESS`, `VATLY_REDIRECT_URL_CANCELED` | For checkout | HTTPS return destinations                                                        |
-| `VATLY_PORTAL_REDIRECT_URL`                                 | No           | Optional return link in the portal                                               |
-| `VATLY_CHECKOUTS`                                           | For checkout | Offer slug → products; optional locale, metadata (string values), billingAddress |
-| `VATLY_BILLABLE_RESOLVER`                                   | No           | Dotted callable taking request; defaults to request.user                         |
-| `VATLY_SCOPE_RESOLVER`                                      | No           | Dotted callable taking request; chooses a trusted scope                          |
+| Setting                                                     | Required?    | Meaning                                                                                               |
+| ----------------------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------------- |
+| `VATLY_API_KEY`                                             | Yes          | May fall back to the environment                                                                      |
+| `VATLY_SCOPE`                                               | Yes          | Stable tenant/storefront identity, up to 200 characters                                               |
+| `VATLY_WEBHOOK_SECRET`                                      | For webhooks | Secret string or rotation sequence                                                                    |
+| `VATLY_REDIRECT_URL_SUCCESS`, `VATLY_REDIRECT_URL_CANCELED` | For checkout | HTTPS return destinations                                                                             |
+| `VATLY_PORTAL_REDIRECT_URL`                                 | No           | Optional return link in the portal                                                                    |
+| `VATLY_CHECKOUTS`                                           | For checkout | Offer slug → products; optional locale, metadata (string values), billingAddress                      |
+| `VATLY_BILLABLE_RESOLVER`                                   | No           | Dotted callable taking request; defaults to request.user                                              |
+| `VATLY_SCOPE_RESOLVER`                                      | No           | Dotted callable taking request; chooses a trusted scope                                               |
+| `VATLY_RETENTION_DAYS`                                      | No           | Days `vatly_prune` keeps processed webhook calls and delivered outbox rows; default 30, `0` keeps all |
 
 ## Bill an organization instead of the user
 
@@ -14984,13 +14985,13 @@ configure a sequence of secrets for rotation. Only this webhook route is CSRF-ex
 
 ## Know what is stored
 
-| Model                      | Purpose                                                                     |
-| -------------------------- | --------------------------------------------------------------------------- |
-| `BillingScope`             | Tenant/storefront and mode; serializes callbacks with a database write lock |
-| `WebhookCall`              | Signed envelope and processed timestamp, unique per scope/event             |
-| `Checkout`, `ResourceLink` | Immutable host-owned checkout/resource links                                |
-| `BillingResource`          | Complete financial or subscription snapshot and optional owner              |
-| `Outbox`                   | Durable events for your background worker                                   |
+| Model                      | Purpose                                                                       |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| `BillingScope`             | Tenant/storefront and mode; serializes callbacks with a database write lock   |
+| `WebhookCall`              | Signed event ID, name, entity and processed timestamp, unique per scope/event |
+| `Checkout`, `ResourceLink` | Immutable host-owned checkout/resource links                                  |
+| `BillingResource`          | Complete financial or subscription snapshot and optional owner                |
+| `Outbox`                   | Durable events for your background worker                                     |
 
 Audit, dedup, links, snapshots and outbox commit in one transaction. The ORM driver
 uses thread-sensitive async adapters so all nested work stays on that connection.
@@ -15021,6 +15022,21 @@ and mark delivered\_at after success. External delivery is at least once. Create
 events can precede ownership linkage: read current ownership before side effects.
 No email sender or entitlement side effect is enabled by default.
 
+## Prune old rows
+
+Schedule `vatly_prune` daily, for example from cron:
+
+```bash
+python manage.py vatly_prune
+```
+
+It deletes webhook calls processed and outbox rows delivered more than 30 days ago
+and keeps undelivered outbox rows. Set `VATLY_RETENTION_DAYS` (or pass `--days`)
+to change the window; `0` deletes nothing. Webhook calls store only the event ID,
+name and entity, not the resource. The command also reduces envelopes stored by
+earlier versions to those IDs. Outbox payloads keep the full resource for your
+worker, so prune delivered rows.
+
 [API reference](https://docs.vatly.com/api-reference){rel="&#x22;nofollow&#x22;"} · [Admin](https://docs.vatly.com/packages/django/admin)
 
 
@@ -15049,8 +15065,8 @@ who need them; do not give every support user superuser access.
 
 All billing admin registrations disable add/change/delete, even for superusers.
 Use hosted billing or authorized API actions to mutate subscriptions; editing a
-local snapshot would not change Vatly. Signed envelopes can contain personal data,
-so restrict access and apply your retention policy.
+local snapshot would not change Vatly. Outbox payloads contain personal data, so
+restrict access and schedule [`vatly_prune`](https://docs.vatly.com/packages/django/webhooks#prune-old-rows).
 
 [Webhook storage](https://docs.vatly.com/packages/django/webhooks) · [API reference](https://docs.vatly.com/api-reference){rel="&#x22;nofollow&#x22;"}
 
