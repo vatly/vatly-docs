@@ -12,6 +12,7 @@
 - [Quickstart](https://docs.vatly.com/raw/guides/quickstart.md): This guide will get you all set up and ready to use the Vatly API. We’ll cover how to set up an API client and how to make your first API request.
 - [Payouts & Settlement](https://docs.vatly.com/raw/guides/payouts.md): How and when your share of each payment reaches your Mollie account, and where to follow it in the dashboard.
 - [Customer Emails](https://docs.vatly.com/raw/guides/customer-emails.md): The billing emails Vatly sends to your customers as Merchant of Record, when each one is sent, and what you can configure.
+- [Migrate from Lemon Squeezy](https://docs.vatly.com/raw/guides/migrate-from-lemon-squeezy.md): Lemon Squeezy shuts down on 31 March 2027. Vatly is the European Merchant of Record for AI, software and digital products: EU-based, EU data, built on Mollie. Here's how to move.
 - [Build your own integration](https://docs.vatly.com/raw/guides/build-your-own-integration.md): Understand what adopting Vatly involves: responsibilities, checkout and fulfillment, choosing an integration path, and preparing your developer or AI agent.
 - [Selling Workflow](https://docs.vatly.com/raw/guides/selling-workflow.md): Follow the typical Vatly happy path from account setup to product delivery, and prepare for refunds and chargebacks.
 - [Vatly SDKs](https://docs.vatly.com/raw/guides/sdks.md): Install official Vatly SDKs and fluent billing packages for PHP, Laravel, JavaScript, Python and Django. Compare availability and find package guides.
