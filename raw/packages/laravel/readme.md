@@ -35,6 +35,12 @@ This package is in alpha, and every alpha release may include breaking changes. 
 
 </warning>
 
+To keep your app on `"minimum-stability": "stable"` instead, require the package and its two Vatly dependencies with an `@alpha` flag each. A stability flag only applies to the package it is written on, so requiring just `vatly/vatly-laravel:^0.7@alpha` fails because `vatly/vatly-fluent-php` and `vatly/vatly-api-php` are alpha too:
+
+```bash
+composer require vatly/vatly-laravel:^0.7@alpha vatly/vatly-fluent-php:^0.8@alpha vatly/vatly-api-php:^0.1@alpha
+```
+
 ## Configuration
 
 Publish the config file:
