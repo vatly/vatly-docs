@@ -48,11 +48,11 @@ Vatly works for businesses headquartered in the EEA, the UK or Switzerland that 
     </td>
     
     <td>
-      <a href="https://vatly.com/#waitlist" rel="nofollow">
-        Join the Vatly waitlist
+      <a href="https://vatly.com/register" rel="nofollow">
+        Sign up for Vatly
       </a>
       
-       and mention that you're moving from Lemon Squeezy.
+       and start in test mode. There's no setup or monthly fee; you only pay when you sell.
     </td>
   </tr>
   
@@ -140,7 +140,7 @@ Lemon Squeezy delivered license keys and files for you. With Vatly you deliver t
 
 ## Get help
 
-Mention Lemon Squeezy when you [join the waitlist](https://vatly.com/#waitlist), and we'll help you plan the move.
+[Sign up for Vatly](https://vatly.com/register) and let us know you're moving from Lemon Squeezy, and we'll help you plan the move.
 
 ## Frequently asked questions
 

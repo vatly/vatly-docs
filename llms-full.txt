@@ -284,12 +284,12 @@ Vatly works for businesses headquartered in the EEA, the UK or Switzerland that 
 
 ## Timeline
 
-| When                 | Step                                                                                                                                  |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Now                  | [Join the Vatly waitlist](https://vatly.com/#waitlist){rel="&#x22;nofollow&#x22;"} and mention that you're moving from Lemon Squeezy. |
-| Onboarding           | Connect or open a Mollie account, add your terms and privacy URLs, create your products and plans.                                    |
-| Go live              | New customers buy through Vatly. Existing customers keep renewing on Lemon Squeezy.                                                   |
-| Before 31 March 2027 | Move existing subscribers to Vatly, then close your Lemon Squeezy store.                                                              |
+| When                 | Step                                                                                                                                                             |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Now                  | [Sign up for Vatly](https://vatly.com/register){rel="&#x22;nofollow&#x22;"} and start in test mode. There's no setup or monthly fee; you only pay when you sell. |
+| Onboarding           | Connect or open a Mollie account, add your terms and privacy URLs, create your products and plans.                                                               |
+| Go live              | New customers buy through Vatly. Existing customers keep renewing on Lemon Squeezy.                                                                              |
+| Before 31 March 2027 | Move existing subscribers to Vatly, then close your Lemon Squeezy store.                                                                                         |
 
 ## 1. Export your data from Lemon Squeezy
 
@@ -347,7 +347,7 @@ Lemon Squeezy delivered license keys and files for you. With Vatly you deliver t
 
 ## Get help
 
-Mention Lemon Squeezy when you [join the waitlist](https://vatly.com/#waitlist){rel="&#x22;nofollow&#x22;"}, and we'll help you plan the move.
+[Sign up for Vatly](https://vatly.com/register){rel="&#x22;nofollow&#x22;"} and let us know you're moving from Lemon Squeezy, and we'll help you plan the move.
 
 ## Frequently asked questions
 
