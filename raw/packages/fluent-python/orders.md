@@ -127,7 +127,11 @@ async def example(vatly: Vatly):
     </td>
     
     <td>
-      Local stored records, or an empty list without repositories
+      Local stored records, or an empty list without repositories; a refund keeps the <code>
+        metadata
+      </code>
+      
+       it was created with, or None
     </td>
   </tr>
 </tbody>

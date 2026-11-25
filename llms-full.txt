@@ -13971,7 +13971,8 @@ async def example(vatly: Vatly):
 
 `model()`, `name()`, `email()` and `identity()` share a cached snapshot. `sync()`
 and `update()` refresh it. Name/email are not invoice address fields; use the
-[portal](https://docs.vatly.com/packages/fluent-python/customerportal) for hosted billing management.
+[portal](https://docs.vatly.com/packages/fluent-python/customerportal) for hosted billing management. The SDK checks customer
+bodies before sending; an invalid one raises Pydantic's `ValidationError`.
 
 | Lookup                      | Return                                               |
 | --------------------------- | ---------------------------------------------------- |
@@ -14017,6 +14018,11 @@ async def example(vatly: Vatly):
 
 The customer and entity must already be authorized. Omit the profile for a guest
 checkout. `.for_entity()` needs the checkout-record driver.
+
+Metadata values must be strings, with at most 50 keys, keys up to 40 characters
+and values up to 500. `create()` checks the request against the API schema and
+raises `FluentError` before sending when it does not match. Fields the schema
+does not define are dropped.
 
 ## Start a subscription with a trial
 
@@ -14179,14 +14185,14 @@ async def example(vatly: Vatly):
     }
 ```
 
-| Method                                                      | Return                                                      |
-| ----------------------------------------------------------- | ----------------------------------------------------------- |
-| `model`, `sync`                                             | Cached SDK Order; refresh the handle                        |
-| `invoice_url`                                               | Customer invoice URL or None                                |
-| `lines`                                                     | OrderLine models                                            |
-| `reversed_subtotal`, `refundable_subtotal`                  | `Decimal` in currency units                                 |
-| `is_reversed`, `is_fully_reversed`, `is_partially_reversed` | Predicates derived from both totals                         |
-| `refunds`, `chargebacks`                                    | Local stored records, or an empty list without repositories |
+| Method                                                      | Return                                                                                                                  |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `model`, `sync`                                             | Cached SDK Order; refresh the handle                                                                                    |
+| `invoice_url`                                               | Customer invoice URL or None                                                                                            |
+| `lines`                                                     | OrderLine models                                                                                                        |
+| `reversed_subtotal`, `refundable_subtotal`                  | `Decimal` in currency units                                                                                             |
+| `is_reversed`, `is_fully_reversed`, `is_partially_reversed` | Predicates derived from both totals                                                                                     |
+| `refunds`, `chargebacks`                                    | Local stored records, or an empty list without repositories; a refund keeps the `metadata` it was created with, or None |
 
 `model()` and the derived fields share one lazy read; `sync()` refreshes it. Do not
 convert financial values to floats. Preserve each amount's currency from the SDK

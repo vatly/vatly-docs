@@ -32,6 +32,11 @@ async def example(vatly: Vatly):
 The customer and entity must already be authorized. Omit the profile for a guest
 checkout. `.for_entity()` needs the checkout-record driver.
 
+Metadata values must be strings, with at most 50 keys, keys up to 40 characters
+and values up to 500. `create()` checks the request against the API schema and
+raises `FluentError` before sending when it does not match. Fields the schema
+does not define are dropped.
+
 ## Start a subscription with a trial
 
 ```python
