@@ -12167,7 +12167,9 @@ customer. `LocalSubscription` also adds `endsAt`.
 Enforce unique Vatly IDs per tenant, storefront, and mode. Adapt existing tables
 rather than duplicating them. `store` can match a pending host record using
 checkout metadata and attach its Vatly ID. Metadata helps match records; it does
-not authorize access.
+not authorize access. Metadata is an object of string values with at most 50
+keys, keys up to 40 characters and values up to 500. Checkout and customer
+creation throw `FluentError` before sending anything outside those limits.
 
 `refunds` and `chargebacks` use `ReversalRepository`, which adds `listForOrder(id)`
 and `listForCustomer(id)`. Contracts accept sync or async implementations, except
@@ -12626,7 +12628,7 @@ snapshots with the API.
 | Cancellation events and grace-period completion                      | Update an existing row's `endsAt` and cancellation reason.                                                |
 | `order.paid`, `order.payment_failed`                                 | Create or update an order using the signed status; a newly stored paid order emits `local.order_created`. |
 | `order.canceled`                                                     | Update status and cancellation reason on an existing order; otherwise skip.                               |
-| `refund.completed`, `refund.failed`, `refund.canceled`               | Upsert a refund if `refunds` is wired.                                                                    |
+| `refund.completed`, `refund.failed`, `refund.canceled`               | Upsert a refund if `refunds` is wired, with `metadata` stored as null when the delivery omits it.         |
 | `order.chargeback_received`, `order.chargeback_reversed`             | Upsert a chargeback if `chargebacks` is wired.                                                            |
 | Scheduled subscription updates, catalogue, checkout, `webhook.setup` | Dispatch only; no built-in resource write.                                                                |
 

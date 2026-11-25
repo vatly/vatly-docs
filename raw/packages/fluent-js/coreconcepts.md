@@ -81,7 +81,9 @@ customer. `LocalSubscription` also adds `endsAt`.
 Enforce unique Vatly IDs per tenant, storefront, and mode. Adapt existing tables
 rather than duplicating them. `store` can match a pending host record using
 checkout metadata and attach its Vatly ID. Metadata helps match records; it does
-not authorize access.
+not authorize access. Metadata is an object of string values with at most 50
+keys, keys up to 40 characters and values up to 500. Checkout and customer
+creation throw `FluentError` before sending anything outside those limits.
 
 `refunds` and `chargebacks` use `ReversalRepository`, which adds `listForOrder(id)`
 and `listForCustomer(id)`. Contracts accept sync or async implementations, except

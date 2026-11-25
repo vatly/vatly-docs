@@ -184,7 +184,11 @@ snapshots with the API.
         refunds
       </code>
       
-       is wired.
+       is wired, with <code>
+        metadata
+      </code>
+      
+       stored as null when the delivery omits it.
     </td>
   </tr>
   
