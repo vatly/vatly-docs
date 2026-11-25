@@ -8390,10 +8390,22 @@ This plugin adds Vatly as a payment gateway to PMPro.
 
 ## Installation
 
-The plugin is not on WordPress.org or Packagist. Install it from GitHub:
+The plugin is not on WordPress.org. Install it from GitHub:
 
 1. Download the zip from the [latest release](https://github.com/vatly/vatly-pmpro/releases/latest){rel="&#x22;nofollow&#x22;"}. It includes the plugin's dependencies, so you don't need Composer.
 2. In WordPress, go to **Plugins → Add New → Upload Plugin**, choose the zip, and activate it.
+
+### With Composer
+
+If your site manages its plugins with Composer, such as a Bedrock site with `composer/installers`, require the plugin from Packagist instead. Its dependencies are alpha releases, so allow alpha packages first:
+
+```bash
+composer config minimum-stability alpha
+composer config prefer-stable true
+composer require vatly/vatly-pmpro
+```
+
+The plugin installs as `vatly-gateway-for-paid-memberships-pro` in your plugins directory, the same name the zip uses, so you can switch between the two. Its dependencies load through your site's Composer autoloader, which Bedrock includes. Then activate the plugin in WordPress.
 
 ## Setup
 
