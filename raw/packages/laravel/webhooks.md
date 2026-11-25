@@ -984,7 +984,7 @@ Event::listen(OrderPaid::class, function (OrderPaid $event) {
 
 Every webhook is recorded in the `vatly_webhook_calls` table with:
 
-- `vatly_id` -- The webhook event ID (unique; use this as your dedup key)
+- `vatly_id` -- The webhook event ID (unique)
 - `resource` -- The wrapper resource type (always `webhook_event`)
 - `event_name` -- The webhook event type (e.g., `subscription.started`)
 - `entity_type` -- The resource type the event relates to (e.g., `subscription`)
@@ -992,37 +992,26 @@ Every webhook is recorded in the `vatly_webhook_calls` table with:
 - `testmode` -- Whether the event was raised against a testmode entity
 - `vatly_created_at` -- When the webhook event was created at Vatly
 - `vatly_customer_id` -- The associated customer ID, when present
-- `object` -- The full resource payload at the time of the event (JSON)
+- `object` -- The resource payload at the time of the event (JSON), with the customer's personal details (`customerDetails`, `billingAddress`, `shippingAddress`, `mandate`) redacted
+
+A redelivery of the same event replaces its row and is processed again, so an event whose processing failed (for example because a listener threw) is applied when Vatly retries it.
 
 ## Pruning stored webhook calls
 
-`vatly_webhook_calls` is an append-only record of every webhook received, so it grows over time. The package never prunes it for you — schedule the cleanup yourself.
+The package deletes rows older than 30 days, daily, through Laravel's scheduler (`model:prune` for `VatlyWebhookCall`). This needs the scheduler to run, which it does in a standard Laravel deployment (`php artisan schedule:run` every minute).
 
-The `Vatly` facade deletes rows older than the default retention window (7 days):
+Change the window with `VATLY_WEBHOOK_CALLS_RETENTION_DAYS`, or set it to `0` to keep every row:
 
-```php
-use Vatly\Laravel\Facades\Vatly;
-
-Vatly::cleanUp();   // delete webhook-call rows older than 7 days
+```dotenv
+VATLY_WEBHOOK_CALLS_RETENTION_DAYS=14
 ```
 
-For a different window, call the model directly — it returns the number of rows deleted:
+Rows are pruned by their local `created_at` (when the row was stored), not `vatly_created_at`. To prune now:
 
-```php
-use Vatly\Laravel\Models\VatlyWebhookCall;
-
-$deleted = VatlyWebhookCall::cleanUp(daysToRetain: 30);   // keep 30 days
+```bash
+php artisan model:prune --model="Vatly\Laravel\Models\VatlyWebhookCall"
 ```
 
-Rows are pruned by their local `created_at` (when the row was stored), not `vatly_created_at`. The window isn't a config value — it's the `$daysToRetain` argument (default `VatlyWebhookCall::DEFAULT_DAYS_TO_RETAIN`, which is 7).
+`Vatly::cleanUp()` and `VatlyWebhookCall::cleanUp(daysToRetain: 30)` still work and delete rows older than the given number of days (7 by default).
 
-Run it on a schedule — for example in `routes/console.php`:
-
-```php
-use Illuminate\Support\Facades\Schedule;
-use Vatly\Laravel\Facades\Vatly;
-
-Schedule::call(fn () => Vatly::cleanUp())->daily();
-```
-
-The rows are an audit trail, not an idempotency guard, so pruning is safe. (`vatly_id` is unique if you'd rather build your own dedup on top — in that case keep a window comfortably longer than a webhook might be redelivered within.)
+The rows are an audit trail, not an idempotency guard, so pruning is safe.

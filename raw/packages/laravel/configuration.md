@@ -122,6 +122,36 @@ VATLY_REDIRECT_URL_CANCELED=https://your-app.com/checkout/canceled
       Default cancel URL for hosted checkout and billing flows.
     </td>
   </tr>
+  
+  <tr>
+    <td>
+      <code>
+        webhook_calls_retention_days
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        VATLY_WEBHOOK_CALLS_RETENTION_DAYS
+      </code>
+    </td>
+    
+    <td>
+      Days to keep rows in <code>
+        vatly_webhook_calls
+      </code>
+      
+       (default 30). The package prunes older rows daily; <code>
+        0
+      </code>
+      
+       keeps them all. See <a href="/packages/laravel/webhooks#pruning-stored-webhook-calls">
+        Webhooks
+      </a>
+      
+      .
+    </td>
+  </tr>
 </tbody>
 </table>
 
