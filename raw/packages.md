@@ -246,8 +246,8 @@ Vatly is the European merchant of record for AI, software and digital products. 
     </td>
     
     <td>
-      <a href="https://github.com/vatly/vatly-fluentcart-wp/releases/latest" rel="nofollow">
-        GitHub Releases
+      <a href="https://packagist.org/packages/vatly/vatly-fluentcart" rel="nofollow">
+        vatly/vatly-fluentcart
       </a>
       
        · <a href="/packages/fluentcart/readme">
@@ -260,7 +260,15 @@ Vatly is the European merchant of record for AI, software and digital products. 
     </td>
     
     <td>
-      Upload the release zip in WordPress
+      Upload the <a href="https://github.com/vatly/vatly-fluentcart-wp/releases/latest" rel="nofollow">
+        release zip
+      </a>
+      
+       in WordPress, or <code>
+        composer require vatly/vatly-fluentcart
+      </code>
+      
+       (after allowing alpha, see below)
     </td>
   </tr>
   
@@ -300,7 +308,7 @@ Vatly is the European merchant of record for AI, software and digital products. 
 
 These packages are in alpha. Every alpha release may include breaking changes. Lock the version you install and review the release notes before upgrading. The install commands above get the latest alpha. For the PHP packages, first run `composer config minimum-stability alpha` and `composer config prefer-stable true`, because Composer installs only stable releases by default. For the Python packages, `--pre` selects the latest alpha. The Python packages require Python 3.10+; their import names are `vatly`, `vatly_fluent`, and `vatly_django`, respectively.
 
-The FluentCart plugin is in alpha and requires FluentCart 2.3 or newer. It is not on WordPress.org or Packagist: download the zip from [GitHub Releases](https://github.com/vatly/vatly-fluentcart-wp/releases/latest) and upload it under **Plugins → Add New → Upload Plugin**.
+The FluentCart plugin is in alpha and requires FluentCart 2.3 or newer. It is not on WordPress.org: download the zip from [GitHub Releases](https://github.com/vatly/vatly-fluentcart-wp/releases/latest) and upload it under **Plugins → Add New → Upload Plugin**. Sites that manage plugins with Composer, such as Bedrock, can require it from Packagist instead.
 
 The Paid Memberships Pro plugin is in alpha and requires Paid Memberships Pro 3.x. It is not on WordPress.org: download the zip from [GitHub Releases](https://github.com/vatly/vatly-pmpro/releases/latest) and upload it under **Plugins → Add New → Upload Plugin**. Sites that manage plugins with Composer, such as Bedrock, can require it from Packagist instead.
 
