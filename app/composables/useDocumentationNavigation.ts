@@ -67,6 +67,9 @@ export function useDocumentationNavigation() {
         page('/integrations/lovable', 'Lovable'),
         page('/integrations/bolt', 'Bolt'),
       ]),
+      group('Migrations', '/guides/migrations', [
+        page('/guides/migrate-from-lemon-squeezy', 'From Lemon Squeezy'),
+      ]),
       group('Billing & operations', '/guides/billing-and-operations', [
         page('/guides/selling-workflow'),
         page('/guides/webhooks'),
