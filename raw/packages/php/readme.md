@@ -325,23 +325,23 @@ The SDK provides access to all Vatly API resources.
 
 ## Error handling
 
-The SDK throws specific exceptions for different error types.
+Every exception the SDK throws implements `Vatly\API\Exceptions\VatlyException`, so one `catch` covers API errors and webhook signature failures.
 
-### Exception types
+When the API answers with an error, the SDK throws an `ApiException`, or the subclass for the HTTP status:
 
 <table>
 <thead>
   <tr>
     <th>
-      Name
+      Status
     </th>
     
     <th>
-      Type
+      Exception
     </th>
     
     <th>
-      Description
+      When
     </th>
   </tr>
 </thead>
@@ -350,31 +350,272 @@ The SDK throws specific exceptions for different error types.
   <tr>
     <td>
       <code>
-        ApiException
+        401
       </code>
     </td>
     
     <td>
       <code>
-        exception
+        AuthenticationException
       </code>
     </td>
     
     <td>
-      API errors, including authentication, validation, and transport failures.
+      The API key is missing or invalid.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        403
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        ForbiddenException
+      </code>
+    </td>
+    
+    <td>
+      The API key is invalid, revoked, or not allowed to perform this operation.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        404
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        NotFoundException
+      </code>
+    </td>
+    
+    <td>
+      The resource does not exist, or not in the API key's mode.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        409
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        ConflictException
+      </code>
+    </td>
+    
+    <td>
+      For example, an idempotency key reused with other parameters, or a request still in progress.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        422
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        ValidationException
+      </code>
+    </td>
+    
+    <td>
+      The request is invalid. <code>
+        getErrors()
+      </code>
+      
+       lists the messages per field.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        429
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        RateLimitException
+      </code>
+    </td>
+    
+    <td>
+      Too many requests. Wait <code>
+        getRetryAfter()
+      </code>
+      
+       seconds.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      other
+    </td>
+    
+    <td>
+      <code>
+        ApiException
+      </code>
+    </td>
+    
+    <td>
+      Any other error status.
     </td>
   </tr>
 </tbody>
 </table>
 
+An `ApiException` without a status code means no response arrived (for example, a connection error), or the SDK refused the call before sending it.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Method
+    </th>
+    
+    <th>
+      Returns
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        getMessage()
+      </code>
+    </td>
+    
+    <td>
+      The API's error message. It never contains the request body or the API key.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        getStatusCode()
+      </code>
+    </td>
+    
+    <td>
+      The HTTP status, or <code>
+        null
+      </code>
+      
+       when there was no response.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        getErrors()
+      </code>
+    </td>
+    
+    <td>
+      Validation messages per field (dot notation), such as <code>
+        ['products.0.id' => ['The selected products.0.id is invalid.']]
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        getDetails()
+      </code>
+    </td>
+    
+    <td>
+      The error's <code>
+        details
+      </code>
+      
+       object, such as <code>
+        ['idempotency_outcome' => 'in_progress']
+      </code>
+      
+      .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        getRetryAfter()
+      </code>
+    </td>
+    
+    <td>
+      Seconds from the <code>
+        Retry-After
+      </code>
+      
+       header, sent on <code>
+        429
+      </code>
+      
+       and on a <code>
+        409
+      </code>
+      
+       while an idempotent request is in progress.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        getResponseBody()
+      </code>
+    </td>
+    
+    <td>
+      The raw response body.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+Branch on the exception class or status code, not on the message text.
+
 ```php
 use Vatly\API\Exceptions\ApiException;
+use Vatly\API\Exceptions\RateLimitException;
+use Vatly\API\Exceptions\ValidationException;
 
 try {
     $checkout = $vatly->checkouts->create([...]);
+} catch (ValidationException $e) {
+    foreach ($e->getErrors() as $field => $messages) {
+        // e.g. 'products.0.id' => ['The selected products.0.id is invalid.']
+    }
+} catch (RateLimitException $e) {
+    $waitSeconds = $e->getRetryAfter() ?? 60;
 } catch (ApiException $e) {
-    // API error (network, auth, validation, etc.)
-    echo $e->getMessage();
+    $status = $e->getStatusCode(); // null when no response arrived
 }
 ```
 
