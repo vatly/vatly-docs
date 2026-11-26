@@ -52,6 +52,12 @@ Fluent pins one exact `vatly-api-python` version from PyPI in `pyproject.toml`;
 `uv lock`, and run the full checks. Use a new Fluent alpha version when dependency
 behavior changes.
 
+Until `add_version_string` ships in a released SDK (vatly/vatly-api-python#5),
+`[tool.uv.sources]` points `uv` at its merge commit on the SDK's `main` for
+development and CI. Package metadata still pins `vatly-api-python==0.1.0a4` from
+PyPI, where Fluent skips its `User-Agent` token. Once the SDK is released, remove
+the source, pin the release, and run `uv lock`.
+
 ## Documentation sync
 
 Keep guides directly under `docs/` and link each page from [the overview](/packages/fluent-python/readme).
