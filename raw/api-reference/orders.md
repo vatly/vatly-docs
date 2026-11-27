@@ -403,6 +403,28 @@ The order model contains all the information about your orders, including the or
   <tr>
     <td>
       <code>
+        discounts
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        array
+      </code>
+    </td>
+    
+    <td>
+      Every discount on the order, each listed once with the amount it takes off all lines added up, in the order it first appears on the lines. Empty when the order has no discount. Match an entry to its share on each line by <code>
+        id
+      </code>
+      
+      . See Discount properties below.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         customerDetails
       </code>
     </td>
@@ -634,7 +656,7 @@ The order model contains all the information about your orders, including the or
     </td>
     
     <td>
-      Price per unit before taxes.
+      Price per unit before discounts, on the product's tax basis: excluding taxes for tax-exclusive products, including them for tax-inclusive products.
     </td>
   </tr>
   
@@ -652,7 +674,7 @@ The order model contains all the information about your orders, including the or
     </td>
     
     <td>
-      Total price including taxes (basePrice x quantity + taxes).
+      Total price including taxes, after discounts (subtotal + taxes).
     </td>
   </tr>
   
@@ -670,7 +692,7 @@ The order model contains all the information about your orders, including the or
     </td>
     
     <td>
-      Subtotal before taxes (basePrice x quantity).
+      Subtotal excluding taxes, after discounts.
     </td>
   </tr>
   
@@ -697,6 +719,36 @@ The order model contains all the information about your orders, including the or
       </code>
       
        Money object.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        discounts
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        array
+      </code>
+    </td>
+    
+    <td>
+      This line's share of each discount, in the order they apply. Empty when the line has no discount. <code>
+        subtotal
+      </code>
+      
+      , <code>
+        taxes
+      </code>
+      
+       and <code>
+        total
+      </code>
+      
+       are already net of these discounts. See Discount properties below.
     </td>
   </tr>
   
@@ -769,6 +821,156 @@ The order model contains all the information about your orders, including the or
       </code>
       
        when the line has no product link.
+    </td>
+  </tr>
+</tbody>
+</table>
+
+### Discount Properties
+
+A discount applied to an order, as listed under the order's and each line's `discounts`. Discounts are set when [creating a checkout](/api-reference/checkouts#discounts). Amounts exclude VAT; the line's `taxes` already reflect the discount.
+
+<table>
+<thead>
+  <tr>
+    <th>
+      Name
+    </th>
+    
+    <th>
+      Type
+    </th>
+    
+    <th>
+      Description
+    </th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr>
+    <td>
+      <code>
+        id
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      Identifies this discount on this order. Every line's share of a discount and the order's entry for it carry the same id. It names one application, not a reusable coupon: every order, and every subscription renewal, gets new ids. <code>
+        null
+      </code>
+      
+       only on discounts applied before ids were introduced.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        description
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The label sent with the discount, if any.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        discountType
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      How the discount is defined: <code>
+        percentage
+      </code>
+      
+       or <code>
+        fixed_amount
+      </code>
+      
+      . More values may be added; treat an unknown value as a discount of an unknown kind. <code>
+        null
+      </code>
+      
+       only on discounts applied before it was recorded.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        percentage
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string | null
+      </code>
+    </td>
+    
+    <td>
+      The percentage taken off, as a decimal string (e.g. <code>
+        "20.00"
+      </code>
+      
+      ), for a <code>
+        percentage
+      </code>
+      
+       discount. <code>
+        null
+      </code>
+      
+       for a <code>
+        fixed_amount
+      </code>
+      
+       discount.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        amount
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        Money
+      </code>
+    </td>
+    
+    <td>
+      The amount taken off, excluding VAT, also when the products' prices include VAT: €10.00 off a €121.00 price at 21% reads <code>
+        8.26
+      </code>
+      
+      .
     </td>
   </tr>
 </tbody>
@@ -946,10 +1148,12 @@ $orders = $vatly->orders->page();
               }
             }
           ],
+          "discounts": [],
           "productType": "subscription",
           "productId": "subscription_Qp7mNvBxKw3RjTgYcZaE"
         }
       ],
+      "discounts": [],
       "customerDetails": {
         "fullName": "John Doe",
         "companyName": "Acme Corp",
@@ -1122,10 +1326,12 @@ $order = $vatly->orders->get('order_Hn5xWqVfKm8RjTgYbUcP');
           }
         }
       ],
+      "discounts": [],
       "productType": "subscription",
       "productId": "subscription_Jk4pQrSvWm8NjLhYbUcP"
     }
   ],
+  "discounts": [],
   "customerDetails": {
     "fullName": "John Doe",
     "companyName": "Acme Corp",

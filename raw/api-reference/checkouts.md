@@ -867,6 +867,48 @@ Once paid, any subscription plan product assigned to the checkout will kick off 
   <tr>
     <td>
       <code>
+        discounts
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        array | null
+      </code>
+    </td>
+    
+    <td>
+      A discount on the whole checkout: at most one entry for now (a second returns <code>
+        422
+      </code>
+      
+      ). Each entry has a <code>
+        percentage
+      </code>
+      
+       or a fixed <code>
+        amount
+      </code>
+      
+      , not both, plus an optional <code>
+        description
+      </code>
+      
+       label shown on the checkout and the invoice. It reduces the first payment of each product only; renewals charge the full price. See <a href="#discounts">
+        Discounts
+      </a>
+      
+      . <code>
+        null
+      </code>
+      
+       is treated as omitted.
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
         locale
       </code>
     </td>
@@ -1077,7 +1119,7 @@ header('Location: ' . $checkout->links->checkoutUrl->href, true, 303);
 
 Charge an amount that differs from the product's dashboard price by setting `price` on the item, a `Money` object whose `value` is a decimal string with exactly two decimals. **Currently only EUR is accepted**; any other currency returns a `422`. When the customer pays in another currency, the amount is converted from this EUR price at checkout, and for a subscription the converted amount and currency are then fixed, so renewals charge the same. The `id` still references a product you created in the dashboard; products cannot be created on the fly via the API. Omit `price` to use the product's configured price.
 
-For a **subscription plan**, a custom `price` is not a first-cycle discount; it becomes the subscription's recurring price and carries over to every renewal. This is how you give a cohort a permanent price (for example, a lower price for an early group of customers). If you'd prefer to track that cohort separately, create a dedicated subscription plan at the target price and check out against that instead; the recurring price is the same, but reporting stays cleaner.
+For a **subscription plan**, a custom `price` is not a first-payment discount (use [`discounts`](#discounts) for that); it becomes the subscription's recurring price and carries over to every renewal. This is how you give a cohort a permanent price (for example, a lower price for an early group of customers). If you'd prefer to track that cohort separately, create a dedicated subscription plan at the target price and check out against that instead; the recurring price is the same, but reporting stays cleaner.
 
 <code-group sync="api">
 
@@ -1114,6 +1156,54 @@ $checkout = $vatly->checkouts->create([
 
 </code-group>
 
+### Discounts
+
+Take a discount off the checkout by sending `discounts` with one entry: a `percentage` (above 0 and below 100, at most three decimals) or a fixed `amount` (a `Money` object in `EUR`), not both. An optional `description` (up to 255 characters) labels the discount on the checkout and the invoice. Discounts work on every checkout; nothing needs to be enabled.
+
+- **Whole checkout.** The discount is spread over the discountable lines in proportion to each line's subtotal.
+- **First payment only.** It reduces the first payment of each product; subscription renewals are charged the full price. For a subscription on trial, the discount applies to its first payment after the trial, and stays on it if the plan or quantity changes during the trial.
+- **Fixed amounts follow the products' tax basis.** A fixed `amount` excludes VAT on tax-exclusive products and includes VAT on tax-inclusive ones: €10.00 off a €121.00 price including VAT charges €111.00. It must be below the subtotal of the products it discounts on that same basis (counting a subscription on trial at its first payment). When the customer pays in another currency, it is converted at checkout.
+- **Not yet combined with trials on tax-inclusive prices.** A checkout with tax-inclusive prices and a subscription on trial cannot take a discount yet and returns a `422`.
+
+Validation errors for a discount are keyed by its position, such as `discounts.0.percentage` (see [Errors](/guides/errors)).
+
+The resulting order and its lines list the discount under `discounts`. There, a discount's `amount` always excludes VAT, like `subtotal`: the €10.00 above reads `8.26` at 21% VAT. See [the order model](/api-reference/orders#the-order-model).
+
+<code-group sync="api">
+
+```bash [cURL]
+curl https://api.vatly.com/v1/checkouts \
+  -H "Authorization: Bearer live_your_api_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "products": [
+      {"id": "subscription_plan_Rk5pQrSvWm8NjLhYbUcP"}
+    ],
+    "discounts": [
+      {"description": "Black Friday", "percentage": 20}
+    ],
+    "redirectUrlSuccess": "https://example.com/success",
+    "redirectUrlCanceled": "https://example.com/canceled"
+  }'
+```
+
+```php [PHP]
+$checkout = $vatly->checkouts->create([
+  'products' => [
+    ['id' => 'subscription_plan_Rk5pQrSvWm8NjLhYbUcP'],
+  ],
+  'discounts' => [
+    ['description' => 'Black Friday', 'percentage' => 20],
+  ],
+  'redirectUrlSuccess' => 'https://example.com/success',
+  'redirectUrlCanceled' => 'https://example.com/canceled',
+]);
+```
+
+</code-group>
+
+For a fixed amount, send `{"description": "Welcome", "amount": {"value": "10.00", "currency": "EUR"}}` instead.
+
 ### VAT and reverse charge
 
 As Merchant of Record, Vatly determines the applicable tax when the checkout is paid, based on the buyer's country and tax status. You don't calculate or configure rates yourself. For EU B2B, the buyer's VAT ID is validated against the EU's VIES registry as part of that determination: when a valid VAT ID is supplied and the buyer is in a different country from the supplier, the **reverse charge** applies (0% VAT) and the resulting order reflects it. Otherwise the buyer's country standard rate applies.
@@ -1132,7 +1222,7 @@ The full request and response schema (every accepted field and its validation ru
 
 ### Payment methods in test mode
 
-A few payment methods work in live mode but cannot be completed in test mode, because the payment provider cannot settle them there. A test-mode checkout still lists them, greyed out and labelled as unavailable, so you can see they exist without being able to select one:
+Some payment methods work in live mode but cannot be completed in test mode, because the payment provider cannot settle them there. A test-mode checkout still lists them, greyed out and labelled as unavailable, so you can see they exist without being able to select one:
 
 <table>
 <thead>
@@ -1152,22 +1242,6 @@ A few payment methods work in live mode but cannot be completed in test mode, be
 </thead>
 
 <tbody>
-  <tr>
-    <td>
-      <code>
-        banktransfer
-      </code>
-    </td>
-    
-    <td>
-      Not selectable
-    </td>
-    
-    <td>
-      The provider cannot settle bank transfers in test mode.
-    </td>
-  </tr>
-  
   <tr>
     <td>
       <code>
