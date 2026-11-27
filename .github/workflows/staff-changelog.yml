@@ -1,0 +1,141 @@
+name: Staff changelog
+
+# Shared by every Vatly repository: posts merges to the default branch and
+# releases to the staff-only Discord changelog, in the same format as the
+# app's own changelog posts, with the repository name in front of the title.
+#
+# Call it from a repository's .github/workflows/changelog.yml:
+#
+#   on:
+#     push:
+#       branches: [main]
+#     release:
+#       types: [published]
+#   permissions:
+#     contents: read
+#     pull-requests: read
+#   jobs:
+#     changelog:
+#       uses: vatly/vatly-docs/.github/workflows/staff-changelog.yml@main
+#       secrets:
+#         webhook_url: ${{ secrets.VATLY_SECRET_SANTA_WEBHOOK_URL }}
+#
+# A repository whose release workflow creates the GitHub Release itself (with
+# GITHUB_TOKEN, which starts no other workflows) listens to `push: tags: [v*]`
+# instead of `release`.
+#
+# Posts carry no personal data: no authors, handles or email addresses. A
+# commit whose message contains [skip changelog] is left out.
+
+on:
+  workflow_call:
+    secrets:
+      webhook_url:
+        description: The staff changelog Discord webhook URL (VATLY_SECRET_SANTA_WEBHOOK_URL).
+        required: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post to the staff changelog
+        shell: bash
+        env:
+          WEBHOOK_URL: ${{ secrets.webhook_url }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if [[ ! "${WEBHOOK_URL:-}" =~ ^https://(discord\.com|discordapp\.com)/api/webhooks/ ]]; then
+            echo "::warning::VATLY_SECRET_SANTA_WEBHOOK_URL is not set for this repository, so nothing was posted to the staff changelog."
+            exit 0
+          fi
+
+          repo_full="$GITHUB_REPOSITORY"
+          repo="${repo_full#*/}"
+          base="$GITHUB_SERVER_URL/$repo_full"
+          event="$GITHUB_EVENT_PATH"
+
+          # Drop email addresses and "by @user" credits.
+          scrub() {
+            perl -pe 's/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/[email removed]/g; s/ by \@[A-Za-z0-9-]+(\[bot\])?//g'
+          }
+          # Release notes also mention people; drop those @handles, keep npm scopes such as @getvatly/sdk.
+          drop_handles() {
+            perl -pe 's/(?<![\w`\/])\@[A-Za-z0-9-]+(\[bot\])?(?![\w\/-])//g'
+          }
+
+          case "$GITHUB_EVENT_NAME:$GITHUB_REF" in
+            push:refs/heads/*)
+              branch="${GITHUB_REF#refs/heads/}"
+              label="Merged to $branch"
+              footer="$repo · $branch @ $(jq -r '.after[0:7]' "$event")"
+              declare -A seen=()
+              lines=()
+              single_title=""
+              while IFS=$'\t' read -r sha skip subject; do
+                [[ "$skip" == "true" ]] && continue
+                pr="$(gh api "repos/$repo_full/commits/$sha/pulls" --jq "[.[] | select(.merged_at != null and .base.ref == \"$branch\")][0] | if . == null then \"\" else \"\(.number)\t\(.title)\" end" 2>/dev/null || true)"
+                if [[ -n "$pr" ]]; then
+                  number="${pr%%$'\t'*}"; text="${pr#*$'\t'}"
+                  [[ -n "${seen[pr$number]:-}" ]] && continue
+                  seen[pr$number]=1
+                  lines+=("- $text ([#$number]($base/pull/$number))")
+                else
+                  text="$subject"
+                  lines+=("- $text ([\`${sha:0:7}\`]($base/commit/$sha))")
+                fi
+                single_title="$text"
+              done < <(jq -r '.commits[] | select(.distinct) | [.id, (.message | test("\\[skip changelog\\]"; "i") | tostring), (.message | split("\n")[0])] | @tsv' "$event")
+              if [[ ${#lines[@]} -eq 0 ]]; then echo "Nothing to announce."; exit 0; fi
+              if [[ ${#lines[@]} -eq 1 ]]; then title="[$repo] $single_title"; else title="[$repo] ${#lines[@]} changes merged to $branch"; fi
+              body="$(printf '%s\n' "${lines[@]:0:20}")"
+              if [[ ${#lines[@]} -gt 20 ]]; then body+=$'\n'"- …and $(( ${#lines[@]} - 20 )) more ([compare]($(jq -r '.compare' "$event")))"; fi
+              ;;
+            push:refs/tags/*)
+              tag="${GITHUB_REF#refs/tags/}"
+              label="Released"
+              footer="$repo · $tag"
+              title="[$repo] Release $tag"
+              body="[$tag]($base/releases/tag/$tag)"
+              ;;
+            release:*)
+              tag="$(jq -r '.release.tag_name' "$event")"
+              name="$(jq -r '.release.name // empty' "$event")"
+              label="Released"
+              footer="$repo · $tag"
+              title="[$repo] Release ${name:-$tag}"
+              if [[ "$(jq -r '.release.prerelease' "$event")" == "true" ]]; then title+=" (pre-release)"; fi
+              notes="$(jq -r '.release.body // ""' "$event" | tr -d '\r' | perl -0pe 's/<!--.*?-->//gs; s/^## New Contributors\n.*?(?=^\*\*Full Changelog|\z)//gms' | drop_handles)"
+              body="[$tag]($(jq -r '.release.html_url' "$event"))"
+              if [[ -n "${notes//[[:space:]]/}" ]]; then body+=$'\n\n'"$notes"; fi
+              ;;
+            *)
+              echo "Nothing to announce for $GITHUB_EVENT_NAME on $GITHUB_REF."; exit 0 ;;
+          esac
+
+          title="$(printf '%s' "$title" | scrub)"
+          title="${title:0:256}"
+          body="$(printf '%s' "$body" | scrub | sed -E "s#(^|[^[/0-9A-Za-z])\\#([0-9]{1,5})\\b#\\1[\\#\\2]($base/pull/\\2)#g")"
+          if [[ ${#body} -gt 3800 ]]; then body="${body:0:3800}"$'\n'"…"; fi
+
+          now="$(date +%s)"
+          landed="$(TZ=Europe/Amsterdam date -d "@$now" '+%a %-d %b %Y, %H:%M') (Amsterdam)"
+          payload="$(jq -n --arg t "$title" --arg d "$body" --arg f "$footer" --arg lb "$label" --arg l "$landed" --arg li "$(date -u -d "@$now" '+%Y-%m-%dT%H:%M:%SZ')" '{
+            username: "Vatly changelog",
+            allowed_mentions: {parse: []},
+            embeds: [{
+              title: $t,
+              description: ("**" + $lb + ":** " + $l + "\n\n" + $d),
+              color: 3108095,
+              footer: {text: $f},
+              timestamp: $li
+            }]
+          }')"
+
+          status="$(curl -sS -o /tmp/changelog-response.txt -w '%{http_code}' -X POST -H 'Content-Type: application/json' --data "$payload" "$WEBHOOK_URL?wait=true")"
+          if [[ "$status" != 2* ]]; then
+            echo "::error::Discord returned HTTP $status: $(head -c 300 /tmp/changelog-response.txt)"
+            exit 1
+          fi
+          echo "Posted \"$title\" to the staff changelog."
