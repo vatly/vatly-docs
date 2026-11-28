@@ -216,7 +216,7 @@ info:
     |--------|-------------|
     | 400 | Bad Request - Invalid request format |
     | 401 | Unauthorized - Missing or invalid token |
-    | 403 | Forbidden - Token invalid or insufficient permissions |
+    | 403 | Forbidden - Valid token without permission for this operation; a suspended account has `code: account_suspended` |
     | 404 | Not Found - Resource doesn't exist |
     | 409 | Conflict - idempotency mismatch, request still in progress, outcome unknown, or concurrent write |
     | 422 | Unprocessable Entity - Validation failed |
