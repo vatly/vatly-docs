@@ -1315,7 +1315,8 @@ paths:
         live product. Fields equal to the live value are ignored, and a request
         that nets to no change clears any pending update. A new request replaces
         the not-yet-reviewed one; while an update is being reviewed, further
-        requests return `409`.
+        requests return `409`. Changing the tax behavior of a product that has
+        been sold (an order for it was paid) also returns `409`.
       tags:
         - One-Off Products
       parameters:
@@ -1698,9 +1699,9 @@ paths:
         live plan. Fields equal to the live value are ignored, and a request that
         nets to no change clears any pending update. A new request replaces the
         not-yet-reviewed one; while an update is being reviewed, further requests
-        return `409`. Changing the interval on a plan that has ever been used by a
-        subscription — active or not — also returns `409`. The price stays
-        changeable.
+        return `409`. Changing the interval or the tax behavior on a plan that has
+        ever been used by a subscription — active or not — also returns `409`. The
+        price stays changeable.
 
         A new `interval` must be `month` or `year` with `intervalCount: 1`, sent
         together, in live and test mode alike; any other value returns `422`. A
@@ -6406,7 +6407,8 @@ components:
           description: |
             Whether `basePrice` is tax-exclusive (B2B convention; tax added on top at checkout)
             or tax-inclusive (B2C convention; price already includes tax).
-            Immutable after product creation. A checkout may not mix products with different
+            Changeable through an update until the product is first sold (an order for it is
+            paid), fixed after that. A checkout may not mix products with different
             `taxBehavior` values; doing so returns `422 Unprocessable Entity`.
           enum:
             - exclusive
@@ -6483,6 +6485,11 @@ components:
                 - digital_download
                 - online_course
                 - audiobook
+            taxBehavior:
+              type: string
+              enum:
+                - exclusive
+                - inclusive
           example:
             basePrice:
               currency: EUR
@@ -6564,8 +6571,8 @@ components:
           type: string
           description: |
             Whether `basePrice` is tax-exclusive (B2B convention) or tax-inclusive
-            (B2C convention). Optional; defaults to `exclusive`. Immutable after
-            product creation.
+            (B2C convention). Optional; defaults to `exclusive`. Changeable
+            through an update until the product is first sold.
           enum:
             - exclusive
             - inclusive
@@ -6626,7 +6633,8 @@ components:
           type: string
           description: |
             Whether `basePrice` is tax-exclusive (B2B convention) or tax-inclusive (B2C convention).
-            Immutable after plan creation — create a new plan for the other mode. A checkout may not
+            Changeable through an update until the plan is first sold (a subscription is started
+            on it), fixed after that — then create a new plan for the other mode. A checkout may not
             mix products with different `taxBehavior` values; doing so returns
             `422 Unprocessable Entity`.
           enum:
@@ -6727,6 +6735,11 @@ components:
               type: string
               enum:
                 - saas
+            taxBehavior:
+              type: string
+              enum:
+                - exclusive
+                - inclusive
           example:
             interval: year
             intervalCount: 1
@@ -6798,8 +6811,8 @@ components:
           type: string
           description: |
             Whether `basePrice` is tax-exclusive (B2B convention) or tax-inclusive
-            (B2C convention). Optional; defaults to `exclusive`. Immutable after
-            plan creation — create a new plan for the other mode.
+            (B2C convention). Optional; defaults to `exclusive`. Changeable
+            through an update until the plan is first sold.
           enum:
             - exclusive
             - inclusive
@@ -8446,6 +8459,17 @@ components:
             - online_course
             - audiobook
           example: saas
+        taxBehavior:
+          type: string
+          description: |
+            New tax behavior: `exclusive` (B2B convention) or `inclusive` (B2C
+            convention). Changeable only while the product has never been sold
+            (no order for it was ever paid); after that a
+            different value returns `409`. Create a new product for the other mode.
+          enum:
+            - exclusive
+            - inclusive
+          example: inclusive
     UpdateSubscriptionPlanRequest:
       type: object
       description: |
@@ -8456,8 +8480,8 @@ components:
         update enters review (`updateStatus: pending`) before it takes effect (in test
         mode it is approved automatically).
 
-        The interval cannot be changed once the plan has ever been used by a
-        subscription, active or not. The price stays changeable.
+        The interval and the tax behavior cannot be changed once the plan has ever
+        been used by a subscription, active or not. The price stays changeable.
       minProperties: 1
       additionalProperties: false
       properties:
@@ -8494,6 +8518,17 @@ components:
             - 1
           description: Must be `1`. Required when `interval` is provided.
           example: 1
+        taxBehavior:
+          type: string
+          description: |
+            New tax behavior: `exclusive` (B2B convention) or `inclusive` (B2C
+            convention). Changeable only while the plan has never been sold
+            (no subscription was ever started on it); after that a
+            different value returns `409`. Create a new plan for the other mode.
+          enum:
+            - exclusive
+            - inclusive
+          example: inclusive
     TaxSummaryRate:
       type: object
       description: Simplified tax rate information
