@@ -200,7 +200,15 @@ Below you'll find all properties for the Vatly One-off Product API resource.
         inclusive
       </code>
       
-      , B2C convention; price already includes tax). Immutable after product creation. A checkout may not mix products with different <code>
+      , B2C convention; price already includes tax). Cannot be changed through the API. Until the product's first sale (a paid order, including one later refunded or charged back), you can change it in the dashboard with <strong>
+        Request update
+      </strong>
+      
+       under <strong>
+        Manage Products
+      </strong>
+      
+      ; the change is reviewed by Vatly like any other update (approved automatically in test mode). After the first sale it is locked: create a new product for the other mode. A checkout may not mix products with different <code>
         taxBehavior
       </code>
       
@@ -753,7 +761,11 @@ A product created with a `live_` token starts in `pending` status and must be ap
         exclusive
       </code>
       
-      . Immutable after product creation.
+      . Can be changed in the dashboard until the product's first sale; see the <a href="#the-one-off-product-model">
+        product object
+      </a>
+      
+      .
     </td>
   </tr>
 </tbody>
@@ -953,7 +965,7 @@ Each request is the **complete set of changes** relative to the current live pro
 
 ### Optional attributes
 
-At least one attribute must be provided. `taxBehavior` is immutable and cannot be changed here.
+At least one attribute must be provided. `taxBehavior` cannot be changed here; until the product's first sale, request that change in the dashboard instead (see the [product object](#the-one-off-product-model)).
 
 <table>
 <thead>

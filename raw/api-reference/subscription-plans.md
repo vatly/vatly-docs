@@ -196,7 +196,15 @@ The subscription plan model contains all the information about the subscription 
         inclusive
       </code>
       
-      , the B2C convention). Immutable after plan creation: create a new plan for the other mode. A checkout may not mix products with different <code>
+      , the B2C convention). Cannot be changed through the API. Until the plan has any subscription (active or not), you can change it in the dashboard with <strong>
+        Request update
+      </strong>
+      
+       under <strong>
+        Manage Products
+      </strong>
+      
+      ; the change is reviewed by Vatly like any other update (approved automatically in test mode). Once the plan has a subscription it is locked: create a new plan for the other mode. A checkout may not mix products with different <code>
         taxBehavior
       </code>
       
@@ -862,7 +870,11 @@ A plan created with a `live_` token starts in `pending` status and must be appro
         exclusive
       </code>
       
-      . Immutable after plan creation: create a new plan for the other mode.
+      . Can be changed in the dashboard until the plan has a subscription; see the <a href="#the-subscription-plan-model">
+        plan object
+      </a>
+      
+      .
     </td>
   </tr>
 </tbody>
