@@ -215,12 +215,13 @@ info:
     |--------|-------------|
     | 400 | Bad Request - Invalid request format |
     | 401 | Unauthorized - Missing or invalid token |
-    | 403 | Forbidden - Token invalid or insufficient permissions |
+    | 403 | Forbidden - Valid token without permission for this operation; a suspended account has `code: account_suspended` |
     | 404 | Not Found - Resource doesn't exist |
     | 409 | Conflict - idempotency mismatch, request still in progress, outcome unknown, or concurrent write |
     | 422 | Unprocessable Entity - Validation failed |
     | 429 | Too Many Requests - Rate limit exceeded |
     | 500 | Internal Server Error |
+    | 503 | Service Unavailable - temporarily unavailable, with `Retry-After`: checkout creation is paused, or Vatly couldn't check the account's status (`code: service_unavailable`); answered before processing, so a retry with the same `Idempotency-Key` is safe |
   contact:
     name: Vatly Support
     url: https://vatly.com
@@ -483,6 +484,34 @@ paths:
                     errors:
                       customerId:
                         - Customer exists, but the wrong mode is used. Try switching live / test API keys.
+        '503':
+          description: |
+            Service Unavailable - Creating checkouts is temporarily paused by Vatly,
+            for example during an incident. Nothing was created, and the request was
+            not stored against its `Idempotency-Key`, so retrying the exact request
+            with the same key after the `Retry-After` interval is safe: once creation
+            resumes, the retry creates the checkout once. Retrieving checkouts,
+            their status, and customers returning from payments that already
+            started keep working; starting a new payment on an existing unpaid
+            hosted checkout is paused too until creation resumes.
+
+            A `503` with `code: service_unavailable` means Vatly could not check
+            the merchant account's status just now. It is also answered before
+            the request is processed: nothing was created or stored under the
+            `Idempotency-Key`, and the same retry after `Retry-After` is safe.
+          headers:
+            Retry-After:
+              description: Seconds to wait before retrying.
+              required: true
+              schema:
+                type: integer
+              example: 60
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Creating checkouts is temporarily unavailable. Please retry shortly.
         default:
           $ref: '#/components/responses/UnexpectedError'
   /checkouts/{checkoutId}:
@@ -850,6 +879,12 @@ paths:
         a portal link for another storefront, and the request body cannot override
         `testmode`. For a merchant with multiple storefronts, each API token
         issues portal links for its own storefront.
+
+        While your account is suspended, a session opened from such a link, even one
+        issued before the suspension, is read-only: it shows invoices and
+        subscriptions but can't cancel, resume or update payment details. In live
+        mode the page offers the customer a way to sign out and sign in with their
+        own email address, which still lets them cancel or resume.
 
         Portal sessions are available only for customers that are active, not
         archived, have a usable email address, belong to the authenticated API
@@ -1280,7 +1315,8 @@ paths:
         live product. Fields equal to the live value are ignored, and a request
         that nets to no change clears any pending update. A new request replaces
         the not-yet-reviewed one; while an update is being reviewed, further
-        requests return `409`.
+        requests return `409`. Changing the tax behavior of a product that has
+        been sold (an order for it was paid) also returns `409`.
       tags:
         - One-Off Products
       parameters:
@@ -1663,9 +1699,9 @@ paths:
         live plan. Fields equal to the live value are ignored, and a request that
         nets to no change clears any pending update. A new request replaces the
         not-yet-reviewed one; while an update is being reviewed, further requests
-        return `409`. Changing the interval on a plan that has ever been used by a
-        subscription — active or not — also returns `409`. The price stays
-        changeable.
+        return `409`. Changing the interval or the tax behavior on a plan that has
+        ever been used by a subscription — active or not — also returns `409`. The
+        price stays changeable.
 
         A new `interval` must be `month` or `year` with `intervalCount: 1`, sent
         together, in live and test mode alike; any other value returns `422`. A
@@ -2072,16 +2108,18 @@ paths:
       operationId: createOrderInvoiceUpdateLink
       summary: Create invoice update link
       description: |
-        Generates a signed URL that allows the customer to update the invoice details for this order
-        (billing address, VAT number, company name).
+        Generates a signed URL to this order's invoice page, where the billing details printed on
+        the invoice can be corrected: name, company name, street, city and region, and the invoice note.
+        It does not change the VAT number, postal code or country, which decide the tax charged.
 
-        The link is valid for a limited time (typically 24 hours) and can be sent to the customer
-        to self-service update their invoice.
+        The link is valid for 72 hours and can be sent to the customer
+        to self-service correct their invoice. While your account is suspended,
+        it opens the invoice read-only.
 
         **Use cases:**
-        - Customer needs to add/update VAT number
-        - Customer needs to correct billing address
-        - Customer needs to change company name on invoice
+        - Customer needs to correct the name or billing address
+        - Customer needs to add or change the company name on the invoice
+        - Customer wants a note on the invoice, such as a purchase order number
       tags:
         - Orders
       parameters:
@@ -2098,7 +2136,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/InvoiceUpdateLink'
               example:
-                href: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP/edit?signature=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                href: https://billing.vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP?editable=1&expires=1767225600&grant=merchant&signature=3f6c0b9e...
                 type: text/html
         '401':
           $ref: '#/components/responses/Unauthorized'
@@ -5382,13 +5420,18 @@ components:
         - `400` Bad Request — malformed request (e.g. invalid JSON body)
         - `429` Too Many Requests — rate limit exceeded; the `Retry-After`
           header gives the number of seconds to wait before retrying
+        - `503` Service Unavailable with `code: service_unavailable` — Vatly
+          could not check the merchant account's status. Answered before the
+          request is processed, so nothing was done and nothing was stored
+          under its `Idempotency-Key`: retry the same request, with the same
+          key, after `Retry-After` seconds
         - `500` Internal Server Error — an unexpected error occurred; the
           request can typically be retried
 
         The body is always the standard `Error` shape.
       headers:
         Retry-After:
-          description: Present on `429` responses — seconds to wait before retrying.
+          description: Present on `429` and `503` responses — seconds to wait before retrying.
           required: false
           schema:
             type: integer
@@ -5400,7 +5443,11 @@ components:
           example:
             message: An unexpected error occurred. Please try again later.
     Unauthorized:
-      description: Unauthorized - Authentication credentials were missing or invalid
+      description: |
+        Unauthorized - Authentication credentials were missing or invalid.
+        Common causes:
+        - No `Authorization: Bearer` header
+        - The key is unknown, revoked, or does not start with `live_` or `test_`
       content:
         application/json:
           schema:
@@ -5409,17 +5456,25 @@ components:
             message: Unauthenticated.
     Forbidden:
       description: |
-        Forbidden - The API token is invalid or does not have permission for this operation.
+        Forbidden - The API key is valid but may not perform this operation.
         Common causes:
-        - Token does not start with `live_` or `test_`
-        - Token has been revoked
-        - Attempting live operations on a non-live merchant account
+        - Attempting live operations on a merchant account without live mode
+        - The merchant account has been suspended: the body then has
+          `code: account_suspended`, for live and test keys alike
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-          example:
-            message: Auth token must start with live_ or test_.
+          examples:
+            liveModeNotEnabled:
+              summary: Live key on an account without live mode
+              value:
+                message: Live mode is not enabled on this merchant account.
+            accountSuspended:
+              summary: Suspended merchant account
+              value:
+                message: This merchant account has been suspended. Contact hello@vatly.com for help.
+                code: account_suspended
     ValidationFailed:
       description: |
         Unprocessable Entity - The request was well-formed but contained validation errors.
@@ -5846,6 +5901,23 @@ components:
           type: string
           description: Human-readable error message
           example: The requested resource was not found.
+        code:
+          type: string
+          description: |
+            Machine-readable error code, present on errors a client may want to
+            handle on its own. Treat unknown values as forward-compatible
+            additions. Current values:
+            - `account_suspended` (403): the merchant account behind this API
+              key has been suspended. Every request with its live and test keys
+              gets this answer until Vatly support lifts the suspension; retrying
+              does not help. The message names the support address.
+            - `service_unavailable` (503): Vatly could not check the merchant
+              account's status just now. It is answered before the request is
+              processed: nothing was done, nothing is stored under its
+              `Idempotency-Key`, and retrying the same request with the same key
+              after `Retry-After` is safe. It never means the account was
+              suspended.
+          example: account_suspended
         details:
           type: object
           description: |
@@ -6335,7 +6407,8 @@ components:
           description: |
             Whether `basePrice` is tax-exclusive (B2B convention; tax added on top at checkout)
             or tax-inclusive (B2C convention; price already includes tax).
-            Immutable after product creation. A checkout may not mix products with different
+            Changeable through an update until the product is first sold (an order for it is
+            paid), fixed after that. A checkout may not mix products with different
             `taxBehavior` values; doing so returns `422 Unprocessable Entity`.
           enum:
             - exclusive
@@ -6412,6 +6485,11 @@ components:
                 - digital_download
                 - online_course
                 - audiobook
+            taxBehavior:
+              type: string
+              enum:
+                - exclusive
+                - inclusive
           example:
             basePrice:
               currency: EUR
@@ -6493,8 +6571,8 @@ components:
           type: string
           description: |
             Whether `basePrice` is tax-exclusive (B2B convention) or tax-inclusive
-            (B2C convention). Optional; defaults to `exclusive`. Immutable after
-            product creation.
+            (B2C convention). Optional; defaults to `exclusive`. Changeable
+            through an update until the product is first sold.
           enum:
             - exclusive
             - inclusive
@@ -6555,7 +6633,8 @@ components:
           type: string
           description: |
             Whether `basePrice` is tax-exclusive (B2B convention) or tax-inclusive (B2C convention).
-            Immutable after plan creation — create a new plan for the other mode. A checkout may not
+            Changeable through an update until the plan is first sold (a subscription is started
+            on it), fixed after that — then create a new plan for the other mode. A checkout may not
             mix products with different `taxBehavior` values; doing so returns
             `422 Unprocessable Entity`.
           enum:
@@ -6656,6 +6735,11 @@ components:
               type: string
               enum:
                 - saas
+            taxBehavior:
+              type: string
+              enum:
+                - exclusive
+                - inclusive
           example:
             interval: year
             intervalCount: 1
@@ -6727,8 +6811,8 @@ components:
           type: string
           description: |
             Whether `basePrice` is tax-exclusive (B2B convention) or tax-inclusive
-            (B2C convention). Optional; defaults to `exclusive`. Immutable after
-            plan creation — create a new plan for the other mode.
+            (B2C convention). Optional; defaults to `exclusive`. Changeable
+            through an update until the plan is first sold.
           enum:
             - exclusive
             - inclusive
@@ -7031,7 +7115,7 @@ components:
             - type: 'null'
     InvoiceUpdateLink:
       type: object
-      description: A signed URL for the customer to update invoice details (billing address, VAT number, company name)
+      description: A signed URL to the invoice page, where the name, company name, street, city, region and invoice note can be corrected
       required:
         - href
         - type
@@ -7041,9 +7125,9 @@ components:
           type: string
           format: uri
           description: |
-            Signed URL to the address update page.
-            Valid for a limited time (typically 24 hours).
-          example: https://vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP/edit?signature=abc123...
+            Signed URL to the invoice page with editing enabled.
+            Valid for 72 hours.
+          example: https://billing.vatly.com/invoices/order_Hn5xWqVfKm8RjTgYbUcP?editable=1&expires=1767225600&grant=merchant&signature=3f6c0b9e...
         type:
           type: string
           description: Content type of the linked page
@@ -8375,6 +8459,17 @@ components:
             - online_course
             - audiobook
           example: saas
+        taxBehavior:
+          type: string
+          description: |
+            New tax behavior: `exclusive` (B2B convention) or `inclusive` (B2C
+            convention). Changeable only while the product has never been sold
+            (no order for it was ever paid); after that a
+            different value returns `409`. Create a new product for the other mode.
+          enum:
+            - exclusive
+            - inclusive
+          example: inclusive
     UpdateSubscriptionPlanRequest:
       type: object
       description: |
@@ -8385,8 +8480,8 @@ components:
         update enters review (`updateStatus: pending`) before it takes effect (in test
         mode it is approved automatically).
 
-        The interval cannot be changed once the plan has ever been used by a
-        subscription, active or not. The price stays changeable.
+        The interval and the tax behavior cannot be changed once the plan has ever
+        been used by a subscription, active or not. The price stays changeable.
       minProperties: 1
       additionalProperties: false
       properties:
@@ -8423,6 +8518,17 @@ components:
             - 1
           description: Must be `1`. Required when `interval` is provided.
           example: 1
+        taxBehavior:
+          type: string
+          description: |
+            New tax behavior: `exclusive` (B2B convention) or `inclusive` (B2C
+            convention). Changeable only while the plan has never been sold
+            (no subscription was ever started on it); after that a
+            different value returns `409`. Create a new plan for the other mode.
+          enum:
+            - exclusive
+            - inclusive
+          example: inclusive
     TaxSummaryRate:
       type: object
       description: Simplified tax rate information
