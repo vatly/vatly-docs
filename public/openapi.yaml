@@ -493,6 +493,11 @@ paths:
             their status, and customers returning from payments that already
             started keep working; starting a new payment on an existing unpaid
             hosted checkout is paused too until creation resumes.
+
+            A `503` with `code: service_unavailable` means Vatly could not check
+            the merchant account's status just now. It is also answered before
+            the request is processed: nothing was created or stored under the
+            `Idempotency-Key`, and the same retry after `Retry-After` is safe.
           headers:
             Retry-After:
               description: Seconds to wait before retrying.
@@ -5413,13 +5418,18 @@ components:
         - `400` Bad Request — malformed request (e.g. invalid JSON body)
         - `429` Too Many Requests — rate limit exceeded; the `Retry-After`
           header gives the number of seconds to wait before retrying
+        - `503` Service Unavailable with `code: service_unavailable` — Vatly
+          could not check the merchant account's status. Answered before the
+          request is processed, so nothing was done and nothing was stored
+          under its `Idempotency-Key`: retry the same request, with the same
+          key, after `Retry-After` seconds
         - `500` Internal Server Error — an unexpected error occurred; the
           request can typically be retried
 
         The body is always the standard `Error` shape.
       headers:
         Retry-After:
-          description: Present on `429` responses — seconds to wait before retrying.
+          description: Present on `429` and `503` responses — seconds to wait before retrying.
           required: false
           schema:
             type: integer
@@ -5899,6 +5909,12 @@ components:
               key has been suspended. Every request with its live and test keys
               gets this answer until Vatly support lifts the suspension; retrying
               does not help. The message names the support address.
+            - `service_unavailable` (503): Vatly could not check the merchant
+              account's status just now. It is answered before the request is
+              processed: nothing was done, nothing is stored under its
+              `Idempotency-Key`, and retrying the same request with the same key
+              after `Retry-After` is safe. It never means the account was
+              suspended.
           example: account_suspended
         details:
           type: object
