@@ -221,6 +221,7 @@ info:
     | 422 | Unprocessable Entity - Validation failed |
     | 429 | Too Many Requests - Rate limit exceeded |
     | 500 | Internal Server Error |
+    | 503 | Service Unavailable - temporarily unavailable, with `Retry-After`: checkout creation is paused, or Vatly couldn't check the account's status (`code: service_unavailable`); answered before processing, so a retry with the same `Idempotency-Key` is safe |
   contact:
     name: Vatly Support
     url: https://vatly.com
