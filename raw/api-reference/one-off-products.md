@@ -200,7 +200,13 @@ Below you'll find all properties for the Vatly One-off Product API resource.
         inclusive
       </code>
       
-      , B2C convention; price already includes tax). Cannot be changed through the API. Until the product's first sale (a paid order, including one later refunded or charged back), you can change it in the dashboard with <strong>
+      , B2C convention; price already includes tax). Can be changed until the product's first sale (a paid order, including one later refunded or charged back), through <a href="#request-an-update-to-a-one-off-product">
+        <code>
+          PATCH /v1/one-off-products/:oneOffProductId
+        </code>
+      </a>
+      
+       or <strong>
         Request update
       </strong>
       
@@ -208,7 +214,11 @@ Below you'll find all properties for the Vatly One-off Product API resource.
         Manage Products
       </strong>
       
-      ; the change is reviewed by Vatly like any other update (approved automatically in test mode). After the first sale it is locked: create a new product for the other mode. A checkout may not mix products with different <code>
+       in the dashboard; the change is reviewed by Vatly like any other update (approved automatically in test mode). After the first sale it is locked and a change returns <code>
+        409
+      </code>
+      
+      : create a new product for the other mode. A checkout may not mix products with different <code>
         taxBehavior
       </code>
       
@@ -761,7 +771,7 @@ A product created with a `live_` token starts in `pending` status and must be ap
         exclusive
       </code>
       
-      . Can be changed in the dashboard until the product's first sale; see the <a href="#the-one-off-product-model">
+      . Can be changed until the product's first sale; see the <a href="#the-one-off-product-model">
         product object
       </a>
       
@@ -965,7 +975,7 @@ Each request is the **complete set of changes** relative to the current live pro
 
 ### Optional attributes
 
-At least one attribute must be provided. `taxBehavior` cannot be changed here; until the product's first sale, request that change in the dashboard instead (see the [product object](#the-one-off-product-model)).
+At least one attribute must be provided. A changed `taxBehavior` is accepted only while the product has never been sold, meaning it has no paid order, including one later refunded or charged back. After the first sale, changing it returns `409`; sending the current value is always accepted. Vatly checks this again when it reviews the update.
 
 <table>
 <thead>
@@ -1086,6 +1096,32 @@ At least one attribute must be provided. `taxBehavior` cannot be changed here; u
       </code>
       
       .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        taxBehavior
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      New tax behavior: <code>
+        exclusive
+      </code>
+      
+       or <code>
+        inclusive
+      </code>
+      
+      . Only changeable until the product's first sale.
     </td>
   </tr>
 </tbody>

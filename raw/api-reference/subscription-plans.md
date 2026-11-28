@@ -196,7 +196,13 @@ The subscription plan model contains all the information about the subscription 
         inclusive
       </code>
       
-      , the B2C convention). Cannot be changed through the API. Until the plan has any subscription (active or not), you can change it in the dashboard with <strong>
+      , the B2C convention). Can be changed until the plan has any subscription (active or not), through <a href="#update-a-subscription-plan">
+        <code>
+          PATCH /v1/subscription-plans/:id
+        </code>
+      </a>
+      
+       or <strong>
         Request update
       </strong>
       
@@ -204,7 +210,11 @@ The subscription plan model contains all the information about the subscription 
         Manage Products
       </strong>
       
-      ; the change is reviewed by Vatly like any other update (approved automatically in test mode). Once the plan has a subscription it is locked: create a new plan for the other mode. A checkout may not mix products with different <code>
+       in the dashboard; the change is reviewed by Vatly like any other update (approved automatically in test mode). Once the plan has a subscription it is locked and a change returns <code>
+        409
+      </code>
+      
+      : create a new plan for the other mode. A checkout may not mix products with different <code>
         taxBehavior
       </code>
       
@@ -870,7 +880,7 @@ A plan created with a `live_` token starts in `pending` status and must be appro
         exclusive
       </code>
       
-      . Can be changed in the dashboard until the plan has a subscription; see the <a href="#the-subscription-plan-model">
+      . Can be changed until the plan has a subscription; see the <a href="#the-subscription-plan-model">
         plan object
       </a>
       
@@ -1038,7 +1048,7 @@ $plan = $vatly->subscriptionPlans->get('subscription_plan_Bm7xNvPwKr3YjTgHcZaE')
 
 Submits an update to a live subscription plan. Because plans drive VAT-bearing recurring sales, the change is held as a pending update and reviewed by Vatly before it takes effect (`updateStatus` moves `pending` → `reviewing` → applied). In test mode the update is approved automatically.
 
-Each request is the **complete set of changes** relative to the current live plan, and must contain at least one field. Fields equal to the live value are ignored, and a request that nets to no change clears any pending update. A new request replaces the not-yet-reviewed one; while an update is being reviewed, further requests return `409`. Changing the interval on a plan that has ever been used by a subscription (active or not) also returns `409`. The price stays changeable.
+Each request is the **complete set of changes** relative to the current live plan, and must contain at least one field. Fields equal to the live value are ignored, and a request that nets to no change clears any pending update. A new request replaces the not-yet-reviewed one; while an update is being reviewed, further requests return `409`. Changing the interval or `taxBehavior` on a plan that has ever been used by a subscription (active or not) also returns `409`; sending the current value is always accepted, and Vatly checks this again when it reviews the update. The price stays changeable.
 
 To change the billing interval, send `interval` and `intervalCount` together, set to monthly (`month`, `1`) or yearly (`year`, `1`). Anything else returns a `422`, in both live and test mode. A plan that already bills on another interval keeps working, and you can still update its other fields without sending the interval.
 
@@ -1247,6 +1257,32 @@ At least one field must be provided.
       </code>
       
       .
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      <code>
+        taxBehavior
+      </code>
+    </td>
+    
+    <td>
+      <code>
+        string
+      </code>
+    </td>
+    
+    <td>
+      New tax behavior: <code>
+        exclusive
+      </code>
+      
+       or <code>
+        inclusive
+      </code>
+      
+      . Only changeable until the plan has a subscription.
     </td>
   </tr>
 </tbody>
